@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sobres de Bonificación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ew:420px; --eh:280px; --cw:280px; --ch:394px; --edy:96px;
+  --gold:#e8c872; --seal:#e8c872; --glow:#e8c872;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#040b0a;overflow:hidden}
+body{font-family:'Cinzel',Georgia,'Times New Roman',serif;color:#f3e6bf;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit}
+
+.app{position:fixed;inset:0;display:flex;flex-direction:column;
+  background:radial-gradient(ellipse 80% 70% at 50% 42%,#10403a 0%,#0a2621 40%,#040b0a 100%)}
+
+/* ---------- escenario ---------- */
+.stage{position:relative;flex:1;min-height:0;overflow:hidden}
+.motes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.mote{position:absolute;bottom:-10px;border-radius:50%;background:radial-gradient(circle,#fff6cf 0%,rgba(255,232,150,.0) 70%);
+  opacity:0;animation:floaty linear infinite}
+@keyframes floaty{0%{transform:translateY(0) translateX(0);opacity:0}12%{opacity:.7}85%{opacity:.5}100%{transform:translateY(-105vh) translateX(30px);opacity:0}}
+
+.title{position:absolute;left:0;right:0;top:0;height:var(--top,52px);display:flex;align-items:center;justify-content:center;
+  font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(12px,min(2.6vh,3.9vw),22px);padding:0 48px;text-align:center;white-space:nowrap;
+  background:linear-gradient(180deg,#fff2c2,#d9ab4a);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));pointer-events:none;z-index:6}
+.compact .title{display:none}
+.fs{position:absolute;right:10px;top:10px;z-index:30;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,200,114,.5);
+  background:rgba(0,0,0,.4);cursor:pointer;display:none;align-items:center;justify-content:center}
+.fs.ok{display:flex}
+.fs svg{width:16px;height:16px;stroke:#e8c872;fill:none;stroke-width:2}
+
+.arena{position:absolute;left:0;right:0;bottom:0;top:var(--top,52px)}
+#fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:25}
+
+/* ---------- sobre ---------- */
+.eslot{position:absolute;left:50%;top:50%;width:var(--ew);height:var(--eh);
+  margin:calc(var(--eh) / -2 + var(--edy)) 0 0 calc(var(--ew) / -2);z-index:5}
+.burst{position:absolute;left:50%;top:38%;width:calc(var(--ew)*1.7);height:calc(var(--ew)*1.7);margin:calc(var(--ew)*-.85) 0 0 calc(var(--ew)*-.85);
+  border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,rgba(0,0,0,0) 62%);opacity:0;transform:scale(.2);pointer-events:none;z-index:1}
+.burst.boom{animation:burst 1.5s ease-out forwards}
+@keyframes burst{0%{opacity:0;transform:scale(.2)}25%{opacity:.85}100%{opacity:0;transform:scale(1.15)}}
+
+.env{position:absolute;inset:0;perspective:1000px;cursor:pointer;background:none;border:0;outline:0;
+  filter:drop-shadow(0 20px 22px rgba(0,0,0,.65));transition:opacity .55s ease,transform .6s ease;z-index:2}
+.env:focus-visible .back{outline:3px solid #fff2c2;outline-offset:4px}
+.env.float{animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-.4deg)}50%{transform:translateY(-2.5%) rotate(.4deg)}}
+.env.shake{animation:shake .6s ease-in-out}
+@keyframes shake{0%,100%{transform:translateX(0) rotate(0)}12%{transform:translateX(-3%) rotate(-3deg)}28%{transform:translateX(3%) rotate(3deg)}44%{transform:translateX(-3%) rotate(-2.5deg)}60%{transform:translateX(2.5%) rotate(2deg)}78%{transform:translateX(-1.5%) rotate(-1deg)}}
+.env.away{opacity:0;transform:translateY(7%) scale(.9);pointer-events:none}
+.env.drop{animation:drop .6s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes drop{0%{opacity:0;transform:translateY(-14%) scale(.85)}100%{opacity:1;transform:none}}
+.env.reset,.env.reset *{transition:none!important;animation:none!important}
+
+.env .back{position:absolute;inset:0;border-radius:calc(var(--eh)*.035);
+  background:
+   radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.14),transparent 55%),
+   linear-gradient(160deg,#8b6d3d,#6f5530);z-index:1}
+.env .peek{position:absolute;left:50%;bottom:6%;width:calc(var(--ew)*.42);height:calc(var(--ew)*.42*641/455);
+  margin-left:calc(var(--ew)*-.21);border-radius:calc(var(--ew)*.02);overflow:hidden;z-index:3;
+  transition:transform .85s cubic-bezier(.2,.9,.25,1);box-shadow:0 0 18px rgba(0,0,0,.5)}
+.env .peek img{width:100%;height:100%;display:block;object-fit:cover}
+.env.open .peek{transform:translateY(calc(var(--ew)*-.5))}
+.pocket i{position:absolute;inset:0;z-index:4}
+.pocket .l{clip-path:polygon(0 0,52% 56%,0 100%);background:linear-gradient(100deg,#b99b62,#d6ba82)}
+.pocket .r{clip-path:polygon(100% 0,48% 56%,100% 100%);background:linear-gradient(260deg,#b39459,#d2b57b)}
+.pocket .b{clip-path:polygon(0 100%,50% 42%,100% 100%);background:linear-gradient(0deg,#dcc48e,#ecd9a6);border-radius:0 0 calc(var(--eh)*.035) calc(var(--eh)*.035)}
+.pocket .grain{clip-path:none;opacity:.18;mix-blend-mode:multiply;z-index:4;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .2  0 0 0 0 .1  0 0 0 .9 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+.flap{position:absolute;left:0;top:0;width:100%;height:60%;z-index:5;transform-origin:50% 0}
+.flap i{position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 100%);background:linear-gradient(180deg,#a98a52,#cfb077)}
+.env.open .flap{animation:flapOpen .6s ease-in forwards}
+@keyframes flapOpen{0%{transform:rotateX(0);z-index:5}49%{z-index:5}50%{transform:rotateX(90deg);z-index:2}100%{transform:rotateX(180deg);z-index:2}}
+.elabel{position:absolute;left:0;right:0;bottom:6.5%;text-align:center;z-index:6;font-weight:800;text-transform:uppercase;
+  letter-spacing:.16em;font-size:calc(var(--eh)*.072);color:#5a4220;text-shadow:0 1px 0 rgba(255,255,255,.35);pointer-events:none;white-space:nowrap}
+.seal{position:absolute;left:50%;top:60%;width:calc(var(--eh)*.3);height:calc(var(--eh)*.3);margin:calc(var(--eh)*-.15) 0 0 calc(var(--eh)*-.15);z-index:7;
+  transition:filter .4s;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+.seal svg{width:100%;height:100%;display:block;overflow:visible}
+.env.float .seal{animation:sealpulse 2.4s ease-in-out infinite}
+@keyframes sealpulse{0%,100%{filter:drop-shadow(0 3px 5px rgba(0,0,0,.55)) drop-shadow(0 0 4px var(--seal))}50%{filter:drop-shadow(0 3px 5px rgba(0,0,0,.55)) drop-shadow(0 0 16px var(--seal))}}
+.env.open .seal{animation:sealbreak .5s ease-in forwards}
+@keyframes sealbreak{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(.2) rotate(40deg);opacity:0}}
+
+.hint{position:absolute;left:0;right:0;bottom:2.5%;text-align:center;font-size:clamp(11px,1.9vh,15px);letter-spacing:.2em;text-transform:uppercase;
+  color:#cdb987;opacity:.85;animation:blink 2.6s ease-in-out infinite;pointer-events:none;z-index:4;transition:opacity .3s}
+@keyframes blink{50%{opacity:.35}}
+.hint.off{opacity:0;animation:none}
+
+/* ---------- carta revelada ---------- */
+.rslot{position:absolute;left:50%;top:50%;width:var(--cw);height:var(--ch);margin:calc(var(--ch)/-2) 0 0 calc(var(--cw)/-2);
+  perspective:1400px;z-index:10;visibility:hidden;opacity:0}
+.rslot.show{visibility:visible;opacity:1}
+.rslot.fade{transition:opacity .35s ease}
+.rslot.hide{opacity:0}
+.aura{position:absolute;inset:-7%;border-radius:9%;background:radial-gradient(closest-side,var(--glow) 40%,rgba(0,0,0,0) 100%);opacity:0;filter:blur(16px);transition:opacity .6s;pointer-events:none}
+.rslot.glow .aura{opacity:.7;animation:aura 2.8s ease-in-out infinite}
+@keyframes aura{50%{opacity:.4;transform:scale(1.04)}}
+.tilt{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .18s ease-out}
+.rcard{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,.75,.25,1)}
+.rcard.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:calc(var(--cw)*.05);overflow:hidden;
+  background:#000;box-shadow:0 22px 46px rgba(0,0,0,.7)}
+.face img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.face.front{transform:rotateY(180deg)}
+.shine{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0;transition:opacity .25s}
+.rslot.live:hover .shine{opacity:1}
+
+/* ---------- barra inferior ---------- */
+.bar{flex:none;padding:10px 12px 12px;display:flex;flex-direction:column;gap:9px;align-items:center;
+  background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.55) 40%);position:relative;z-index:8}
+.packs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.pack{--c:#e8c872;display:flex;align-items:center;gap:.5em;padding:.55em .95em;border-radius:99px;cursor:pointer;
+  border:1px solid var(--c);background:rgba(0,0,0,.4);font-weight:600;font-size:clamp(11px,1.75vh,14px);line-height:1;letter-spacing:.04em;white-space:nowrap;
+  transition:background .2s,color .2s,transform .15s}
+.pack::before{content:"";width:.62em;height:.62em;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c)}
+.pack:hover{transform:translateY(-1px)}
+.pack[aria-pressed="true"]{background:var(--c);color:#101410}
+.pack[aria-pressed="true"]::before{background:#101410;box-shadow:none}
+.pack:disabled{opacity:.45;cursor:default;transform:none}
+.row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.go{cursor:pointer;border:1px solid #f6dc95;border-radius:99px;padding:.7em 1.7em;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  font-size:clamp(12px,1.9vh,15px);color:#2a1d05;background:linear-gradient(180deg,#ffe9a6,#d9a94a);
+  box-shadow:0 4px 14px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.6);transition:transform .15s,filter .2s}
+.go:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.go:active{transform:translateY(1px)}
+.go:disabled{filter:grayscale(.6) brightness(.7);cursor:default;transform:none}
+.hist{display:flex;align-items:center;gap:6px;min-height:var(--th,46px)}
+.hist[hidden]{display:none}
+.hist span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#a8956a;margin-right:2px}
+.hist button{--th:46px;height:var(--th);width:calc(var(--th)*455/641);border:1px solid rgba(232,200,114,.5);border-radius:4px;padding:0;overflow:hidden;
+  background:#000;cursor:pointer;transition:transform .15s}
+.hist button:hover{transform:translateY(-3px)}
+.hist img{width:100%;height:100%;object-fit:cover;display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.compact .hist{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  .mote,.env.float,.hint,.env.float .seal,.rslot.glow .aura{animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="stage" id="stage">
+    <div class="motes" id="motes" aria-hidden="true"></div>
+    <div class="title">Sobres de Bonificación</div>
+    <button class="fs" id="fs" type="button" aria-label="Pantalla completa" title="Pantalla completa">
+      <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+    <div class="arena" id="arena">
+      <div class="eslot" id="eslot">
+        <div class="burst" id="burst"></div>
+        <button class="env float" id="env" type="button" aria-label="Abrir el sobre">
+          <span class="back"></span>
+          <span class="peek"><img id="peekImg" alt="" draggable="false"></span>
+          <span class="pocket"><i class="l"></i><i class="r"></i><i class="b"></i><i class="grain"></i></span>
+          <span class="flap"><i></i></span>
+          <span class="elabel" id="elabel">Sobre mágico</span>
+          <span class="seal" id="seal">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <defs><radialGradient id="sg" cx="35%" cy="30%" r="80%">
+                <stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".35" stop-color="var(--seal)"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+              </radialGradient></defs>
+              <path d="M50 3c9 0 13 6 21 8s16 4 19 13-1 14 3 22-1 15-7 22-6 15-15 19-15-1-21-1-13 5-21 1-12-12-15-19-9-14-7-22 4-15 3-22 6-16 19-13 12-8 21-8z" fill="var(--seal)"/>
+              <path d="M50 3c9 0 13 6 21 8s16 4 19 13-1 14 3 22-1 15-7 22-6 15-15 19-15-1-21-1-13 5-21 1-12-12-15-19-9-14-7-22 4-15 3-22 6-16 19-13 12-8 21-8z" fill="url(#sg)"/>
+              <g fill="none" stroke="#1a0f05" stroke-opacity=".62" stroke-width="3.4" stroke-linejoin="round">
+                <path d="M50 24 71 66H29z"/><circle cx="50" cy="55" r="11.5"/><path d="M50 24v42"/>
+              </g>
+            </svg>
+          </span>
+        </button>
+      </div>
+      <div class="rslot" id="rslot">
+        <div class="aura"></div>
+        <div class="tilt" id="tilt">
+          <div class="rcard" id="rcard">
+            <div class="face back"><img id="backImg" alt="Reverso de la carta" draggable="false"></div>
+            <div class="face front"><img id="frontImg" alt="" draggable="false"><div class="shine" id="shine"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="hint" id="hint">Toca el sobre para abrirlo</div>
+      <canvas id="fx"></canvas>
+    </div>
+  </div>
+  <div class="bar">
+    <div class="packs" id="packs" role="group" aria-label="Tipo de sobre"></div>
+    <div class="row">
+      <button class="go" id="go" type="button">Abrir sobre</button>
+      <div class="hist" id="hist" hidden><span>Últimas</span></div>
+    </div>
+  </div>
+  <div class="sr" id="live" aria-live="polite"></div>
+</div>
+
+<script>
+var IMG_BACK="img/reverso.webp";
+var CARTAS=[[1,"horrocrux","img/carta-01.webp"],[2,"horrocrux","img/carta-02.webp"],[3,"horrocrux","img/carta-03.webp"],[4,"horrocrux","img/carta-04.webp"],[5,"horrocrux","img/carta-05.webp"],[6,"horrocrux","img/carta-06.webp"],[7,"horrocrux","img/carta-07.webp"],[8,"comun","img/carta-08.webp"],[9,"hechizo","img/carta-09.webp"],[10,"hechizo","img/carta-10.webp"],[11,"hechizo","img/carta-11.webp"],[12,"hechizo","img/carta-12.webp"],[13,"hechizo","img/carta-13.webp"],[14,"hechizo","img/carta-14.webp"],[15,"hechizo","img/carta-15.webp"],[16,"hechizo","img/carta-16.webp"],[17,"hechizo","img/carta-17.webp"],[18,"hechizo","img/carta-18.webp"],[19,"oscura","img/carta-19.webp"],[20,"oscura","img/carta-20.webp"],[21,"oscura","img/carta-21.webp"],[22,"oscura","img/carta-22.webp"],[23,"oscura","img/carta-23.webp"],[24,"oscura","img/carta-24.webp"],[25,"especial","img/carta-25.webp"],[26,"especial","img/carta-26.webp"],[27,"especial","img/carta-27.webp"],[28,"especial","img/carta-28.webp"],[29,"especial","img/carta-29.webp"],[30,"especial","img/carta-30.webp"],[31,"especial","img/carta-31.webp"],[32,"especial","img/carta-32.webp"],[33,"especial","img/carta-33.webp"],[34,"especial","img/carta-34.webp"],[35,"fenix","img/carta-35.webp"],[36,"fenix","img/carta-36.webp"],[37,"fenix","img/carta-37.webp"],[38,"fenix","img/carta-38.webp"],[39,"fenix","img/carta-39.webp"],[40,"fenix","img/carta-40.webp"],[41,"comun","img/carta-41.webp"],[42,"comun","img/carta-42.webp"],[43,"comun","img/carta-43.webp"],[44,"comun","img/carta-44.webp"],[45,"comun","img/carta-45.webp"],[46,"reliquia","img/carta-46.webp"],[47,"reliquia","img/carta-47.webp"],[48,"reliquia","img/carta-48.webp"]];
+</script>
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   CONFIGURACIÓN  (puedes tocar estos valores)
+   ------------------------------------------------------------
+   pesos: probabilidad relativa de cada tipo en el sobre
+          aleatorio (no hace falta que sumen 100).
+          Pon 0 para que un tipo no salga nunca en aleatorio.
+   ============================================================ */
+var CONFIG = {
+  pesos: { comun:28, especial:22, hechizo:18, fenix:10, oscura:10, horrocrux:8, reliquia:4 },
+  autoVoltear: true,     // la carta se da la vuelta sola tras salir del sobre
+  pausaVolteo: 1100      // ms de suspense antes de dar la vuelta
+};
+
+var TIPOS = {
+  comun:     { n:'Común',           c:'#4cc46a', plural:'Comunes' },
+  especial:  { n:'Especial',        c:'#2fe0c0', plural:'Especiales' },
+  hechizo:   { n:'Hechizo',         c:'#ee4a68', plural:'Hechizos' },
+  fenix:     { n:'Orden del Fénix', c:'#ff8f2e', plural:'Orden del Fénix' },
+  oscura:    { n:'Oscura',          c:'#9a78e6', plural:'Oscuras' },
+  horrocrux: { n:'Horrocrux',       c:'#b7d23a', plural:'Horrocruxes' },
+  reliquia:  { n:'Reliquia',        c:'#f6e7a4', plural:'Reliquias' }
+};
+var ORDEN = ['comun','especial','hechizo','fenix','oscura','horrocrux','reliquia'];
+var GOLD = '#e8c872';
+
+/* ---------- utilidades ---------- */
+function $(id){ return document.getElementById(id); }
+function rnd(){
+  try{ var a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]/4294967296; }catch(e){ return Math.random(); }
+}
+function sleep(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var stage=$('stage'), arena=$('arena'), env=$('env'), eslot=$('eslot'), rslot=$('rslot'), rcard=$('rcard'), tilt=$('tilt'),
+    frontImg=$('frontImg'), backImg=$('backImg'), peekImg=$('peekImg'), burstEl=$('burst'), hint=$('hint'),
+    goBtn=$('go'), packsEl=$('packs'), histEl=$('hist'), live=$('live'), elabel=$('elabel'), shine=$('shine');
+
+/* ---------- datos ---------- */
+var cartas = CARTAS.map(function(c){ return { id:c[0], tipo:c[1], src:c[2] }; });
+var porTipo = {};
+ORDEN.forEach(function(t){ porTipo[t]=[]; });
+cartas.forEach(function(c){ (porTipo[c.tipo]||(porTipo[c.tipo]=[])).push(c); });
+backImg.src = IMG_BACK; peekImg.src = IMG_BACK;
+
+var pack = 'random';      // 'random' o id de tipo
+var estado = 'idle';      // idle | busy | shown
+var historial = [];
+
+/* ---------- sorteo ---------- */
+function elegirTipo(){
+  var tot=0, t, i;
+  for(i=0;i<ORDEN.length;i++){ t=ORDEN[i]; if(porTipo[t].length) tot += Math.max(0, CONFIG.pesos[t]||0); }
+  if(tot<=0){ /* pesos a 0: reparte por número de cartas */
+    var n=cartas.length, k=Math.floor(rnd()*n); return cartas[k].tipo;
+  }
+  var r=rnd()*tot;
+  for(i=0;i<ORDEN.length;i++){
+    t=ORDEN[i]; if(!porTipo[t].length) continue;
+    r -= Math.max(0, CONFIG.pesos[t]||0);
+    if(r<0) return t;
+  }
+  return ORDEN[0];
+}
+function sacarCarta(){
+  var t = pack==='random' ? elegirTipo() : pack;
+  var arr = porTipo[t];
+  return arr[Math.floor(rnd()*arr.length)];
+}
+
+/* ---------- tamaños ---------- */
+function layout(){
+  var r=stage.getBoundingClientRect(), W=r.width, H=r.height;
+  var compact = H<400;
+  document.getElementById('app').classList.toggle('compact', compact);
+  var top = compact ? 0 : Math.min(56, Math.max(36, H*.1));
+  var root=document.documentElement.style;
+  root.setProperty('--top', top+'px');
+  var ah=H-top, aw=W;
+  var eh=Math.min(ah*.5, aw*.8/1.5), ew=eh*1.5;
+  var ch=Math.min(ah*.97, aw*.92*641/455), cw=ch*455/641;
+  root.setProperty('--ew', ew+'px'); root.setProperty('--eh', eh+'px');
+  root.setProperty('--edy', (ew*.23)+'px');
+  root.setProperty('--cw', cw+'px'); root.setProperty('--ch', ch+'px');
+  fxResize();
+}
+if(window.ResizeObserver){ new ResizeObserver(layout).observe(stage); }
+window.addEventListener('resize', layout);
+
+/* ---------- partículas ---------- */
+var cv=$('fx'), ctx=cv.getContext('2d'), parts=[], raf=0, dpr=1;
+function fxResize(){
+  dpr=Math.min(2, window.devicePixelRatio||1);
+  var r=arena.getBoundingClientRect();
+  cv.width=Math.max(1,Math.round(r.width*dpr)); cv.height=Math.max(1,Math.round(r.height*dpr));
+}
+function centroDe(el){
+  var a=arena.getBoundingClientRect(), b=el.getBoundingClientRect();
+  return { x:b.left+b.width/2-a.left, y:b.top+b.height/2-a.top, w:b.width, h:b.height };
+}
+function chispas(x,y,color,n,vel,spread){
+  if(reduce) return;
+  for(var i=0;i<n;i++){
+    var ang=rnd()*Math.PI*2, sp=(.35+rnd())*vel;
+    parts.push({ x:x+(rnd()-.5)*(spread||0), y:y+(rnd()-.5)*(spread||0),
+      vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp-vel*.25, life:0, max:55+rnd()*70, r:1+rnd()*2.8,
+      c: rnd()<.35 ? '#fff6cf' : color });
+  }
+  if(!raf) raf=requestAnimationFrame(tick);
+}
+function tick(){
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.globalCompositeOperation='lighter';
+  var alive=[];
+  for(var i=0;i<parts.length;i++){
+    var p=parts[i]; p.life++; if(p.life>p.max) continue;
+    p.x+=p.vx; p.y+=p.vy; p.vy+=.035; p.vx*=.985; p.vy*=.99;
+    var a=1-p.life/p.max;
+    ctx.globalAlpha=a*.35; ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*2.6,0,6.283); ctx.fill();
+    ctx.globalAlpha=a; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283); ctx.fill();
+    alive.push(p);
+  }
+  parts=alive;
+  if(parts.length){ raf=requestAnimationFrame(tick); }
+  else { raf=0; ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height); }
+}
+
+/* motas de polvo mágico de fondo */
+(function(){
+  if(reduce) return;
+  var m=$('motes');
+  for(var i=0;i<16;i++){
+    var d=document.createElement('i'); d.className='mote';
+    var s=3+Math.random()*6;
+    d.style.cssText='left:'+(Math.random()*100)+'%;width:'+s+'px;height:'+s+'px;animation-duration:'+(11+Math.random()*14)+'s;animation-delay:'+(-Math.random()*20)+'s';
+    m.appendChild(d);
+  }
+})();
+
+/* ---------- selector de sobre ---------- */
+function crearPacks(){
+  var opts=[{id:'random', n:'✦ Aleatorio', c:GOLD}];
+  ORDEN.forEach(function(t){ if(porTipo[t].length) opts.push({id:t, n:TIPOS[t].n, c:TIPOS[t].c}); });
+  opts.forEach(function(o){
+    var b=document.createElement('button');
+    b.type='button'; b.className='pack'; b.textContent=o.n; b.dataset.id=o.id;
+    b.style.setProperty('--c', o.c);
+    b.setAttribute('aria-pressed', o.id===pack?'true':'false');
+    b.addEventListener('click', function(e){ soltar(e); elegirPack(o.id); });
+    packsEl.appendChild(b);
+  });
+}
+function elegirPack(id){
+  if(estado==='busy') return;
+  pack=id;
+  Array.prototype.forEach.call(packsEl.children, function(b){ b.setAttribute('aria-pressed', b.dataset.id===id?'true':'false'); });
+  var col = id==='random' ? GOLD : TIPOS[id].c;
+  document.documentElement.style.setProperty('--seal', col);
+  elabel.textContent = id==='random' ? 'Sobre mágico' : 'Sobre · '+TIPOS[id].plural;
+  if(estado==='shown'){ cerrar(); }
+}
+
+/* ---------- historial ---------- */
+function pintarHistorial(){
+  histEl.querySelectorAll('button').forEach(function(b){ b.remove(); });
+  historial.forEach(function(c){
+    var b=document.createElement('button'); b.type='button';
+    b.title=TIPOS[c.tipo].n+' · carta '+c.id; b.setAttribute('aria-label','Ver de nuevo: carta '+TIPOS[c.tipo].n+' nº '+c.id);
+    b.style.borderColor=TIPOS[c.tipo].c;
+    var im=new Image(); im.src=c.src; im.alt=''; im.draggable=false; b.appendChild(im);
+    b.addEventListener('click', function(e){ soltar(e); if(estado==='busy') return; mostrarDirecto(c); });
+    histEl.appendChild(b);
+  });
+  histEl.hidden = historial.length===0;
+}
+
+/* ---------- flujo principal ---------- */
+function setGlow(t){ document.documentElement.style.setProperty('--glow', TIPOS[t].c); }
+function setBoton(){
+  goBtn.textContent = estado==='shown' ? 'Otro sobre' : 'Abrir sobre';
+  goBtn.disabled = estado==='busy';
+  Array.prototype.forEach.call(packsEl.children, function(b){ b.disabled = estado==='busy'; });
+  hint.classList.toggle('off', estado!=='idle');
+}
+function anunciar(c){ live.textContent='Ha salido una carta de tipo '+TIPOS[c.tipo].n+', número '+c.id+'.'; }
+function registrar(c){
+  historial.unshift(c); if(historial.length>8) historial.pop();
+  pintarHistorial(); anunciar(c);
+}
+
+async function abrir(){
+  if(estado!=='idle') return;
+  estado='busy'; setBoton();
+  var carta=sacarCarta();
+  frontImg.src=carta.src; frontImg.alt='Carta '+TIPOS[carta.tipo].n+' nº '+carta.id;
+  var dec = frontImg.decode ? frontImg.decode().catch(function(){}) : Promise.resolve();
+  setGlow(carta.tipo);
+
+  if(reduce){
+    await dec; mostrarDirecto(carta); registrar(carta); return;
+  }
+
+  env.classList.remove('float'); env.classList.add('shake');
+  await Promise.all([sleep(620), dec]);
+  env.classList.remove('shake'); env.classList.add('open');
+  burstEl.classList.remove("boom"); void burstEl.offsetWidth; burstEl.classList.add("boom");
+  var ce=centroDe(env);
+  chispas(ce.x, ce.y-ce.h*.1, TIPOS[carta.tipo].c, 46, 3.4, ce.w*.3);
+  await sleep(1150);
+
+  /* la carta pasa del sobre al centro (FLIP) */
+  var pr=$('peekImg').parentNode.getBoundingClientRect();
+  rslot.classList.remove('fade','hide'); rslot.style.transition='none'; rslot.style.transform='none';
+  rslot.classList.add('show');
+  var rr=rslot.getBoundingClientRect();
+  var dx=(pr.left+pr.width/2)-(rr.left+rr.width/2), dy=(pr.top+pr.height/2)-(rr.top+rr.height/2), s=pr.width/rr.width;
+  rslot.style.transform='translate('+dx+'px,'+dy+'px) scale('+s+')';
+  $('peekImg').parentNode.style.visibility='hidden';
+  void rslot.offsetWidth;
+  rslot.style.transition='transform 1s cubic-bezier(.22,.8,.22,1)';
+  rslot.style.transform='none';
+  env.classList.add('away');
+  await sleep(1050);
+  rslot.style.transition='';
+
+  if(CONFIG.autoVoltear){
+    await sleep(CONFIG.pausaVolteo);
+    rcard.classList.add('flip');
+    await sleep(380);
+    var cc=centroDe(rslot);
+    var extra = (carta.tipo==='reliquia'||carta.tipo==='horrocrux') ? 2 : 1;
+    chispas(cc.x, cc.y, TIPOS[carta.tipo].c, 70*extra, 4.6, cc.w*.5);
+    rslot.classList.add('glow','live');
+    await sleep(700);
+  } else {
+    rslot.classList.add('live');
+  }
+  estado='shown'; setBoton(); registrar(carta);
+}
+
+/* muestra una carta ya girada, sin animación de sobre */
+function mostrarDirecto(c){
+  frontImg.src=c.src; frontImg.alt='Carta '+TIPOS[c.tipo].n+' nº '+c.id;
+  setGlow(c.tipo);
+  var yaVisible = rslot.classList.contains('show');
+  rcard.style.transition='none';
+  rslot.style.transition=''; rslot.style.transform='none';
+  rslot.classList.remove('hide'); rslot.classList.add('show','glow','live');
+  rcard.classList.add('flip'); void rcard.offsetWidth; rcard.style.transition='';
+  env.classList.add('away'); env.classList.remove('float','shake');
+  if(!yaVisible){ rslot.classList.add('fade'); rslot.style.opacity='0'; void rslot.offsetWidth; rslot.style.opacity=''; }
+  estado='shown'; setBoton(); anunciar(c);
+}
+
+/* vuelve al sobre cerrado */
+async function cerrar(){
+  if(estado==='busy') return;
+  estado='busy'; setBoton();
+  rslot.classList.add('fade','hide'); rslot.classList.remove('glow','live');
+  await sleep(380);
+  rslot.classList.remove('show','fade','hide');
+  rcard.style.transition='none'; rcard.classList.remove('flip'); tilt.style.transform='';
+  rslot.style.transition='none'; rslot.style.transform='none';
+  void rcard.offsetWidth; rcard.style.transition=''; rslot.style.transition='';
+  env.classList.add('reset'); env.classList.remove('open','away','shake');
+  $('peekImg').parentNode.style.visibility='';
+  void env.offsetWidth;
+  env.classList.remove('reset'); env.classList.add('drop');
+  await sleep(620);
+  env.classList.remove('drop'); env.classList.add('float');
+  estado='idle'; setBoton();
+}
+
+/* ---------- eventos ---------- */
+function soltar(e){ if(e && e.detail && e.currentTarget && e.currentTarget.blur) e.currentTarget.blur(); }
+env.addEventListener('click', function(e){ soltar(e); abrir(); });
+goBtn.addEventListener('click', function(e){ soltar(e); if(estado==='idle') abrir(); else if(estado==='shown') cerrar(); });
+document.addEventListener('keydown', function(e){
+  if(e.target!==document.body) return;
+  if(e.key===' '||e.key==='Enter'){
+    e.preventDefault();
+    if(estado==='idle') abrir(); else if(estado==='shown') cerrar();
+  }
+});
+rslot.addEventListener('pointermove', function(e){
+  if(!rslot.classList.contains('live')) return;
+  var b=rslot.getBoundingClientRect(), x=(e.clientX-b.left)/b.width, y=(e.clientY-b.top)/b.height;
+  tilt.style.transform='rotateY('+((x-.5)*16).toFixed(2)+'deg) rotateX('+((.5-y)*16).toFixed(2)+'deg)';
+  shine.style.background='radial-gradient(circle at '+(x*100)+'% '+(y*100)+'%,rgba(255,255,255,.28),rgba(255,255,255,0) 48%)';
+});
+rslot.addEventListener('pointerleave', function(){ tilt.style.transform=''; });
+
+var fs=$('fs');
+if(document.fullscreenEnabled){
+  fs.classList.add('ok');
+  fs.addEventListener('click', function(){
+    try{
+      if(document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    }catch(e){}
+  });
+}
+
+/* ---------- arranque ---------- */
+crearPacks();
+document.documentElement.style.setProperty('--seal', GOLD);
+layout();
+setBoton();
+})();
+</script>
+</body>
+</html>
