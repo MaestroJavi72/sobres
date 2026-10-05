@@ -152,8 +152,25 @@ button{font-family:inherit;color:inherit}
 .tab[hidden]{display:none}
 .app[data-vista="compra"] .tabs{display:none}
 .app[data-vista="compra"] .packs{display:none}
-.app[data-vista="tienda"] .stage,.app[data-vista="tienda"] .bar{display:none}
+.app[data-vista="tienda"] .stage,.app[data-vista="tienda"] .bar,.app[data-vista="mis"] .stage,.app[data-vista="mis"] .bar{display:none}
 .app:not([data-vista="tienda"]) .shop{display:none}
+.app:not([data-vista="mis"]) .misShop{display:none}
+
+/* ---------- registro de alumnos ---------- */
+select{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,114,.5);background:rgba(0,0,0,.4);color:#f3e6bf;font:15px Georgia,serif}
+.modal-box select{width:100%;margin-bottom:4px}
+.alumnoBar{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px 0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#bda76f}
+.alumnoBar select{min-width:170px;max-width:68vw;font-size:14px;letter-spacing:0;text-transform:none}
+.misShop{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:8px 16px 32px;scrollbar-width:thin;scrollbar-color:#6b5a2e transparent}
+.misForm{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 18px}
+.misForm select{flex:1;min-width:180px}
+#misLista li{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.estado{flex:none;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:.32em .85em;border-radius:99px}
+.estado.pend{background:rgba(232,200,114,.18);color:#ffe9a6;border:1px solid rgba(232,200,114,.5)}
+.estado.usada{background:rgba(139,226,154,.15);color:#8be29a;border:1px solid rgba(139,226,154,.45)}
+.usarBtn{flex:none;cursor:pointer;background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border:1px solid #f6dc95;border-radius:99px;
+  padding:.4em 1em;font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.usarBtn:hover{filter:brightness(1.08)}
 
 /* ---------- mercader ---------- */
 .shop{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:8px 16px 32px;scrollbar-width:thin;scrollbar-color:#6b5a2e transparent}
@@ -241,7 +258,19 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
   <nav class="tabs" id="tabs" role="tablist" aria-label="Sección">
     <button class="tab" id="tabTienda" role="tab" aria-selected="true" type="button">El Mercader</button>
     <button class="tab" id="tabSobres" role="tab" aria-selected="false" type="button">Sobres</button>
+    <button class="tab" id="tabMis" role="tab" aria-selected="false" type="button">Mis cartas</button>
   </nav>
+  <section class="misShop" id="misShop" aria-label="Mis cartas">
+    <div class="shop-in">
+      <h2 class="sec">Mis cartas</h2>
+      <p class="aviso" id="misAviso">Elige tu nombre y pulsa «Ver mis cartas».</p>
+      <div class="misForm">
+        <select id="miNombre"><option value="">— Elige tu nombre —</option></select>
+        <button class="ghost" id="miBuscar" type="button">Ver mis cartas</button>
+      </div>
+      <ul class="lista" id="misLista"></ul>
+    </div>
+  </section>
   <section class="shop" id="shop" aria-label="El Mercader">
     <div class="shop-in">
       <img class="hero" id="hero" alt="El Mercader · Sobres de Bonificación · Maestro Javii72" draggable="false">
@@ -300,6 +329,10 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
     </div>
   </div>
   <div class="bar">
+    <div class="alumnoBar" id="alumnoBar">
+      <label for="sAlumno">Para</label>
+      <select id="sAlumno"><option value="">— Sin asignar —</option></select>
+    </div>
     <div class="packs" id="packs" role="group" aria-label="Tipo de sobre"></div>
     <div class="row">
       <button class="go" id="go" type="button">Abrir sobre</button>
@@ -312,7 +345,11 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
       <p id="mRes"></p>
       <p class="mtot"><b id="mTot">0</b> puntos <span id="mAh"></span></p>
       <p class="nota" id="mNota"></p>
-      <label for="mQuien">¿Quién compra? (opcional)</label>
+      <div id="mAlumnoWrap">
+        <label for="mAlumno">¿Para qué alumno/a es?</label>
+        <select id="mAlumno"><option value="">— Elige el alumno/a —</option></select>
+      </div>
+      <label for="mQuien">Nota para la caja (opcional)</label>
       <input id="mQuien" type="text" maxlength="40" autocomplete="off">
       <div class="mbtns">
         <button class="ghost" id="mNo" type="button">Cancelar</button>
@@ -356,6 +393,22 @@ var CONFIG = {
   autoVoltear: true,     // la carta se da la vuelta sola tras salir del sobre
   pausaVolteo: 1100,     // ms de suspense antes de dar la vuelta
   sobresLibres: true,    // pestaña "Sobres": abrir sobres sin pagar (para cuando tú lo decidas)
+
+  /* ---------- REGISTRO DE ALUMNOS (Google Forms, sin código) ----------
+     alumnos: nombres que aparecen en los desplegables "Para" (antes de abrir un sobre)
+              y en "Mis cartas" (para que cada alumno/a consulte las suyas).
+     registro.formAction y registro.entradas: se rellenan con los datos del enlace
+              "para completar previamente" de tu Formulario de Google.
+     registro.csvUrl: la URL que te da "Publicar en la Web" (formato CSV) de la Hoja
+              de respuestas del Formulario.
+     Mientras formAction o csvUrl estén vacíos, el registro queda desactivado y la
+     app funciona igual que antes, sin guardar ni consultar nada. */
+  alumnos: ['Ahinara','Ainhoa','Alejandro','Alexia','Amanda','Carla','Claudia','Dylan','Imran','Jesús','José F','José M','Leila','Leohel','Lucas','Manuela','María José','Martina','Pedro','Sara','Sofía','Valeria','Yaiza'],
+  registro: {
+    formAction: 'https://docs.google.com/forms/d/e/1FAIpQLSd_kTfsYHYK8F3jv0WmYJpsMfw1rYLVOrZiIHzH6Mb-4JuAaw/formResponse',
+    entradas: { alumno:'entry.1643177071', accion:'entry.1324105340', cartaId:'entry.2081350872', tipo:'entry.1036866207', carta:'entry.704758731' },
+    csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfXYmi9evsMT7EtFrDVG3xALHoudOA2v299Yhgm4vEffLMs5KtcLnBO-jckirvRU7ogMaHCOZe_PNQ/pub?gid=326777813&single=true&output=csv'
+  },
 
   /* ---------- EL MERCADER ----------
      precios: puntos de ClassDojo que cuesta un sobre de cada tipo.
@@ -406,7 +459,7 @@ var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)')
 var stage=$('stage'), arena=$('arena'), env=$('env'), eslot=$('eslot'), rslot=$('rslot'), rcard=$('rcard'), tilt=$('tilt'),
     frontImg=$('frontImg'), backImg=$('backImg'), peekImg=$('peekImg'), burstEl=$('burst'), hint=$('hint'),
     goBtn=$('go'), packsEl=$('packs'), histEl=$('hist'), live=$('live'), elabel=$('elabel'), shine=$('shine'),
-    appEl=$('app'), shopEl=$('shop'), tabTienda=$('tabTienda'), tabSobres=$('tabSobres'), stageTitle=$('stageTitle'), histLabel=$('histLabel');
+    appEl=$('app'), shopEl=$('shop'), misShopEl=$('misShop'), tabTienda=$('tabTienda'), tabSobres=$('tabSobres'), tabMis=$('tabMis'), stageTitle=$('stageTitle'), histLabel=$('histLabel');
 
 /* ---------- datos ---------- */
 var cartas = CARTAS.map(function(c){ return { id:c[0], tipo:c[1], src:c[2] }; });
@@ -421,6 +474,7 @@ var historial = [];
 var histLibre = [];       // historial de la pestaña Sobres mientras dura una compra
 var packLibre = 'random'; // sobre elegido en la pestaña Sobres
 var cola = null;          // compra en curso: {p, total, hechos}
+var alumnoActual = '';    // alumno/a seleccionado/a para el registro
 
 /* ---------- sorteo ---------- */
 function elegirTipo(){
@@ -453,8 +507,8 @@ function layout(){
   var root=document.documentElement.style;
   root.setProperty('--top', top+'px');
   var ah=H-top, aw=W;
-  var eh=Math.min(ah*.5, aw*.8/1.5), ew=eh*1.5;
-  var ch=Math.min(ah*.97, aw*.92*641/455), cw=ch*455/641;
+  var eh=Math.min(ah*.42, aw*.66/1.5), ew=eh*1.5;
+  var ch=Math.min(ah*.8, aw*.78*641/455), cw=ch*455/641;
   root.setProperty('--ew', ew+'px'); root.setProperty('--eh', eh+'px');
   root.setProperty('--edy', (ew*.23)+'px');
   root.setProperty('--cw', cw+'px'); root.setProperty('--ch', ch+'px');
@@ -563,7 +617,7 @@ function setBoton(){
   }
   goBtn.disabled = estado==='busy';
   Array.prototype.forEach.call(packsEl.children, function(b){ b.disabled = estado==='busy'; });
-  tabTienda.disabled = tabSobres.disabled = estado==='busy';
+  tabTienda.disabled = tabSobres.disabled = tabMis.disabled = estado==='busy';
   hint.textContent = cola ? 'Toca el sobre para abrirlo · '+Math.min(cola.hechos+1,cola.total)+' de '+cola.total : 'Toca el sobre para abrirlo';
   hint.classList.toggle('off', estado!=='idle');
 }
@@ -571,6 +625,26 @@ function anunciar(c){ live.textContent='Ha salido una carta de tipo '+TIPOS[c.ti
 function registrar(c){
   historial.unshift(c); if(historial.length>8) historial.pop();
   pintarHistorial(); anunciar(c);
+  registrarRemoto(c);
+}
+/* ---------- registro de alumnos (Formulario de Google, sin código) ---------- */
+function registroListo(){
+  var r = CONFIG.registro;
+  return !!(r && r.formAction && r.csvUrl && r.entradas.alumno && r.entradas.accion && r.entradas.cartaId);
+}
+function enviarForm(datos){
+  if(!registroListo()) return;
+  var e = CONFIG.registro.entradas, body = new URLSearchParams();
+  body.set(e.alumno, datos.alumno);
+  body.set(e.accion, datos.accion);
+  body.set(e.cartaId, datos.cartaId);
+  if(e.tipo) body.set(e.tipo, datos.tipo||'');
+  if(e.carta) body.set(e.carta, datos.carta||'');
+  fetch(CONFIG.registro.formAction, { method:'POST', mode:'no-cors', body:body }).catch(function(){});
+}
+function registrarRemoto(c){
+  if(!alumnoActual) return;
+  enviarForm({ alumno:alumnoActual, accion:'Registro', cartaId:c.id, tipo:TIPOS[c.tipo].n, carta:TIPOS[c.tipo].n+' nº '+c.id });
 }
 
 async function abrir(){
@@ -664,7 +738,7 @@ goBtn.addEventListener('click', function(e){ soltar(e); accion(); });
 document.addEventListener('keydown', function(e){
   if(!mConf.hidden || !mCaja.hidden){ if(e.key==='Escape') cerrarModales(); return; }
   if(e.target!==document.body) return;
-  if(appEl.dataset.vista==='tienda') return;
+  if(appEl.dataset.vista==='tienda' || appEl.dataset.vista==='mis') return;
   if(e.key===' '||e.key==='Enter'){
     e.preventDefault();
     accion();
@@ -715,8 +789,10 @@ function setVista(v){
   appEl.dataset.vista = v;
   tabTienda.setAttribute('aria-selected', v==='tienda' ? 'true' : 'false');
   tabSobres.setAttribute('aria-selected', v==='sobres' ? 'true' : 'false');
-  if(v==='sobres') aplicarLibre();
+  tabMis.setAttribute('aria-selected', v==='mis' ? 'true' : 'false');
+  if(v==='sobres'){ aplicarLibre(); $('sAlumno').value = alumnoActual; }
   if(v==='tienda') shopEl.scrollTop=0;
+  if(v==='mis') misShopEl.scrollTop=0;
   layout();
   pintarHistorial();
   setBoton();
@@ -970,6 +1046,7 @@ function abrirConfirmacion(p, q, of){
   $('mTot').textContent = c.pagas;
   $('mAh').textContent = c.ahorro>0 ? '(ahorras '+c.ahorro+')' : '';
   $('mNota').textContent = 'Descuenta '+c.pagas+' puntos en ClassDojo. Después se abrirán '+q+(q===1?' sobre.':' sobres.');
+  $('mAlumno').value = alumnoActual;
   $('mQuien').value='';
   mConf.hidden=false; $('mSi').focus();
 }
@@ -981,7 +1058,8 @@ $('mQuien').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.prev
 $('mSi').addEventListener('click', function(){
   if(!pendiente) return;
   var v = pendiente;
-  ventas.push({ t:new Date(), quien:$('mQuien').value.trim(), nombre:v.p.nombre, q:v.q, pagas:v.c.pagas, of: v.of ? etiqueta(v.of) : '' });
+  alumnoActual = $('mAlumno').value;
+  ventas.push({ t:new Date(), quien:($('mQuien').value.trim()||alumnoActual), nombre:v.p.nombre, q:v.q, pagas:v.c.pagas, of: v.of ? etiqueta(v.of) : '' });
   cerrarModales(); gracias=false; pintarBurbuja(); actualizarCajaBtn();
   iniciarCompra(v.p, v.q);
 });
@@ -1009,12 +1087,105 @@ $('cVaciar').addEventListener('click', function(){ ventas=[]; pintarCaja(); actu
 /* ---------- pestañas y teclado ---------- */
 tabTienda.addEventListener('click', function(){ if(estado!=='busy') setVista('tienda'); });
 tabSobres.addEventListener('click', function(){ if(estado!=='busy') setVista('sobres'); });
+tabMis.addEventListener('click', function(){ if(estado!=='busy') setVista('mis'); });
 if(!CONFIG.sobresLibres){ tabSobres.hidden = true; }
+
+/* ---------- registro: desplegables y "Mis cartas" ---------- */
+function poblarAlumnos(){
+  var opts = CONFIG.alumnos.map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('');
+  $('sAlumno').innerHTML = '<option value="">— Sin asignar —</option>'+opts;
+  $('mAlumno').innerHTML = '<option value="">— Elige el alumno/a —</option>'+opts;
+  $('miNombre').innerHTML = '<option value="">— Elige tu nombre —</option>'+opts;
+  if(!CONFIG.alumnos.length || !registroListo()){
+    $('alumnoBar').hidden = true; $('mAlumnoWrap').hidden = true; tabMis.hidden = true;
+  }
+}
+$('sAlumno').addEventListener('change', function(){ alumnoActual = this.value; });
+
+/* las cartas marcadas como usadas en esta sesión, para no esperar a que la Hoja
+   publicada se actualice (tarda unos minutos) */
+var usadasLocal = {};
+
+/* lector de CSV sencillo (soporta comillas) */
+function leerCSV(texto){
+  var filas=[], fila=[], cur='', q=false, i, c;
+  for(i=0;i<texto.length;i++){
+    c=texto[i];
+    if(q){
+      if(c==='"'){ if(texto[i+1]==='"'){ cur+='"'; i++; } else q=false; }
+      else cur+=c;
+    } else if(c==='"'){ q=true; }
+    else if(c===','){ fila.push(cur); cur=''; }
+    else if(c==='\n'||c==='\r'){
+      if(c==='\r'&&texto[i+1]==='\n') i++;
+      fila.push(cur); cur=''; filas.push(fila); fila=[];
+    } else cur+=c;
+  }
+  if(cur!==''||fila.length){ fila.push(cur); filas.push(fila); }
+  return filas;
+}
+/* columnas del formulario, en orden: Marca temporal, Alumno, Accion, CartaId, Tipo, Carta */
+function construirRegistro(filas){
+  var pendientes=[], out=[];
+  filas.forEach(function(f){
+    var accion=(f[2]||'').trim().toLowerCase(), cartaId=(f[3]||'').trim();
+    if(accion.indexOf('reg')===0){
+      var rec={ fecha:f[0], cartaId:cartaId, tipo:f[4]||'', carta:f[5]||'', estado:'Pendiente' };
+      out.push(rec); pendientes.push(rec);
+    } else if(accion.indexOf('uso')===0){
+      for(var i=0;i<pendientes.length;i++){
+        if(pendientes[i].cartaId===cartaId){ pendientes[i].estado='Usada'; pendientes.splice(i,1); break; }
+      }
+    }
+  });
+  out.forEach(function(r){ if(usadasLocal[r.cartaId+'|'+r.fecha]) r.estado='Usada'; });
+  out.sort(function(a,b){ return new Date(b.fecha)-new Date(a.fecha); });
+  return out;
+}
+
+function pintarMisCartas(lista){
+  var ul=$('misLista'), aviso=$('misAviso');
+  ul.innerHTML='';
+  if(!lista.length){ aviso.textContent='Todavía no tienes ninguna carta registrada.'; return; }
+  aviso.textContent = lista.length+(lista.length===1?' carta registrada.':' cartas registradas.');
+  lista.forEach(function(c){
+    var li=document.createElement('li'), usada = c.estado==='Usada';
+    li.innerHTML = '<span>'+(c.carta||c.tipo)+'</span>'+
+      '<span class="estado '+(usada?'usada':'pend')+'">'+(usada?'Usada':'Pendiente')+'</span>'+
+      (usada?'':'<button type="button" class="usarBtn">Marcar como usada</button>');
+    if(!usada){ li.querySelector('.usarBtn').addEventListener('click', function(){ marcarUsada(c, li); }); }
+    ul.appendChild(li);
+  });
+}
+function marcarUsada(c, li){
+  usadasLocal[c.cartaId+'|'+c.fecha] = true;
+  enviarForm({ alumno:$('miNombre').value, accion:'Uso', cartaId:c.cartaId, tipo:c.tipo, carta:c.carta });
+  if(li){
+    li.querySelector('.estado').className='estado usada'; li.querySelector('.estado').textContent='Usada';
+    var b=li.querySelector('.usarBtn'); if(b) b.remove();
+  }
+}
+function consultarMisCartas(){
+  var nombre=$('miNombre').value, aviso=$('misAviso'), ul=$('misLista');
+  if(!nombre){ aviso.textContent='Elige tu nombre y pulsa «Ver mis cartas».'; ul.innerHTML=''; return; }
+  if(!registroListo()){ aviso.textContent='El registro todavía no está activado.'; ul.innerHTML=''; return; }
+  aviso.textContent='Buscando…'; ul.innerHTML='';
+  fetch(CONFIG.registro.csvUrl, { cache:'no-store' })
+    .then(function(r){ return r.text(); })
+    .then(function(texto){
+      var filas = leerCSV(texto).slice(1); /* sin cabecera */
+      var mias = filas.filter(function(f){ return (f[1]||'').trim().toLowerCase()===nombre.trim().toLowerCase(); });
+      pintarMisCartas(construirRegistro(mias));
+    })
+    .catch(function(){ aviso.textContent='No se ha podido conectar. Inténtalo de nuevo en un momento.'; });
+}
+$('miBuscar').addEventListener('click', consultarMisCartas);
 
 window.MERCADER = { elegirTipo:elegirTipo, calcular:calcular, ofertasDe:ofertasDe, clave:clave, precioBase:precioBase };
 
 /* ---------- arranque ---------- */
 crearPacks();
+poblarAlumnos();
 document.documentElement.style.setProperty('--seal', GOLD);
 if(typeof IMG_HERO!=='undefined'){ $('hero').src = IMG_HERO; }
 pintarTienda();
