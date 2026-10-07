@@ -144,6 +144,7 @@ function grupoCompleto(g){
   if(!BASE_ALUMNOS || !BASE_ALUMNOS[g]) return null;
   var base = BASE_ALUMNOS[g], lista = base.alumnos.map(function(a){ var o = {}; for(var k in a) o[k] = a[k]; o.activo = true; return o; });
   var alias = {}, k = normal('ALUMNOS · '+g);
+  lista.forEach(function(a){ (a.antes||[]).forEach(function(v){ alias[normal(v)] = a.n; }); delete a.antes; });   /* nombres anteriores (data/alumnos.json) */
   function busca(n){ var x = normal(n); for(var i=0;i<lista.length;i++) if(normal(lista[i].n)===x) return lista[i]; return null; }
   filas().forEach(function(f){
     if(normal(f.alumno)!==k || normal(f.accion)!=='alumnos') return;

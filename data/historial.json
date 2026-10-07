@@ -1,0 +1,61 @@
+{
+ "_nota": "Histórico inicial de responsables del día y capitanes (nota manuscrita de Javi, hasta el 7 de octubre de 2026, sin fechas ni orden). Los sorteos nuevos se guardan en la Hoja y se suman a esto. rol: responsable | capitan. ronda: vuelta a la clase en la que salió.",
+ "clases": {
+  "4ºB": [
+   {"alumno":"Mariam","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Valeria","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Hugo","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Paula","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Valentina","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Valeria","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Alberto","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Uriel","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Francisco","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Thalia","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Mariam","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Aaron","rol":"capitan","fecha":null,"ronda":1}
+  ],
+  "4ºA": [
+   {"alumno":"Claudia","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Valeria","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Lucas","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Imran","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"María José","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Leonel","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"José F","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Alexia","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Sofía","rol":"capitan","fecha":null,"ronda":1}
+  ],
+  "3ºB": [
+   {"alumno":"Asher","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Laura","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Valería","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Athenea","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Edgar","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Adriana","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Alma","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Daniela","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Noah","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Rubén","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Asher","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"María","rol":"capitan","fecha":null,"ronda":1}
+  ],
+  "3ºA": [
+   {"alumno":"Adrián","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Alejandro","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Pablo","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Lucía","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Hugo","rol":"responsable","fecha":null,"ronda":1},
+   {"alumno":"Cristo","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Pablo","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"María B","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Lucía","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Alejandro","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Hugo","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Gala","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Ana M","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Ana S","rol":"capitan","fecha":null,"ronda":1},
+   {"alumno":"Noa","rol":"capitan","fecha":null,"ronda":1}
+  ]
+ }
+}

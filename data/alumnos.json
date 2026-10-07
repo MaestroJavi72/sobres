@@ -1,5 +1,5 @@
 {
- "_nota": "«tema» fijo: esa clase no cambia de mundo con el trimestre (4ºA siempre Harry Potter). Lista base de alumnos. Los cambios del panel del profe (altas, bajas, cambios de nombre o de aspecto) se guardan en la Hoja y se aplican encima de esta lista.",
+ "_nota": "«tema» fijo: esa clase no cambia de mundo con el trimestre (4ºA siempre Harry Potter). Lista base de alumnos. Los cambios del panel del profe (altas, bajas, cambios de nombre o de aspecto) se guardan en la Hoja y se aplican encima de esta lista. «antes»: nombres anteriores de ese alumno (su historial sigue siendo suyo).",
  "grupos": {
   "4ºA": { "sistema": "hogwarts", "tema": "hp", "asignaturas": ["EF","LCL"], "tutoria": true, "alumnos": [
    {"n":"Ahinara","chica":true,"pelo":"coletas","colorPelo":"rubio","piel":"clara"},
@@ -84,7 +84,7 @@
    {"n":"Rubén"},
    {"n":"Samuel"},
    {"n":"Suhaila","chica":true},
-   {"n":"Valeria","chica":true}
+   {"n":"Valería","chica":true,"antes":["Valeria"]}
   ]}
  }
 }
