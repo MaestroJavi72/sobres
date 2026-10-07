@@ -48,6 +48,7 @@ No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST 
 ## Reglas del juego (decididas con Javi; respétalas)
 
 **Comunes**
+- **Temas:** 4ºA vive **siempre en Harry Potter** (`"tema": "hp"` en `data/alumnos.json`). El multiverso por trimestre (Harry Potter → Vengadores → Pokémon) es solo para las clases de EF (3ºA, 3ºB, 4ºB). En los módulos, usa `JAVI.temaDe(grupo)`.
 - **Acumulados** = todo lo ganado; marcan el **nivel** y nunca bajan al comprar. **Saldo** = acumulados − compras.
 - Con acumulados negativos el personaje está **en un huevo** (nivel 0). Gastar no puede mandar a nadie al huevo.
 - Personajes: chicos y chicas magos dibujados en SVG (`personajeSVG`). Crecen con el nivel y ganan complementos (bufanda, varita, sombrero e insignia, capa, libro, aura). El aspecto de cada alumno de 4ºA (pelo, peinado, piel, gafas, mecha) está en `G.personajes`. Los niveles tienen forma masculina y femenina según `chicas`.

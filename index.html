@@ -14,7 +14,9 @@
 .botones{display:flex;gap:8px}
 
 /* ---------- multiverso ---------- */
-.multi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 22px}
+.multiTit{margin-top:14px;font-family:var(--f-sub);font-weight:700;font-size:15px;color:var(--tinta-suave);letter-spacing:.04em}
+.multiTit span{font-weight:500;opacity:.85}
+.multi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 22px}
 .mundo{position:relative;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radio);border:2px dashed var(--panel-borde);
   background:rgba(0,0,0,.18);color:var(--tinta-suave);font-family:var(--f-sub);font-weight:700;font-size:clamp(14px,1.6vw,18px)}
 .mundo .ic{font-size:26px;filter:grayscale(.8);opacity:.6}
@@ -40,6 +42,9 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
 .mod.pronto::after{content:'Próximamente';position:absolute;top:12px;right:12px;font-family:var(--f-sub);font-size:12px;font-weight:700;
   background:rgba(0,0,0,.25);color:var(--tinta-suave);padding:3px 8px;border-radius:8px}
 .mod.profe{border-color:var(--acento)}
+.bloqueSec[data-tema]{margin:0 -10px;padding:2px 10px 14px;border-radius:calc(var(--radio) + 6px);background:var(--fondo-img),var(--fondo);background-attachment:scroll;background-size:cover}
+.bloqueSec[data-tema]{font-family:var(--f-texto);color:var(--tinta)}
+.bloqueSec[data-tema="hp"]{background:#0b1a1c;background:linear-gradient(180deg,#0e2a28,#0a1a22)}
 .pie{margin-top:28px;text-align:center;color:var(--tinta-suave);font-size:15px}
 .pie a{color:var(--acento-2)}
 </style>
@@ -56,6 +61,7 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
     </div>
   </header>
 
+  <p class="multiTit">Multiverso de Educación Física · 3ºA, 3ºB y 4ºB <span>(4ºA vive siempre en Hogwarts)</span></p>
   <nav class="multi" id="multi" aria-label="Mundos del curso"></nav>
 
   <main id="modulos"></main>
@@ -74,7 +80,7 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
    alumnos:true = también lo ven los alumnos (sin ?profe)
    ============================================================ */
 var SECCIONES = [
-  { t:'4ºA · Hogwarts', mods:[
+  { t:'4ºA · Hogwarts', tema:'hp', mods:[
     { ic:'🏰', n:'Hogwarts', d:'Galeones, niveles, personajes y campeones del mes.', g:'4ºA', url:'hogwarts/#hogwarts', profe:true },
     { ic:'🧙', n:'El Mercader', d:'Compra sobres de cartas con tus galeones. Ofertas del día.', g:'4ºA', url:'hogwarts/', alumnos:true },
     { ic:'✉️', n:'Sobres', d:'Abrir sobres de cartas cuando el profe lo decida.', g:'4ºA', url:'hogwarts/#sobres', profe:true },
@@ -125,7 +131,8 @@ function pintarModulos(){
   SECCIONES.forEach(function(sec){
     var mods = sec.mods.filter(function(m){ return profe ? true : (m.alumnos && m.listo!==false); });
     if(!mods.length) return;
-    var h = document.createElement('h2'); h.className = 'sec'; h.textContent = sec.t; main.appendChild(h);
+    var caja = document.createElement('section'); caja.className = 'bloqueSec'; if(sec.tema) caja.setAttribute('data-tema', sec.tema);
+    var h = document.createElement('h2'); h.className = 'sec'; h.textContent = sec.t; caja.appendChild(h);
     var g = document.createElement('div'); g.className = 'mods';
     mods.forEach(function(m){
       var listo = m.listo!==false && m.url;
@@ -139,7 +146,7 @@ function pintarModulos(){
       el.querySelector('.gr').textContent = m.g;
       g.appendChild(el);
     });
-    main.appendChild(g);
+    caja.appendChild(g); main.appendChild(caja);
   });
   $('pie').innerHTML = profe ? 'Modo profe. Los alumnos ven esta portada sin <b>?profe</b> (solo El Mercader, Mis cartas y la Bóveda).' : '';
 }

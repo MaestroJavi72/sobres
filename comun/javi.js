@@ -153,7 +153,7 @@ function grupoCompleto(g){
       alias[normal(viejo)] = a.n;
     } else if(op==='aspecto' && a){ ASPECTO.forEach(function(c){ if(c in d){ if(d[c]===null || d[c]==='') delete a[c]; else a[c] = d[c]; } }); }
   });
-  return { grupo:g, sistema:base.sistema, asignaturas:base.asignaturas||[], tutoria:!!base.tutoria, todos:lista, alias:alias };
+  return { grupo:g, sistema:base.sistema, tema:base.tema||null, asignaturas:base.asignaturas||[], tutoria:!!base.tutoria, todos:lista, alias:alias };
 }
 /* lo que necesitan los módulos: nombres activos, chicas, aspecto y nombres antiguos */
 function grupo(g){
@@ -162,7 +162,7 @@ function grupo(g){
   var pers = {};
   act.forEach(function(a){ var o = {}, hay = false; ['pelo','colorPelo','piel','gafas','mecha','ropa'].forEach(function(k){ if(a[k]!=null){ o[k] = a[k]; hay = true; } }); if(hay) pers[a.n] = o; });
   return {
-    grupo:g, sistema:c.sistema, asignaturas:c.asignaturas, tutoria:c.tutoria,
+    grupo:g, sistema:c.sistema, tema:c.tema, asignaturas:c.asignaturas, tutoria:c.tutoria,
     nombres: act.map(function(a){ return a.n; }),
     chicas: act.filter(function(a){ return a.chica; }).map(function(a){ return a.n; }),
     personajes: pers, alias: c.alias, todos: c.todos
@@ -195,6 +195,11 @@ function temaActual(){
   var a = ajuste('tema');
   if(a && TEMAS[a]) return a;
   return temaAuto();
+}
+/* tema de una clase: el suyo fijo (4ºA = Harry Potter) o el del multiverso del trimestre */
+function temaDe(g){
+  var b = BASE_ALUMNOS && BASE_ALUMNOS[g];
+  return b && b.tema && TEMAS[b.tema] ? b.tema : temaActual();
 }
 function aplicarTema(){
   var t = temaActual();
@@ -268,7 +273,7 @@ window.JAVI = {
   BASE:BASE, PRUEBA:PRUEBA, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
   listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, horaHoja:function(){ return horaCSV; },
   grupo:grupo, grupos:grupos, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
-  ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, aplicarTema:aplicarTema,
+  ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,
   util:{ normal:normal, pad:pad, clave:clave, rnd:rnd, idMov:idMov, fechaFila:fechaFila, leerCSV:leerCSV }
 };
