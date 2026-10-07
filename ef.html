@@ -127,6 +127,34 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
 .compi .av{width:150px;height:170px}
 .compi .av svg{width:100%;height:100%}
 .etiq{font:12px var(--cuerpo);color:var(--apagado);margin-top:-2px}
+.bvTop{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:16px;border-radius:16px;border:1px solid rgba(232,200,114,.45);background:linear-gradient(180deg,var(--panel),var(--panel2))}
+.cofre{position:relative;width:110px;height:110px;border-radius:50%;overflow:hidden;border:3px solid var(--oro);background:rgba(0,0,0,.45);box-shadow:0 0 30px rgba(232,200,114,.25)}
+.cofre .llenado{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#ffe9a6,#c9973a);transition:height .6s}
+.cofre .monedaC{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 44px var(--disp);color:#2a1d05;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.bvInfo{flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px}
+.bvGrupo{font:800 14px var(--tit);letter-spacing:.2em;text-transform:uppercase;color:var(--oro)}
+.bvSaldo{font:15px var(--cuerpo);color:var(--texto2)}
+.bvSaldo b{font:800 46px var(--tit);color:var(--oroClaro);margin-right:6px;font-variant-numeric:tabular-nums}
+.aspectos{display:flex;flex-direction:column;gap:10px}
+.asp{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(232,200,114,.18)}
+.aspN{flex:1;min-width:180px;font:700 15px var(--cuerpo)}
+.notas{display:flex;gap:5px;flex-wrap:wrap}
+.nota{cursor:pointer;width:38px;height:38px;border-radius:50%;border:1px solid rgba(232,200,114,.45);background:rgba(0,0,0,.35);font:800 15px var(--cuerpo);color:var(--crema)}
+.nota[aria-pressed="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
+.nota:disabled{opacity:.45;cursor:default}
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:10px}
+.rec{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid rgba(232,200,114,.4);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.25))}
+.rec.lejos{border-color:rgba(232,200,114,.15)}
+.recN{font:700 15px var(--cuerpo);grid-column:1/-1}
+.recP{font:13px var(--cuerpo);color:var(--texto2)}
+.recP b{font:800 18px var(--tit);color:var(--oroClaro)}
+.recF{font:12px var(--cuerpo);color:var(--apagado);text-align:right}
+.rec:not(.lejos) .recF{color:var(--verdeT)}
+.rec .go{grid-column:1/-1;padding:.55em 1em}
+.ajuste{margin-top:14px}
+.ajuste input[type=number]{width:5em}
+.ajuste input[type=text]{flex:1;min-width:150px}
+@media (max-width:520px){.notas{gap:3px}.nota{width:27px;height:27px;font-size:12px}.asp{padding:10px 8px}.cofre{width:84px;height:84px}}
 @media (max-width:520px){.cam .avatar{height:84px}.perfilHead .av{width:96px;height:112px}.grupos{margin-left:0}}
 @media (prefers-reduced-motion:reduce){.flip{transition:none}.flota{animation:none}}
 </style>
@@ -141,6 +169,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <button class="tab" id="t_coev" role="tab" type="button">Coevaluación</button>
     <button class="tab" id="t_clase" role="tab" type="button">La clase</button>
     <button class="tab" id="t_merc" role="tab" type="button">El Mercader</button>
+    <button class="tab" id="t_bov" role="tab" type="button">Bóveda</button>
   </nav>
 
   <!-- COEVALUACIÓN -->
@@ -169,6 +198,46 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <h2 class="sec">Cartas de Educación Física</h2>
     <div class="tienda" id="tienda"></div>
   </section>
+
+  <!-- BÓVEDA -->
+  <section id="v_bov" hidden>
+    <div class="bvTop">
+      <div class="cofre" id="bvCofre" aria-hidden="true"><div class="llenado" id="bvLlenado"></div><div class="monedaC">G</div></div>
+      <div class="bvInfo">
+        <div class="bvGrupo" id="bvGrupo">Bóveda</div>
+        <div class="bvSaldo"><b id="bvSaldo">0</b> galeones de la clase</div>
+        <div class="aviso">Se ganan con la autoevaluación de la clase y se gastan entre todos en recompensas.</div>
+      </div>
+    </div>
+    <h2 class="sec">Autoevaluación de la clase</h2>
+    <div class="aspectos" id="bvAspectos"></div>
+    <div class="fila" style="margin-top:12px">
+      <span class="aviso" id="bvMedia"></span>
+      <button class="ghost" id="bvRehacer" type="button" hidden>Anular y repetir</button>
+      <button class="go" id="bvGuardar" type="button">Guardar autoevaluación</button>
+    </div>
+    <h2 class="sec">Recompensas</h2>
+    <div id="bvRecompensas"></div>
+    <h2 class="sec">Movimientos</h2>
+    <ul class="lista" id="bvHist"></ul>
+    <div class="fila ajuste">
+      <span class="aviso">Ajustar galeones a mano (por ejemplo, los que ya tenía la clase):</span>
+      <input id="bvAjN" type="number" min="1" max="999" inputmode="numeric" placeholder="Nº" aria-label="Galeones">
+      <input id="bvAjM" type="text" maxlength="60" placeholder="Motivo (opcional)" aria-label="Motivo">
+      <button class="ghost" id="bvAjDar" type="button">Añadir</button>
+      <button class="ghost rojo" id="bvAjQuitar" type="button">Quitar</button>
+    </div>
+  </section>
+</div>
+<div class="modal" id="mCanje" role="dialog" aria-modal="true" aria-labelledby="bvCanjeTit" hidden>
+  <div class="caja peq">
+    <h3 id="bvCanjeTit">Canjear recompensa</h3>
+    <p id="bvCanjeTxt"></p>
+    <div class="fila" style="justify-content:flex-end">
+      <button class="ghost" type="button" data-cierra="mCanje">Cancelar</button>
+      <button class="go" id="bvCanjeSi" type="button">Sí, canjear</button>
+    </div>
+  </div>
 </div>
 
 <!-- dar ficha -->
@@ -526,7 +595,7 @@ function personajeSVG(a, lv, huevo){
 /* ---------- datos (Hoja de Google + movimientos aún no publicados) ---------- */
 var grupo = '3ºA';
 try{ var gq = new URLSearchParams(location.search).get('grupo'); if(gq && EF.grupos[gq.replace('o','º')]) grupo = gq.replace('o','º'); }catch(e){}
-try{ var gl = localStorage.getItem('ef-grupo'); if(gl && EF.grupos[gl]) grupo = gl; }catch(e){}
+try{ var gl = localStorage.getItem('ef-grupo'); if(gl && (EF.grupos[gl] || gl==='4ºA')) grupo = gl; }catch(e){}
 var filas = [], cargado = false, horaCarga = null;
 var CLAVE_PEND = 'ef-pendientes', pendientes = [];
 try{ pendientes = JSON.parse(localStorage.getItem(CLAVE_PEND)||'[]') || []; }catch(e){ pendientes = []; }
@@ -694,11 +763,152 @@ function pintarMercader(){
   });
 }
 function pintarTodo(){
-  CONFIG.alumnos = EF.grupos[grupo];
+  var soloBoveda = !EF.grupos[grupo];
+  CONFIG.alumnos = EF.grupos[grupo] || [];
+  if(soloBoveda) vista = 'bov';
   Array.prototype.forEach.call($('grupos').children, function(b){ b.setAttribute('aria-selected', b.dataset.g===grupo ? 'true' : 'false'); });
-  ['coev','clase','merc'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; });
-  pintarCoev(); pintarClase(); pintarMercader();
+  ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = soloBoveda && k!=='bov'; });
+  if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); }
+  pintarBoveda();
   if(perfilDe && !$('mPerfil').hidden) pintarPerfil();
+}
+
+/* ============================================================
+   BÓVEDA DE GRINGOTTS · galeones de toda la clase
+   Se guardan en la misma Hoja como alumno «3ºA · BÓVEDA», acción «Boveda».
+   ============================================================ */
+var BOV = {
+  grupos: ['3ºA','3ºB','4ºA','4ºB'],
+  /* galeones que tiene cada clase al empezar (ponlos aquí o usa «Ajustar» en la Bóveda) */
+  inicial: { '3ºA':0, '3ºB':0, '4ºA':0, '4ºB':0 },
+  aspectos: [
+    { n:'Esfuerzo', ic:'⚡' }, { n:'Cooperación', ic:'🤝' }, { n:'Habilidades sociales', ic:'💬' },
+    { n:'Respeto de normas', ic:'📜' }, { n:'Organización y desplazamientos', ic:'🧭' }
+  ],
+  recompensas: [
+    { sec:'Juegos mágicos', items:[['Gavilán',50],['Poli-ladrón',50],['Pañuelito',60],['Balón-tiro',60],['Pinfuvote',60],['Baile libre',60],['Escape Room EF',70],['Juego sorpresa del profe',70],['Pichi',50]] },
+    { sec:'Para los días de lluvia', items:[['Just Dance',60],['Juegos iPad',60],['Futbolín humano',80]] },
+    { sec:'Deportes de Hogwarts', items:[['Baloncesto',80],['Voleibol',80],['Balonmano',80],['Bádminton',70],['Deporte libre',130],['Fútbol',120],['Deporte alternativo trabajo en clase',100]] }
+  ]
+};
+var notas = {};
+function bovClave(){ return grupo+' · BÓVEDA'; }
+function bovMovs(){
+  var k = normal(bovClave());
+  var ms = movimientos().filter(function(m){ return normal(m.alumno)===k && m.accion.indexOf('boveda')===0; });
+  var an = {}; ms.forEach(function(m){ var x = String(m.extra).match(/anula (#g[a-z0-9]+)/); if(x) an[x[1]] = 1; });
+  return ms.map(function(m){ m.anulado = !!an[m.id]; m.esAnulacion = /anula #g/.test(m.extra); return m; });
+}
+function bovSaldo(){
+  var s = numero(BOV.inicial[grupo]);
+  bovMovs().forEach(function(m){ s += m.n; });
+  return s;
+}
+function mediaActual(){
+  var vals = BOV.aspectos.map(function(a){ return notas[a.n]; }).filter(function(v){ return v>0; });
+  if(vals.length < BOV.aspectos.length) return null;
+  var s = 0; vals.forEach(function(v){ s += v; });
+  return s/vals.length;
+}
+function autoevHoy(){ return bovMovs().filter(function(m){ return m.dia===HOY && normal(m.motivo).indexOf('autoevaluación')===0 && !m.anulado && !m.esAnulacion; })[0]; }
+function pintarBoveda(){
+  var saldo = bovSaldo();
+  $('bvSaldo').textContent = saldo;
+  var max = 130; $('bvLlenado').style.height = Math.max(4, Math.min(100, saldo/max*100))+'%';
+  $('bvGrupo').textContent = 'Bóveda de '+grupo;
+  /* autoevaluación */
+  var hecha = autoevHoy(), box = $('bvAspectos'); box.innerHTML = '';
+  BOV.aspectos.forEach(function(a){
+    var fila = document.createElement('div'); fila.className = 'asp';
+    fila.innerHTML = '<span class="aspN"><span aria-hidden="true">'+a.ic+'</span> </span><div class="notas" role="group"></div>';
+    fila.querySelector('.aspN').appendChild(document.createTextNode(a.n));
+    fila.querySelector('.notas').setAttribute('aria-label', a.n);
+    for(var v=1; v<=10; v++){ (function(v){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'nota'; b.textContent = v;
+      b.setAttribute('aria-pressed', notas[a.n]===v ? 'true' : 'false'); b.disabled = !!hecha;
+      b.addEventListener('click', function(){ notas[a.n] = v; pintarBoveda(); });
+      fila.querySelector('.notas').appendChild(b);
+    })(v); }
+    box.appendChild(fila);
+  });
+  var med = mediaActual(), gal = med===null ? 0 : Math.round(med);
+  if(hecha){
+    $('bvMedia').textContent = 'Autoevaluación de hoy guardada: '+hecha.motivo.replace(/^Autoevaluación\s*/,'')+' → +'+hecha.n+' galeones.';
+    $('bvGuardar').hidden = true; $('bvRehacer').hidden = false;
+  } else {
+    $('bvMedia').textContent = med===null ? 'Puntuad los 5 aspectos de 1 a 10.' : 'Media '+med.toFixed(1).replace('.',',')+' → la clase gana '+gal+' galeones.';
+    $('bvGuardar').hidden = false; $('bvRehacer').hidden = true;
+    $('bvGuardar').disabled = med===null;
+    $('bvGuardar').textContent = med===null ? 'Guardar autoevaluación' : 'Guardar · +'+gal+' galeones';
+  }
+  /* recompensas */
+  var rb = $('bvRecompensas'); rb.innerHTML = '';
+  BOV.recompensas.forEach(function(sec){
+    var h = document.createElement('h4'); h.textContent = sec.sec; rb.appendChild(h);
+    var ul = document.createElement('div'); ul.className = 'recs';
+    sec.items.forEach(function(it){
+      var d = document.createElement('div'), falta = it[1]-saldo; d.className = 'rec'+(falta>0 ? ' lejos' : '');
+      d.innerHTML = '<span class="recN"></span><span class="recP"><b>'+it[1]+'</b> galeones</span><span class="recF">'+(falta>0 ? 'Faltan '+falta : '¡Disponible!')+'</span><button class="go" type="button">Canjear</button>';
+      d.querySelector('.recN').textContent = it[0];
+      var b = d.querySelector('button'); b.disabled = falta>0;
+      b.addEventListener('click', function(){ pedirCanje(it); });
+      ul.appendChild(d);
+    });
+    rb.appendChild(ul);
+  });
+  /* historial */
+  var hl = $('bvHist'); hl.innerHTML = '';
+  var ms = bovMovs().filter(function(m){ return !m.esAnulacion; }).slice(-15).reverse();
+  if(!ms.length) hl.innerHTML = '<li class="vacio">Todavía no hay movimientos.</li>';
+  ms.forEach(function(m){
+    var li = document.createElement('li'); if(m.anulado) li.className = 'anulado';
+    var sp = document.createElement('span');
+    sp.innerHTML = '<span class="'+(m.n>=0 ? 'mas' : 'menos')+'">'+(m.n>=0 ? '+'+m.n : '−'+(-m.n))+'</span> · <i></i> <small class="etiq"></small>';
+    sp.querySelector('i').textContent = m.motivo; sp.querySelector('small').textContent = m.dia.split('-').reverse().slice(0,2).join('/');
+    li.appendChild(sp);
+    if(!m.anulado && m.id){
+      var u = document.createElement('button'); u.type = 'button'; u.className = 'ghost'; u.textContent = 'Anular';
+      u.addEventListener('click', function(){ registrar(bovClave(), 'Boveda', -m.n, 'Anulado: '+m.motivo, 'anula '+m.id); aviso('Movimiento anulado.'); pintarTodo(); });
+      li.appendChild(u);
+    }
+    hl.appendChild(li);
+  });
+}
+function guardarAutoev(){
+  var med = mediaActual(); if(med===null || autoevHoy()) return;
+  var gal = Math.round(med);
+  var det = BOV.aspectos.map(function(a){ return a.n+' '+notas[a.n]; }).join(', ');
+  registrar(bovClave(), 'Boveda', gal, 'Autoevaluación (media '+med.toFixed(1).replace('.',',')+')', det);
+  notas = {};
+  aviso('¡'+grupo+' gana '+gal+' galeones para la Bóveda!');
+  flotar('+'+gal, false, $('bvCofre'));
+  pintarTodo();
+}
+var canjePend = null;
+function pedirCanje(it){
+  canjePend = it;
+  $('bvCanjeTxt').textContent = '¿Canjear «'+it[0]+'» por '+it[1]+' galeones? A la clase le quedarán '+(bovSaldo()-it[1])+'.';
+  $('mCanje').hidden = false;
+}
+function iniciarBoveda(){
+  $('bvGuardar').addEventListener('click', guardarAutoev);
+  $('bvRehacer').addEventListener('click', function(){
+    var h = autoevHoy(); if(!h) return;
+    registrar(bovClave(), 'Boveda', -h.n, 'Anulado: '+h.motivo, 'anula '+h.id); aviso('Autoevaluación de hoy anulada. Podéis repetirla.'); pintarTodo();
+  });
+  $('bvCanjeSi').addEventListener('click', function(){
+    var it = canjePend; if(!it) return;
+    if(bovSaldo() < it[1]){ aviso('No hay galeones suficientes.'); return; }
+    registrar(bovClave(), 'Boveda', -it[1], 'Canje: '+it[0], 'Recompensa de clase');
+    $('mCanje').hidden = true; aviso('¡'+grupo+' canjea '+it[0]+'! Disfrutadlo.'); pintarTodo();
+  });
+  $('bvAjDar').addEventListener('click', function(){ ajustar(1); });
+  $('bvAjQuitar').addEventListener('click', function(){ ajustar(-1); });
+}
+function ajustar(sg){
+  var n = numero($('bvAjN').value); if(n<=0) return;
+  registrar(bovClave(), 'Boveda', sg*n, $('bvAjM').value.trim() || (sg>0 ? 'Ajuste: galeones añadidos' : 'Ajuste: galeones quitados'), 'Ajuste');
+  $('bvAjN').value = ''; $('bvAjM').value = ''; pintarTodo();
 }
 
 /* ---------- dar ficha ---------- */
@@ -882,12 +1092,13 @@ function verCarta(c, nueva, n){
 }
 
 /* ---------- arranque ---------- */
-Object.keys(EF.grupos).forEach(function(g){
+BOV.grupos.forEach(function(g){
   var b = document.createElement('button'); b.type = 'button'; b.className = 'grupo'; b.dataset.g = g; b.textContent = g; b.setAttribute('role','tab');
   b.addEventListener('click', function(){ grupo = g; try{ localStorage.setItem('ef-grupo', g); }catch(e){} pintarTodo(); });
   $('grupos').appendChild(b);
 });
-['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+iniciarBoveda();
 Array.prototype.forEach.call(document.querySelectorAll('[data-cierra]'), function(b){ b.addEventListener('click', function(){ $(b.dataset.cierra).hidden = true; if(b.dataset.cierra==='mPerfil') perfilDe = ''; }); });
 Array.prototype.forEach.call(document.querySelectorAll('.modal'), function(m){ m.addEventListener('click', function(e){ if(e.target===m){ m.hidden = true; if(m.id==='mPerfil') perfilDe = ''; } }); });
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ Array.prototype.forEach.call(document.querySelectorAll('.modal'), function(m){ m.hidden = true; }); perfilDe = ''; } });
