@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bóveda de la clase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=EB+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noche1:#0b1420; --noche2:#16263a;
+  --oro:#e8c872; --oro2:#f6e3a1; --oroOsc:#a87c22;
+  --perg:#f3e3bd; --perg2:#ead39f; --tinta:#3a2a16; --tinta2:#6b5732;
+  --verde:#4cc46a; --rojo:#e2685c;
+  --sombra:0 14px 30px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{font-family:'EB Garamond',Georgia,serif;color:var(--perg);
+  background:#0b1420 url('../recursos/javificacion-fondo.png') center bottom/cover fixed;}
+button{font-family:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:980px;margin:0 auto;padding:14px 16px 40px}
+
+/* cabecera */
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.top h1{font-family:'Cinzel Decorative',serif;color:var(--oro);font-size:clamp(22px,4vw,34px);text-shadow:0 2px 12px rgba(232,200,114,.45);flex:1;min-width:220px}
+.icono{background:rgba(22,38,58,.85);border:2px solid #3a4c66;border-radius:12px;min-width:46px;height:46px;font-size:20px;display:grid;place-items:center;padding:0 10px}
+.icono:hover{border-color:var(--oro)}
+
+.grupos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.grupo{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(16px,2.2vw,20px);background:rgba(22,38,58,.9);color:var(--oro2);
+  border:2px solid #3a4c66;border-radius:14px;padding:10px 20px}
+.grupo[aria-pressed="true"]{background:var(--oro);color:var(--noche1);border-color:var(--oro)}
+
+.cols{display:grid;grid-template-columns:1fr 290px;gap:16px;align-items:start}
+@media (max-width:820px){ .cols{grid-template-columns:1fr} }
+@media (max-width:520px){ .escala{grid-template-columns:repeat(5,1fr)} .top h1{min-width:0} }
+
+/* pergamino de ítems */
+.perg{background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta);border:3px solid #b8934f;border-radius:18px;padding:16px 18px 18px;box-shadow:var(--sombra)}
+.perg h2{font-family:'Cinzel',serif;font-size:clamp(17px,2.2vw,22px);margin-bottom:10px;color:#5a3d12}
+.item{padding:10px 0;border-bottom:1px dashed #c4a466}
+.item:last-of-type{border-bottom:none}
+.itemN{font-weight:700;font-size:clamp(16px,2vw,20px);line-height:1.3;margin-bottom:8px}
+.escala{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+.nota{height:clamp(38px,5vw,50px);border-radius:10px;border:2px solid #b8934f;background:#fbf1d6;font-family:'Cinzel',serif;font-weight:800;font-size:clamp(15px,2vw,20px);color:var(--tinta)}
+.nota:hover{border-color:#8a6a1f}
+.nota[aria-pressed="true"]{background:var(--oro);border-color:#8a6a1f;color:var(--noche1);transform:scale(1.06);box-shadow:0 3px 10px rgba(168,124,34,.5)}
+.nota:disabled{opacity:.45;cursor:default}
+.guardar{margin-top:14px;width:100%;font-family:'Cinzel',serif;font-weight:800;font-size:clamp(17px,2.4vw,22px);
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #8a6a1f;border-radius:14px;padding:14px;box-shadow:0 4px 0 #7a5a14}
+.guardar:disabled{filter:grayscale(.7);opacity:.6;cursor:default;box-shadow:none}
+.recreo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--tinta2);margin-bottom:6px;cursor:pointer}
+.recreo input{width:22px;height:22px;accent-color:#a87c22}
+.hecha{margin-top:12px;background:#e3f2d9;border:2px solid #7cb36a;border-radius:12px;padding:10px 12px;font-weight:700;color:#2d5a1e}
+.hecha button{margin-left:8px;background:none;border:none;text-decoration:underline;color:#7a2a22;font-weight:700}
+
+/* lado: bóveda */
+.lado{display:flex;flex-direction:column;gap:14px}
+.caja{background:rgba(16,28,44,.92);border:2px solid #3a4c66;border-radius:18px;padding:14px;box-shadow:var(--sombra)}
+.caja h3{font-family:'Cinzel',serif;color:var(--oro2);font-size:15px;letter-spacing:.04em;margin-bottom:8px}
+.media{text-align:center}
+.media .num{font-family:'Cinzel Decorative',serif;font-weight:900;color:var(--oro);font-size:64px;line-height:1}
+.media .txt{color:var(--oro2);font-size:15px;margin-top:4px}
+.saldo{display:flex;align-items:center;gap:12px}
+.saldo svg{width:74px;height:74px;flex:none}
+.saldo b{font-family:'Cinzel Decorative',serif;font-size:42px;color:var(--oro);line-height:1}
+.saldo small{display:block;color:#b9c4d4;font-size:14px}
+.prox{margin-top:10px;font-size:15px;color:#d8dfe9}
+.barra{height:10px;background:#22344d;border-radius:6px;overflow:hidden;margin-top:6px}
+.barra i{display:block;height:100%;background:linear-gradient(90deg,var(--oroOsc),var(--oro));border-radius:6px;transition:width .8s}
+.hist{list-style:none;font-size:15px;color:#d8dfe9}
+.hist li{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px solid #23354d}
+.hist li:last-child{border-bottom:none}
+.hist b{color:var(--oro)}
+.estado{font-size:13px;color:#93a1b5;margin-top:6px}
+.ensayo{background:none;border:1px dashed #4a5d78;color:#b9c4d4;border-radius:10px;padding:8px;font-size:14px;width:100%}
+.prueba{background:#7a2a22;color:#fff;text-align:center;font-family:'Cinzel',serif;font-size:13px;padding:6px;border-radius:10px;margin-bottom:10px}
+
+/* ============ ANIMACIÓN ============ */
+.escena{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:#070d16 radial-gradient(ellipse at 50% 60%,#22344f,#070d16 75%);overflow:hidden}
+.escena[hidden]{display:none}
+.escena canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.titEsc{font-family:'Cinzel',serif;font-weight:800;color:var(--oro2);font-size:clamp(20px,3.4vw,34px);text-align:center;z-index:2;padding:0 16px}
+.contador{font-family:'Cinzel Decorative',serif;font-weight:900;color:var(--oro);font-size:clamp(70px,14vw,150px);line-height:1;z-index:2;
+  text-shadow:0 0 30px rgba(232,200,114,.6);margin:6px 0}
+.contador.pum{animation:pum .25s}
+@keyframes pum{50%{transform:scale(1.18)}}
+.cofreWrap{position:relative;width:clamp(200px,32vw,320px);height:clamp(170px,27vw,270px);z-index:2}
+.cofreWrap svg{width:100%;height:100%;overflow:visible}
+.cofreWrap.bote{animation:bote .22s}
+@keyframes bote{40%{transform:translateY(6px) scaleY(.96)}}
+.moneda{position:absolute;left:50%;top:0;width:clamp(44px,6vw,64px);height:clamp(44px,6vw,64px);margin-left:calc(clamp(44px,6vw,64px)/-2);border-radius:50%;z-index:3;
+  background:radial-gradient(circle at 35% 30%,#fff6cf 0%,#f3d27a 30%,#c9972e 70%,#8a6a1f 100%);
+  box-shadow:inset 0 0 0 4px rgba(138,106,31,.6),0 4px 10px rgba(0,0,0,.4);
+  display:grid;place-items:center;font-family:'Cinzel Decorative',serif;font-weight:900;color:#7a5a14;font-size:clamp(20px,3vw,30px)}
+.mensaje{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(22px,4vw,40px);color:#fff;text-align:center;z-index:2;margin-top:14px;padding:0 16px;
+  opacity:0;transform:translateY(10px);transition:all .5s}
+.mensaje.ver{opacity:1;transform:none}
+.fiesta .mensaje{font-family:'Cinzel Decorative',serif;font-size:clamp(30px,6.5vw,72px);color:var(--oro);
+  text-shadow:0 0 18px #ff8f2e,0 0 40px #e8c872;animation:latido .7s infinite alternate}
+@keyframes latido{to{transform:scale(1.08) rotate(-1deg)}}
+.fiesta{background-image:radial-gradient(ellipse at 50% 60%,rgba(232,200,114,.25),transparent 70%);animation:luces 1.2s infinite}
+@keyframes luces{0%{background-color:#2a1240}33%{background-color:#0f3a32}66%{background-color:#401818}}
+.cerrarEsc{margin-top:22px;z-index:2;font-family:'Cinzel',serif;font-weight:800;font-size:18px;background:var(--oro);color:var(--noche1);
+  border:none;border-radius:14px;padding:12px 30px;opacity:0;transition:opacity .4s}
+.cerrarEsc.ver{opacity:1}
+.bloque{margin-top:18px;background:rgba(16,28,44,.92);border:2px solid #3a4c66;border-radius:18px;padding:16px;box-shadow:var(--sombra)}
+.bloque h2{font-family:'Cinzel',serif;color:var(--oro);font-size:clamp(18px,2.4vw,24px);margin-bottom:10px}
+.bloque h3{font-family:'Cinzel',serif;color:var(--oro2);font-size:16px;margin:12px 0 8px}
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.rec{background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta);border:2px solid #b8934f;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.rec.lejos{filter:saturate(.35) brightness(.8)}
+.rec .rn{font-weight:700;font-size:17px;line-height:1.2}
+.rec .rp{font-family:'Cinzel',serif;font-weight:800;color:#7a5a14}
+.rec .rf{font-size:14px;color:var(--tinta2)}
+.rec button{margin-top:4px;font-family:'Cinzel',serif;font-weight:800;background:linear-gradient(180deg,#f3d27a,#c9972e);border:2px solid #8a6a1f;border-radius:10px;padding:7px;color:#2b1c05}
+.rec button:disabled{opacity:.45;cursor:default}
+.movs{list-style:none;font-size:16px}
+.movs li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #23354d}
+.movs li.anulado{opacity:.45;text-decoration:line-through}
+.movs .mas{color:var(--verde);font-weight:700}.movs .menos{color:var(--rojo);font-weight:700}
+.movs small{color:#93a1b5}
+.peq{background:#22344d;border:1px solid #4a5d78;border-radius:10px;padding:7px 12px;font-size:15px;color:#e6ecf4}
+.peq.rojo{border-color:#a0483e;color:#f1b3ab}
+.ajuste{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px;font-size:15px;color:#b9c4d4}
+.ajuste input{background:#0f1c2c;border:1px solid #4a5d78;border-radius:10px;padding:8px;color:#fff;font-size:15px}
+.ajuste input[type=number]{width:80px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#16263a;border:2px solid var(--oro);color:var(--oro2);
+  padding:12px 18px;border-radius:12px;z-index:60;font-size:17px;max-width:92vw;text-align:center}
+@media (prefers-reduced-motion:reduce){ .fiesta,.fiesta .mensaje{animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="prueba" id="avisoPrueba" hidden>MODO PRUEBA · no se guarda nada en la Hoja</div>
+  <header class="top">
+    <h1>🏦 Bóveda de la clase</h1>
+    <button class="icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+
+  <nav class="grupos" id="grupos" aria-label="Clase"></nav>
+
+  <div class="cols">
+    <section class="perg" aria-labelledby="tAuto">
+      <h2 id="tAuto">Autoevaluación de la clase · <span id="tGrupo"></span></h2>
+      <div id="items"></div>
+      <div id="zonaGuardar"></div>
+    </section>
+
+    <aside class="lado">
+      <div class="caja media">
+        <h3>MEDIA DE HOY</h3>
+        <div class="num" id="media">—</div>
+        <div class="txt" id="mediaTxt">Puntuad todos los ítems</div>
+      </div>
+      <div class="caja">
+        <h3>GALEONES DE LA CLASE</h3>
+        <div class="saldo">
+          <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#cofre"/></svg>
+          <div><b id="saldo">…</b><small id="saldoTxt">cargando la Hoja…</small></div>
+        </div>
+        <div class="prox" id="prox"></div>
+        <div class="barra"><i id="barra" style="width:0"></i></div>
+      </div>
+      <div class="caja">
+        <h3>ÚLTIMAS AUTOEVALUACIONES</h3>
+        <ul class="hist" id="hist"><li>…</li></ul>
+        <div class="estado" id="estado"></div>
+      </div>
+      <button class="ensayo" id="bEnsayo" type="button">✨ Ensayar la animación (no guarda nada)</button>
+    </aside>
+  </div>
+
+  <section class="bloque" aria-labelledby="tRec">
+    <h2 id="tRec">🎁 Recompensas de <span class="gNom"></span></h2>
+    <div id="recompensas"></div>
+  </section>
+
+  <section class="bloque" aria-labelledby="tMov">
+    <h2 id="tMov">📜 Movimientos de la Bóveda</h2>
+    <ul class="movs" id="movs"></ul>
+    <div class="ajuste">
+      <span>Ajustar galeones a mano (por ejemplo, los que ya tenía la clase):</span>
+      <input id="ajN" type="number" min="1" max="999" inputmode="numeric" placeholder="Nº" aria-label="Galeones">
+      <input id="ajM" type="text" maxlength="60" placeholder="Motivo (opcional)" aria-label="Motivo">
+      <button class="peq" id="ajDar" type="button">Añadir</button>
+      <button class="peq rojo" id="ajQuitar" type="button">Quitar</button>
+    </div>
+  </section>
+</div>
+
+<!-- escena de monedas -->
+<div class="escena" id="escena" hidden role="dialog" aria-modal="true" aria-label="Galeones para la Bóveda">
+  <canvas id="fx"></canvas>
+  <div class="titEsc" id="titEsc"></div>
+  <div class="contador" id="contador">0</div>
+  <div class="cofreWrap" id="cofreWrap">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#cofre"/></svg>
+  </div>
+  <div class="mensaje" id="mensaje"></div>
+  <button class="cerrarEsc" id="cerrarEsc" type="button">Cerrar</button>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gMadera" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a2b"/><stop offset="1" stop-color="#5a3518"/></linearGradient>
+    <linearGradient id="gOro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e3a1"/><stop offset="1" stop-color="#b8862a"/></linearGradient>
+    <radialGradient id="gBrillo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2b0" stop-opacity=".95"/><stop offset="1" stop-color="#e8c872" stop-opacity="0"/></radialGradient>
+    <symbol id="cofre" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="40" rx="40" ry="14" fill="url(#gBrillo)"/>
+      <path d="M12 42 Q50 12 88 42 L88 46 L12 46 Z" fill="url(#gMadera)" stroke="#3a2210" stroke-width="2"/>
+      <path d="M12 42 Q50 12 88 42" fill="none" stroke="url(#gOro)" stroke-width="4"/>
+      <ellipse cx="50" cy="46" rx="36" ry="6" fill="#2a1608"/>
+      <circle cx="40" cy="45" r="4" fill="#f3d27a"/><circle cx="52" cy="44" r="4.5" fill="#e8c872"/><circle cx="62" cy="46" r="3.6" fill="#f6e3a1"/>
+      <rect x="12" y="46" width="76" height="42" rx="5" fill="url(#gMadera)" stroke="#3a2210" stroke-width="2"/>
+      <rect x="12" y="46" width="76" height="6" fill="url(#gOro)"/>
+      <rect x="12" y="80" width="76" height="6" fill="url(#gOro)"/>
+      <rect x="22" y="46" width="6" height="42" fill="url(#gOro)"/><rect x="72" y="46" width="6" height="42" fill="url(#gOro)"/>
+      <rect x="42" y="56" width="16" height="18" rx="3" fill="url(#gOro)" stroke="#7a5a14" stroke-width="1.5"/>
+      <circle cx="50" cy="63" r="2.6" fill="#3a2210"/><rect x="49" y="64" width="2" height="5" fill="#3a2210"/>
+    </symbol>
+  </defs>
+</svg>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+if(window.JAVI) JAVI.listo(function(){ JAVI.botonInicio({ abajo:true }); });
+/* ============================================================
+   CONFIGURACIÓN  (puedes tocar estos valores)
+   ============================================================ */
+var CONF = {
+  /* ítems de la autoevaluación (del 1 al 10). La media redondeada = galeones para la clase */
+  items: [
+    'Llegada a clase: silencio y fila ordenada para bajar',
+    'Calentamiento y atención a la explicación de los juegos',
+    'Respeto y asimilación de las normas del juego',
+    'Ausencia de peleas o discusiones',
+    'Recogida del material y fila ordenada y en silencio para subir'
+  ],
+  /* ítem extra que solo se evalúa algunos días (se pone delante). Días: 1=lunes … 5=viernes.
+     En la pantalla hay una casilla para ponerlo o quitarlo a mano si cambia el horario. */
+  extra: { item:'Subida del recreo: fila ordenada y en silencio', dias: { '3ºA':[3], '3ºB':[1,4] } },
+  grupos: ['4ºB','4ºA','3ºA','3ºB'],
+  fiestaDesde: 9,          /* con esta media (redondeada) o más, ¡fiesta! */
+  /* galeones con los que empezó cada clase (los mismos que en ef.html) */
+  inicial: { '3ºA':0, '3ºB':0, '4ºA':0, '4ºB':0 },
+  /* recompensas de clase: [nombre, galeones]. Añade, quita o cambia precios aquí. */
+  recompensas: [
+    { sec:'Juegos mágicos', items:[['Gavilán',50],['Poli-ladrón',50],['Pañuelito',60],['Balón-tiro',60],['Pinfuvote',60],['Baile libre',60],['Escape Room EF',70],['Juego sorpresa del profe',70],['Pichi',50]] },
+    { sec:'Para los días de lluvia', items:[['Just Dance',60],['Juegos iPad',60],['Futbolín humano',80]] },
+    { sec:'Deportes de Hogwarts', items:[['Baloncesto',80],['Voleibol',80],['Balonmano',80],['Bádminton',70],['Deporte libre',130],['Fútbol',120],['Deporte alternativo trabajo en clase',100]] }
+  ],
+  /* mismo Formulario y Hoja que Javificación (alumno «3ºA · BÓVEDA», acción «Boveda») */
+  registro: {
+    formAction: 'https://docs.google.com/forms/d/e/1FAIpQLSd_kTfsYHYK8F3jv0WmYJpsMfw1rYLVOrZiIHzH6Mb-4JuAaw/formResponse',
+    entradas: { alumno:'entry.1643177071', accion:'entry.1324105340', cartaId:'entry.2081350872', tipo:'entry.1036866207', carta:'entry.704758731' },
+    csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfXYmi9evsMT7EtFrDVG3xALHoudOA2v299Yhgm4vEffLMs5KtcLnBO-jckirvRU7ogMaHCOZe_PNQ/pub?gid=326777813&single=true&output=csv'
+  }
+};
+
+/* ---------- utilidades ---------- */
+function $(id){ return document.getElementById(id); }
+function normal(n){ return String(n||'').trim().toLowerCase(); }
+function numero(v){ var x = parseFloat(String(v||'').replace(',', '.')); return isFinite(x) ? Math.round(x) : 0; }
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function clave(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function rnd(){ try{ var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0]/4294967296; }catch(e){ return Math.random(); } }
+function fechaFila(t){
+  var m = String(t||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(m) return m[3]+'-'+pad(+m[2])+'-'+pad(+m[1]);
+  m = String(t||'').match(/(\d{4})-(\d{2})-(\d{2})/);
+  return m ? m[0] : '';
+}
+function fechaCorta(k){ var p = k.split('-'); return +p[2]+'/'+(+p[1]); }
+function leerCSV(texto){
+  var filas=[], fila=[], cur='', q=false, i, c;
+  for(i=0;i<texto.length;i++){
+    c=texto[i];
+    if(q){ if(c==='"'){ if(texto[i+1]==='"'){ cur+='"'; i++; } else q=false; } else cur+=c; }
+    else if(c==='"'){ q=true; }
+    else if(c===','){ fila.push(cur); cur=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&texto[i+1]==='\n') i++; fila.push(cur); cur=''; filas.push(fila); fila=[]; }
+    else cur+=c;
+  }
+  if(cur!==''||fila.length){ fila.push(cur); filas.push(fila); }
+  return filas;
+}
+var toastT = 0;
+function aviso(txt){ var el = $('toast'); el.textContent = txt; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ el.hidden = true; }, 4500); }
+function guardarLocal(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function leerLocal(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+
+/* En el ordenador de pruebas (o con ?prueba) no se envía nada a la Hoja */
+var PRUEBA = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol==='file:' || /[?&]prueba/.test(location.search);
+if(PRUEBA) $('avisoPrueba').hidden = false;
+
+/* ---------- registro (mismo formato y mismos «pendientes» que ef.html) ---------- */
+var CLAVE_PEND = PRUEBA ? 'boveda-prueba-pendientes' : 'ef-pendientes';
+var filas = [], cargado = false, pendientes = [];
+try{ pendientes = JSON.parse(leerLocal(CLAVE_PEND)||'[]') || []; }catch(e){ pendientes = []; }
+function guardarPend(){ guardarLocal(CLAVE_PEND, JSON.stringify(pendientes)); }
+function idMov(){ return '#g'+Date.now().toString(36)+Math.floor(rnd()*1e8).toString(36); }
+function enviarForm(d){
+  if(PRUEBA) return;
+  var e = CONF.registro.entradas, body = new URLSearchParams();
+  body.set(e.alumno, d.alumno); body.set(e.accion, d.accion); body.set(e.cartaId, d.cartaId); body.set(e.tipo, d.tipo||''); body.set(e.carta, d.carta||'');
+  fetch(CONF.registro.formAction, { method:'POST', mode:'no-cors', body:body }).catch(function(){});
+}
+function registrar(alumnoClave, accion, n, motivo, extra){
+  var p = { id:idMov(), alumno:alumnoClave, accion:accion, n:n, motivo:motivo||'', extra:extra||'', cartaId:'', t:Date.now() };
+  pendientes.push(p); guardarPend();
+  enviarForm({ alumno:alumnoClave, accion:accion, cartaId:String(n), tipo:p.motivo, carta:p.id+(extra?' · '+extra:'') });
+  return p;
+}
+function limpiarPend(){
+  var v = {}; filas.forEach(function(f){ var m = String(f[5]||'').match(/#g[a-z0-9]+/); if(m) v[m[0]] = 1; });
+  var ahora = Date.now(); pendientes = pendientes.filter(function(p){ return !v[p.id] && (ahora-p.t) < 36*3600*1000; }); guardarPend();
+}
+function cargar(){
+  $('estado').textContent = cargado ? 'Actualizando…' : 'Cargando la Hoja…';
+  return fetch(CONF.registro.csvUrl+'&t='+Date.now(), { cache:'no-store' }).then(function(r){ return r.text(); }).then(function(t){
+    filas = leerCSV(t).slice(1); cargado = true; limpiarPend();
+    var d = new Date(); $('estado').textContent = 'Hoja leída a las '+pad(d.getHours())+':'+pad(d.getMinutes())+'.';
+    pintar();
+  }).catch(function(){ $('estado').textContent = 'No se ha podido leer la Hoja (¿sin conexión?).'; pintar(); });
+}
+
+/* movimientos de la Bóveda de un grupo */
+function bovClave(g){ return g+' · BÓVEDA'; }
+function bovMovs(g){
+  var k = normal(bovClave(g)), out = [], vistos = {};
+  filas.forEach(function(f){
+    if(normal(f[1])!==k || normal(f[2]).indexOf('boveda')!==0) return;
+    var m = String(f[5]||'').match(/#g[a-z0-9]+/), id = m ? m[0] : '';
+    if(id) vistos[id] = 1;
+    out.push({ id:id, n:numero(f[3]), motivo:f[4]||'', extra:String(f[5]||''), dia:fechaFila(f[0]) });
+  });
+  pendientes.forEach(function(p){
+    if(vistos[p.id] || normal(p.alumno)!==k) return;
+    out.push({ id:p.id, n:p.n, motivo:p.motivo, extra:p.id+(p.extra?' · '+p.extra:''), dia:clave(new Date(p.t)) });
+  });
+  var an = {}; out.forEach(function(m){ var x = m.extra.match(/anula (#g[a-z0-9]+)/); if(x) an[x[1]] = 1; });
+  out.forEach(function(m){ m.anulado = !!an[m.id]; m.esAnulacion = /anula #g/.test(m.extra); });
+  return out;
+}
+function saldoDe(g){ var s = numero(CONF.inicial[g]); bovMovs(g).forEach(function(m){ s += m.n; }); return s; }
+function esAutoev(m){ return normal(m.motivo).indexOf('autoevaluación')===0 && !m.anulado && !m.esAnulacion; }
+function autoevHoy(g){ var hoy = clave(new Date()); return bovMovs(g).filter(function(m){ return m.dia===hoy && esAutoev(m); })[0]; }
+
+/* ---------- estado de la pantalla ---------- */
+var grupo = leerLocal('boveda-grupo');
+var qg = new URLSearchParams(location.search).get('grupo');
+if(qg){ qg = qg.replace(/o/i,'º').toUpperCase(); }   /* ?grupo=3oA o ?grupo=3ºA */
+if(qg && CONF.grupos.indexOf(qg)>=0) grupo = qg;
+if(CONF.grupos.indexOf(grupo)<0) grupo = CONF.grupos[0];
+var notas = [];
+var recreo = {};   /* grupo → true/false si se ha cambiado a mano hoy */
+function tocaRecreo(g){ return (CONF.extra.dias[g]||[]).indexOf(new Date().getDay())>=0; }
+function conRecreo(g){ return g in recreo ? recreo[g] : tocaRecreo(g); }
+function itemsDe(g){ return (conRecreo(g) ? [CONF.extra.item] : []).concat(CONF.items); }
+function media(){
+  var it = itemsDe(grupo), s = 0, i;
+  for(i=0;i<it.length;i++){ if(!notas[i]) return null; s += notas[i]; }
+  return s/it.length;
+}
+
+function pintarGrupos(){
+  var nav = $('grupos'); nav.innerHTML = '';
+  CONF.grupos.forEach(function(g){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'grupo'; b.textContent = g;
+    b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
+    b.addEventListener('click', function(){ grupo = g; notas = []; guardarLocal('boveda-grupo', g); pintar(); });
+    nav.appendChild(b);
+  });
+}
+
+function pintar(){
+  pintarGrupos();
+  $('tGrupo').textContent = grupo;
+  var hecha = autoevHoy(grupo), it = itemsDe(grupo), box = $('items'); box.innerHTML = '';
+  if(!hecha && CONF.extra.dias[grupo]){
+    var lb = document.createElement('label'); lb.className = 'recreo';
+    lb.innerHTML = '<input type="checkbox"> Hoy venimos del recreo (añade el ítem de la subida)';
+    var ck = lb.querySelector('input'); ck.checked = conRecreo(grupo);
+    ck.addEventListener('change', function(){ recreo[grupo] = ck.checked; notas = []; pintar(); });
+    box.appendChild(lb);
+  }
+  it.forEach(function(txt, i){
+    var d = document.createElement('div'); d.className = 'item';
+    var n = document.createElement('div'); n.className = 'itemN'; n.textContent = (i+1)+'. '+txt; d.appendChild(n);
+    var esc = document.createElement('div'); esc.className = 'escala'; esc.setAttribute('role','group'); esc.setAttribute('aria-label', txt);
+    for(var v=1; v<=10; v++){ (function(v){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'nota'; b.textContent = v;
+      b.setAttribute('aria-pressed', notas[i]===v ? 'true' : 'false'); b.disabled = !!hecha;
+      b.addEventListener('click', function(){ notas[i] = v; sonidoToque(v); pintar(); });
+      esc.appendChild(b);
+    })(v); }
+    d.appendChild(esc); box.appendChild(d);
+  });
+
+  /* media */
+  var m = media();
+  if(hecha){
+    $('media').textContent = hecha.n;
+    $('mediaTxt').textContent = 'Hoy ya está hecha';
+  } else if(m===null){
+    var hechos = it.filter(function(_, i){ return notas[i]; }).length;
+    $('media').textContent = hechos ? '…' : '—';
+    $('mediaTxt').textContent = hechos+' de '+it.length+' ítems puntuados';
+  } else {
+    $('media').textContent = Math.round(m);
+    $('mediaTxt').textContent = 'Media exacta: '+m.toFixed(1).replace('.',',');
+  }
+
+  /* botón guardar o aviso de hecha */
+  var zg = $('zonaGuardar'); zg.innerHTML = '';
+  if(hecha){
+    var h = document.createElement('div'); h.className = 'hecha';
+    h.textContent = '✓ Autoevaluación de hoy guardada: '+hecha.motivo.replace(/^Autoevaluación\s*/,'')+' → +'+hecha.n+' galeones.';
+    var u = document.createElement('button'); u.type = 'button'; u.textContent = 'Anular y repetir';
+    u.addEventListener('click', function(){
+      if(!confirm('¿Anular la autoevaluación de hoy de '+grupo+'? Se quitarán los '+hecha.n+' galeones y podréis repetirla.')) return;
+      registrar(bovClave(grupo), 'Boveda', -hecha.n, 'Anulado: '+hecha.motivo, 'anula '+hecha.id);
+      aviso('Autoevaluación anulada. Podéis repetirla.'); pintar();
+    });
+    h.appendChild(u); zg.appendChild(h);
+  } else {
+    var g = document.createElement('button'); g.type = 'button'; g.className = 'guardar'; g.id = 'bGuardar';
+    g.textContent = m===null ? 'Puntuad todos los ítems' : '🪙 ¡Guardar y llevar '+Math.round(m)+' galeones a la Bóveda!';
+    g.disabled = m===null || !cargado;
+    if(!cargado && m!==null) g.textContent = 'Esperando a la Hoja…';
+    g.addEventListener('click', guardar);
+    zg.appendChild(g);
+  }
+
+  /* saldo, próxima recompensa e historial */
+  if(!cargado){ $('saldo').textContent = '…'; return; }
+  var s = saldoDe(grupo);
+  $('saldo').textContent = s;
+  $('saldoTxt').textContent = 'galeones en la Bóveda de '+grupo;
+  pintarProx(s);
+  var hs = bovMovs(grupo).filter(esAutoev).slice(-6).reverse(), ul = $('hist'); ul.innerHTML = '';
+  if(!hs.length){ ul.innerHTML = '<li>Todavía no hay ninguna.</li>'; }
+  hs.forEach(function(x){
+    var li = document.createElement('li');
+    li.innerHTML = '<span></span><b></b>';
+    li.firstChild.textContent = fechaCorta(x.dia)+' · '+x.motivo.replace(/^Autoevaluación\s*/,'');
+    li.lastChild.textContent = '+'+x.n;
+    ul.appendChild(li);
+  });
+  pintarRecompensas(s);
+  pintarMovs();
+}
+function todasRecompensas(){ var t = []; CONF.recompensas.forEach(function(x){ t = t.concat(x.items); }); return t; }
+function pintarRecompensas(s){
+  Array.prototype.forEach.call(document.querySelectorAll('.gNom'), function(e){ e.textContent = grupo; });
+  var box = $('recompensas'); box.innerHTML = '';
+  CONF.recompensas.forEach(function(sec){
+    var h = document.createElement('h3'); h.textContent = sec.sec; box.appendChild(h);
+    var g = document.createElement('div'); g.className = 'recs';
+    sec.items.slice().sort(function(a,b){ return a[1]-b[1]; }).forEach(function(it){
+      var falta = it[1]-s, d = document.createElement('div'); d.className = 'rec'+(falta>0 ? ' lejos' : '');
+      d.innerHTML = '<span class="rn"></span><span class="rp">'+it[1]+' galeones</span><span class="rf">'+(falta>0 ? 'Faltan '+falta : '¡Disponible!')+'</span><button type="button">Canjear</button>';
+      d.querySelector('.rn').textContent = it[0];
+      var b = d.querySelector('button'); b.disabled = falta>0;
+      b.addEventListener('click', function(){
+        if(!confirm('¿Canjear «'+it[0]+'» por '+it[1]+' galeones? A '+grupo+' le quedarán '+(saldoDe(grupo)-it[1])+'.')) return;
+        registrar(bovClave(grupo), 'Boveda', -it[1], 'Canje: '+it[0], 'Recompensa de clase');
+        aviso('🎁 ¡'+grupo+' canjea «'+it[0]+'»!'); fxTam(); confeti(80); arrancarFx(); pintar();
+      });
+      g.appendChild(d);
+    });
+    box.appendChild(g);
+  });
+}
+function pintarMovs(){
+  var ul = $('movs'); ul.innerHTML = '';
+  var ms = bovMovs(grupo).filter(function(m){ return !m.esAnulacion; }).slice(-15).reverse();
+  if(!ms.length){ ul.innerHTML = '<li>Todavía no hay movimientos.</li>'; return; }
+  ms.forEach(function(m){
+    var li = document.createElement('li'); if(m.anulado) li.className = 'anulado';
+    var sp = document.createElement('span');
+    sp.innerHTML = '<span class="'+(m.n>=0 ? 'mas' : 'menos')+'">'+(m.n>=0 ? '+'+m.n : '−'+(-m.n))+'</span> · <i></i> <small></small>';
+    sp.querySelector('i').textContent = m.motivo; sp.querySelector('small').textContent = m.dia ? fechaCorta(m.dia) : '';
+    li.appendChild(sp);
+    if(!m.anulado && m.id){
+      var u = document.createElement('button'); u.type = 'button'; u.className = 'peq'; u.textContent = 'Anular';
+      u.addEventListener('click', function(){
+        if(!confirm('¿Anular «'+m.motivo+'» ('+(m.n>=0 ? '+' : '')+m.n+')?')) return;
+        registrar(bovClave(grupo), 'Boveda', -m.n, 'Anulado: '+m.motivo, 'anula '+m.id); aviso('Movimiento anulado.'); pintar();
+      });
+      li.appendChild(u);
+    }
+    ul.appendChild(li);
+  });
+}
+function ajustar(sg){
+  var n = numero($('ajN').value); if(n<=0){ aviso('Escribe cuántos galeones.'); return; }
+  registrar(bovClave(grupo), 'Boveda', sg*n, $('ajM').value.trim() || (sg>0 ? 'Ajuste: galeones añadidos' : 'Ajuste: galeones quitados'), 'Ajuste');
+  $('ajN').value = ''; $('ajM').value = ''; aviso(sg>0 ? '+'+n+' galeones para '+grupo+'.' : '−'+n+' galeones a '+grupo+'.'); pintar();
+}
+$('ajDar').addEventListener('click', function(){ ajustar(1); });
+$('ajQuitar').addEventListener('click', function(){ ajustar(-1); });
+function pintarProx(s){
+  var rs = todasRecompensas().sort(function(a,b){ return a[1]-b[1]; });
+  var sig = rs.filter(function(r){ return r[1] > s; })[0];
+  var ya = rs.filter(function(r){ return r[1] <= s; });
+  var t = '';
+  if(ya.length) t = '¡Ya podéis canjear '+ya.length+(ya.length===1 ? ' recompensa' : ' recompensas')+'! ';
+  if(sig) t += 'Os faltan '+(sig[1]-s)+' para «'+sig[0]+'» ('+sig[1]+').';
+  $('prox').textContent = t;
+  var tope = sig ? sig[1] : s || 1;
+  $('barra').style.width = Math.max(3, Math.min(100, s/tope*100))+'%';
+}
+
+/* ---------- guardar ---------- */
+function guardar(){
+  var m = media(); if(m===null || autoevHoy(grupo) || !cargado) return;
+  var gal = Math.round(m), it = itemsDe(grupo);
+  var det = it.map(function(t, i){ return (i+1)+': '+notas[i]; }).join(', ');
+  var antes = saldoDe(grupo);
+  registrar(bovClave(grupo), 'Boveda', gal, 'Autoevaluación (media '+m.toFixed(1).replace('.',',')+')', det);
+  notas = [];
+  pintar();
+  animar(gal, antes, grupo);
+}
+
+/* ============================================================
+   SONIDO (sintetizado, sin archivos)
+   ============================================================ */
+var sonido = leerLocal('boveda-sonido') !== 'no';
+var actx = null;
+function ctx(){
+  if(!sonido) return null;
+  try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; }
+  return actx;
+}
+function tono(f, t0, dur, tipo, vol){
+  var c = ctx(); if(!c) return;
+  var o = c.createOscillator(), g = c.createGain(), t = c.currentTime + (t0||0);
+  o.type = tipo||'sine'; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol||0.2, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05);
+}
+function sonidoToque(v){ tono(300+v*40, 0, 0.12, 'triangle', 0.08); }
+function clinc(i){ var f = 1800 + (i%4)*160; tono(f, 0, 0.18, 'sine', 0.18); tono(f*1.5, 0.03, 0.22, 'sine', 0.1); tono(f*2.7, 0.05, 0.12, 'sine', 0.05); }
+function fanfarria(){
+  var n = [523.25, 659.25, 783.99, 1046.5], i;
+  for(i=0;i<n.length;i++) tono(n[i], i*0.14, 0.3, 'square', 0.07);
+  [523.25, 659.25, 783.99, 1046.5].forEach(function(f){ tono(f, 0.62, 1.1, 'sawtooth', 0.045); });
+  [783.99, 1046.5, 1318.5].forEach(function(f, j){ tono(f, 1.9+j*0.12, 0.25, 'square', 0.06); });
+  [659.25, 783.99, 1046.5, 1568].forEach(function(f){ tono(f, 2.3, 1.4, 'triangle', 0.06); });
+}
+function petardo(){ var c = ctx(); if(!c) return;
+  var len = c.sampleRate*0.3, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0), i;
+  for(i=0;i<len;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/len, 3);
+  var s = c.createBufferSource(), g = c.createGain(); s.buffer = buf; g.gain.value = 0.25; s.connect(g); g.connect(c.destination); s.start();
+}
+function sonidoFlojo(){ tono(392, 0, 0.3, 'triangle', 0.1); tono(349.23, 0.25, 0.5, 'triangle', 0.1); }
+function sonidoBien(){ [523.25, 659.25, 783.99].forEach(function(f, i){ tono(f, i*0.12, 0.35, 'triangle', 0.12); }); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; $('bSonido').setAttribute('aria-label', sonido ? 'Quitar sonido' : 'Poner sonido'); }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; guardarLocal('boveda-sonido', sonido ? 'si' : 'no'); pintarSonido(); });
+pintarSonido();
+
+/* ============================================================
+   ANIMACIÓN: monedas que caen en el cofre y, con 9 o 10, ¡fiesta!
+   ============================================================ */
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+var cv = $('fx'), cx = cv.getContext('2d'), parts = [], raf = 0, fiestaHasta = 0, cohetes = [];
+function fxTam(){ var dpr = Math.min(2, window.devicePixelRatio||1); cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; cx.setTransform(dpr,0,0,dpr,0,0); }
+var COLORES = ['#e8c872','#f6e3a1','#ee4a68','#4cc46a','#45c4e8','#b07aff','#ff8f2e','#ffffff'];
+function confeti(n){
+  for(var i=0;i<n;i++) parts.push({ x:rnd()*innerWidth, y:-20-rnd()*innerHeight*0.5, vx:(rnd()-.5)*2, vy:2+rnd()*3, r:rnd()*6.28, vr:(rnd()-.5)*0.3,
+    w:6+rnd()*8, h:4+rnd()*6, c:COLORES[Math.floor(rnd()*COLORES.length)], tipo:'confeti', vida:0, max:400 });
+}
+function explosion(x, y){
+  var c = COLORES[Math.floor(rnd()*COLORES.length)], n = 60, i;
+  for(i=0;i<n;i++){ var a = i/n*6.283, v = 2+rnd()*4.5;
+    parts.push({ x:x, y:y, vx:Math.cos(a)*v, vy:Math.sin(a)*v, c:c, tipo:'chispa', vida:0, max:60+rnd()*30 }); }
+  petardo();
+}
+function chispasEn(x, y){
+  for(var i=0;i<14;i++){ var a = rnd()*6.283, v = 1+rnd()*3;
+    parts.push({ x:x, y:y, vx:Math.cos(a)*v, vy:Math.sin(a)*v-2, c:i%2 ? '#fff6cf' : '#e8c872', tipo:'chispa', vida:0, max:30+rnd()*20 }); }
+}
+function tick(){
+  cx.clearRect(0,0,innerWidth,innerHeight);
+  var ahora = performance.now();
+  if(ahora < fiestaHasta){
+    if(rnd() < 0.05) cohetes.push({ x:innerWidth*(0.15+rnd()*0.7), y:innerHeight+10, vy:-(9+rnd()*4), alto:innerHeight*(0.12+rnd()*0.3) });
+    if(rnd() < 0.3) confeti(2);
+  }
+  cohetes = cohetes.filter(function(k){
+    k.y += k.vy; k.vy *= 0.985;
+    cx.fillStyle = '#fff2b0'; cx.beginPath(); cx.arc(k.x, k.y, 3, 0, 6.283); cx.fill();
+    if(k.y <= k.alto || k.vy > -2){ explosion(k.x, k.y); return false; }
+    return true;
+  });
+  var vivos = [];
+  for(var i=0;i<parts.length;i++){
+    var p = parts[i]; p.vida++;
+    if(p.vida > p.max || p.y > innerHeight+40) continue;
+    if(p.tipo==='confeti'){
+      p.x += p.vx + Math.sin(p.vida/12); p.y += p.vy; p.r += p.vr;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.w/2, -p.h/2, p.w, p.h*Math.abs(Math.cos(p.r))); cx.restore();
+    } else {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.vx *= 0.98;
+      cx.globalAlpha = 1 - p.vida/p.max; cx.fillStyle = p.c; cx.beginPath(); cx.arc(p.x, p.y, 2.4, 0, 6.283); cx.fill(); cx.globalAlpha = 1;
+    }
+    vivos.push(p);
+  }
+  parts = vivos;
+  if(parts.length || cohetes.length || ahora < fiestaHasta) raf = requestAnimationFrame(tick); else raf = 0;
+}
+function arrancarFx(){ if(!raf) raf = requestAnimationFrame(tick); }
+function esperar(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+var animando = false;
+function animar(gal, antes, g){
+  if(animando) return; animando = true;
+  var esc = $('escena'), cont = $('contador'), cofre = $('cofreWrap'), msj = $('mensaje'), cer = $('cerrarEsc');
+  esc.classList.remove('fiesta'); msj.classList.remove('ver'); cer.classList.remove('ver'); msj.textContent = '';
+  $('titEsc').textContent = 'Galeones para la Bóveda de '+g;
+  cont.textContent = '0'; esc.hidden = false; fxTam(); parts = []; cohetes = [];
+  ctx(); /* el navegador solo deja sonar tras un toque: este es el del botón */
+  var fiesta = gal >= CONF.fiestaDesde;
+  var p = Promise.resolve();
+  /* caen las monedas una a una */
+  for(var i=1; i<=gal; i++){ (function(i){
+    p = p.then(function(){ return caeMoneda(cofre); }).then(function(){
+      cont.textContent = i; cont.classList.remove('pum'); void cont.offsetWidth; cont.classList.add('pum');
+      cofre.classList.remove('bote'); void cofre.offsetWidth; cofre.classList.add('bote');
+      clinc(i);
+      var r = cofre.getBoundingClientRect(); chispasEn(r.left+r.width/2, r.top+r.height*0.42); arrancarFx();
+      return esperar(reduce ? 60 : Math.max(70, 240 - i*18));
+    });
+  })(i); }
+  p.then(function(){ return esperar(350); }).then(function(){
+    if(fiesta){
+      esc.classList.add('fiesta');
+      msj.textContent = '🎉 ¡FIESTA EN GRINGOTTS! 🎉';
+      fanfarria(); confeti(reduce ? 60 : 220);
+      fiestaHasta = performance.now() + (reduce ? 1500 : 9000);
+      setTimeout(function(){ if(!$('escena').hidden && sonido) fanfarria(); }, 4200);
+    } else if(gal >= 7){
+      msj.textContent = '¡Muy bien, '+g+'! La Bóveda tiene ahora '+(antes+gal)+' galeones.'; sonidoBien(); confeti(50);
+    } else if(gal >= 5){
+      msj.textContent = '¡Bien! La Bóveda tiene ahora '+(antes+gal)+' galeones. ¡El próximo día, a por el 9!'; sonidoBien();
+    } else {
+      msj.textContent = 'Hoy han sido '+gal+'. ¡Mañana lo hacemos mejor!'; sonidoFlojo();
+    }
+    arrancarFx();
+    msj.classList.add('ver');
+    return esperar(fiesta ? 1800 : 600);
+  }).then(function(){ cer.classList.add('ver'); animando = false; cer.focus(); });
+}
+function caeMoneda(cofre){
+  return new Promise(function(res){
+    var m = document.createElement('div'); m.className = 'moneda'; m.textContent = 'G';
+    cofre.appendChild(m);
+    var h = cofre.getBoundingClientRect().height, dx = (rnd()-.5)*40;
+    var desde = -(cofre.getBoundingClientRect().top + 80);
+    var anim = m.animate([
+      { transform:'translate('+dx+'px,'+desde+'px) rotateY(0deg)', opacity:1 },
+      { transform:'translate(0px,'+(h*0.30)+'px) rotateY(720deg)', opacity:1, offset:0.85 },
+      { transform:'translate(0px,'+(h*0.40)+'px) rotateY(900deg) scale(.6)', opacity:0 }
+    ], { duration: reduce ? 200 : 520, easing:'cubic-bezier(.5,0,.9,.6)' });
+    anim.onfinish = function(){ m.remove(); res(); };
+  });
+}
+$('cerrarEsc').addEventListener('click', function(){
+  $('escena').hidden = true; fiestaHasta = 0; parts = []; cohetes = [];
+  if(!animando) $('bGuardar') && $('bGuardar').focus();
+});
+window.addEventListener('resize', function(){ if(!$('escena').hidden) fxTam(); });
+
+/* ensayo: elige una nota y mira la animación sin guardar */
+$('bEnsayo').addEventListener('click', function(){
+  var r = prompt('¿Qué media quieres ensayar? (1 a 10)', '10');
+  var n = Math.max(1, Math.min(10, numero(r))); if(!r) return;
+  animar(n, cargado ? saldoDe(grupo) : 0, grupo);
+});
+
+/* ---------- pantalla completa (dentro de Google Sites abre una pestaña nueva) ---------- */
+$('bPantalla').addEventListener('click', function(){
+  var enMarco = false; try{ enMarco = window.self !== window.top; }catch(e){ enMarco = true; }
+  var el = document.documentElement;
+  if(document.fullscreenElement){ document.exitFullscreen(); return; }
+  if(el.requestFullscreen && document.fullscreenEnabled){ el.requestFullscreen().catch(function(){ window.open(location.href, '_blank'); }); }
+  else if(enMarco){ window.open(location.href, '_blank'); }
+});
+
+pintar();
+cargar();
+setInterval(function(){ if(!animando && $('escena').hidden) cargar(); }, 120000);
+})();
+</script>
+</body>
+</html>

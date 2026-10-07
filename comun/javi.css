@@ -1,0 +1,101 @@
+/* ============================================================
+   JAVIFICACIÓN · estilos comunes y TEMAS
+   El tema se elige con <html data-tema="hp|vengadores|pokemon">
+   (lo pone comun/javi.js según el trimestre o el panel del profe).
+   Para un tema nuevo: copia un bloque [data-tema=…] y cambia los colores.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=EB+Garamond:wght@500;600;700&family=Bangers&family=Barlow+Condensed:wght@500;600;700&family=Fredoka:wght@500;600;700&display=swap');
+
+:root,
+[data-tema="hp"]{
+  --fondo:#0b1420;
+  --fondo-img:url('../recursos/javificacion-fondo.png') center bottom/cover fixed;
+  --panel:rgba(14,30,34,.88);
+  --panel-borde:#2f5a54;
+  --tinta:#f3e6bf;
+  --tinta-suave:#b9c9c2;
+  --acento:#e8c872;
+  --acento-2:#f6e3a1;
+  --acento-tinta:#1c1404;
+  --brillo:rgba(232,200,114,.45);
+  --titulo-color:#e8c872;
+  --titulo-sombra:0 2px 14px rgba(232,200,114,.45);
+  --f-titulo:'Cinzel Decorative','Cinzel',Georgia,serif;
+  --f-sub:'Cinzel',Georgia,serif;
+  --f-texto:'EB Garamond',Georgia,serif;
+  --radio:18px;
+  --titulo-transform:none;
+}
+[data-tema="vengadores"]{
+  --fondo:#0d1630;
+  --fondo-img:
+    radial-gradient(circle at 50% 120%, rgba(214,40,40,.55), transparent 55%),
+    radial-gradient(circle, rgba(255,255,255,.07) 1.2px, transparent 1.6px) 0 0/14px 14px,
+    repeating-conic-gradient(from 0deg at 50% 110%, rgba(255,255,255,.035) 0deg 6deg, transparent 6deg 14deg),
+    linear-gradient(180deg,#0a1026,#1a2350 70%,#3a1424);
+  --panel:rgba(16,24,54,.9);
+  --panel-borde:#c8313a;
+  --tinta:#f2f4fa;
+  --tinta-suave:#aeb7d3;
+  --acento:#e23636;
+  --acento-2:#f5c518;
+  --acento-tinta:#ffffff;
+  --brillo:rgba(226,54,54,.5);
+  --titulo-color:#ff4a4a;
+  --titulo-sombra:3px 3px 0 #0a1026, 0 0 18px rgba(226,54,54,.6);
+  --f-titulo:'Bangers','Impact',sans-serif;
+  --f-sub:'Barlow Condensed','Arial Narrow',sans-serif;
+  --f-texto:'Barlow Condensed','Arial Narrow',sans-serif;
+  --radio:10px;
+  --titulo-transform:uppercase;
+}
+[data-tema="pokemon"]{
+  --fondo:#7fd0ff;
+  --fondo-img:
+    radial-gradient(ellipse 60% 22% at 20% 102%, #5cbf55 60%, transparent 61%),
+    radial-gradient(ellipse 70% 26% at 85% 104%, #49a845 60%, transparent 61%),
+    radial-gradient(circle at 85% 12%, #fff6b0 0 6%, rgba(255,246,176,.0) 14%),
+    radial-gradient(ellipse 12% 4% at 25% 22%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 9% 3% at 62% 14%, #fff 60%, transparent 62%),
+    linear-gradient(180deg,#4fb6f5,#a9e3ff 75%,#d9f4ff);
+  --panel:rgba(255,255,255,.9);
+  --panel-borde:#2a75bb;
+  --tinta:#1d2a44;
+  --tinta-suave:#4a5a78;
+  --acento:#ffcb05;
+  --acento-2:#2a75bb;
+  --acento-tinta:#1d2a44;
+  --brillo:rgba(255,203,5,.6);
+  --titulo-color:#2a75bb;
+  --titulo-sombra:0 3px 0 #ffcb05, 0 6px 14px rgba(42,117,187,.35);
+  --f-titulo:'Fredoka','Arial Rounded MT Bold',sans-serif;
+  --f-sub:'Fredoka','Arial Rounded MT Bold',sans-serif;
+  --f-texto:'Fredoka','Segoe UI',sans-serif;
+  --radio:24px;
+  --titulo-transform:none;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--fondo)}
+body{min-height:100vh;font-family:var(--f-texto);color:var(--tinta);background:var(--fondo);background:var(--fondo-img),var(--fondo);
+  -webkit-font-smoothing:antialiased;font-size:18px}
+button,input,select{font-family:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.j-envoltorio{max-width:1180px;margin:0 auto;padding:16px 16px 48px}
+
+/* panel genérico */
+.j-panel{background:var(--panel);border:2px solid var(--panel-borde);border-radius:var(--radio);padding:16px;box-shadow:0 12px 28px rgba(0,0,0,.28)}
+.j-titulo{font-family:var(--f-titulo);color:var(--titulo-color);text-transform:var(--titulo-transform);letter-spacing:.02em;text-shadow:var(--titulo-sombra)}
+.j-sub{font-family:var(--f-sub);font-weight:700;color:var(--acento-2)}
+.j-boton{font-family:var(--f-sub);font-weight:700;background:var(--acento);color:var(--acento-tinta);border:none;border-radius:calc(var(--radio) - 6px);
+  padding:10px 18px;font-size:17px;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.j-boton.sec{background:transparent;color:var(--tinta);border:2px solid var(--panel-borde);box-shadow:none}
+.j-boton:disabled{opacity:.5;cursor:default}
+.j-icono{background:var(--panel);border:2px solid var(--panel-borde);border-radius:12px;min-width:46px;height:46px;font-size:20px;display:inline-grid;place-items:center;padding:0 10px}
+.j-aviso{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--panel);border:2px solid var(--acento);color:var(--tinta);
+  padding:12px 18px;border-radius:12px;z-index:60;font-size:17px;max-width:92vw;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+
+/* foco visible para teclado y pizarra */
+:focus-visible{outline:3px solid var(--acento-2);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }

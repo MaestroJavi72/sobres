@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel del profe</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.cab h1{flex:1;min-width:0;font-size:clamp(26px,4.5vw,44px)}
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:10px 18px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.pestanas button[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.vista[hidden]{display:none}
+.j-panel + .j-panel{margin-top:14px}
+h2{font-family:var(--f-sub);color:var(--acento-2);font-size:20px;margin-bottom:10px}
+.ayuda{color:var(--tinta-suave);font-size:16px;line-height:1.35;margin-bottom:10px}
+
+/* alumnos */
+.grupos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.grupos button{font-family:var(--f-sub);font-weight:700;padding:8px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:transparent;color:var(--tinta);font-size:17px}
+.grupos button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.lista{list-style:none}
+.alu{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--panel-borde)}
+.alu .nom{flex:1;min-width:140px;font-size:19px;font-weight:600}
+.alu.baja .nom{text-decoration:line-through;opacity:.55}
+.alu .etq{font-size:13px;padding:2px 8px;border-radius:8px;background:rgba(0,0,0,.2);color:var(--tinta-suave)}
+.mini{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.15);color:var(--tinta)}
+.mini.rojo{border-color:#b6493f;color:#ff9a8f}
+.editor{width:100%;display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px;margin-top:6px;border-radius:12px;background:rgba(0,0,0,.18)}
+.editor label{display:flex;flex-direction:column;font-size:13px;color:var(--tinta-suave);gap:3px}
+.editor select,.editor input[type=text],.nuevo input,.nuevo select{background:rgba(0,0,0,.25);border:1px solid var(--panel-borde);border-radius:10px;padding:8px;font-size:16px;color:var(--tinta)}
+[data-tema="pokemon"] .editor select,[data-tema="pokemon"] .editor input[type=text],[data-tema="pokemon"] .nuevo input,[data-tema="pokemon"] .nuevo select{background:#fff}
+.editor .check{flex-direction:row;align-items:center;gap:6px;font-size:15px;color:var(--tinta)}
+.nuevo{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.estado{font-size:14px;color:var(--tinta-suave);margin-top:10px}
+
+/* tema */
+.temas{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.temas label{display:flex;gap:10px;align-items:center;padding:12px;border-radius:14px;border:2px solid var(--panel-borde);cursor:pointer;font-size:17px}
+.temas input{width:20px;height:20px;accent-color:var(--acento)}
+.temas label:has(input:checked){border-color:var(--acento);box-shadow:0 0 0 3px var(--brillo)}
+
+/* enlaces */
+.enl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--panel-borde)}
+.enl b{min-width:200px}
+.enl code{flex:1;min-width:200px;font-size:14px;background:rgba(0,0,0,.2);padding:6px 8px;border-radius:8px;overflow-wrap:anywhere}
+ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🗝️ Panel del profe</h1>
+    <a class="j-icono" id="bInicio" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
+  </header>
+
+  <nav class="pestanas" role="tablist">
+    <button type="button" role="tab" data-v="alumnos" aria-selected="true">👥 Alumnos</button>
+    <button type="button" role="tab" data-v="tema" aria-selected="false">🎨 Tema del trimestre</button>
+    <button type="button" role="tab" data-v="enlaces" aria-selected="false">🔗 Enlaces para Google Sites</button>
+  </nav>
+
+  <!-- ALUMNOS -->
+  <section class="vista" id="v-alumnos">
+    <div class="j-panel">
+      <p class="ayuda">Los cambios se guardan en la Hoja y llegan a todas las pantallas (en los demás aparatos tardan unos minutos).
+        <b>Dar de baja</b> no borra nada: su historial se conserva y se puede volver a dar de alta. Si cambias un nombre, sus puntos y cartas siguen siendo suyos.</p>
+      <div class="grupos" id="grupos"></div>
+      <ul class="lista" id="lista"></ul>
+      <div class="nuevo">
+        <input id="nNombre" type="text" maxlength="30" placeholder="Nombre del nuevo alumno/a" aria-label="Nombre">
+        <select id="nSexo" aria-label="Chico o chica"><option value="">Chico</option><option value="chica">Chica</option></select>
+        <button class="j-boton" id="nAlta" type="button">+ Dar de alta</button>
+      </div>
+      <div class="estado" id="estado"></div>
+    </div>
+  </section>
+
+  <!-- TEMA -->
+  <section class="vista" id="v-tema" hidden>
+    <div class="j-panel">
+      <h2>Mundo del multiverso</h2>
+      <p class="ayuda">En «Automático» el tema cambia solo: Harry Potter de septiembre a diciembre, Vengadores de enero a marzo y Pokémon de abril a junio.
+        Cambia la portada, el panel y los módulos nuevos; Hogwarts y EF mantienen su estilo mágico.</p>
+      <div class="temas" id="temas"></div>
+      <div class="estado" id="estadoTema"></div>
+    </div>
+  </section>
+
+  <!-- ENLACES -->
+  <section class="vista" id="v-enlaces" hidden>
+    <div class="j-panel">
+      <h2>Cómo ponerlo en Google Sites (solo una vez)</h2>
+      <ol class="pasos">
+        <li>En tu página de Google Sites: <b>Insertar → Insertar → pestaña «Por URL»</b>.</li>
+        <li>Pega la dirección (botón «Copiar») y elige <b>«Toda la página»</b>.</li>
+        <li>Estírala para que ocupe la pantalla y pulsa <b>Publicar</b>.</li>
+      </ol>
+      <p class="ayuda" style="margin-top:8px">A partir de ahí no hace falta volver a tocar Google Sites: cada cambio que se suba a GitHub aparece solo.
+        Para los alumnos usa las direcciones <b>sin</b> «?profe».</p>
+    </div>
+    <div class="j-panel">
+      <h2>Direcciones</h2>
+      <div id="enlaces"></div>
+    </div>
+  </section>
+</div>
+<div class="j-aviso" id="aviso" role="status" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+function $(id){ return document.getElementById(id); }
+var avisoT = 0;
+function aviso(t){ var a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3500); }
+
+/* ---------- pestañas ---------- */
+var vista = (location.hash||'').replace('#','') || 'alumnos';
+function verVista(v){
+  vista = v;
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['alumnos','tema','enlaces'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  history.replaceState(null, '', '#'+v);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
+
+/* ============================================================
+   ALUMNOS
+   ============================================================ */
+var OPC = {
+  pelo: ['','coletas','melena','moño','trenzas','corto','rizado','pincho'],
+  colorPelo: ['','moreno','castaño','rubio','pelirrojo'],
+  piel: ['','clara','media','morena','oscura']
+};
+var grupo = null, abierto = null;
+try{ grupo = localStorage.getItem('profe-grupo'); }catch(e){}
+
+function pintarGrupos(){
+  var gs = JAVI.grupos(), box = $('grupos'); box.innerHTML = '';
+  if(gs.indexOf(grupo)<0) grupo = gs[0];
+  gs.forEach(function(g){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = g;
+    b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
+    b.addEventListener('click', function(){ grupo = g; abierto = null; try{ localStorage.setItem('profe-grupo', g); }catch(e){} pintar(); });
+    box.appendChild(b);
+  });
+}
+function sel(nombre, opciones, valor){
+  var s = '<select data-k="'+nombre+'">';
+  opciones.forEach(function(o){ s += '<option value="'+o+'"'+(o===(valor||'') ? ' selected' : '')+'>'+(o||'(automático)')+'</option>'; });
+  return s+'</select>';
+}
+function pintarLista(){
+  var c = JAVI.grupoCompleto(grupo), ul = $('lista'); ul.innerHTML = '';
+  if(!c){ ul.innerHTML = '<li>No se ha podido leer la lista de alumnos.</li>'; return; }
+  var activos = c.todos.filter(function(a){ return a.activo; }).length;
+  c.todos.slice().sort(function(a,b){ return (b.activo-a.activo) || a.n.localeCompare(b.n, 'es'); }).forEach(function(a){
+    var li = document.createElement('li'); li.className = 'alu'+(a.activo ? '' : ' baja');
+    li.innerHTML = '<span class="nom"></span><span class="etq"></span>'+
+      (a.activo ? '<button class="mini" data-a="editar" type="button">✏️ Editar</button><button class="mini rojo" data-a="baja" type="button">Dar de baja</button>'
+                : '<button class="mini" data-a="vuelve" type="button">↩ Volver a dar de alta</button>');
+    li.querySelector('.nom').textContent = a.n;
+    li.querySelector('.etq').textContent = (a.chica ? 'chica' : 'chico')+(a.activo ? '' : ' · de baja');
+    li.addEventListener('click', function(e){
+      var acc = e.target.dataset && e.target.dataset.a; if(!acc) return;
+      if(acc==='editar'){ abierto = abierto===a.n ? null : a.n; pintarLista(); }
+      if(acc==='baja' && confirm('¿Dar de baja a '+a.n+' en '+grupo+'? Su historial se conserva.')){ JAVI.cambiarAlumno(grupo, 'baja', a.n); aviso(a.n+' dado/a de baja.'); pintar(); }
+      if(acc==='vuelve'){ JAVI.cambiarAlumno(grupo, 'vuelve', a.n); aviso(a.n+' vuelve a '+grupo+'.'); pintar(); }
+    });
+    if(abierto===a.n) li.appendChild(editor(a));
+    ul.appendChild(li);
+  });
+  var hora = JAVI.horaHoja();
+  $('estado').textContent = activos+' alumnos activos en '+grupo+'.'+(hora ? ' Hoja leída a las '+JAVI.util.pad(hora.getHours())+':'+JAVI.util.pad(hora.getMinutes())+'.' : ' (No se ha podido leer la Hoja.)');
+}
+function editor(a){
+  var d = document.createElement('div'); d.className = 'editor';
+  d.innerHTML =
+    '<label>Nombre<input type="text" data-k="n" maxlength="30"></label>'+
+    '<label>Se dibuja como<select data-k="chica"><option value="">chico</option><option value="1">chica</option></select></label>'+
+    '<label>Peinado'+sel('pelo', OPC.pelo, a.pelo)+'</label>'+
+    '<label>Color de pelo'+sel('colorPelo', OPC.colorPelo, a.colorPelo)+'</label>'+
+    '<label>Piel'+sel('piel', OPC.piel, a.piel)+'</label>'+
+    '<label class="check"><input type="checkbox" data-k="gafas"> Gafas</label>'+
+    '<label class="check"><input type="checkbox" data-k="mecha"> Mecha blanca</label>'+
+    '<button class="j-boton" type="button">Guardar cambios</button>';
+  d.querySelector('[data-k=n]').value = a.n;
+  d.querySelector('[data-k=chica]').value = a.chica ? '1' : '';
+  d.querySelector('[data-k=gafas]').checked = !!a.gafas;
+  d.querySelector('[data-k=mecha]').checked = !!a.mecha;
+  d.addEventListener('click', function(e){ e.stopPropagation(); });
+  d.querySelector('button').addEventListener('click', function(){
+    var nuevo = d.querySelector('[data-k=n]').value.trim(), n = a.n;
+    if(!nuevo){ aviso('El nombre no puede estar vacío.'); return; }
+    var c = JAVI.grupoCompleto(grupo);
+    if(JAVI.util.normal(nuevo)!==JAVI.util.normal(n) && c.todos.some(function(x){ return JAVI.util.normal(x.n)===JAVI.util.normal(nuevo); })){ aviso('Ya hay alguien llamado '+nuevo+' en '+grupo+'.'); return; }
+    var asp = {
+      chica: d.querySelector('[data-k=chica]').value ? true : null,
+      pelo: d.querySelector('[data-k=pelo]').value || null,
+      colorPelo: d.querySelector('[data-k=colorPelo]').value || null,
+      piel: d.querySelector('[data-k=piel]').value || null,
+      gafas: d.querySelector('[data-k=gafas]').checked ? true : null,
+      mecha: d.querySelector('[data-k=mecha]').checked ? true : null
+    };
+    var cambia = false;
+    ['chica','pelo','colorPelo','piel','gafas','mecha'].forEach(function(k){ if((a[k]||null)!==asp[k]) cambia = true; });
+    if(cambia) JAVI.cambiarAlumno(grupo, 'aspecto', n, asp);
+    if(nuevo!==n){ JAVI.cambiarAlumno(grupo, 'nombre', n, { de:n, a:nuevo }); }
+    abierto = null;
+    aviso(cambia || nuevo!==n ? 'Cambios guardados.' : 'No había cambios.');
+    pintar();
+  });
+  return d;
+}
+$('nAlta').addEventListener('click', function(){
+  var n = $('nNombre').value.trim(); if(!n){ aviso('Escribe el nombre.'); return; }
+  var c = JAVI.grupoCompleto(grupo);
+  var ya = c && c.todos.filter(function(x){ return JAVI.util.normal(x.n)===JAVI.util.normal(n); })[0];
+  if(ya && ya.activo){ aviso('Ya hay alguien llamado '+n+' en '+grupo+'. Añade una inicial (por ejemplo, «'+n+' B»).'); return; }
+  var d = { n:n }; if($('nSexo').value) d.chica = true;
+  JAVI.cambiarAlumno(grupo, 'alta', n, d);
+  $('nNombre').value = ''; aviso(n+' dado/a de alta en '+grupo+'.'); pintar();
+});
+
+/* ============================================================
+   TEMA
+   ============================================================ */
+function pintarTemas(){
+  var actual = JAVI.ajuste('tema') || 'auto', box = $('temas'); box.innerHTML = '';
+  var opciones = [['auto','🗓️ Automático (según el trimestre)']];
+  Object.keys(JAVI.TEMAS).forEach(function(k){ var t = JAVI.TEMAS[k]; opciones.push([k, t.icono+' '+t.n+' · '+t.trimestre+'º trimestre']); });
+  opciones.forEach(function(o){
+    var l = document.createElement('label');
+    l.innerHTML = '<input type="radio" name="tema"><span></span>';
+    l.querySelector('span').textContent = o[1];
+    var r = l.querySelector('input'); r.value = o[0]; r.checked = o[0]===actual;
+    r.addEventListener('change', function(){
+      JAVI.guardarAjuste('tema', o[0]); JAVI.aplicarTema();
+      aviso('Tema guardado: '+o[1].replace(/^\S+\s/,'')+'.'); pintarTemas();
+    });
+    box.appendChild(l);
+  });
+  var t = JAVI.TEMAS[JAVI.temaActual()];
+  $('estadoTema').textContent = 'Ahora se ve: '+t.n+'.';
+}
+
+/* ============================================================
+   ENLACES
+   ============================================================ */
+function pintarEnlaces(){
+  var base = new URL(JAVI.BASE, location.href).href.replace(/\/?$/, '/');
+  var lista = [
+    ['Portada (alumnos)', base],
+    ['Portada (profe)', base+'?profe'],
+    ['4ºA · El Mercader (alumnos)', base+'hogwarts/'],
+    ['4ºA · Mis cartas (alumnos)', base+'hogwarts/#mis'],
+    ['4ºA · Hogwarts (profe)', base+'hogwarts/?profe#hogwarts'],
+    ['Gamificación EF', base+'ef/'],
+    ['Bóveda de la clase', base+'boveda/'],
+    ['Panel del profe', base+'profe/?profe']
+  ];
+  var box = $('enlaces'); box.innerHTML = '';
+  lista.forEach(function(e){
+    var d = document.createElement('div'); d.className = 'enl';
+    d.innerHTML = '<b></b><code></code><button class="mini" type="button">Copiar</button><a class="mini" target="_blank" rel="noopener">Abrir</a>';
+    d.querySelector('b').textContent = e[0]; d.querySelector('code').textContent = e[1]; d.querySelector('a').href = e[1];
+    d.querySelector('button').addEventListener('click', function(){
+      (navigator.clipboard ? navigator.clipboard.writeText(e[1]) : Promise.reject()).then(function(){ aviso('Copiado.'); }, function(){ prompt('Copia esta dirección:', e[1]); });
+    });
+    box.appendChild(d);
+  });
+}
+
+function pintar(){ pintarGrupos(); pintarLista(); pintarTemas(); }
+JAVI.listo(function(){
+  pintar(); pintarEnlaces(); verVista(['alumnos','tema','enlaces'].indexOf(vista)>=0 ? vista : 'alumnos');
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

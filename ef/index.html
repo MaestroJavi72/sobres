@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Javificación · EF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<style>
+/* Paleta y tipografía: las mismas de Javificación (verde noche y oro) */
+:root{
+  --fondo:#08201b; --panel:#123a33; --panel2:#0c2a25; --oro:#e8c872; --oroClaro:#ffe9a6; --crema:#f3e6bf;
+  --texto2:#cdb987; --apagado:#a08a5a; --verde:#2f9a5a; --rojo:#c23b4a; --verdeT:#8be29a; --rojoT:#ffb3c0;
+  --comun:#3f9a6a; --especial:#3d6fb6; --legendaria:#d6a443;
+  --disp:'Cinzel Decorative','Cinzel',Georgia,serif; --tit:'Cinzel',Georgia,serif; --cuerpo:Georgia,'Times New Roman',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{min-height:100%;background:var(--fondo)}
+body{font-family:var(--cuerpo);color:var(--crema);-webkit-font-smoothing:antialiased;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,#10403a 0%,#0c2c26 45%,#08201b 100%) fixed}
+button{font-family:inherit;color:inherit}
+.app{max-width:1180px;margin:0 auto;padding:10px 16px 40px}
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:4px 0 12px}
+.marca{font:700 clamp(24px,4vw,34px) var(--disp);background:linear-gradient(180deg,#fff4c8,#e8c872 55%,#b8862e);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.6));letter-spacing:.02em}
+.marca small{font:800 13px var(--tit);letter-spacing:.3em;color:var(--oro);-webkit-text-fill-color:var(--oro);margin-left:8px;vertical-align:middle}
+.grupos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.grupo{cursor:pointer;padding:.55em 1.1em;border-radius:99px;border:1px solid rgba(232,200,114,.45);background:rgba(0,0,0,.35);font:800 15px var(--tit);letter-spacing:.06em;color:#e8d7a4}
+.grupo[aria-selected="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
+nav.tabs{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}
+.tab{cursor:pointer;flex:1;min-width:120px;padding:.75em 1em;border-radius:14px;border:1px solid rgba(232,200,114,.4);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.3));
+  font:800 13px var(--tit);letter-spacing:.12em;text-transform:uppercase;color:#e8d7a4}
+.tab[aria-selected="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
+h2.sec{font:800 clamp(13px,1.8vw,15px) var(--tit);letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin:18px 0 12px;display:flex;align-items:center;gap:12px}
+h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(232,200,114,.55),transparent)}
+.aviso{font:14px var(--cuerpo);color:var(--texto2)}
+.fila{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fila .aviso{flex:1;min-width:200px}
+.ghost{cursor:pointer;background:rgba(0,0,0,.35);border:1px solid rgba(232,200,114,.45);color:#e8d7a4;padding:.65em 1.3em;border-radius:99px;font:700 12px var(--tit);letter-spacing:.1em;text-transform:uppercase}
+.ghost:hover{background:rgba(232,200,114,.15)}
+.go{cursor:pointer;border:1px solid #f6dc95;border-radius:99px;padding:.7em 1.6em;font:800 13px var(--tit);letter-spacing:.12em;text-transform:uppercase;color:#2a1d05;
+  background:linear-gradient(180deg,#ffe9a6,#d9a94a);box-shadow:0 4px 14px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.6)}
+.go:disabled,.ghost:disabled{filter:grayscale(.6) brightness(.7);cursor:default}
+.rojo{border-color:rgba(238,74,104,.7)!important;color:var(--rojoT)!important}
+/* tarjetas de alumno */
+.alumnos{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,112px),1fr));gap:8px}
+.cam{--c:#a8a08a;position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 6px 8px;border-radius:12px;
+  border:1px solid rgba(232,200,114,.28);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.35));text-align:center;transition:transform .12s}
+.cam:hover:not(:disabled){transform:translateY(-2px)}
+.cam:disabled{cursor:default;opacity:.42}
+.cam .avatar{display:block;width:100%;height:104px}
+.cam .avatar svg{display:block;width:100%;height:100%}
+.cam .nom{font:800 13px var(--tit);line-height:1.15;overflow-wrap:anywhere}
+.cam .sub{font:11px var(--cuerpo);color:var(--c)}
+.cam .puntos{position:absolute;top:5px;left:5px;min-width:24px;padding:.15em .45em;border-radius:99px;background:var(--verde);color:#fff;font:800 12px/1.2 var(--cuerpo);box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.cam .puntos.neg{background:var(--rojo)}
+.cam .marca2{position:absolute;top:5px;right:5px;padding:.15em .5em;border-radius:99px;font:800 10px/1.3 var(--tit);letter-spacing:.04em;background:rgba(0,0,0,.55);border:1px solid rgba(232,200,114,.5);color:var(--oroClaro)}
+.cam.hecho{border-color:rgba(139,226,154,.55)}
+.cam.hecho .marca2{background:var(--verde);border-color:#bdf3cc;color:#fff}
+.cam[aria-pressed="true"]{border:2px solid var(--oro);box-shadow:0 0 18px -4px var(--oro)}
+/* coevaluación */
+.coevTop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:12px 14px;border-radius:14px;border:1px solid rgba(232,200,114,.4);
+  background:linear-gradient(180deg,var(--panel),var(--panel2))}
+.coevTop .contador{font:800 22px var(--tit);color:var(--oroClaro)}
+.coevTop .aviso{flex:1;min-width:180px}
+.progreso{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;flex-basis:100%}
+.progreso i{display:block;height:100%;background:linear-gradient(90deg,#e8c872,#ffe9a6);border-radius:9px;transition:width .4s}
+.lista{list-style:none;font:14px var(--cuerpo);line-height:1.4}
+.lista li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid rgba(232,200,114,.16)}
+.lista li.anulado span{text-decoration:line-through;opacity:.5}
+.lista .vacio{color:var(--apagado);border:0}
+.mas{color:var(--verdeT);font-weight:700}.menos{color:var(--rojoT);font-weight:700}
+/* ventanas */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:14px}
+.caja{position:relative;width:min(100%,720px);max-height:100%;overflow:auto;background:linear-gradient(180deg,#123a33,#0a211d);border:1px solid var(--oro);border-radius:16px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.7)}
+.caja.peq{width:min(100%,460px)}
+.cerrar{position:absolute;top:10px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,200,114,.5);background:rgba(0,0,0,.35);color:var(--crema);font:22px/1 var(--cuerpo);cursor:pointer}
+.caja h3{font:800 17px var(--tit);letter-spacing:.08em;color:var(--oroClaro);margin:0 44px 12px 0}
+.caja p{line-height:1.45;margin-bottom:8px}
+.motivos{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:10px;margin-top:6px}
+.motivo{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:14px;border:1px solid rgba(232,200,114,.3);
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.25));font:700 14px var(--cuerpo);text-align:center}
+.motivo:hover{background:linear-gradient(180deg,rgba(232,200,114,.2),rgba(0,0,0,.2))}
+.motivo .ic{width:52px;height:52px}
+.motivo .ic svg{width:100%;height:100%}
+.motivo.neg .ic circle:first-child{fill:var(--rojo)}
+.perfilHead{display:flex;gap:16px;align-items:flex-end;margin-bottom:10px}
+.perfilHead .av{flex:none;width:120px;height:140px}
+.perfilHead .av svg{width:100%;height:100%;display:block}
+.perfilHead .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.perfilHead h3{margin:0}
+.barra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden}
+.barra i{display:block;height:100%;border-radius:9px}
+.nums{display:flex;gap:14px;flex-wrap:wrap;font:13px var(--cuerpo);color:var(--texto2)}
+.nums b{font:800 18px var(--tit);color:var(--oroClaro)}
+h4{font:800 12px var(--tit);letter-spacing:.14em;text-transform:uppercase;color:var(--oro);margin:16px 0 6px}
+.misCartas{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.miCarta{display:flex;flex-direction:column;gap:6px;align-items:center}
+.miCarta img{width:100%;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,.5)}
+.miCarta.usada img{filter:grayscale(1) brightness(.55)}
+.miCarta small{font:11px var(--cuerpo);color:var(--apagado)}
+/* mercader */
+.tienda{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:14px}
+.prod{display:flex;flex-direction:column;gap:8px;align-items:center;padding:10px 10px 12px;border-radius:14px;border:1px solid rgba(232,200,114,.3);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.3))}
+.prod img{width:100%;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,.5);cursor:zoom-in}
+.prod.agotado img{filter:grayscale(1) brightness(.5)}
+.precio{display:flex;align-items:center;gap:6px;font:800 22px var(--tit);color:var(--oroClaro)}
+.precio i{font:700 11px var(--tit);letter-spacing:.12em;color:var(--texto2);font-style:normal;text-transform:uppercase}
+.quedan{font:12px var(--cuerpo);color:var(--texto2)}
+.prod .go{width:100%}
+.raridad{font:800 10px var(--tit);letter-spacing:.16em;text-transform:uppercase;padding:.25em .8em;border-radius:99px;color:#fff}
+.r-comun{background:var(--comun)}.r-especial{background:var(--especial)}.r-legendaria{background:var(--legendaria);color:#2a1d05}
+select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,114,.5);background:rgba(0,0,0,.4);color:var(--crema);font:15px var(--cuerpo)}
+.caja select{width:100%}
+.revelar{display:flex;flex-direction:column;align-items:center;gap:14px;perspective:1200px}
+.flip{width:min(78vw,300px);aspect-ratio:455/641;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,.75,.25,1)}
+.flip.vuelta{transform:rotateY(180deg)}
+.flip img{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+.flip img.frente{transform:rotateY(180deg)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:120;max-width:min(92vw,560px);padding:14px 22px;border-radius:16px;text-align:center;
+  font:700 17px/1.4 var(--cuerpo);color:#2a1d05;background:linear-gradient(180deg,#fff2c2,#d9ab4a);border:1px solid #fff2c2;box-shadow:0 0 40px rgba(232,200,114,.55),0 12px 30px rgba(0,0,0,.6)}
+.flota{position:fixed;z-index:130;pointer-events:none;font:800 34px var(--tit);color:var(--verdeT);text-shadow:0 2px 8px rgba(0,0,0,.7);animation:flota 1.3s ease-out forwards}
+@keyframes flota{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-60px)}}
+.compi{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.compi .av{width:150px;height:170px}
+.compi .av svg{width:100%;height:100%}
+.etiq{font:12px var(--cuerpo);color:var(--apagado);margin-top:-2px}
+.bvTop{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:16px;border-radius:16px;border:1px solid rgba(232,200,114,.45);background:linear-gradient(180deg,var(--panel),var(--panel2))}
+.cofre{position:relative;width:110px;height:110px;border-radius:50%;overflow:hidden;border:3px solid var(--oro);background:rgba(0,0,0,.45);box-shadow:0 0 30px rgba(232,200,114,.25)}
+.cofre .llenado{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#ffe9a6,#c9973a);transition:height .6s}
+.cofre .monedaC{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 44px var(--disp);color:#2a1d05;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.bvInfo{flex:1;min-width:200px;display:flex;flex-direction:column;gap:4px}
+.bvGrupo{font:800 14px var(--tit);letter-spacing:.2em;text-transform:uppercase;color:var(--oro)}
+.bvSaldo{font:15px var(--cuerpo);color:var(--texto2)}
+.bvSaldo b{font:800 46px var(--tit);color:var(--oroClaro);margin-right:6px;font-variant-numeric:tabular-nums}
+.aspectos{display:flex;flex-direction:column;gap:10px}
+.asp{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(232,200,114,.18)}
+.aspN{flex:1;min-width:180px;font:700 15px var(--cuerpo)}
+.notas{display:flex;gap:5px;flex-wrap:wrap}
+.nota{cursor:pointer;width:38px;height:38px;border-radius:50%;border:1px solid rgba(232,200,114,.45);background:rgba(0,0,0,.35);font:800 15px var(--cuerpo);color:var(--crema)}
+.nota[aria-pressed="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
+.nota:disabled{opacity:.45;cursor:default}
+.recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:10px}
+.rec{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid rgba(232,200,114,.4);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.25))}
+.rec.lejos{border-color:rgba(232,200,114,.15)}
+.recN{font:700 15px var(--cuerpo);grid-column:1/-1}
+.recP{font:13px var(--cuerpo);color:var(--texto2)}
+.recP b{font:800 18px var(--tit);color:var(--oroClaro)}
+.recF{font:12px var(--cuerpo);color:var(--apagado);text-align:right}
+.rec:not(.lejos) .recF{color:var(--verdeT)}
+.rec .go{grid-column:1/-1;padding:.55em 1em}
+.ajuste{margin-top:14px}
+.ajuste input[type=number]{width:5em}
+.ajuste input[type=text]{flex:1;min-width:150px}
+@media (max-width:520px){.notas{gap:3px}.nota{width:27px;height:27px;font-size:12px}.asp{padding:10px 8px}.cofre{width:84px;height:84px}}
+@media (max-width:520px){.cam .avatar{height:84px}.perfilHead .av{width:96px;height:112px}.grupos{margin-left:0}}
+@media (prefers-reduced-motion:reduce){.flip{transition:none}.flota{animation:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top">
+    <div class="marca">Javificación<small>EF</small></div>
+    <div class="grupos" id="grupos" role="tablist" aria-label="Grupo"></div>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button class="tab" id="t_coev" role="tab" type="button">Coevaluación</button>
+    <button class="tab" id="t_clase" role="tab" type="button">La clase</button>
+    <button class="tab" id="t_merc" role="tab" type="button">El Mercader</button>
+    <button class="tab" id="t_bov" role="tab" type="button">Bóveda ↗</button>
+  </nav>
+
+  <!-- COEVALUACIÓN -->
+  <section id="v_coev">
+    <div class="coevTop">
+      <span class="contador" id="cCont">0 / 0</span>
+      <span class="aviso" id="cAviso">Cada alumno toca su nombre y da su ficha a un compañero.</span>
+      <button class="go" id="cCerrar" type="button">Cerrar sesión · Compi del día</button>
+      <div class="progreso"><i id="cProg" style="width:0%"></i></div>
+    </div>
+    <div class="alumnos" id="cAlumnos"></div>
+    <h2 class="sec">Fichas de hoy</h2>
+    <ul class="lista" id="cLista"></ul>
+  </section>
+
+  <!-- LA CLASE -->
+  <section id="v_clase" hidden>
+    <div class="fila"><span class="aviso" id="estado">Cargando…</span><button class="ghost" id="bAct" type="button">Actualizar</button></div>
+    <h2 class="sec">Alumnos</h2>
+    <div class="alumnos" id="aAlumnos"></div>
+  </section>
+
+  <!-- MERCADER -->
+  <section id="v_merc" hidden>
+    <div class="fila"><span class="aviso" id="mAviso"></span></div>
+    <h2 class="sec">Cartas de Educación Física</h2>
+    <div class="tienda" id="tienda"></div>
+  </section>
+
+  <!-- BÓVEDA -->
+  <section id="v_bov" hidden>
+    <div class="bvTop">
+      <div class="cofre" id="bvCofre" aria-hidden="true"><div class="llenado" id="bvLlenado"></div><div class="monedaC">G</div></div>
+      <div class="bvInfo">
+        <div class="bvGrupo" id="bvGrupo">Bóveda</div>
+        <div class="bvSaldo"><b id="bvSaldo">0</b> galeones de la clase</div>
+        <div class="aviso">Se ganan con la autoevaluación de la clase y se gastan entre todos en recompensas.</div>
+      </div>
+    </div>
+    <h2 class="sec">Autoevaluación de la clase</h2>
+    <div class="aspectos" id="bvAspectos"></div>
+    <div class="fila" style="margin-top:12px">
+      <span class="aviso" id="bvMedia"></span>
+      <button class="ghost" id="bvRehacer" type="button" hidden>Anular y repetir</button>
+      <button class="go" id="bvGuardar" type="button">Guardar autoevaluación</button>
+    </div>
+    <h2 class="sec">Recompensas</h2>
+    <div id="bvRecompensas"></div>
+    <h2 class="sec">Movimientos</h2>
+    <ul class="lista" id="bvHist"></ul>
+    <div class="fila ajuste">
+      <span class="aviso">Ajustar galeones a mano (por ejemplo, los que ya tenía la clase):</span>
+      <input id="bvAjN" type="number" min="1" max="999" inputmode="numeric" placeholder="Nº" aria-label="Galeones">
+      <input id="bvAjM" type="text" maxlength="60" placeholder="Motivo (opcional)" aria-label="Motivo">
+      <button class="ghost" id="bvAjDar" type="button">Añadir</button>
+      <button class="ghost rojo" id="bvAjQuitar" type="button">Quitar</button>
+    </div>
+  </section>
+</div>
+<div class="modal" id="mCanje" role="dialog" aria-modal="true" aria-labelledby="bvCanjeTit" hidden>
+  <div class="caja peq">
+    <h3 id="bvCanjeTit">Canjear recompensa</h3>
+    <p id="bvCanjeTxt"></p>
+    <div class="fila" style="justify-content:flex-end">
+      <button class="ghost" type="button" data-cierra="mCanje">Cancelar</button>
+      <button class="go" id="bvCanjeSi" type="button">Sí, canjear</button>
+    </div>
+  </div>
+</div>
+
+<!-- dar ficha -->
+<div class="modal" id="mFicha" role="dialog" aria-modal="true" aria-labelledby="fTit" hidden>
+  <div class="caja">
+    <button class="cerrar" type="button" data-cierra="mFicha" aria-label="Cerrar">×</button>
+    <h3 id="fTit"></h3>
+    <div id="fPaso1">
+      <p class="aviso">Toca al compañero o compañera que se merece tu ficha.</p>
+      <div class="alumnos" id="fAlumnos"></div>
+    </div>
+    <div id="fPaso2" hidden>
+      <p class="aviso" id="fQuien"></p>
+      <div class="motivos" id="fMotivos"></div>
+      <div class="fila" style="margin-top:12px"><button class="ghost" id="fAtras" type="button">Cambiar compañero</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- compi del día -->
+<div class="modal" id="mCompi" role="dialog" aria-modal="true" aria-labelledby="kTit" hidden>
+  <div class="caja">
+    <button class="cerrar" type="button" data-cierra="mCompi" aria-label="Cerrar">×</button>
+    <h3 id="kTit">Compi del día</h3>
+    <div class="compi" id="kElige"></div>
+    <div class="alumnos" id="kAlumnos" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- perfil -->
+<div class="modal" id="mPerfil" role="dialog" aria-modal="true" aria-labelledby="pNom" hidden>
+  <div class="caja">
+    <button class="cerrar" type="button" data-cierra="mPerfil" aria-label="Cerrar">×</button>
+    <div class="perfilHead">
+      <div class="av" id="pAv"></div>
+      <div class="info">
+        <h3 id="pNom"></h3>
+        <div class="aviso" id="pNiv"></div>
+        <div class="barra"><i id="pBarra"></i></div>
+        <div class="nums" id="pNums"></div>
+        <div class="etiq" id="pSig"></div>
+      </div>
+    </div>
+    <h4>Puntos del profe</h4>
+    <div class="motivos" id="pMotivos"></div>
+    <h4>Sus cartas</h4>
+    <div class="misCartas" id="pCartas"></div>
+    <h4>Últimos movimientos</h4>
+    <ul class="lista" id="pHist"></ul>
+  </div>
+</div>
+
+<!-- compra -->
+<div class="modal" id="mCompra" role="dialog" aria-modal="true" aria-labelledby="bTit" hidden>
+  <div class="caja peq">
+    <button class="cerrar" type="button" data-cierra="mCompra" aria-label="Cerrar">×</button>
+    <h3 id="bTit"></h3>
+    <label class="aviso" for="bAlumno">¿Quién la compra?</label>
+    <select id="bAlumno"></select>
+    <p class="aviso" id="bNota" style="margin-top:10px"></p>
+    <div class="fila" style="justify-content:flex-end;margin-top:10px">
+      <button class="ghost" type="button" data-cierra="mCompra">Cancelar</button>
+      <button class="go" id="bSi" type="button">Comprar</button>
+    </div>
+  </div>
+</div>
+
+<!-- revelar carta -->
+<div class="modal" id="mCarta" role="dialog" aria-modal="true" aria-label="Carta" hidden>
+  <div class="caja peq revelar">
+    <div class="flip" id="rFlip"><img class="dorso" src="../img/cartas-ef/ef-reverso.webp" alt=""><img class="frente" id="rImg" alt=""></div>
+    <p class="aviso" id="rTxt" style="text-align:center"></p>
+    <button class="go" type="button" data-cierra="mCarta">Cerrar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="../comun/javi.js"></script>
+<script>
+(window.JAVI ? JAVI.listo : function(f){ f(); })(function(){
+'use strict';
+/* ============================================================
+   CONFIGURACIÓN  (puedes tocar estos valores)
+   ============================================================ */
+var EF = {
+  grupos: {
+    '3ºA': ['Adrián','Aimar','Alejandro','Ana M','Ana S','Carmen','Cristo','Diego','Gala','Hugo','José','Lucía','María B','María D','Naomi','Noa','Pablo','Valeria'],
+    '3ºB': ['Adriana','Ainhara','Alma','Asher','Athenea','Claudia','Daniela','Dayron','Edgar','Fernando','Laura','Lucas','María','Noah','Rubén','Samuel','Suhaila','Valeria'],
+    '4ºB': ['Aaron','Aiden','Alberto','Alira','Amelia','Dafne','Francisco','Hugo','Iris','Jesús','Mariam','Nirvana','Oscar','Paula','Thalia','Uriel','Valentina','Valeria']
+  },
+  chicas: ['Ana M','Ana S','Carmen','Gala','Lucía','María B','María D','Naomi','Noa','Valeria','Adriana','Ainhara','Alma','Athenea','Claudia','Daniela','Laura','María','Suhaila',
+           'Alira','Amelia','Dafne','Iris','Mariam','Nirvana','Paula','Thalia','Valentina'],
+  /* puntos de partida (ClassDojo a 7 de octubre de 2026). 3ºB empieza en 0. */
+  inicio: {
+    '3ºA': { 'Adrián':6, 'Aimar':6, 'Alejandro':4, 'Ana M':6, 'Ana S':5, 'Carmen':6, 'Cristo':7, 'Diego':8, 'Gala':5,
+             'Hugo':8, 'José':8, 'Lucía':6, 'María B':8, 'María D':4, 'Naomi':4, 'Noa':5, 'Pablo':6, 'Valeria':5 },
+    '3ºB': {},
+    '4ºB': { 'Aaron':1, 'Aiden':3, 'Alberto':8, 'Alira':-3, 'Amelia':-1, 'Dafne':1, 'Francisco':0, 'Hugo':2, 'Iris':0,
+             'Jesús':7, 'Mariam':11, 'Nirvana':9, 'Oscar':-2, 'Paula':-1, 'Thalia':4, 'Uriel':-4, 'Valentina':-5, 'Valeria':4 }
+  },
+  /* mismo Formulario y Hoja que Javificación; los alumnos se guardan como «3ºA · Nombre» */
+  registro: {
+    formAction: 'https://docs.google.com/forms/d/e/1FAIpQLSd_kTfsYHYK8F3jv0WmYJpsMfw1rYLVOrZiIHzH6Mb-4JuAaw/formResponse',
+    entradas: { alumno:'entry.1643177071', accion:'entry.1324105340', cartaId:'entry.2081350872', tipo:'entry.1036866207', carta:'entry.704758731' },
+    csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfXYmi9evsMT7EtFrDVG3xALHoudOA2v299Yhgm4vEffLMs5KtcLnBO-jckirvRU7ogMaHCOZe_PNQ/pub?gid=326777813&single=true&output=csv'
+  },
+  /* coevaluación: cada alumno da 1 ficha por sesión; nadie recibe más de «tope» */
+  fichaValor: 1, tope: 3, compiDia: 2,
+  motivosCoev: ['Juego limpio','Ayuda a compañeros','Esfuerzo','Anima al equipo','Buen compañero'],
+  motivosProfe: [
+    { n:'Reto superado', g:1 }, { n:'Responsable del día', g:1 }, { n:'Esfuerzo extra', g:1 },
+    { n:'No respeta las normas', g:-1 }, { n:'No realiza el calentamiento', g:-1 }, { n:'Falta de juego limpio', g:-2 }
+  ],
+  /* niveles: puntos acumulados (las compras no bajan el nivel) */
+  niveles: [
+    { min:0,  n:'Muggle curioso',          f:'Muggle curiosa',           c:'#a8a08a' },
+    { min:3,  n:'Carta de Hogwarts',       f:'Carta de Hogwarts',        c:'#c9b27a' },
+    { min:6,  n:'Aprendiz de varita',      f:'Aprendiz de varita',       c:'#4cc46a' },
+    { min:10, n:'Alumno de primer año',    f:'Alumna de primer año',     c:'#2fe0c0' },
+    { min:15, n:'Explorador del castillo', f:'Exploradora del castillo', c:'#45c4e8' },
+    { min:21, n:'Experto en pociones',     f:'Experta en pociones',      c:'#6aa8ff' },
+    { min:28, n:'Prefecto',                f:'Prefecta',                 c:'#8a8cff' },
+    { min:36, n:'Duelista',                f:'Duelista',                 c:'#b07aff' },
+    { min:45, n:'Auror',                   f:'Auror',                    c:'#ee4a68' },
+    { min:55, n:'Profesor de Hogwarts',    f:'Profesora de Hogwarts',    c:'#ff8f2e' },
+    { min:66, n:'Miembro del Wizengamot',  f:'Miembro del Wizengamot',   c:'#f2c14e' },
+    { min:78, n:'Gran Hechicero',          f:'Gran Hechicera',           c:'#ffe066' },
+    { min:90, n:'Leyenda de Hogwarts',     f:'Leyenda de Hogwarts',      c:'#f6e7a4' }
+  ],
+  /* cartas: existencias por grupo y trimestre según rareza */
+  existencias: { comun:2, especial:1, legendaria:1 },
+  diasMercader: [],   /* vacío = abierto todos los días; ej. [5] = solo viernes (0 domingo … 6 sábado) */
+  cartas: [
+    { id:1,  r:'comun',      n:'Ordo Primus',       e:'Corresponsable de la fila',               p:5 },
+    { id:2,  r:'comun',      n:'Melodia Motrix',    e:'Elige la música del calentamiento',       p:5 },
+    { id:3,  r:'comun',      n:'Dux Equipus',       e:'Capitán: elige su equipo',                p:6 },
+    { id:4,  r:'comun',      n:'Iterum Saltus',     e:'Segundo intento en una prueba',           p:6 },
+    { id:5,  r:'comun',      n:'Auxilium Magistri', e:'Ayudante del profe en la sesión',         p:5 },
+    { id:6,  r:'especial',   n:'Aurum Quintus',     e:'+5 galeones hoy',                         p:9, efecto:'oro5' },
+    { id:7,  r:'especial',   n:'Ludus Electus',     e:'Elige el juego final de la sesión',       p:8 },
+    { id:8,  r:'especial',   n:'Scutum Invictus',   e:'Inmunidad en un juego de pillar',         p:8 },
+    { id:9,  r:'especial',   n:'Gradus Ascendo',    e:'+1 en un ítem de su autoevaluación',      p:9 },
+    { id:10, r:'legendaria', n:'Duplex Aurum',      e:'Sus galeones valen ×2 durante una sesión',p:14, efecto:'x2' },
+    { id:11, r:'legendaria', n:'Triplex Aurum',     e:'Sus galeones valen ×3 durante una sesión',p:18, efecto:'x3' },
+    { id:12, r:'legendaria', n:'Tempus Liberum',    e:'30 minutos libres al final de la clase',  p:16 },
+    { id:13, r:'legendaria', n:'Magister Diei',     e:'¡Maestro por un día!',                    p:22 }
+  ]
+};
+var RAREZAS = { comun:'Común', especial:'Especial', legendaria:'Legendaria' };
+
+/* Las listas de alumnos y quién es chica se editan ahora en el PANEL DEL PROFE (Javificación ?profe → Alumnos).
+   Las de arriba solo se usan si no se puede leer data/alumnos.json. */
+EF.alias = {};
+(function(){
+  if(!window.JAVI) return;
+  var gs = JAVI.grupos().filter(function(g){ var r = JAVI.grupo(g); return r && r.sistema==='ef'; });
+  if(!gs.length) return;
+  var grupos = {}, chicas = [], pers = {};
+  gs.forEach(function(g){ var r = JAVI.grupo(g); grupos[g] = r.nombres; EF.alias[g] = r.alias || {};
+    r.chicas.forEach(function(n){ if(chicas.indexOf(n)<0) chicas.push(n); });
+    for(var k in r.personajes) pers[k] = r.personajes[k]; });
+  EF.grupos = grupos; EF.chicas = chicas; EF.personajes = pers;
+})();
+
+/* ---------- utilidades ---------- */
+function $(id){ return document.getElementById(id); }
+function normal(n){ return String(n||'').trim().toLowerCase(); }
+function numero(v){ var x = parseFloat(String(v||'').replace(',', '.')); return isFinite(x) ? Math.round(x) : 0; }
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function clave(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function hhmm(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function rnd(){ try{ var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0]/4294967296; }catch(e){ return Math.random(); } }
+function xmur3(str){ var h=1779033703^str.length, i; for(i=0;i<str.length;i++){ h=Math.imul(h^str.charCodeAt(i),3432918353); h=(h<<13)|(h>>>19); } return function(){ h=Math.imul(h^(h>>>16),2246822507); h=Math.imul(h^(h>>>13),3266489909); h^=h>>>16; return h>>>0; }; }
+function fechaFila(t){
+  var m = String(t||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(m) return m[3]+'-'+pad(+m[2])+'-'+pad(+m[1]);
+  m = String(t||'').match(/(\d{4})-(\d{2})-(\d{2})/);
+  return m ? m[0] : '';
+}
+function inicioTrimestre(){
+  var d = new Date(), m = d.getMonth(), y = d.getFullYear();
+  if(m>=8) return y+'-09-01';
+  if(m<3) return y+'-01-01';
+  return y+'-04-01';
+}
+function leerCSV(texto){
+  var filas=[], fila=[], cur='', q=false, i, c;
+  for(i=0;i<texto.length;i++){
+    c=texto[i];
+    if(q){ if(c==='"'){ if(texto[i+1]==='"'){ cur+='"'; i++; } else q=false; } else cur+=c; }
+    else if(c==='"'){ q=true; }
+    else if(c===','){ fila.push(cur); cur=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&texto[i+1]==='\n') i++; fila.push(cur); cur=''; filas.push(fila); fila=[]; }
+    else cur+=c;
+  }
+  if(cur!==''||fila.length){ fila.push(cur); filas.push(fila); }
+  return filas;
+}
+var toastT = 0;
+function aviso(txt){ var el = $('toast'); el.textContent = txt; el.hidden = false; el.style.animation='none'; void el.offsetWidth; el.style.animation=''; clearTimeout(toastT); toastT = setTimeout(function(){ el.hidden = true; }, 4800); }
+function flotar(txt, neg, el){
+  var r = el ? el.getBoundingClientRect() : { left:innerWidth/2, top:innerHeight/2, width:0 };
+  var f = document.createElement('span'); f.className = 'flota'; f.textContent = txt; if(neg) f.style.color = 'var(--rojoT)';
+  f.style.left = (r.left + r.width/2)+'px'; f.style.top = (r.top + 20)+'px';
+  document.body.appendChild(f); setTimeout(function(){ f.remove(); }, 1300);
+}
+
+/* ---------- compatibilidad con el dibujo de personajes de Javificación ---------- */
+var CONFIG = { alumnos: [] };
+var G = { chicas: EF.chicas, personajes: EF.personajes || {}, niveles: EF.niveles };
+
+/* ---------- personajes: chicos y chicas magos que evolucionan con el nivel ----------
+   Con puntuación negativa, el personaje está dentro de un huevo mágico.
+   Al subir de nivel crece y gana complementos:
+   cada nivel crece un poco y, cada dos niveles, gana un complemento: bufanda, varita,
+   sombrero e insignia, capa, libro de hechizos y, al final, aura y estrellas */
+var PIELES = ['#f7d5b8','#eab68f','#c98d62','#8d5a3b','#f2c7a2'];
+var PELOS  = ['#4a2c18','#22191a','#8a5226','#c98a3a','#e6c46c','#a83d22'];
+var ROPAS  = ['#3d6fb6','#c2496b','#3f9a6a','#d9862e','#7a5bc2','#2f8fa6'];
+var IRIS   = ['#6b4423','#3b6fb0','#3f8a4f','#8a6a2a'];
+var ESTILOS = { chica:['coletas','melena','moño'], chico:['corto','rizado','pincho'] };
+var COLOR_PELO = { 'moreno':'#2a1d17', 'castaño':'#6e4328', 'rubio':'#e3c26a', 'pelirrojo':'#b2462a' };
+var COLOR_PIEL = { 'clara':'#f7d5b8', 'media':'#e6b48c', 'morena':'#c48a5c', 'oscura':'#8d5a3b' };
+var OL = '#3a2620';
+function mezcla(a, b, t){
+  function h(x){ return [parseInt(x.substr(1,2),16), parseInt(x.substr(3,2),16), parseInt(x.substr(5,2),16)]; }
+  var A = h(a), B = h(b), r = '#';
+  for(var i=0;i<3;i++){ var v = Math.round(A[i]+(B[i]-A[i])*t); r += (v<16?'0':'')+v.toString(16); }
+  return r;
+}
+function aspectoDe(nombre){
+  var i = CONFIG.alumnos.indexOf(nombre); if(i<0) i = xmur3(nombre)() % 97;
+  var chica = (G.chicas||[]).indexOf(nombre) >= 0;
+  var a = { chica:chica,
+            pelo: ESTILOS[chica?'chica':'chico'][Math.floor(i/2) % 3],
+            colorPelo: PELOS[(i*5+1) % PELOS.length],
+            piel: PIELES[(i*3) % PIELES.length],
+            ropa: ROPAS[(i*7+2) % ROPAS.length],
+            ojos: IRIS[(i*3+1) % IRIS.length] };
+  var o = G.personajes && G.personajes[nombre];
+  if(o){
+    if(o.pelo) a.pelo = o.pelo;
+    if(typeof o.colorPelo === 'number') a.colorPelo = PELOS[o.colorPelo % PELOS.length];
+    else if(COLOR_PELO[normal(o.colorPelo)]) a.colorPelo = COLOR_PELO[normal(o.colorPelo)];
+    if(typeof o.piel === 'number') a.piel = PIELES[o.piel % PIELES.length];
+    else if(COLOR_PIEL[normal(o.piel)]) a.piel = COLOR_PIEL[normal(o.piel)];
+    a.gafas = !!o.gafas; a.mecha = !!o.mecha;
+    if(typeof o.ropa === 'number') a.ropa = ROPAS[o.ropa % ROPAS.length];
+  }
+  return a;
+}
+function estrella(x, y, r, f, extra){
+  var p = [], i, ang, rr;
+  for(i=0;i<10;i++){ ang = Math.PI/5*i - Math.PI/2; rr = i%2 ? r*.45 : r; p.push((x+Math.cos(ang)*rr).toFixed(1)+','+(y+Math.sin(ang)*rr).toFixed(1)); }
+  return '<polygon points="'+p.join(' ')+'" fill="'+f+'"'+(extra||'')+'/>';
+}
+var ESCALAS = [0.64, 0.71, 0.78, 0.85, 0.91, 0.97, 1.02];
+var UIDP = 0;
+function personajeSVG(a, lv, huevo){
+  var u = 'p'+(++UIDP), g = '', P = a.piel, H = a.colorPelo, R = a.ropa, Hd = mezcla(H,'#000000',.35), Hl = mezcla(H,'#ffffff',.35);
+  var st = ' stroke="'+OL+'" stroke-width="1.6" stroke-linejoin="round"';
+  var ini = '<svg viewBox="4 -22 112 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true">';
+  var defs = '<defs>'+
+    '<radialGradient id="'+u+'s" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="'+mezcla(P,'#ffffff',.25)+'"/><stop offset="1" stop-color="'+mezcla(P,'#7a3b2e',.12)+'"/></radialGradient>'+
+    '<linearGradient id="'+u+'r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+mezcla(R,'#ffffff',.18)+'"/><stop offset="1" stop-color="'+mezcla(R,'#000000',.22)+'"/></linearGradient>'+
+    '<linearGradient id="'+u+'h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3d8a"/><stop offset="1" stop-color="#271f52"/></linearGradient>'+
+    '<linearGradient id="'+u+'c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a4fa8"/><stop offset="1" stop-color="#1c2766"/></linearGradient>'+
+    '<radialGradient id="'+u+'a"><stop offset="0" stop-color="#fff2c2" stop-opacity=".85"/><stop offset=".6" stop-color="#ffd76a" stop-opacity=".3"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="'+u+'e" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#e9d6a6"/></radialGradient>'+
+    '</defs>';
+  if(huevo){
+    g += '<ellipse cx="60" cy="132" rx="30" ry="5" fill="rgba(0,0,0,.35)"/>'+
+         '<path d="M60 52 C80 52 90 82 90 102 C90 122 76 133 60 133 C44 133 30 122 30 102 C30 82 40 52 60 52Z" fill="url(#'+u+'e)"'+st+'/>'+
+         estrella(47, 80, 6, R)+estrella(73, 116, 7, R)+estrella(75, 78, 4.5, R)+estrella(46, 118, 4, R)+
+         '<path d="M31 98 l7 7 l7 -8 l7 8 l7 -8 l7 8 l7 -8 l7 8 l7 -7" fill="none" stroke="'+OL+'" stroke-width="2.2" stroke-linejoin="round"/>'+
+         '<ellipse cx="50" cy="68" rx="6" ry="10" fill="#fff" opacity=".6" transform="rotate(-20 50 68)"/>';
+    return ini+defs+g+'</svg>';
+  }
+  var tot = Math.max(1, (G.niveles||[]).length-1), idx = Math.max(0, Math.min(tot, lv));
+  lv = Math.round(idx*6/tot);                 /* complementos: uno nuevo cada dos niveles */
+  var s = 0.64 + 0.38*idx/tot;                 /* y crece un poco en cada nivel */
+  g += '<g transform="translate(60 132) scale('+s+') translate(-60 -132)">';
+  if(lv>=6) g += '<circle cx="60" cy="72" r="64" fill="url(#'+u+'a)"/>';
+  g += '<ellipse cx="60" cy="132" rx="28" ry="5" fill="rgba(0,0,0,.35)"/>';
+  if(lv>=4) g += '<path d="M36 84 Q60 76 84 84 L100 128 Q60 136 20 128Z" fill="url(#'+u+'c)"'+st+'/>'+
+                 '<path d="M36 84 Q60 76 84 84 L86 90 Q60 82 34 90Z" fill="#c9a34a"/>';
+  /* pelo largo por detrás */
+  if(a.pelo==='melena') g += '<path d="M31 48 Q26 96 40 104 L80 104 Q94 96 89 48Z" fill="'+Hd+'"'+st+'/>';
+  if(a.pelo==='coletas') g += '<path d="M30 54 Q16 62 20 82 Q24 92 30 88 Q26 74 34 62Z" fill="'+H+'"'+st+'/><path d="M90 54 Q104 62 100 82 Q96 92 90 88 Q94 74 86 62Z" fill="'+H+'"'+st+'/>'+
+                            '<circle cx="31" cy="56" r="4" fill="'+R+'"'+st+'/><circle cx="89" cy="56" r="4" fill="'+R+'"'+st+'/>';
+  if(a.pelo==='moño') g += '<circle cx="60" cy="16" r="11" fill="'+H+'"'+st+'/><path d="M54 12 Q60 8 66 12" fill="none" stroke="'+Hl+'" stroke-width="2" stroke-linecap="round"/>';
+  /* piernas, calcetines y zapatos */
+  g += '<rect x="50" y="108" width="8.5" height="20" rx="3" fill="'+P+'"'+st+'/><rect x="61.5" y="108" width="8.5" height="20" rx="3" fill="'+P+'"'+st+'/>'+
+       '<rect x="50" y="118" width="8.5" height="7" fill="#f4f0e6"/><rect x="61.5" y="118" width="8.5" height="7" fill="#f4f0e6"/>'+
+       '<path d="M46 129 Q46 123 54 123 Q60 124 60 129 Q53 132 46 129Z" fill="#2b2230"'+st+'/><path d="M60 129 Q60 124 66 123 Q74 123 74 129 Q67 132 60 129Z" fill="#2b2230"'+st+'/>'+
+       '<path d="M49 126 Q52 124.5 55 125" fill="none" stroke="#6b6080" stroke-width="1.4" stroke-linecap="round"/><path d="M65 125 Q68 124.5 71 126" fill="none" stroke="#6b6080" stroke-width="1.4" stroke-linecap="round"/>';
+  /* falda o pantalón */
+  if(a.chica) g += '<path d="M42 100 L78 100 L85 116 Q60 121 35 116Z" fill="#3b3550"'+st+'/><path d="M50 101 L47 117 M60 101 L60 119 M70 101 L73 117" stroke="#2a2440" stroke-width="1.2"/>';
+  else g += '<path d="M43 100 H77 L78 114 H62.5 L60 106 L57.5 114 H42Z" fill="#3b3550"'+st+'/>';
+  /* brazos */
+  g += '<path d="M45 86 Q34 92 33 104" fill="none" stroke="'+OL+'" stroke-width="11" stroke-linecap="round"/><path d="M45 86 Q34 92 33 104" fill="none" stroke="url(#'+u+'r)" stroke-width="8" stroke-linecap="round"/>'+
+       '<path d="M75 86 Q86 92 87 104" fill="none" stroke="'+OL+'" stroke-width="11" stroke-linecap="round"/><path d="M75 86 Q86 92 87 104" fill="none" stroke="url(#'+u+'r)" stroke-width="8" stroke-linecap="round"/>'+
+       '<circle cx="33" cy="106" r="5" fill="'+P+'"'+st+'/><circle cx="87" cy="106" r="5" fill="'+P+'"'+st+'/>';
+  /* cuerpo: camisa con cuello y jersey */
+  g += '<path d="M44 84 Q60 79 76 84 L79 104 Q60 108 41 104Z" fill="url(#'+u+'r)"'+st+'/>'+
+       '<path d="M52 82 L60 92 L68 82 Z" fill="#f7f3ea"'+st+'/><path d="M58 88 L60 98 L62 88 Z" fill="#7a2030"/>';
+  /* trenzas por delante de los hombros */
+  if(a.pelo==='trenzas'){
+    [[30,1],[90,-1]].forEach(function(t){
+      var x = t[0], d = t[1];
+      for(var k=0;k<5;k++){ var y = 62+k*8.5, xx = x + d*(k*0.6); g += '<ellipse cx="'+xx.toFixed(1)+'" cy="'+y+'" rx="5.6" ry="5.4" fill="'+(k%2?Hd:H)+'"'+st+'/>'; }
+      var xf = x + d*3; g += '<rect x="'+(xf-4)+'" y="101" width="8" height="4" rx="1.5" fill="'+R+'"'+st+'/>'+
+           '<path d="M'+(xf-3)+' 105 Q'+xf+' 113 '+(xf+3)+' 105Z" fill="'+H+'"'+st+'/>';
+    });
+  }
+  /* cabeza */
+  g += '<path d="M52 76 Q60 84 68 76 L68 82 Q60 86 52 82Z" fill="'+mezcla(P,'#7a3b2e',.25)+'"/>'+
+       '<ellipse cx="31.5" cy="54" rx="5" ry="6" fill="'+P+'"'+st+'/><ellipse cx="88.5" cy="54" rx="5" ry="6" fill="'+P+'"'+st+'/>'+
+       '<circle cx="60" cy="50" r="29" fill="url(#'+u+'s)"'+st+'/>';
+  /* pelo por delante */
+  if(a.pelo==='corto') g += '<path d="M31 52 Q28 20 60 20 Q92 20 89 52 Q86 38 76 35 Q70 41 62 36 Q52 42 44 37 Q35 41 31 52Z" fill="'+H+'"'+st+'/>'+
+                            '<path d="M44 27 Q56 22 70 26" fill="none" stroke="'+Hl+'" stroke-width="2.4" stroke-linecap="round"/>';
+  else if(a.pelo==='rizado') g += '<g'+st+' fill="'+H+'"><circle cx="38" cy="38" r="9"/><circle cx="34" cy="49" r="6.5"/><circle cx="86" cy="49" r="6.5"/><circle cx="82" cy="37" r="9"/>'+
+                                '<circle cx="49" cy="29" r="10"/><circle cx="71" cy="28" r="10"/><circle cx="60" cy="25" r="10"/></g>'+
+                                '<path d="M52 24 Q58 20 64 22" fill="none" stroke="'+Hl+'" stroke-width="2.2" stroke-linecap="round"/>';
+  else if(a.pelo==='pincho') g += '<path d="M31 50 L33 30 L40 35 L43 19 L51 30 L60 14 L68 30 L77 19 L80 35 L87 30 L89 50 Q80 36 60 37 Q40 36 31 50Z" fill="'+H+'"'+st+'/>'+
+                                '<path d="M50 28 L54 33 M64 24 L66 31" stroke="'+Hl+'" stroke-width="2" stroke-linecap="round"/>';
+  else g += '<path d="M30 56 Q26 20 60 20 Q94 20 90 56 Q86 40 76 35 Q66 46 48 38 Q36 42 30 56Z" fill="'+H+'"'+st+'/>'+
+            '<path d="M42 28 Q54 22 68 25" fill="none" stroke="'+Hl+'" stroke-width="2.4" stroke-linecap="round"/>';
+  /* cara */
+  [[49,1],[71,-1]].forEach(function(e){
+    var x = e[0];
+    g += '<path d="M'+(x-6)+' '+(43+e[1]*0)+' Q'+x+' 39.5 '+(x+6)+' 43" fill="none" stroke="'+Hd+'" stroke-width="2.2" stroke-linecap="round"/>'+
+         '<ellipse cx="'+x+'" cy="53" rx="6" ry="7" fill="#fff"'+st+'/>'+
+         '<ellipse cx="'+x+'" cy="54" rx="4.4" ry="5.2" fill="'+a.ojos+'"/>'+
+         '<circle cx="'+x+'" cy="54.5" r="2.4" fill="#120c10"/>'+
+         '<circle cx="'+(x+1.8)+'" cy="51.6" r="1.6" fill="#fff"/><circle cx="'+(x-1.6)+'" cy="56.6" r=".8" fill="#fff"/>';
+    if(a.chica) g += '<path d="M'+(x-6)+' 50 l-2.5 -2 M'+(x-4.5)+' 47.8 l-1.6 -2.4" stroke="'+OL+'" stroke-width="1.4" stroke-linecap="round"/>';
+  });
+  g += '<ellipse cx="42" cy="63" rx="5" ry="3" fill="#ff7f97" opacity=".45"/><ellipse cx="78" cy="63" rx="5" ry="3" fill="#ff7f97" opacity=".45"/>'+
+       '<path d="M58.5 60 Q60 62 61.5 60" fill="none" stroke="'+mezcla(P,'#7a3b2e',.45)+'" stroke-width="1.5" stroke-linecap="round"/>'+
+       '<path d="M53 65 Q60 66.5 67 65 Q66 73 60 73 Q54 73 53 65Z" fill="#8a2a33"'+st+'/><path d="M56 70.5 Q60 68 64 70.5 Q62 72.6 60 72.6 Q58 72.6 56 70.5Z" fill="#ff8a8a"/>'+
+       '<path d="M54.5 65.6 Q60 67 65.5 65.6 L65 67.4 Q60 68.4 55 67.4Z" fill="#fff"/>';
+  if(a.mecha) g += '<path d="M51 22 Q58 26 55 37 Q55 43 63 42 Q69 33 64 21Z" fill="#f4f0e6" stroke="'+OL+'" stroke-width="1.2" stroke-linejoin="round"/>';
+  if(a.gafas) g += '<g fill="rgba(200,230,255,.18)" stroke="#2b2230" stroke-width="2.2"><rect x="40.5" y="45.5" width="17" height="14" rx="4.5"/><rect x="62.5" y="45.5" width="17" height="14" rx="4.5"/></g>'+
+                   '<path d="M57.5 51 Q60 49 62.5 51 M40.5 50 L33 48 M79.5 50 L87 48" fill="none" stroke="#2b2230" stroke-width="2"/>';
+  /* complementos */
+  if(lv>=1) g += '<path d="M42 79 Q60 89 78 79 L79 87 Q60 97 41 87Z" fill="#c9a34a"'+st+'/>'+
+                 '<path d="M48 82.5 L48 90.5 M56 85 L56 93 M64 85 L64 93 M72 82.5 L72 90.5" stroke="'+R+'" stroke-width="2.6"/>'+
+                 '<path d="M64 88 L74 88 L76 110 L66 110Z" fill="#c9a34a"'+st+'/><path d="M65 95 L75 95 M65.6 102 L75.6 102" stroke="'+R+'" stroke-width="2.6"/>'+
+                 '<path d="M66 110 L67 114 M70 110 L71 114 M74 110 L75 114" stroke="#c9a34a" stroke-width="1.6" stroke-linecap="round"/>';
+  if(lv>=2) g += '<path d="M88 104 L108 72" stroke="'+OL+'" stroke-width="5.4" stroke-linecap="round"/><path d="M88 104 L108 72" stroke="#7a4b26" stroke-width="3.4" stroke-linecap="round"/>'+
+                 '<path d="M90 100.5 L94 94" stroke="#a8763f" stroke-width="3.6" stroke-linecap="round"/>'+
+                 '<circle cx="109" cy="70" r="'+(lv>=6?9:6)+'" fill="#ffe9a6" opacity=".35"/>'+estrella(109, 70, lv>=6 ? 7 : 5, '#fff3c4', st)+
+                 '<circle cx="87" cy="106" r="5" fill="'+P+'"'+st+'/>';
+  if(lv>=3) g += '<path d="M53 92 h9 v5 q0 5 -4.5 7 q-4.5 -2 -4.5 -7z" fill="#e8c872"'+st+'/><path d="M57.5 95 v6" stroke="#8a6a1e" stroke-width="1.4"/>'+
+                 '<g transform="translate(0 -6)"><path d="M36 34 Q48 6 62 -12 Q70 -18 78 -10 Q72 -10 70 -4 Q74 16 84 34Z" fill="url(#'+u+'h)"'+st+'/>'+
+                 '<path d="M38 30 Q60 36 82 30 L83 35 Q60 41 37 35Z" fill="#c9a34a"'+st+'/><rect x="56" y="31" width="8" height="7" rx="1.2" fill="none" stroke="#7a5a1a" stroke-width="1.6"/>'+
+                 '<path d="M26 36 Q60 46 94 36 Q96 41 90 43 Q60 51 30 43 Q24 41 26 36Z" fill="#2b2250"'+st+'/>'+
+                 (lv>=5 ? estrella(52, 16, 3.6, '#ffe9a6')+estrella(66, 6, 3, '#ffe9a6')+estrella(70, 22, 2.6, '#ffe9a6') : '')+'</g>';
+  if(lv>=5) g += '<g transform="rotate(-8 26 100)"><rect x="16" y="90" width="18" height="22" rx="2.5" fill="#8f2b2b"'+st+'/><rect x="31" y="91.5" width="3" height="19" fill="#f2e6c4"/>'+
+                 '<path d="M20 97 h10 M20 101 h8" stroke="#e8c872" stroke-width="1.6"/>'+estrella(25, 106, 3, '#e8c872')+'</g>'+
+                 '<circle cx="33" cy="106" r="5" fill="'+P+'"'+st+'/>';
+  if(lv>=6) g += estrella(20, 22, 6, '#ffe9a6', st)+estrella(102, 28, 5, '#ffe9a6', st)+estrella(13, 60, 3.6, '#fff6cf')+estrella(106, 50, 3, '#fff6cf');
+  g += '</g>';
+  return ini+defs+g+'</svg>';
+}
+
+
+/* ---------- datos (Hoja de Google + movimientos aún no publicados) ---------- */
+var grupo = '3ºA';
+try{ var gq = new URLSearchParams(location.search).get('grupo'); if(gq && EF.grupos[gq.replace('o','º')]) grupo = gq.replace('o','º'); }catch(e){}
+try{ var gl = localStorage.getItem('ef-grupo'); if(gl && EF.grupos[gl]) grupo = gl; }catch(e){}
+var filas = [], cargado = false, horaCarga = null;
+var CLAVE_PEND = 'ef-pendientes', pendientes = [];
+try{ pendientes = JSON.parse(localStorage.getItem(CLAVE_PEND)||'[]') || []; }catch(e){ pendientes = []; }
+function guardarPend(){ try{ localStorage.setItem(CLAVE_PEND, JSON.stringify(pendientes)); }catch(e){} }
+function idMov(){ return '#g'+Date.now().toString(36)+Math.floor(rnd()*1e8).toString(36); }
+function clv(nombre){ return grupo+' · '+nombre; }
+function enviarForm(d){
+  if(window.JAVI && JAVI.PRUEBA){ console.info('[modo prueba] no se envía', d); return; }
+  var e = EF.registro.entradas, body = new URLSearchParams();
+  body.set(e.alumno, d.alumno); body.set(e.accion, d.accion); body.set(e.cartaId, d.cartaId); body.set(e.tipo, d.tipo||''); body.set(e.carta, d.carta||'');
+  fetch(EF.registro.formAction, { method:'POST', mode:'no-cors', body:body }).catch(function(){});
+}
+/* mov: {alumno(clave completa), accion, n, motivo, extra} */
+function registrar(alumnoClave, accion, n, motivo, extra, cartaId){
+  var p = { id:idMov(), alumno:alumnoClave, accion:accion, n:n, motivo:motivo||'', extra:extra||'', cartaId:cartaId||'', t:Date.now() };
+  pendientes.push(p); guardarPend();
+  enviarForm({ alumno:alumnoClave, accion:accion, cartaId: cartaId ? String(cartaId) : String(n), tipo:p.motivo, carta:p.id+(extra?' · '+extra:'') });
+  return p;
+}
+/* todas las filas como movimientos homogéneos */
+function movimientos(){
+  var out = [], vistos = {};
+  filas.forEach(function(f){
+    var m = String(f[5]||'').match(/#g[a-z0-9]+/), id = m ? m[0] : '';
+    if(id) vistos[id] = 1;
+    out.push({ id:id, alumno:f[1]||'', accion:normal(f[2]), n:numero(f[3]), cartaId:String(f[3]||'').trim(), motivo:f[4]||'', extra:String(f[5]||''), dia:fechaFila(f[0]), t:f[0] });
+  });
+  pendientes.forEach(function(p){
+    if(vistos[p.id]) return;
+    out.push({ id:p.id, alumno:p.alumno, accion:normal(p.accion), n:p.n, cartaId:String(p.cartaId||p.n), motivo:p.motivo, extra:p.id+(p.extra?' · '+p.extra:''), dia:clave(new Date(p.t)), t:hhmm(new Date(p.t)), nuevo:true });
+  });
+  return out;
+}
+function delGrupo(){ var pre = normal(grupo+' · '); return movimientos().filter(function(m){ return normal(m.alumno).indexOf(pre)===0; }); }
+function nombreDe(m){
+  var n = String(m.alumno).split(' · ').slice(1).join(' · ').trim(), al = EF.alias[grupo] || {};
+  return al[normal(n)] || n;
+}
+function limpiarPend(){
+  var v = {}; filas.forEach(function(f){ var m = String(f[5]||'').match(/#g[a-z0-9]+/); if(m) v[m[0]] = 1; });
+  var ahora = Date.now(); pendientes = pendientes.filter(function(p){ return !v[p.id] && (ahora-p.t) < 36*3600*1000; }); guardarPend();
+}
+function cargar(){
+  $('estado').textContent = cargado ? 'Actualizando…' : 'Cargando…';
+  return fetch(EF.registro.csvUrl, { cache:'no-store' }).then(function(r){ return r.text(); }).then(function(t){
+    filas = leerCSV(t).slice(1); cargado = true; horaCarga = new Date(); limpiarPend(); pintarTodo();
+  }).catch(function(){ $('estado').textContent = 'No se ha podido leer la Hoja. Comprueba la conexión y pulsa «Actualizar».'; pintarTodo(); });
+}
+
+/* ---------- cuentas ---------- */
+function anulados(ms){ var a = {}; ms.forEach(function(m){ var k = String(m.extra).match(/anula (#g[a-z0-9]+)/); if(k) a[k[1]] = 1; }); return a; }
+function cuentas(){
+  var out = {}, ms = delGrupo();
+  var ini = {}, al = EF.alias[grupo] || {}, i0 = EF.inicio[grupo] || {};
+  Object.keys(i0).forEach(function(n){ ini[al[normal(n)] || n] = i0[n]; });   /* también con nombres cambiados */
+  CONFIG.alumnos.forEach(function(n){ out[n] = { acum:numero(ini[n]), gast:0 }; });
+  ms.forEach(function(m){
+    var nm = nombreDe(m); if(!out[nm]) return;
+    if(m.accion.indexOf('galeon')===0) out[nm].acum += m.n;
+    else if(m.accion.indexOf('compra')===0) out[nm].gast += m.n;
+  });
+  Object.keys(out).forEach(function(k){ out[k].saldo = out[k].acum - out[k].gast; });
+  return out;
+}
+function nivelDe(acum){
+  var nv = EF.niveles, i, r = { i:0, n:'', f:'', c:'#a8a08a', min:0, sig:null };
+  for(i=0;i<nv.length;i++){ if(acum>=nv[i].min) r = { i:i, n:nv[i].n, f:nv[i].f, c:nv[i].c, min:nv[i].min, sig:nv[i+1]||null }; }
+  return r;
+}
+function esChica(n){ return EF.chicas.indexOf(n)>=0; }
+function nomNivel(n, nv){ return esChica(n) ? nv.f : nv.n; }
+function avatar(n, cs){ var c = (cs||cuentas())[n]; return personajeSVG(aspectoDe(n), nivelDe(c.acum).i, c.acum<0); }
+
+/* ---------- coevaluación de hoy ---------- */
+var HOY = clave(new Date());
+function coev(){
+  var ms = delGrupo(), an = anulados(ms), hoy = [], antes = {};
+  ms.forEach(function(m){
+    if(m.accion.indexOf('galeon')!==0) return;
+    var k = String(m.extra).match(/Coevaluación · de ([^·#]+)/);
+    if(!k || an[m.id] || /anula/.test(m.extra)) return;
+    var r = { id:m.id, de:k[1].trim(), para:nombreDe(m), n:m.n, motivo:m.motivo, dia:m.dia, t:m.t };
+    if(m.dia===HOY) hoy.push(r);
+    else if(!antes[r.de] || antes[r.de].dia < r.dia) antes[r.de] = r;
+  });
+  var dado = {}, recibido = {};
+  hoy.forEach(function(r){ dado[r.de] = r; recibido[r.para] = (recibido[r.para]||0) + 1; });
+  var compi = ms.filter(function(m){ return m.dia===HOY && normal(m.motivo).indexOf('compi del día')===0 && m.n>0 && !an[m.id]; })[0];
+  return { hoy:hoy, ultimo:antes, dado:dado, recibido:recibido, compi:compi };
+}
+function multiplicadorHoy(nombre){
+  var mult = 1;
+  delGrupo().forEach(function(m){
+    if(nombreDe(m)!==nombre || m.dia!==HOY || m.accion.indexOf('uso')!==0) return;
+    var c = cartaPorId(String(m.cartaId).replace(/\D/g,''));
+    if(c && c.efecto==='x2') mult = Math.max(mult, 2);
+    if(c && c.efecto==='x3') mult = Math.max(mult, 3);
+  });
+  return mult;
+}
+
+/* ---------- pintar ---------- */
+var vista = 'coev';
+function tarjeta(n, cs, extra){
+  var c = cs[n], nv = nivelDe(c.acum), huevo = c.acum<0;
+  var b = document.createElement('button'); b.type = 'button'; b.className = 'cam'; b.style.setProperty('--c', nv.c);
+  b.innerHTML = '<span class="puntos'+(c.saldo<0?' neg':'')+'">'+c.saldo+'</span>'+(extra||'')+'<span class="avatar">'+avatar(n, cs)+'</span><span class="nom"></span><span class="sub">'+(huevo ? 'Nv. 0' : 'Nv. '+(nv.i+1))+'</span>';
+  b.querySelector('.nom').textContent = n;
+  return b;
+}
+function pintarCoev(){
+  var cs = cuentas(), co = coev(), box = $('cAlumnos'); box.innerHTML = '';
+  var hechos = Object.keys(co.dado).length, tot = CONFIG.alumnos.length;
+  $('cCont').textContent = hechos+' / '+tot;
+  $('cProg').style.width = (tot ? hechos/tot*100 : 0)+'%';
+  $('cAviso').textContent = co.compi ? 'Sesión cerrada: '+nombreDe(co.compi)+' es el Compi del día.' : (hechos<tot ? 'Cada alumno toca su nombre y da su ficha a un compañero.' : '¡Todos han dado su ficha! Ya puedes cerrar la sesión.');
+  $('cCerrar').disabled = !!co.compi || !co.hoy.length;
+  $('cCerrar').textContent = co.compi ? 'Sesión cerrada' : 'Cerrar sesión · Compi del día';
+  CONFIG.alumnos.forEach(function(n){
+    var dio = co.dado[n];
+    var b = tarjeta(n, cs, '<span class="marca2">'+(dio ? '✓ dio' : (co.recibido[n] ? '+'+co.recibido[n] : ''))+'</span>');
+    if(!dio && !co.recibido[n]) b.querySelector('.marca2').remove();
+    if(dio) b.classList.add('hecho');
+    b.setAttribute('aria-label', n+(dio ? ', ya ha dado su ficha' : ', dar ficha'));
+    b.addEventListener('click', function(){ if(dio) aviso(n+' ya ha dado su ficha hoy a '+dio.para+'.'); else abrirFicha(n); });
+    box.appendChild(b);
+  });
+  var ul = $('cLista'); ul.innerHTML = '';
+  if(!co.hoy.length){ ul.innerHTML = '<li class="vacio">Todavía no se ha dado ninguna ficha hoy.</li>'; }
+  co.hoy.slice().reverse().forEach(function(r){
+    var li = document.createElement('li'), sp = document.createElement('span');
+    sp.innerHTML = '<b></b> → <b></b> <span class="mas">+'+r.n+'</span> · <i></i>';
+    sp.querySelectorAll('b')[0].textContent = r.de; sp.querySelectorAll('b')[1].textContent = r.para; sp.querySelector('i').textContent = r.motivo;
+    var u = document.createElement('button'); u.type = 'button'; u.className = 'ghost'; u.textContent = 'Anular';
+    u.addEventListener('click', function(){ anular(r); });
+    li.appendChild(sp); li.appendChild(u); ul.appendChild(li);
+  });
+}
+function pintarClase(){
+  var cs = cuentas(), box = $('aAlumnos'); box.innerHTML = '';
+  $('estado').textContent = cargado ? 'Datos de las '+hhmm(horaCarga)+(pendientes.length ? ' · '+pendientes.length+' movimiento(s) esperando a la Hoja' : '') : 'Cargando…';
+  CONFIG.alumnos.forEach(function(n){
+    var b = tarjeta(n, cs); b.addEventListener('click', function(){ abrirPerfil(n); }); box.appendChild(b);
+  });
+}
+function cartaPorId(id){ id = +id; for(var i=0;i<EF.cartas.length;i++) if(EF.cartas[i].id===id) return EF.cartas[i]; return null; }
+function img(c){ return '../img/cartas-ef/ef-'+pad(c.id)+'.webp'; }
+function vendidas(){
+  var v = {}, ini = inicioTrimestre();
+  delGrupo().forEach(function(m){ if(m.accion.indexOf('reg')===0 && /^EF\d+/i.test(m.cartaId) && m.dia>=ini){ var id = +m.cartaId.replace(/\D/g,''); v[id] = (v[id]||0)+1; } });
+  return v;
+}
+function mercaderAbierto(){ return !EF.diasMercader.length || EF.diasMercader.indexOf(new Date().getDay())>=0; }
+function pintarMercader(){
+  var v = vendidas(), box = $('tienda'), abierto = mercaderAbierto(); box.innerHTML = '';
+  var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  $('mAviso').textContent = abierto ? 'Existencias de este trimestre para '+grupo+'. Cuando una carta se agota, no vuelve hasta el trimestre siguiente.'
+    : 'El Mercader está cerrado hoy. Abre el '+EF.diasMercader.map(function(d){ return DIAS[d]; }).join(' y ')+'.';
+  EF.cartas.forEach(function(c){
+    var max = EF.existencias[c.r], quedan = Math.max(0, max-(v[c.id]||0));
+    var d = document.createElement('div'); d.className = 'prod'+(quedan ? '' : ' agotado');
+    d.innerHTML = '<img src="'+img(c)+'" alt="" loading="lazy"><span class="raridad r-'+c.r+'">'+RAREZAS[c.r]+'</span>'+
+      '<div class="precio">'+c.p+' <i>galeones</i></div><div class="quedan">'+(quedan ? 'Quedan '+quedan+' de '+max : 'Agotada este trimestre')+'</div>'+
+      '<button class="go" type="button">'+(quedan ? 'Comprar' : 'Agotada')+'</button>';
+    d.querySelector('img').alt = c.n+': '+c.e;
+    d.querySelector('img').addEventListener('click', function(){ verCarta(c, false); });
+    var b = d.querySelector('button'); b.disabled = !quedan || !abierto;
+    b.addEventListener('click', function(){ abrirCompra(c); });
+    box.appendChild(d);
+  });
+}
+function pintarTodo(){
+  var soloBoveda = !EF.grupos[grupo];
+  CONFIG.alumnos = EF.grupos[grupo] || [];
+  if(soloBoveda) vista = 'bov';
+  Array.prototype.forEach.call($('grupos').children, function(b){ b.setAttribute('aria-selected', b.dataset.g===grupo ? 'true' : 'false'); });
+  ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = soloBoveda && k!=='bov'; });
+  if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); }
+  pintarBoveda();
+  if(perfilDe && !$('mPerfil').hidden) pintarPerfil();
+}
+
+/* ============================================================
+   BÓVEDA DE GRINGOTTS · galeones de toda la clase
+   Se guardan en la misma Hoja como alumno «3ºA · BÓVEDA», acción «Boveda».
+   ============================================================ */
+var BOV = {
+  grupos: ['3ºA','3ºB','4ºA','4ºB'],
+  /* galeones que tiene cada clase al empezar (ponlos aquí o usa «Ajustar» en la Bóveda) */
+  inicial: { '3ºA':0, '3ºB':0, '4ºA':0, '4ºB':0 },
+  aspectos: [
+    { n:'Esfuerzo', ic:'⚡' }, { n:'Cooperación', ic:'🤝' }, { n:'Habilidades sociales', ic:'💬' },
+    { n:'Respeto de normas', ic:'📜' }, { n:'Organización y desplazamientos', ic:'🧭' }
+  ],
+  recompensas: [
+    { sec:'Juegos mágicos', items:[['Gavilán',50],['Poli-ladrón',50],['Pañuelito',60],['Balón-tiro',60],['Pinfuvote',60],['Baile libre',60],['Escape Room EF',70],['Juego sorpresa del profe',70],['Pichi',50]] },
+    { sec:'Para los días de lluvia', items:[['Just Dance',60],['Juegos iPad',60],['Futbolín humano',80]] },
+    { sec:'Deportes de Hogwarts', items:[['Baloncesto',80],['Voleibol',80],['Balonmano',80],['Bádminton',70],['Deporte libre',130],['Fútbol',120],['Deporte alternativo trabajo en clase',100]] }
+  ]
+};
+var notas = {};
+function bovClave(){ return grupo+' · BÓVEDA'; }
+function bovMovs(){
+  var k = normal(bovClave());
+  var ms = movimientos().filter(function(m){ return normal(m.alumno)===k && m.accion.indexOf('boveda')===0; });
+  var an = {}; ms.forEach(function(m){ var x = String(m.extra).match(/anula (#g[a-z0-9]+)/); if(x) an[x[1]] = 1; });
+  return ms.map(function(m){ m.anulado = !!an[m.id]; m.esAnulacion = /anula #g/.test(m.extra); return m; });
+}
+function bovSaldo(){
+  var s = numero(BOV.inicial[grupo]);
+  bovMovs().forEach(function(m){ s += m.n; });
+  return s;
+}
+function mediaActual(){
+  var vals = BOV.aspectos.map(function(a){ return notas[a.n]; }).filter(function(v){ return v>0; });
+  if(vals.length < BOV.aspectos.length) return null;
+  var s = 0; vals.forEach(function(v){ s += v; });
+  return s/vals.length;
+}
+function autoevHoy(){ return bovMovs().filter(function(m){ return m.dia===HOY && normal(m.motivo).indexOf('autoevaluación')===0 && !m.anulado && !m.esAnulacion; })[0]; }
+function pintarBoveda(){
+  var saldo = bovSaldo();
+  $('bvSaldo').textContent = saldo;
+  var max = 130; $('bvLlenado').style.height = Math.max(4, Math.min(100, saldo/max*100))+'%';
+  $('bvGrupo').textContent = 'Bóveda de '+grupo;
+  /* autoevaluación */
+  var hecha = autoevHoy(), box = $('bvAspectos'); box.innerHTML = '';
+  BOV.aspectos.forEach(function(a){
+    var fila = document.createElement('div'); fila.className = 'asp';
+    fila.innerHTML = '<span class="aspN"><span aria-hidden="true">'+a.ic+'</span> </span><div class="notas" role="group"></div>';
+    fila.querySelector('.aspN').appendChild(document.createTextNode(a.n));
+    fila.querySelector('.notas').setAttribute('aria-label', a.n);
+    for(var v=1; v<=10; v++){ (function(v){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'nota'; b.textContent = v;
+      b.setAttribute('aria-pressed', notas[a.n]===v ? 'true' : 'false'); b.disabled = !!hecha;
+      b.addEventListener('click', function(){ notas[a.n] = v; pintarBoveda(); });
+      fila.querySelector('.notas').appendChild(b);
+    })(v); }
+    box.appendChild(fila);
+  });
+  var med = mediaActual(), gal = med===null ? 0 : Math.round(med);
+  if(hecha){
+    $('bvMedia').textContent = 'Autoevaluación de hoy guardada: '+hecha.motivo.replace(/^Autoevaluación\s*/,'')+' → +'+hecha.n+' galeones.';
+    $('bvGuardar').hidden = true; $('bvRehacer').hidden = false;
+  } else {
+    $('bvMedia').textContent = med===null ? 'Puntuad los 5 aspectos de 1 a 10.' : 'Media '+med.toFixed(1).replace('.',',')+' → la clase gana '+gal+' galeones.';
+    $('bvGuardar').hidden = false; $('bvRehacer').hidden = true;
+    $('bvGuardar').disabled = med===null;
+    $('bvGuardar').textContent = med===null ? 'Guardar autoevaluación' : 'Guardar · +'+gal+' galeones';
+  }
+  /* recompensas */
+  var rb = $('bvRecompensas'); rb.innerHTML = '';
+  BOV.recompensas.forEach(function(sec){
+    var h = document.createElement('h4'); h.textContent = sec.sec; rb.appendChild(h);
+    var ul = document.createElement('div'); ul.className = 'recs';
+    sec.items.forEach(function(it){
+      var d = document.createElement('div'), falta = it[1]-saldo; d.className = 'rec'+(falta>0 ? ' lejos' : '');
+      d.innerHTML = '<span class="recN"></span><span class="recP"><b>'+it[1]+'</b> galeones</span><span class="recF">'+(falta>0 ? 'Faltan '+falta : '¡Disponible!')+'</span><button class="go" type="button">Canjear</button>';
+      d.querySelector('.recN').textContent = it[0];
+      var b = d.querySelector('button'); b.disabled = falta>0;
+      b.addEventListener('click', function(){ pedirCanje(it); });
+      ul.appendChild(d);
+    });
+    rb.appendChild(ul);
+  });
+  /* historial */
+  var hl = $('bvHist'); hl.innerHTML = '';
+  var ms = bovMovs().filter(function(m){ return !m.esAnulacion; }).slice(-15).reverse();
+  if(!ms.length) hl.innerHTML = '<li class="vacio">Todavía no hay movimientos.</li>';
+  ms.forEach(function(m){
+    var li = document.createElement('li'); if(m.anulado) li.className = 'anulado';
+    var sp = document.createElement('span');
+    sp.innerHTML = '<span class="'+(m.n>=0 ? 'mas' : 'menos')+'">'+(m.n>=0 ? '+'+m.n : '−'+(-m.n))+'</span> · <i></i> <small class="etiq"></small>';
+    sp.querySelector('i').textContent = m.motivo; sp.querySelector('small').textContent = m.dia.split('-').reverse().slice(0,2).join('/');
+    li.appendChild(sp);
+    if(!m.anulado && m.id){
+      var u = document.createElement('button'); u.type = 'button'; u.className = 'ghost'; u.textContent = 'Anular';
+      u.addEventListener('click', function(){ registrar(bovClave(), 'Boveda', -m.n, 'Anulado: '+m.motivo, 'anula '+m.id); aviso('Movimiento anulado.'); pintarTodo(); });
+      li.appendChild(u);
+    }
+    hl.appendChild(li);
+  });
+}
+function guardarAutoev(){
+  var med = mediaActual(); if(med===null || autoevHoy()) return;
+  var gal = Math.round(med);
+  var det = BOV.aspectos.map(function(a){ return a.n+' '+notas[a.n]; }).join(', ');
+  registrar(bovClave(), 'Boveda', gal, 'Autoevaluación (media '+med.toFixed(1).replace('.',',')+')', det);
+  notas = {};
+  aviso('¡'+grupo+' gana '+gal+' galeones para la Bóveda!');
+  flotar('+'+gal, false, $('bvCofre'));
+  pintarTodo();
+}
+var canjePend = null;
+function pedirCanje(it){
+  canjePend = it;
+  $('bvCanjeTxt').textContent = '¿Canjear «'+it[0]+'» por '+it[1]+' galeones? A la clase le quedarán '+(bovSaldo()-it[1])+'.';
+  $('mCanje').hidden = false;
+}
+function iniciarBoveda(){
+  $('bvGuardar').addEventListener('click', guardarAutoev);
+  $('bvRehacer').addEventListener('click', function(){
+    var h = autoevHoy(); if(!h) return;
+    registrar(bovClave(), 'Boveda', -h.n, 'Anulado: '+h.motivo, 'anula '+h.id); aviso('Autoevaluación de hoy anulada. Podéis repetirla.'); pintarTodo();
+  });
+  $('bvCanjeSi').addEventListener('click', function(){
+    var it = canjePend; if(!it) return;
+    if(bovSaldo() < it[1]){ aviso('No hay galeones suficientes.'); return; }
+    registrar(bovClave(), 'Boveda', -it[1], 'Canje: '+it[0], 'Recompensa de clase');
+    $('mCanje').hidden = true; aviso('¡'+grupo+' canjea '+it[0]+'! Disfrutadlo.'); pintarTodo();
+  });
+  $('bvAjDar').addEventListener('click', function(){ ajustar(1); });
+  $('bvAjQuitar').addEventListener('click', function(){ ajustar(-1); });
+}
+function ajustar(sg){
+  var n = numero($('bvAjN').value); if(n<=0) return;
+  registrar(bovClave(), 'Boveda', sg*n, $('bvAjM').value.trim() || (sg>0 ? 'Ajuste: galeones añadidos' : 'Ajuste: galeones quitados'), 'Ajuste');
+  $('bvAjN').value = ''; $('bvAjM').value = ''; pintarTodo();
+}
+
+/* ---------- dar ficha ---------- */
+var dador = '', receptor = '';
+function abrirFicha(n){
+  dador = n; receptor = '';
+  var co = coev(), cs = cuentas(), box = $('fAlumnos'); box.innerHTML = '';
+  $('fTit').textContent = n+', ¿a quién das tu ficha?';
+  $('fPaso1').hidden = false; $('fPaso2').hidden = true;
+  CONFIG.alumnos.forEach(function(x){
+    if(x===n) return;
+    var motivo = '', ult = co.ultimo[n];
+    if(ult && ult.para===x) motivo = 'Se la diste la sesión pasada';
+    else if((co.recibido[x]||0) >= EF.tope) motivo = 'Ya tiene '+EF.tope+' fichas hoy';
+    var b = tarjeta(x, cs, motivo ? '' : '');
+    if(motivo){ b.disabled = true; var e = document.createElement('span'); e.className = 'etiq'; e.textContent = motivo; b.appendChild(e); }
+    b.addEventListener('click', function(){ elegirReceptor(x); });
+    box.appendChild(b);
+  });
+  $('mFicha').hidden = false;
+}
+function elegirReceptor(x){
+  receptor = x;
+  $('fPaso1').hidden = true; $('fPaso2').hidden = false;
+  $('fQuien').textContent = '¿Por qué le das tu ficha a '+x+'?';
+  var box = $('fMotivos'); box.innerHTML = '';
+  EF.motivosCoev.forEach(function(mo){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo';
+    b.innerHTML = '<span class="ic">'+iconoCoev(mo)+'</span><span></span>'; b.lastChild.textContent = mo;
+    b.addEventListener('click', function(){ darFicha(mo, b); });
+    box.appendChild(b);
+  });
+}
+function darFicha(mo, el){
+  var cs0 = cuentas(), mult = multiplicadorHoy(receptor), n = EF.fichaValor*mult;
+  registrar(clv(receptor), 'Galeones', n, mo+(mult>1 ? ' (×'+mult+')' : ''), 'Coevaluación · de '+dador);
+  flotar('+'+n, false, el);
+  var antes = nivelDe(cs0[receptor].acum), despues = nivelDe(cs0[receptor].acum+n);
+  aviso(dador+' da su ficha a '+receptor+': '+mo.toLowerCase()+(mult>1 ? ' (vale ×'+mult+')' : '')+'.'+(despues.i>antes.i && cs0[receptor].acum>=0 ? ' ¡'+receptor+' sube a '+nomNivel(receptor, despues)+'!' : ''));
+  $('mFicha').hidden = true; pintarTodo();
+}
+function anular(r){
+  registrar(clv(r.para), 'Galeones', -r.n, 'Anulado: '+r.motivo, 'Coevaluación · anula '+r.id);
+  aviso('Ficha anulada. '+r.de+' puede volver a darla.');
+  pintarTodo();
+}
+function iconoCoev(mo){
+  var p = {
+    'Juego limpio': '<path d="M24 10 L36 15 V24 C36 31 30 36 24 38 C18 36 12 31 12 24 V15Z" fill="#fff"/><path d="M18 24 l4 4 l8 -9" fill="none" stroke="#3f9a6a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>',
+    'Ayuda a compañeros': '<path d="M24 36 C14 29 10 24 10 18.5 C10 14 13.5 11 17.5 11 C20.5 11 22.6 12.8 24 15 C25.4 12.8 27.5 11 30.5 11 C34.5 11 38 14 38 18.5 C38 24 34 29 24 36Z" fill="#fff"/>',
+    'Esfuerzo': '<path d="M27 8 L14 26 H22 L19 40 L34 20 H25Z" fill="#fff"/>',
+    'Anima al equipo': '<path d="M12 20 L30 12 V36 L12 28Z" fill="#fff"/><rect x="8" y="19" width="6" height="10" rx="2" fill="#fff"/><path d="M34 18 Q38 24 34 30" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>',
+    'Buen compañero': '<g fill="#fff"><circle cx="18" cy="17" r="5"/><circle cx="30" cy="17" r="5"/><path d="M10 35 C10 26 26 26 26 35Z"/><path d="M22 35 C22 26 38 26 38 35Z"/></g>'
+  }[mo] || '<circle cx="24" cy="24" r="9" fill="#fff"/>';
+  var col = { 'Juego limpio':'#3f9a6a','Ayuda a compañeros':'#e2485f','Esfuerzo':'#e0a326','Anima al equipo':'#7a5bc2','Buen compañero':'#3d6fb6' }[mo] || '#3f9a6a';
+  return '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="'+col+'"/>'+p+'</svg>';
+}
+
+/* ---------- compi del día: lo elige quien más fichas ha recibido ---------- */
+function cerrarSesion(){
+  var co = coev(); if(co.compi || !co.hoy.length) return;
+  var max = 0; Object.keys(co.recibido).forEach(function(k){ max = Math.max(max, co.recibido[k]); });
+  var top = Object.keys(co.recibido).filter(function(k){ return co.recibido[k]===max; });
+  var elige = top[Math.floor(rnd()*top.length)], cs = cuentas();
+  $('kElige').innerHTML = '<div class="av">'+avatar(elige, cs)+'</div><p><b></b> ha recibido más fichas hoy ('+max+')'+(top.length>1 ? ', empatada con '+(top.length-1)+' más; ha salido en el sorteo' : '')+'.</p><p class="aviso">Elige al Compi del día: recibirá +'+EF.compiDia+'.</p>';
+  $('kElige').querySelector('b').textContent = elige;
+  var box = $('kAlumnos'); box.innerHTML = '';
+  CONFIG.alumnos.forEach(function(x){
+    if(x===elige) return;
+    var b = tarjeta(x, cs);
+    b.addEventListener('click', function(){
+      var mult = multiplicadorHoy(x), n = EF.compiDia*mult;
+      registrar(clv(x), 'Galeones', n, 'Compi del día'+(mult>1 ? ' (×'+mult+')' : ''), 'Elegido por '+elige);
+      $('mCompi').hidden = true; flotar('+'+n, false, b);
+      aviso('¡'+x+' es el Compi del día! Le ha elegido '+elige+'. +'+n+' galeones.');
+      pintarTodo();
+    });
+    box.appendChild(b);
+  });
+  $('mCompi').hidden = false;
+}
+
+/* ---------- perfil ---------- */
+var perfilDe = '';
+function abrirPerfil(n){ perfilDe = n; pintarPerfil(); $('mPerfil').hidden = false; }
+function misCartas(n){
+  var regs = [], usos = [];
+  delGrupo().forEach(function(m){
+    if(nombreDe(m)!==n) return;
+    if(m.accion.indexOf('reg')===0 && /^EF\d+/i.test(m.cartaId)) regs.push({ id:+m.cartaId.replace(/\D/g,''), dia:m.dia, usada:false });
+    if(m.accion.indexOf('uso')===0 && /^EF\d+/i.test(m.cartaId)) usos.push(+m.cartaId.replace(/\D/g,''));
+  });
+  usos.forEach(function(id){ for(var i=0;i<regs.length;i++){ if(regs[i].id===id && !regs[i].usada){ regs[i].usada = true; break; } } });
+  return regs;
+}
+function pintarPerfil(){
+  var n = perfilDe, cs = cuentas(), c = cs[n], nv = nivelDe(c.acum), huevo = c.acum<0;
+  $('pAv').innerHTML = avatar(n, cs);
+  $('pNom').textContent = n;
+  $('pNiv').textContent = huevo ? 'Nivel 0 · Dentro del huevo' : 'Nivel '+(nv.i+1)+' de '+EF.niveles.length+' · '+nomNivel(n, nv);
+  $('pNiv').style.color = huevo ? '' : nv.c;
+  var pct = huevo ? 0 : (nv.sig ? Math.max(0, Math.min(100, (c.acum-nv.min)/(nv.sig.min-nv.min)*100)) : 100);
+  $('pBarra').style.width = pct+'%'; $('pBarra').style.background = nv.c;
+  $('pNums').innerHTML = '<span><b>'+c.saldo+'</b> galeones de saldo</span><span><b>'+c.acum+'</b> acumulados</span>';
+  $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir del huevo' : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+nomNivel(n, nv.sig) : '¡Nivel máximo!');
+  var box = $('pMotivos'); box.innerHTML = '';
+  EF.motivosProfe.forEach(function(m){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo'+(m.g<0 ? ' neg' : '');
+    b.innerHTML = '<span class="ic"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="'+(m.g<0 ? '#c23b4a' : '#2f9a5a')+'"/><text x="24" y="31" text-anchor="middle" font-family="Georgia" font-weight="700" font-size="20" fill="#fff">'+(m.g>0?'+':'−')+Math.abs(m.g)+'</text></svg></span><span></span>';
+    b.lastChild.textContent = m.n;
+    b.addEventListener('click', function(){
+      var mult = m.g>0 ? multiplicadorHoy(n) : 1, v = m.g*mult;
+      registrar(clv(n), 'Galeones', v, m.n+(mult>1 ? ' (×'+mult+')' : ''), 'Profe');
+      flotar((v>0?'+':'−')+Math.abs(v), v<0, b); pintarTodo();
+    });
+    box.appendChild(b);
+  });
+  var cb = $('pCartas'); cb.innerHTML = '';
+  var mis = misCartas(n);
+  if(!mis.length) cb.innerHTML = '<p class="aviso">Todavía no tiene cartas.</p>';
+  mis.forEach(function(r){
+    var c = cartaPorId(r.id); if(!c) return;
+    var d = document.createElement('div'); d.className = 'miCarta'+(r.usada ? ' usada' : '');
+    d.innerHTML = '<img src="'+img(c)+'" alt=""><small>'+(r.usada ? 'Usada' : 'Sin usar')+'</small>';
+    d.querySelector('img').alt = c.n;
+    if(!r.usada){
+      var u = document.createElement('button'); u.type = 'button'; u.className = 'ghost'; u.textContent = 'Usar';
+      u.addEventListener('click', function(){ usarCarta(n, c); });
+      d.appendChild(u);
+    }
+    cb.appendChild(d);
+  });
+  var ul = $('pHist'); ul.innerHTML = '';
+  var hist = delGrupo().filter(function(m){ return nombreDe(m)===n && (m.accion.indexOf('galeon')===0 || m.accion.indexOf('compra')===0); }).slice(-12).reverse();
+  if(!hist.length) ul.innerHTML = '<li class="vacio">Todavía no hay movimientos.</li>';
+  hist.forEach(function(m){
+    var li = document.createElement('li'), sp = document.createElement('span'), compra = m.accion.indexOf('compra')===0;
+    var de = String(m.extra).match(/Coevaluación · de ([^·#]+)/);
+    sp.innerHTML = '<span class="'+(compra || m.n<0 ? 'menos' : 'mas')+'">'+(compra ? 'gasta '+m.n : (m.n>=0 ? '+'+m.n : '−'+(-m.n)))+'</span> · <i></i>';
+    sp.querySelector('i').textContent = m.motivo+(de ? ' (de '+de[1].trim()+')' : '');
+    var t = document.createElement('small'); t.className = 'etiq'; t.textContent = m.dia.split('-').reverse().slice(0,2).join('/');
+    li.appendChild(sp); li.appendChild(t); ul.appendChild(li);
+  });
+}
+function usarCarta(n, c){
+  registrar(clv(n), 'Uso', 0, c.n, 'Uso de carta EF', 'EF'+c.id);
+  if(c.efecto==='oro5'){ registrar(clv(n), 'Galeones', 5, 'Carta Aurum Quintus', 'Carta'); aviso(n+' usa Aurum Quintus: +5 galeones.'); }
+  else if(c.efecto==='x2' || c.efecto==='x3') aviso(n+' usa '+c.n+': hoy sus galeones valen ×'+(c.efecto==='x2'?2:3)+'.');
+  else aviso(n+' usa '+c.n+': '+c.e.toLowerCase()+'.');
+  pintarTodo();
+}
+
+/* ---------- comprar ---------- */
+var compraCarta = null;
+function abrirCompra(c){
+  compraCarta = c;
+  $('bTit').textContent = c.n+' · '+c.p+' galeones';
+  var cs = cuentas();
+  $('bAlumno').innerHTML = '<option value="">— Elige el alumno/a —</option>'+CONFIG.alumnos.map(function(n){ return '<option value="'+n+'">'+n+' ('+cs[n].saldo+')</option>'; }).join('');
+  revisar(); $('mCompra').hidden = false;
+}
+function revisar(){
+  var n = $('bAlumno').value, c = compraCarta, nota = $('bNota'), si = $('bSi');
+  if(!n){ nota.textContent = c.e+'.'; si.disabled = true; return; }
+  var s = cuentas()[n].saldo;
+  if(s < c.p){ nota.textContent = 'A '+n+' le faltan '+(c.p-s)+' galeones (tiene '+s+'). ¡Sigue esforzándote!'; si.disabled = true; }
+  else { nota.textContent = n+' tiene '+s+' galeones y le quedarán '+(s-c.p)+'. Su nivel no baja.'; si.disabled = false; }
+}
+function comprar(){
+  var n = $('bAlumno').value, c = compraCarta; if(!n || !c) return;
+  var quedan = EF.existencias[c.r]-(vendidas()[c.id]||0); if(quedan<=0){ aviso('Esa carta se ha agotado.'); return; }
+  registrar(clv(n), 'Compra', c.p, 'Mercader EF', c.n);
+  registrar(clv(n), 'Registro', 0, RAREZAS[c.r], c.n, 'EF'+c.id);
+  $('mCompra').hidden = true; pintarTodo(); verCarta(c, true, n);
+}
+function verCarta(c, nueva, n){
+  var f = $('rFlip'); $('rImg').src = img(c); $('rImg').alt = c.n;
+  $('rTxt').textContent = (nueva ? '¡'+n+' consigue '+c.n+'! ' : c.n+': ')+c.e+'.';
+  f.classList.remove('vuelta'); $('mCarta').hidden = false;
+  setTimeout(function(){ f.classList.add('vuelta'); }, nueva ? 700 : 30);
+}
+
+/* ---------- arranque ---------- */
+Object.keys(EF.grupos).forEach(function(g){
+  var b = document.createElement('button'); b.type = 'button'; b.className = 'grupo'; b.dataset.g = g; b.textContent = g; b.setAttribute('role','tab');
+  b.addEventListener('click', function(){ grupo = g; try{ localStorage.setItem('ef-grupo', g); }catch(e){} pintarTodo(); });
+  $('grupos').appendChild(b);
+});
+['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+$('t_bov').addEventListener('click', function(){ location.href = '../boveda/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
+iniciarBoveda();
+Array.prototype.forEach.call(document.querySelectorAll('[data-cierra]'), function(b){ b.addEventListener('click', function(){ $(b.dataset.cierra).hidden = true; if(b.dataset.cierra==='mPerfil') perfilDe = ''; }); });
+Array.prototype.forEach.call(document.querySelectorAll('.modal'), function(m){ m.addEventListener('click', function(e){ if(e.target===m){ m.hidden = true; if(m.id==='mPerfil') perfilDe = ''; } }); });
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ Array.prototype.forEach.call(document.querySelectorAll('.modal'), function(m){ m.hidden = true; }); perfilDe = ''; } });
+$('fAtras').addEventListener('click', function(){ abrirFicha(dador); });
+$('cCerrar').addEventListener('click', cerrarSesion);
+$('bAct').addEventListener('click', cargar);
+$('bAlumno').addEventListener('change', revisar);
+$('bSi').addEventListener('click', comprar);
+pintarTodo();
+cargar();
+if(window.JAVI){ JAVI.botonInicio({ abajo:true }); JAVI.avisoPrueba(); }
+
+});
+</script>
+</body>
+</html>

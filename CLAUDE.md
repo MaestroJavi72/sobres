@@ -4,16 +4,25 @@ Javi es maestro de Educación Física y de Lengua (tutor de 4ºA) y ambienta sus
 Esta web reúne sus herramientas de gamificación. Se publica con **GitHub Pages** en
 `https://maestrojavi72.github.io/sobres/` y se inserta en su **Google Sites**. Todo está en español y está pensado para niños de 8 a 10 años y para usarse en la pizarra digital.
 
-Cada página es **un único archivo HTML autocontenido** (CSS y JS dentro), sin build ni dependencias. Para cambiar algo: editar el HTML, probarlo en el navegador y subirlo a `main`. GitHub Pages lo publica en 1–2 minutos.
+Cada módulo es una carpeta con su `index.html` autocontenido (CSS y JS dentro), sin build ni dependencias, que carga la pieza común `comun/javi.js`. Para cambiar algo: editar el HTML, probarlo en el navegador y subirlo a `main`. GitHub Pages lo publica en 1–2 minutos.
 
-## Páginas
+## Estructura
 
-| Archivo | Para qué | Quién la usa |
+| Ruta | Para qué | Quién la usa |
 |---|---|---|
-| `index.html` | **Javificación de 4ºA** (su tutoría): El Mercader, Sobres, Mis cartas y, con `?profe`, la pestaña **Hogwarts** (panel del profe). | 4ºA en Google Sites; Javi con `?profe` |
-| `ef.html` | **Javificación EF** para 3ºA, 3ºB y 4ºB: Coevaluación, La clase, El Mercader de cartas de EF y la **Bóveda** de la clase (también para 4ºA). | Javi en la pizarra de EF |
+| `index.html` | **Portada**: multiverso (tema del trimestre) y menú de módulos. Con `?profe` muestra todo; sin él, solo lo de los alumnos. | Google Sites (una sola incrustación por URL) |
+| `hogwarts/` | **4ºA** (su tutoría): El Mercader, Sobres, Mis cartas y, con `?profe`, la pestaña **Hogwarts**. Pestaña directa con `#sobres`, `#mis`, `#hogwarts`. | 4ºA; Javi con `?profe` |
+| `ef/` | **EF** 3ºA, 3ºB, 4ºB: Coevaluación, La clase, Mercader de EF. La pestaña Bóveda lleva a `boveda/`. | Javi en la pizarra de EF |
+| `boveda/` | **Bóveda de la clase** (las 4 clases): autoevaluación, monedas al cofre y fiesta con 9–10, recompensas, movimientos y ajustes. | Pizarra |
+| `profe/` | **Panel del profe**: alumnos (altas, bajas, nombre, aspecto), tema del trimestre y enlaces para Google Sites. | Javi |
+| `comun/javi.js` | **Capa común**: leer/escribir la Hoja, alumnos (`data/alumnos.json` + cambios del panel), ajustes, temas, modo prueba, pantalla completa, exportar CSV. Para cambiar de almacenamiento, solo se toca este archivo. | — |
+| `comun/javi.css` | Temas `hp`, `vengadores`, `pokemon` (variables CSS) para la portada, el panel y los módulos nuevos. | — |
+| `data/alumnos.json` | Lista base de alumnos por grupo (`sistema`: hogwarts o ef; chica y aspecto del personaje). | — |
+| `ef.html` | Redirige a `ef/` (dirección antigua). | — |
 
-Recursos: `carta-NN.webp` y `reverso.webp` (cartas de Harry Potter, diseñadas por Javi en Canva), `ef/ef-NN.webp` (cartas de EF), `recursos/` (banner y fondo «Javificación», hoja de cartas de EF) y `herramientas/cartas_ef.html` (generador SVG de las cartas de EF).
+Recursos: `img/cartas-hp/` (cartas de Harry Potter, diseñadas por Javi en Canva), `img/cartas-ef/` (cartas de EF), `recursos/` (banner y fondo «Javificación», hoja de cartas de EF) y `herramientas/cartas_ef.html` (generador SVG de las cartas de EF).
+
+**Modo prueba:** en `localhost` o con `?prueba` no se envía nada al Formulario (`JAVI.PRUEBA`; la Bóveda tiene su propia comprobación). Para probar en local, servidor estático en la carpeta: `npx http-server -c-1`.
 
 ## Dónde se guardan los datos
 
@@ -29,6 +38,8 @@ No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST 
 | `Uso` | carta usada | nº de carta | … | … |
 | `Premio` | carta gratis (tarea, examen, campeón) | 0 | motivo | detalle |
 | `Boveda` | galeones de la clase (con signo) | cantidad | motivo | `#gXXXX` + detalle |
+| `Alumnos` | cambio de alumnos (Alumno `ALUMNOS · 4ºA`) | alta / baja / vuelve / nombre / aspecto | nombre | `#gXXXX` · JSON |
+| `Ajuste` | ajuste general (Alumno `AJUSTES`) | nombre del ajuste (`tema`) | valor | `#gXXXX` |
 
 - En 4ºA el campo Alumno es el nombre tal cual. En EF va como `3ºA · Nombre`, y la Bóveda como `3ºA · BÓVEDA`, para que no se mezclen.
 - La Hoja publicada tarda unos minutos en actualizarse. Por eso cada movimiento se guarda también en `localStorage` como «pendiente» (`gringotts-pendientes`, `ef-pendientes`) hasta que aparece en el CSV con su `#gXXXX`.
@@ -56,7 +67,9 @@ No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST 
 - Puntos del profe en el perfil (`EF.motivosProfe`).
 - **Mercader de EF:** 13 cartas individuales (`EF.cartas`) con precios difíciles (comunes 5–6, especiales 8–9, legendarias 14–22) y existencias por grupo y trimestre (`EF.existencias`). Efectos automáticos: Aurum Quintus +5; Duplex y Triplex ×2 y ×3 en los puntos de ese día.
 - Puntos de partida en `EF.inicio` (3ºB empieza en 0).
-- **Bóveda (colectivo, las 4 clases):** la clase puntúa en conjunto de 1 a 10 cinco aspectos (esfuerzo, cooperación, habilidades sociales, respeto de normas, organización y desplazamientos). La **media redondeada** son los galeones que gana la clase (una autoevaluación al día). Las recompensas y sus precios están en `BOV.recompensas` (juegos, días de lluvia, deportes). `BOV.inicial` guarda los galeones que ya tenía cada clase; también se pueden meter con «Ajustar».
+- **Bóveda (colectivo, las 4 clases, `boveda/`):** la clase puntúa de 1 a 10 los ítems de Javi (llegada y fila, calentamiento y explicación, normas del juego, ausencia de peleas, recogida y fila). El ítem «Subida del recreo» se añade solo en **3ºA los miércoles** y **3ºB los lunes y jueves** (casilla para cambiarlo a mano). La **media redondeada** son los galeones que gana la clase. **Una sola autoevaluación por clase y día.** Con 9 o 10, «fiesta» (confeti, fuegos, fanfarria). Las recompensas y sus precios están en `CONF.recompensas` de `boveda/`; `CONF.inicial` guarda los galeones que ya tenía cada clase (también con «Ajustar»).
+- **Semáforo (rojo/ámbar/verde)** = evaluación de contenidos (herramientas de sesión de EF), no la autoevaluación de clase.
+- **Ruleta de preguntas** (pendiente): acierto +1 automático, el fallo no resta, como máximo un rebote a otro compañero.
 
 ## Cómo trabajar aquí
 

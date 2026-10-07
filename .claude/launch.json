@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "javificacion", "runtimeExecutable": "npx", "runtimeArgs": ["--yes", "http-server", "-p", "8765", "-c-1", "-s"], "port": 8765 }
+  ]
+}
