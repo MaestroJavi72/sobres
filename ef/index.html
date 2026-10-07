@@ -6,7 +6,7 @@
 <title>Javificación · EF</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Cinzel+Decorative:wght@700&family=Bangers&family=Barlow+Condensed:wght@500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 /* Paleta y tipografía: las mismas de Javificación (verde noche y oro) */
 :root{
@@ -157,6 +157,42 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
 @media (max-width:520px){.notas{gap:3px}.nota{width:27px;height:27px;font-size:12px}.asp{padding:10px 8px}.cofre{width:84px;height:84px}}
 @media (max-width:520px){.cam .avatar{height:84px}.perfilHead .av{width:96px;height:112px}.grupos{margin-left:0}}
 @media (prefers-reduced-motion:reduce){.flip{transition:none}.flota{animation:none}}
+
+/* ============ MUNDO DE HÉROES (Vengadores, 2º trimestre) ============ */
+[data-tema="vengadores"]{
+  --fondo:#0a1026; --panel:#18224a; --panel2:#0f1636; --oro:#ff4a4a; --oroClaro:#f5c518; --crema:#f2f4fa;
+  --texto2:#b8c1dc; --apagado:#8a93b3;
+  --disp:'Bangers',Impact,sans-serif; --tit:'Barlow Condensed','Arial Narrow',sans-serif; --cuerpo:'Barlow Condensed','Arial Narrow',sans-serif;
+}
+[data-tema="vengadores"] body{background:radial-gradient(circle at 50% 120%,rgba(214,40,40,.5),transparent 55%),radial-gradient(circle,rgba(255,255,255,.07) 1.2px,transparent 1.6px) 0 0/14px 14px,linear-gradient(180deg,#0a1026,#1a2350 70%,#3a1424) fixed}
+[data-tema="vengadores"] .marca{background:none;color:#ff4a4a;-webkit-text-fill-color:#ff4a4a;text-shadow:3px 3px 0 #0a1026;letter-spacing:.04em}
+[data-tema="vengadores"] .marca small{color:#f5c518;-webkit-text-fill-color:#f5c518}
+[data-tema="vengadores"] :is(.grupo,.tab,.ghost,.cam,.coevTop,.motivo,.prod,.cerrar,.lista li,select,input,.cam .marca2){border-color:rgba(255,74,74,.45)}
+[data-tema="vengadores"] :is(.grupo,.tab,.ghost){color:#dfe4f3}
+[data-tema="vengadores"] :is(.grupo[aria-selected="true"],.tab[aria-selected="true"],.go){background:linear-gradient(180deg,#ff5a5a,#b8202a);color:#fff;border-color:#ff8a8a}
+[data-tema="vengadores"] .tab,[data-tema="vengadores"] .go{letter-spacing:.06em;font-size:15px}
+[data-tema="vengadores"] .caja{background:linear-gradient(180deg,#1a2452,#0c1330)}
+[data-tema="vengadores"] h2.sec::after{background:linear-gradient(90deg,rgba(255,74,74,.6),transparent)}
+[data-tema="vengadores"] .progreso i{background:linear-gradient(90deg,#b8202a,#f5c518)}
+[data-tema="vengadores"] .toast{background:linear-gradient(180deg,#f5c518,#e0a800);border-color:#fff3b0;color:#14193a}
+
+/* ============ MUNDO DE CRIATURAS (Pokémon, 3er trimestre) ============ */
+[data-tema="pokemon"]{
+  --fondo:#4fb6f5; --panel:#1f5aa0; --panel2:#163f73; --oro:#ffcb05; --oroClaro:#fff1a8; --crema:#ffffff;
+  --texto2:#d8ecff; --apagado:#a9c8ea;
+  --disp:'Fredoka',sans-serif; --tit:'Fredoka',sans-serif; --cuerpo:'Fredoka','Segoe UI',sans-serif;
+}
+[data-tema="pokemon"] body{background:radial-gradient(ellipse 60% 22% at 20% 102%,#5cbf55 60%,transparent 61%),radial-gradient(ellipse 70% 26% at 85% 104%,#49a845 60%,transparent 61%),linear-gradient(180deg,#3a9ee0,#7fcaf5 75%,#bfe8ff) fixed}
+[data-tema="pokemon"] .marca{background:none;color:#ffcb05;-webkit-text-fill-color:#ffcb05;text-shadow:0 3px 0 #1f4f8f,0 6px 12px rgba(0,0,0,.25)}
+[data-tema="pokemon"] .marca small{color:#fff;-webkit-text-fill-color:#fff}
+[data-tema="pokemon"] :is(.grupo,.tab,.ghost,.cam,.motivo,.prod){background:rgba(18,58,107,.82);border-color:rgba(255,203,5,.55);color:#fff}
+[data-tema="pokemon"] :is(.grupo[aria-selected="true"],.tab[aria-selected="true"],.go){background:linear-gradient(180deg,#ffe066,#ffcb05);color:#1d2a44;border-color:#fff1a8}
+[data-tema="pokemon"] :is(.grupo,.tab,.cam,.prod,.caja,.coevTop,.motivo){border-radius:20px}
+[data-tema="pokemon"] .caja{background:linear-gradient(180deg,#1f5aa0,#123a6b);border-color:#ffcb05}
+[data-tema="pokemon"] h2.sec{color:#123a6b;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+[data-tema="pokemon"] h2.sec::after{background:linear-gradient(90deg,rgba(18,58,107,.6),transparent)}
+[data-tema="pokemon"] .progreso i{background:linear-gradient(90deg,#ffcb05,#fff1a8)}
+[data-tema="pokemon"] .toast{background:linear-gradient(180deg,#fff1a8,#ffcb05);border-color:#fff;color:#1d2a44}
 </style>
 </head>
 <body>
@@ -387,6 +423,15 @@ var EF = {
   ]
 };
 var RAREZAS = { comun:'Común', especial:'Especial', legendaria:'Legendaria' };
+/* mundo del trimestre (Javificación): moneda y estilo. 4ºA no está aquí: vive siempre en Harry Potter. */
+var MON = 'galeones';
+function ponerTema(){
+  if(!window.JAVI) return;
+  var t = JAVI.temaDe(grupo), w = JAVI.TEMAS[t];
+  document.documentElement.setAttribute('data-tema', t);
+  MON = w ? w.moneda : 'galeones';
+}
+function conMoneda(txt){ return String(txt).replace(/galeones/g, MON); }
 
 /* Las listas de alumnos y quién es chica se editan ahora en el PANEL DEL PROFE (Javificación ?profe → Alumnos).
    Las de arriba solo se usan si no se puede leer data/alumnos.json. */
@@ -773,9 +818,9 @@ function pintarMercader(){
     var max = EF.existencias[c.r], quedan = Math.max(0, max-(v[c.id]||0));
     var d = document.createElement('div'); d.className = 'prod'+(quedan ? '' : ' agotado');
     d.innerHTML = '<img src="'+img(c)+'" alt="" loading="lazy"><span class="raridad r-'+c.r+'">'+RAREZAS[c.r]+'</span>'+
-      '<div class="precio">'+c.p+' <i>galeones</i></div><div class="quedan">'+(quedan ? 'Quedan '+quedan+' de '+max : 'Agotada este trimestre')+'</div>'+
+      '<div class="precio">'+c.p+' <i>'+MON+'</i></div><div class="quedan">'+(quedan ? 'Quedan '+quedan+' de '+max : 'Agotada este trimestre')+'</div>'+
       '<button class="go" type="button">'+(quedan ? 'Comprar' : 'Agotada')+'</button>';
-    d.querySelector('img').alt = c.n+': '+c.e;
+    d.querySelector('img').alt = c.n+': '+conMoneda(c.e);
     d.querySelector('img').addEventListener('click', function(){ verCarta(c, false); });
     var b = d.querySelector('button'); b.disabled = !quedan || !abierto;
     b.addEventListener('click', function(){ abrirCompra(c); });
@@ -783,6 +828,7 @@ function pintarMercader(){
   });
 }
 function pintarTodo(){
+  ponerTema();
   var soloBoveda = !EF.grupos[grupo];
   CONFIG.alumnos = EF.grupos[grupo] || [];
   if(soloBoveda) vista = 'bov';
@@ -1003,7 +1049,7 @@ function cerrarSesion(){
       var mult = multiplicadorHoy(x), n = EF.compiDia*mult;
       registrar(clv(x), 'Galeones', n, 'Compi del día'+(mult>1 ? ' (×'+mult+')' : ''), 'Elegido por '+elige);
       $('mCompi').hidden = true; flotar('+'+n, false, b);
-      aviso('¡'+x+' es el Compi del día! Le ha elegido '+elige+'. +'+n+' galeones.');
+      aviso('¡'+x+' es el Compi del día! Le ha elegido '+elige+'. +'+n+' '+MON+'.');
       pintarTodo();
     });
     box.appendChild(b);
@@ -1032,7 +1078,7 @@ function pintarPerfil(){
   $('pNiv').style.color = huevo ? '' : nv.c;
   var pct = huevo ? 0 : (nv.sig ? Math.max(0, Math.min(100, (c.acum-nv.min)/(nv.sig.min-nv.min)*100)) : 100);
   $('pBarra').style.width = pct+'%'; $('pBarra').style.background = nv.c;
-  $('pNums').innerHTML = '<span><b>'+c.saldo+'</b> galeones de saldo</span><span><b>'+c.acum+'</b> acumulados</span>';
+  $('pNums').innerHTML = '<span><b>'+c.saldo+'</b> '+MON+' de saldo</span><span><b>'+c.acum+'</b> acumulados</span>';
   $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir del huevo' : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+nomNivel(n, nv.sig) : '¡Nivel máximo!');
   var box = $('pMotivos'); box.innerHTML = '';
   EF.motivosProfe.forEach(function(m){
@@ -1075,9 +1121,9 @@ function pintarPerfil(){
 }
 function usarCarta(n, c){
   registrar(clv(n), 'Uso', 0, c.n, 'Uso de carta EF', 'EF'+c.id);
-  if(c.efecto==='oro5'){ registrar(clv(n), 'Galeones', 5, 'Carta Aurum Quintus', 'Carta'); aviso(n+' usa Aurum Quintus: +5 galeones.'); }
-  else if(c.efecto==='x2' || c.efecto==='x3') aviso(n+' usa '+c.n+': hoy sus galeones valen ×'+(c.efecto==='x2'?2:3)+'.');
-  else aviso(n+' usa '+c.n+': '+c.e.toLowerCase()+'.');
+  if(c.efecto==='oro5'){ registrar(clv(n), 'Galeones', 5, 'Carta Aurum Quintus', 'Carta'); aviso(n+' usa Aurum Quintus: +5 '+MON+'.'); }
+  else if(c.efecto==='x2' || c.efecto==='x3') aviso(n+' usa '+c.n+': hoy sus '+MON+' valen ×'+(c.efecto==='x2'?2:3)+'.');
+  else aviso(n+' usa '+c.n+': '+conMoneda(c.e).toLowerCase()+'.');
   pintarTodo();
 }
 
@@ -1085,17 +1131,17 @@ function usarCarta(n, c){
 var compraCarta = null;
 function abrirCompra(c){
   compraCarta = c;
-  $('bTit').textContent = c.n+' · '+c.p+' galeones';
+  $('bTit').textContent = c.n+' · '+c.p+' '+MON;
   var cs = cuentas();
   $('bAlumno').innerHTML = '<option value="">— Elige el alumno/a —</option>'+CONFIG.alumnos.map(function(n){ return '<option value="'+n+'">'+n+' ('+cs[n].saldo+')</option>'; }).join('');
   revisar(); $('mCompra').hidden = false;
 }
 function revisar(){
   var n = $('bAlumno').value, c = compraCarta, nota = $('bNota'), si = $('bSi');
-  if(!n){ nota.textContent = c.e+'.'; si.disabled = true; return; }
+  if(!n){ nota.textContent = conMoneda(c.e)+'.'; si.disabled = true; return; }
   var s = cuentas()[n].saldo;
-  if(s < c.p){ nota.textContent = 'A '+n+' le faltan '+(c.p-s)+' galeones (tiene '+s+'). ¡Sigue esforzándote!'; si.disabled = true; }
-  else { nota.textContent = n+' tiene '+s+' galeones y le quedarán '+(s-c.p)+'. Su nivel no baja.'; si.disabled = false; }
+  if(s < c.p){ nota.textContent = 'A '+n+' le faltan '+(c.p-s)+' '+MON+' (tiene '+s+'). ¡Sigue esforzándote!'; si.disabled = true; }
+  else { nota.textContent = n+' tiene '+s+' '+MON+' y le quedarán '+(s-c.p)+'. Su nivel no baja.'; si.disabled = false; }
 }
 function comprar(){
   var n = $('bAlumno').value, c = compraCarta; if(!n || !c) return;
@@ -1106,7 +1152,7 @@ function comprar(){
 }
 function verCarta(c, nueva, n){
   var f = $('rFlip'); $('rImg').src = img(c); $('rImg').alt = c.n;
-  $('rTxt').textContent = (nueva ? '¡'+n+' consigue '+c.n+'! ' : c.n+': ')+c.e+'.';
+  $('rTxt').textContent = (nueva ? '¡'+n+' consigue '+c.n+'! ' : c.n+': ')+conMoneda(c.e)+'.';
   f.classList.remove('vuelta'); $('mCarta').hidden = false;
   setTimeout(function(){ f.classList.add('vuelta'); }, nueva ? 700 : 30);
 }

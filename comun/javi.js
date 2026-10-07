@@ -22,10 +22,16 @@ var REGISTRO = {
   csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfXYmi9evsMT7EtFrDVG3xALHoudOA2v299Yhgm4vEffLMs5KtcLnBO-jckirvRU7ogMaHCOZe_PNQ/pub?gid=326777813&single=true&output=csv'
 };
 
+/* Palabras de cada mundo (para que los módulos hablen el idioma del tema).
+   moneda/moneda1: plural/singular · simbolo: lo que lleva la moneda dibujada
+   boveda: el tesoro de la clase · lugar: «¡FIESTA EN …!» */
 var TEMAS = {
-  hp:         { n:'Harry Potter', mundo:'Mundo mágico',     trimestre:1, moneda:'galeones', icono:'🔮' },
-  vengadores: { n:'Vengadores',   mundo:'Mundo de héroes',  trimestre:2, moneda:'créditos', icono:'🛡️' },
-  pokemon:    { n:'Pokémon',      mundo:'Mundo de criaturas', trimestre:3, moneda:'monedas', icono:'⚡' }
+  hp:         { n:'Harry Potter', mundo:'Mundo mágico',       trimestre:1, icono:'🔮',
+                moneda:'galeones', moneda1:'galeón',  simbolo:'G', boveda:'Bóveda de Gringotts',        lugar:'Gringotts' },
+  vengadores: { n:'Vengadores',   mundo:'Mundo de héroes',    trimestre:2, icono:'🛡️',
+                moneda:'créditos', moneda1:'crédito', simbolo:'★', boveda:'Cámara acorazada del Cuartel', lugar:'el Cuartel' },
+  pokemon:    { n:'Pokémon',      mundo:'Mundo de criaturas', trimestre:3, icono:'⚡',
+                moneda:'monedas',  moneda1:'moneda',  simbolo:'⚡', boveda:'Hucha del Gimnasio',          lugar:'el Gimnasio' }
 };
 
 /* ---------- dónde está la web (para encontrar data/ y los módulos) ---------- */

@@ -6,7 +6,7 @@
 <title>Bóveda de la clase</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=EB+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@600;700;800&family=EB+Garamond:wght@500;600;700&family=Bangers&family=Barlow+Condensed:wght@500;600;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --noche1:#0b1420; --noche2:#16263a;
@@ -14,22 +14,47 @@
   --perg:#f3e3bd; --perg2:#ead39f; --tinta:#3a2a16; --tinta2:#6b5732;
   --verde:#4cc46a; --rojo:#e2685c;
   --sombra:0 14px 30px rgba(0,0,0,.4);
+  --cofre1:#8a5a2b; --cofre2:#5a3518; --herraje1:#f6e3a1; --herraje2:#b8862a;
+  --fD:'Cinzel Decorative',serif; --fT:'Cinzel',serif; --fB:'EB Garamond',Georgia,serif;
+  --fondoPag:#0b1420 url('../recursos/javificacion-fondo.png') center bottom/cover fixed;
 }
+/* ---------- MUNDO DE HÉROES (Vengadores) ---------- */
+[data-tema="vengadores"]{
+  --cofre1:#8e97ad; --cofre2:#4b546b; --herraje1:#ff6b6b; --herraje2:#a31d24;
+  --noche1:#0a1026; --noche2:#18224a; --oro:#ff4a4a; --oro2:#f5c518; --oroOsc:#a31d24;
+  --perg:#eef1f7; --perg2:#d9dfec; --tinta:#14193a; --tinta2:#4a5276;
+  --fD:'Bangers',Impact,sans-serif; --fT:'Barlow Condensed','Arial Narrow',sans-serif; --fB:'Barlow Condensed','Arial Narrow',sans-serif;
+  --fondoPag:radial-gradient(circle at 50% 120%,rgba(214,40,40,.55),transparent 55%),radial-gradient(circle,rgba(255,255,255,.07) 1.2px,transparent 1.6px) 0 0/14px 14px,linear-gradient(180deg,#0a1026,#1a2350 70%,#3a1424) fixed;
+}
+[data-tema="vengadores"] .perg{border-color:#c8313a}
+[data-tema="vengadores"] .nota,[data-tema="vengadores"] .item{border-color:#9aa3c4}
+[data-tema="vengadores"] .moneda{background:radial-gradient(circle at 35% 30%,#fff 0%,#dfe6f5 30%,#8f9bbf 70%,#4b5578 100%);color:#c8313a}
+/* ---------- MUNDO DE CRIATURAS (Pokémon) ---------- */
+[data-tema="pokemon"]{
+  --cofre1:#3d86d6; --cofre2:#1f4f8f; --herraje1:#fff1a8; --herraje2:#e0a800;
+  --noche1:#123a6b; --noche2:#1f5aa0; --oro:#ffcb05; --oro2:#fff1a8; --oroOsc:#c79a00;
+  --perg:#ffffff; --perg2:#eaf6ff; --tinta:#1d2a44; --tinta2:#4a5a78;
+  --fD:'Fredoka',sans-serif; --fT:'Fredoka',sans-serif; --fB:'Fredoka','Segoe UI',sans-serif;
+  --fondoPag:radial-gradient(ellipse 60% 22% at 20% 102%,#5cbf55 60%,transparent 61%),radial-gradient(ellipse 70% 26% at 85% 104%,#49a845 60%,transparent 61%),linear-gradient(180deg,#4fb6f5,#a9e3ff 75%,#d9f4ff) fixed;
+}
+[data-tema="pokemon"] .top h1{color:#1f4f8f;text-shadow:0 3px 0 #ffcb05}
+[data-tema="pokemon"] .perg{border-color:#2a75bb;border-radius:24px}
+[data-tema="pokemon"] .nota,[data-tema="pokemon"] .item{border-color:#9cc8ea}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%}
-body{font-family:'EB Garamond',Georgia,serif;color:var(--perg);
-  background:#0b1420 url('../recursos/javificacion-fondo.png') center bottom/cover fixed;}
+body{font-family:var(--fB);color:var(--perg);
+  background:var(--fondoPag);}
 button{font-family:inherit;color:inherit;cursor:pointer}
 .wrap{max-width:980px;margin:0 auto;padding:14px 16px 40px}
 
 /* cabecera */
 .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.top h1{font-family:'Cinzel Decorative',serif;color:var(--oro);font-size:clamp(22px,4vw,34px);text-shadow:0 2px 12px rgba(232,200,114,.45);flex:1;min-width:220px}
+.top h1{font-family:var(--fD);color:var(--oro);font-size:clamp(22px,4vw,34px);text-shadow:0 2px 12px rgba(232,200,114,.45);flex:1;min-width:220px}
 .icono{background:rgba(22,38,58,.85);border:2px solid #3a4c66;border-radius:12px;min-width:46px;height:46px;font-size:20px;display:grid;place-items:center;padding:0 10px}
 .icono:hover{border-color:var(--oro)}
 
 .grupos{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.grupo{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(16px,2.2vw,20px);background:rgba(22,38,58,.9);color:var(--oro2);
+.grupo{font-family:var(--fT);font-weight:800;font-size:clamp(16px,2.2vw,20px);background:rgba(22,38,58,.9);color:var(--oro2);
   border:2px solid #3a4c66;border-radius:14px;padding:10px 20px}
 .grupo[aria-pressed="true"]{background:var(--oro);color:var(--noche1);border-color:var(--oro)}
 
@@ -39,16 +64,16 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
 /* pergamino de ítems */
 .perg{background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta);border:3px solid #b8934f;border-radius:18px;padding:16px 18px 18px;box-shadow:var(--sombra)}
-.perg h2{font-family:'Cinzel',serif;font-size:clamp(17px,2.2vw,22px);margin-bottom:10px;color:#5a3d12}
+.perg h2{font-family:var(--fT);font-size:clamp(17px,2.2vw,22px);margin-bottom:10px;color:#5a3d12}
 .item{padding:10px 0;border-bottom:1px dashed #c4a466}
 .item:last-of-type{border-bottom:none}
 .itemN{font-weight:700;font-size:clamp(16px,2vw,20px);line-height:1.3;margin-bottom:8px}
 .escala{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
-.nota{height:clamp(38px,5vw,50px);border-radius:10px;border:2px solid #b8934f;background:#fbf1d6;font-family:'Cinzel',serif;font-weight:800;font-size:clamp(15px,2vw,20px);color:var(--tinta)}
+.nota{height:clamp(38px,5vw,50px);border-radius:10px;border:2px solid #b8934f;background:#fbf1d6;font-family:var(--fT);font-weight:800;font-size:clamp(15px,2vw,20px);color:var(--tinta)}
 .nota:hover{border-color:#8a6a1f}
 .nota[aria-pressed="true"]{background:var(--oro);border-color:#8a6a1f;color:var(--noche1);transform:scale(1.06);box-shadow:0 3px 10px rgba(168,124,34,.5)}
 .nota:disabled{opacity:.45;cursor:default}
-.guardar{margin-top:14px;width:100%;font-family:'Cinzel',serif;font-weight:800;font-size:clamp(17px,2.4vw,22px);
+.guardar{margin-top:14px;width:100%;font-family:var(--fT);font-weight:800;font-size:clamp(17px,2.4vw,22px);
   background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #8a6a1f;border-radius:14px;padding:14px;box-shadow:0 4px 0 #7a5a14}
 .guardar:disabled{filter:grayscale(.7);opacity:.6;cursor:default;box-shadow:none}
 .recreo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--tinta2);margin-bottom:6px;cursor:pointer}
@@ -59,13 +84,13 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 /* lado: bóveda */
 .lado{display:flex;flex-direction:column;gap:14px}
 .caja{background:rgba(16,28,44,.92);border:2px solid #3a4c66;border-radius:18px;padding:14px;box-shadow:var(--sombra)}
-.caja h3{font-family:'Cinzel',serif;color:var(--oro2);font-size:15px;letter-spacing:.04em;margin-bottom:8px}
+.caja h3{font-family:var(--fT);color:var(--oro2);font-size:15px;letter-spacing:.04em;margin-bottom:8px}
 .media{text-align:center}
-.media .num{font-family:'Cinzel Decorative',serif;font-weight:900;color:var(--oro);font-size:64px;line-height:1}
+.media .num{font-family:var(--fD);font-weight:900;color:var(--oro);font-size:64px;line-height:1}
 .media .txt{color:var(--oro2);font-size:15px;margin-top:4px}
 .saldo{display:flex;align-items:center;gap:12px}
 .saldo svg{width:74px;height:74px;flex:none}
-.saldo b{font-family:'Cinzel Decorative',serif;font-size:42px;color:var(--oro);line-height:1}
+.saldo b{font-family:var(--fD);font-size:42px;color:var(--oro);line-height:1}
 .saldo small{display:block;color:#b9c4d4;font-size:14px}
 .prox{margin-top:10px;font-size:15px;color:#d8dfe9}
 .barra{height:10px;background:#22344d;border-radius:6px;overflow:hidden;margin-top:6px}
@@ -76,15 +101,15 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .hist b{color:var(--oro)}
 .estado{font-size:13px;color:#93a1b5;margin-top:6px}
 .ensayo{background:none;border:1px dashed #4a5d78;color:#b9c4d4;border-radius:10px;padding:8px;font-size:14px;width:100%}
-.prueba{background:#7a2a22;color:#fff;text-align:center;font-family:'Cinzel',serif;font-size:13px;padding:6px;border-radius:10px;margin-bottom:10px}
+.prueba{background:#7a2a22;color:#fff;text-align:center;font-family:var(--fT);font-size:13px;padding:6px;border-radius:10px;margin-bottom:10px}
 
 /* ============ ANIMACIÓN ============ */
 .escena{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:#070d16 radial-gradient(ellipse at 50% 60%,#22344f,#070d16 75%);overflow:hidden}
 .escena[hidden]{display:none}
 .escena canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.titEsc{font-family:'Cinzel',serif;font-weight:800;color:var(--oro2);font-size:clamp(20px,3.4vw,34px);text-align:center;z-index:2;padding:0 16px}
-.contador{font-family:'Cinzel Decorative',serif;font-weight:900;color:var(--oro);font-size:clamp(70px,14vw,150px);line-height:1;z-index:2;
+.titEsc{font-family:var(--fT);font-weight:800;color:var(--oro2);font-size:clamp(20px,3.4vw,34px);text-align:center;z-index:2;padding:0 16px}
+.contador{font-family:var(--fD);font-weight:900;color:var(--oro);font-size:clamp(70px,14vw,150px);line-height:1;z-index:2;
   text-shadow:0 0 30px rgba(232,200,114,.6);margin:6px 0}
 .contador.pum{animation:pum .25s}
 @keyframes pum{50%{transform:scale(1.18)}}
@@ -95,28 +120,28 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .moneda{position:absolute;left:50%;top:0;width:clamp(44px,6vw,64px);height:clamp(44px,6vw,64px);margin-left:calc(clamp(44px,6vw,64px)/-2);border-radius:50%;z-index:3;
   background:radial-gradient(circle at 35% 30%,#fff6cf 0%,#f3d27a 30%,#c9972e 70%,#8a6a1f 100%);
   box-shadow:inset 0 0 0 4px rgba(138,106,31,.6),0 4px 10px rgba(0,0,0,.4);
-  display:grid;place-items:center;font-family:'Cinzel Decorative',serif;font-weight:900;color:#7a5a14;font-size:clamp(20px,3vw,30px)}
-.mensaje{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(22px,4vw,40px);color:#fff;text-align:center;z-index:2;margin-top:14px;padding:0 16px;
+  display:grid;place-items:center;font-family:var(--fD);font-weight:900;color:#7a5a14;font-size:clamp(20px,3vw,30px)}
+.mensaje{font-family:var(--fT);font-weight:800;font-size:clamp(22px,4vw,40px);color:#fff;text-align:center;z-index:2;margin-top:14px;padding:0 16px;
   opacity:0;transform:translateY(10px);transition:all .5s}
 .mensaje.ver{opacity:1;transform:none}
-.fiesta .mensaje{font-family:'Cinzel Decorative',serif;font-size:clamp(30px,6.5vw,72px);color:var(--oro);
+.fiesta .mensaje{font-family:var(--fD);font-size:clamp(30px,6.5vw,72px);color:var(--oro);
   text-shadow:0 0 18px #ff8f2e,0 0 40px #e8c872;animation:latido .7s infinite alternate}
 @keyframes latido{to{transform:scale(1.08) rotate(-1deg)}}
 .fiesta{background-image:radial-gradient(ellipse at 50% 60%,rgba(232,200,114,.25),transparent 70%);animation:luces 1.2s infinite}
 @keyframes luces{0%{background-color:#2a1240}33%{background-color:#0f3a32}66%{background-color:#401818}}
-.cerrarEsc{margin-top:22px;z-index:2;font-family:'Cinzel',serif;font-weight:800;font-size:18px;background:var(--oro);color:var(--noche1);
+.cerrarEsc{margin-top:22px;z-index:2;font-family:var(--fT);font-weight:800;font-size:18px;background:var(--oro);color:var(--noche1);
   border:none;border-radius:14px;padding:12px 30px;opacity:0;transition:opacity .4s}
 .cerrarEsc.ver{opacity:1}
 .bloque{margin-top:18px;background:rgba(16,28,44,.92);border:2px solid #3a4c66;border-radius:18px;padding:16px;box-shadow:var(--sombra)}
-.bloque h2{font-family:'Cinzel',serif;color:var(--oro);font-size:clamp(18px,2.4vw,24px);margin-bottom:10px}
-.bloque h3{font-family:'Cinzel',serif;color:var(--oro2);font-size:16px;margin:12px 0 8px}
+.bloque h2{font-family:var(--fT);color:var(--oro);font-size:clamp(18px,2.4vw,24px);margin-bottom:10px}
+.bloque h3{font-family:var(--fT);color:var(--oro2);font-size:16px;margin:12px 0 8px}
 .recs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
 .rec{background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta);border:2px solid #b8934f;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
 .rec.lejos{filter:saturate(.35) brightness(.8)}
 .rec .rn{font-weight:700;font-size:17px;line-height:1.2}
-.rec .rp{font-family:'Cinzel',serif;font-weight:800;color:#7a5a14}
+.rec .rp{font-family:var(--fT);font-weight:800;color:#7a5a14}
 .rec .rf{font-size:14px;color:var(--tinta2)}
-.rec button{margin-top:4px;font-family:'Cinzel',serif;font-weight:800;background:linear-gradient(180deg,#f3d27a,#c9972e);border:2px solid #8a6a1f;border-radius:10px;padding:7px;color:#2b1c05}
+.rec button{margin-top:4px;font-family:var(--fT);font-weight:800;background:linear-gradient(180deg,#f3d27a,#c9972e);border:2px solid #8a6a1f;border-radius:10px;padding:7px;color:#2b1c05}
 .rec button:disabled{opacity:.45;cursor:default}
 .movs{list-style:none;font-size:16px}
 .movs li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #23354d}
@@ -137,7 +162,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 <div class="wrap">
   <div class="prueba" id="avisoPrueba" hidden>MODO PRUEBA · no se guarda nada en la Hoja</div>
   <header class="top">
-    <h1>🏦 Bóveda de la clase</h1>
+    <h1>🏦 <span id="tBoveda">Bóveda de la clase</span></h1>
     <button class="icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
     <button class="icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
   </header>
@@ -158,7 +183,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
         <div class="txt" id="mediaTxt">Puntuad todos los ítems</div>
       </div>
       <div class="caja">
-        <h3>GALEONES DE LA CLASE</h3>
+        <h3 id="tSaldo">GALEONES DE LA CLASE</h3>
         <div class="saldo">
           <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#cofre"/></svg>
           <div><b id="saldo">…</b><small id="saldoTxt">cargando la Hoja…</small></div>
@@ -181,10 +206,10 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   </section>
 
   <section class="bloque" aria-labelledby="tMov">
-    <h2 id="tMov">📜 Movimientos de la Bóveda</h2>
+    <h2 id="tMov">📜 Movimientos</h2>
     <ul class="movs" id="movs"></ul>
     <div class="ajuste">
-      <span>Ajustar galeones a mano (por ejemplo, los que ya tenía la clase):</span>
+      <span id="tAjuste">Ajustar a mano (por ejemplo, lo que ya tenía la clase):</span>
       <input id="ajN" type="number" min="1" max="999" inputmode="numeric" placeholder="Nº" aria-label="Galeones">
       <input id="ajM" type="text" maxlength="60" placeholder="Motivo (opcional)" aria-label="Motivo">
       <button class="peq" id="ajDar" type="button">Añadir</button>
@@ -209,8 +234,8 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <linearGradient id="gMadera" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a2b"/><stop offset="1" stop-color="#5a3518"/></linearGradient>
-    <linearGradient id="gOro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e3a1"/><stop offset="1" stop-color="#b8862a"/></linearGradient>
+    <linearGradient id="gMadera" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--cofre1)"/><stop offset="1" style="stop-color:var(--cofre2)"/></linearGradient>
+    <linearGradient id="gOro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--herraje1)"/><stop offset="1" style="stop-color:var(--herraje2)"/></linearGradient>
     <radialGradient id="gBrillo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2b0" stop-opacity=".95"/><stop offset="1" stop-color="#e8c872" stop-opacity="0"/></radialGradient>
     <symbol id="cofre" viewBox="0 0 100 100">
       <ellipse cx="50" cy="40" rx="40" ry="14" fill="url(#gBrillo)"/>
@@ -232,7 +257,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 <script>
 (function(){
 'use strict';
-if(window.JAVI) JAVI.listo(function(){ JAVI.botonInicio({ abajo:true }); });
+if(window.JAVI) JAVI.listo(function(){ JAVI.botonInicio({ abajo:true }); if(typeof pintar==='function') pintar(); });
 /* ============================================================
    CONFIGURACIÓN  (puedes tocar estos valores)
    ============================================================ */
@@ -254,9 +279,9 @@ var CONF = {
   inicial: { '3ºA':0, '3ºB':0, '4ºA':0, '4ºB':0 },
   /* recompensas de clase: [nombre, galeones]. Añade, quita o cambia precios aquí. */
   recompensas: [
-    { sec:'Juegos mágicos', items:[['Gavilán',50],['Poli-ladrón',50],['Pañuelito',60],['Balón-tiro',60],['Pinfuvote',60],['Baile libre',60],['Escape Room EF',70],['Juego sorpresa del profe',70],['Pichi',50]] },
+    { sec:{ hp:'Juegos mágicos', vengadores:'Juegos de héroes', pokemon:'Juegos de entrenadores' }, items:[['Gavilán',50],['Poli-ladrón',50],['Pañuelito',60],['Balón-tiro',60],['Pinfuvote',60],['Baile libre',60],['Escape Room EF',70],['Juego sorpresa del profe',70],['Pichi',50]] },
     { sec:'Para los días de lluvia', items:[['Just Dance',60],['Juegos iPad',60],['Futbolín humano',80]] },
-    { sec:'Deportes de Hogwarts', items:[['Baloncesto',80],['Voleibol',80],['Balonmano',80],['Bádminton',70],['Deporte libre',130],['Fútbol',120],['Deporte alternativo trabajo en clase',100]] }
+    { sec:{ hp:'Deportes de Hogwarts', vengadores:'Deportes del Cuartel', pokemon:'Deportes del Gimnasio' }, items:[['Baloncesto',80],['Voleibol',80],['Balonmano',80],['Bádminton',70],['Deporte libre',130],['Fútbol',120],['Deporte alternativo trabajo en clase',100]] }
   ],
   /* mismo Formulario y Hoja que Javificación (alumno «3ºA · BÓVEDA», acción «Boveda») */
   registro: {
@@ -361,6 +386,18 @@ var qg = new URLSearchParams(location.search).get('grupo');
 if(qg){ qg = qg.replace(/o/i,'º').toUpperCase(); }   /* ?grupo=3oA o ?grupo=3ºA */
 if(qg && CONF.grupos.indexOf(qg)>=0) grupo = qg;
 if(CONF.grupos.indexOf(grupo)<0) grupo = CONF.grupos[0];
+/* mundo de la clase: 4ºA siempre Harry Potter; EF, el del trimestre */
+var TEMAS_LOCAL = { hp:{ moneda:'galeones', simbolo:'G', boveda:'Bóveda de Gringotts', lugar:'Gringotts' } };
+var tema = 'hp', W = TEMAS_LOCAL.hp;
+function mayus(t){ return t.charAt(0).toUpperCase()+t.slice(1); }
+function ponerTema(){
+  tema = window.JAVI ? JAVI.temaDe(grupo) : 'hp';
+  W = (window.JAVI && JAVI.TEMAS[tema]) || TEMAS_LOCAL.hp;
+  document.documentElement.setAttribute('data-tema', tema);
+  $('tBoveda').textContent = W.boveda;
+  $('tSaldo').textContent = W.moneda.toUpperCase()+' DE LA CLASE';
+  document.title = W.boveda;
+}
 var notas = [];
 var recreo = {};   /* grupo → true/false si se ha cambiado a mano hoy */
 function tocaRecreo(g){ return (CONF.extra.dias[g]||[]).indexOf(new Date().getDay())>=0; }
@@ -383,6 +420,7 @@ function pintarGrupos(){
 }
 
 function pintar(){
+  ponerTema();
   pintarGrupos();
   $('tGrupo').textContent = grupo;
   var hecha = autoevHoy(grupo), it = itemsDe(grupo), box = $('items'); box.innerHTML = '';
@@ -424,17 +462,17 @@ function pintar(){
   var zg = $('zonaGuardar'); zg.innerHTML = '';
   if(hecha){
     var h = document.createElement('div'); h.className = 'hecha';
-    h.textContent = '✓ Autoevaluación de hoy guardada: '+hecha.motivo.replace(/^Autoevaluación\s*/,'')+' → +'+hecha.n+' galeones.';
+    h.textContent = '✓ Autoevaluación de hoy guardada: '+hecha.motivo.replace(/^Autoevaluación\s*/,'')+' → +'+hecha.n+' '+W.moneda+'.';
     var u = document.createElement('button'); u.type = 'button'; u.textContent = 'Anular y repetir';
     u.addEventListener('click', function(){
-      if(!confirm('¿Anular la autoevaluación de hoy de '+grupo+'? Se quitarán los '+hecha.n+' galeones y podréis repetirla.')) return;
+      if(!confirm('¿Anular la autoevaluación de hoy de '+grupo+'? Se quitarán los '+hecha.n+' '+W.moneda+' y podréis repetirla.')) return;
       registrar(bovClave(grupo), 'Boveda', -hecha.n, 'Anulado: '+hecha.motivo, 'anula '+hecha.id);
       aviso('Autoevaluación anulada. Podéis repetirla.'); pintar();
     });
     h.appendChild(u); zg.appendChild(h);
   } else {
     var g = document.createElement('button'); g.type = 'button'; g.className = 'guardar'; g.id = 'bGuardar';
-    g.textContent = m===null ? 'Puntuad todos los ítems' : '🪙 ¡Guardar y llevar '+Math.round(m)+' galeones a la Bóveda!';
+    g.textContent = m===null ? 'Puntuad todos los ítems' : '🪙 ¡Guardar y llevar '+Math.round(m)+' '+W.moneda+' a la '+W.boveda.split(' ')[0]+'!';
     g.disabled = m===null || !cargado;
     if(!cargado && m!==null) g.textContent = 'Esperando a la Hoja…';
     g.addEventListener('click', guardar);
@@ -445,7 +483,7 @@ function pintar(){
   if(!cargado){ $('saldo').textContent = '…'; return; }
   var s = saldoDe(grupo);
   $('saldo').textContent = s;
-  $('saldoTxt').textContent = 'galeones en la Bóveda de '+grupo;
+  $('saldoTxt').textContent = W.moneda+' de '+grupo;
   pintarProx(s);
   var hs = bovMovs(grupo).filter(esAutoev).slice(-6).reverse(), ul = $('hist'); ul.innerHTML = '';
   if(!hs.length){ ul.innerHTML = '<li>Todavía no hay ninguna.</li>'; }
@@ -464,15 +502,15 @@ function pintarRecompensas(s){
   Array.prototype.forEach.call(document.querySelectorAll('.gNom'), function(e){ e.textContent = grupo; });
   var box = $('recompensas'); box.innerHTML = '';
   CONF.recompensas.forEach(function(sec){
-    var h = document.createElement('h3'); h.textContent = sec.sec; box.appendChild(h);
+    var h = document.createElement('h3'); h.textContent = typeof sec.sec==='string' ? sec.sec : (sec.sec[tema] || sec.sec.hp); box.appendChild(h);
     var g = document.createElement('div'); g.className = 'recs';
     sec.items.slice().sort(function(a,b){ return a[1]-b[1]; }).forEach(function(it){
       var falta = it[1]-s, d = document.createElement('div'); d.className = 'rec'+(falta>0 ? ' lejos' : '');
-      d.innerHTML = '<span class="rn"></span><span class="rp">'+it[1]+' galeones</span><span class="rf">'+(falta>0 ? 'Faltan '+falta : '¡Disponible!')+'</span><button type="button">Canjear</button>';
+      d.innerHTML = '<span class="rn"></span><span class="rp">'+it[1]+' '+W.moneda+'</span><span class="rf">'+(falta>0 ? 'Faltan '+falta : '¡Disponible!')+'</span><button type="button">Canjear</button>';
       d.querySelector('.rn').textContent = it[0];
       var b = d.querySelector('button'); b.disabled = falta>0;
       b.addEventListener('click', function(){
-        if(!confirm('¿Canjear «'+it[0]+'» por '+it[1]+' galeones? A '+grupo+' le quedarán '+(saldoDe(grupo)-it[1])+'.')) return;
+        if(!confirm('¿Canjear «'+it[0]+'» por '+it[1]+' '+W.moneda+'? A '+grupo+' le quedarán '+(saldoDe(grupo)-it[1])+'.')) return;
         registrar(bovClave(grupo), 'Boveda', -it[1], 'Canje: '+it[0], 'Recompensa de clase');
         aviso('🎁 ¡'+grupo+' canjea «'+it[0]+'»!'); fxTam(); confeti(80); arrancarFx(); pintar();
       });
@@ -503,9 +541,9 @@ function pintarMovs(){
   });
 }
 function ajustar(sg){
-  var n = numero($('ajN').value); if(n<=0){ aviso('Escribe cuántos galeones.'); return; }
-  registrar(bovClave(grupo), 'Boveda', sg*n, $('ajM').value.trim() || (sg>0 ? 'Ajuste: galeones añadidos' : 'Ajuste: galeones quitados'), 'Ajuste');
-  $('ajN').value = ''; $('ajM').value = ''; aviso(sg>0 ? '+'+n+' galeones para '+grupo+'.' : '−'+n+' galeones a '+grupo+'.'); pintar();
+  var n = numero($('ajN').value); if(n<=0){ aviso('Escribe cuántos '+W.moneda+'.'); return; }
+  registrar(bovClave(grupo), 'Boveda', sg*n, $('ajM').value.trim() || (sg>0 ? 'Ajuste: '+W.moneda+' añadidos' : 'Ajuste: '+W.moneda+' quitados'), 'Ajuste');
+  $('ajN').value = ''; $('ajM').value = ''; aviso(sg>0 ? '+'+n+' '+W.moneda+' para '+grupo+'.' : '−'+n+' '+W.moneda+' a '+grupo+'.'); pintar();
 }
 $('ajDar').addEventListener('click', function(){ ajustar(1); });
 $('ajQuitar').addEventListener('click', function(){ ajustar(-1); });
@@ -628,7 +666,7 @@ function animar(gal, antes, g){
   if(animando) return; animando = true;
   var esc = $('escena'), cont = $('contador'), cofre = $('cofreWrap'), msj = $('mensaje'), cer = $('cerrarEsc');
   esc.classList.remove('fiesta'); msj.classList.remove('ver'); cer.classList.remove('ver'); msj.textContent = '';
-  $('titEsc').textContent = 'Galeones para la Bóveda de '+g;
+  $('titEsc').textContent = mayus(W.moneda)+' para la '+W.boveda+' · '+g;
   cont.textContent = '0'; esc.hidden = false; fxTam(); parts = []; cohetes = [];
   ctx(); /* el navegador solo deja sonar tras un toque: este es el del botón */
   var fiesta = gal >= CONF.fiestaDesde;
@@ -646,14 +684,14 @@ function animar(gal, antes, g){
   p.then(function(){ return esperar(350); }).then(function(){
     if(fiesta){
       esc.classList.add('fiesta');
-      msj.textContent = '🎉 ¡FIESTA EN GRINGOTTS! 🎉';
+      msj.textContent = '🎉 ¡FIESTA EN '+W.lugar.toUpperCase()+'! 🎉';
       fanfarria(); confeti(reduce ? 60 : 220);
       fiestaHasta = performance.now() + (reduce ? 1500 : 9000);
       setTimeout(function(){ if(!$('escena').hidden && sonido) fanfarria(); }, 4200);
     } else if(gal >= 7){
-      msj.textContent = '¡Muy bien, '+g+'! La Bóveda tiene ahora '+(antes+gal)+' galeones.'; sonidoBien(); confeti(50);
+      msj.textContent = '¡Muy bien, '+g+'! Ya tenéis '+(antes+gal)+' '+W.moneda+'.'; sonidoBien(); confeti(50);
     } else if(gal >= 5){
-      msj.textContent = '¡Bien! La Bóveda tiene ahora '+(antes+gal)+' galeones. ¡El próximo día, a por el 9!'; sonidoBien();
+      msj.textContent = '¡Bien! Ya tenéis '+(antes+gal)+' '+W.moneda+'. ¡El próximo día, a por el 9!'; sonidoBien();
     } else {
       msj.textContent = 'Hoy han sido '+gal+'. ¡Mañana lo hacemos mejor!'; sonidoFlojo();
     }
@@ -664,7 +702,7 @@ function animar(gal, antes, g){
 }
 function caeMoneda(cofre){
   return new Promise(function(res){
-    var m = document.createElement('div'); m.className = 'moneda'; m.textContent = 'G';
+    var m = document.createElement('div'); m.className = 'moneda'; m.textContent = W.simbolo;
     cofre.appendChild(m);
     var h = cofre.getBoundingClientRect().height, dx = (rnd()-.5)*40;
     var desde = -(cofre.getBoundingClientRect().top + 80);
