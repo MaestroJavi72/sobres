@@ -260,6 +260,14 @@ var EF = {
   },
   chicas: ['Ana M','Ana S','Carmen','Gala','Lucía','María B','María D','Naomi','Noa','Valeria','Adriana','Ainhara','Alma','Athenea','Claudia','Daniela','Laura','María','Suhaila',
            'Alira','Amelia','Dafne','Iris','Mariam','Nirvana','Paula','Thalia','Valentina'],
+  /* puntos de partida (ClassDojo a 7 de octubre de 2026). 3ºB empieza en 0. */
+  inicio: {
+    '3ºA': { 'Adrián':6, 'Aimar':6, 'Alejandro':4, 'Ana M':6, 'Ana S':5, 'Carmen':6, 'Cristo':7, 'Diego':8, 'Gala':5,
+             'Hugo':8, 'José':8, 'Lucía':6, 'María B':8, 'María D':4, 'Naomi':4, 'Noa':5, 'Pablo':6, 'Valeria':5 },
+    '3ºB': {},
+    '4ºB': { 'Aaron':1, 'Aiden':3, 'Alberto':8, 'Alira':-3, 'Amelia':-1, 'Dafne':1, 'Francisco':0, 'Hugo':2, 'Iris':0,
+             'Jesús':7, 'Mariam':11, 'Nirvana':9, 'Oscar':-2, 'Paula':-1, 'Thalia':4, 'Uriel':-4, 'Valentina':-5, 'Valeria':4 }
+  },
   /* mismo Formulario y Hoja que Javificación; los alumnos se guardan como «3ºA · Nombre» */
   registro: {
     formAction: 'https://docs.google.com/forms/d/e/1FAIpQLSd_kTfsYHYK8F3jv0WmYJpsMfw1rYLVOrZiIHzH6Mb-4JuAaw/formResponse',
@@ -568,7 +576,8 @@ function cargar(){
 function anulados(ms){ var a = {}; ms.forEach(function(m){ var k = String(m.extra).match(/anula (#g[a-z0-9]+)/); if(k) a[k[1]] = 1; }); return a; }
 function cuentas(){
   var out = {}, ms = delGrupo();
-  CONFIG.alumnos.forEach(function(n){ out[n] = { acum:0, gast:0 }; });
+  var ini = EF.inicio[grupo] || {};
+  CONFIG.alumnos.forEach(function(n){ out[n] = { acum:numero(ini[n]), gast:0 }; });
   ms.forEach(function(m){
     var nm = nombreDe(m); if(!out[nm]) return;
     if(m.accion.indexOf('galeon')===0) out[nm].acum += m.n;
