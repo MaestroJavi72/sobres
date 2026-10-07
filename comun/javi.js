@@ -220,6 +220,71 @@ function quitarPuntos(g, nombre, mov, motivo){
 }
 
 /* ============================================================
+   HORARIO, PLANES DE SESIÓN Y SITUACIONES DE APRENDIZAJE
+   - data/horario.json: sesiones de la semana (día, hora, grupo, asignatura)
+   - Plan de una sesión: Alumno «PLAN · 4ºA», Acción «Plan», CartaId «2026-10-08 · LCL», JSON
+   - SdA: Alumno «SDA · 4ºA», Acción «SdA», CartaId = id, Tipo = título, JSON (la última versión manda)
+   - Días sin clase: ajuste «festivos» (fechas separadas por comas)
+   ============================================================ */
+var HORARIO = null;
+function cargarHorario(){
+  return fetch(BASE+'data/horario.json', { cache:'no-store' })
+    .then(function(r){ if(!r.ok) throw new Error('horario.json '+r.status); return r.json(); })
+    .then(function(j){ HORARIO = j; return j; });
+}
+function horario(){ return HORARIO; }
+function diaSemana(f){ var p = f.split('-'); return new Date(+p[0], +p[1]-1, +p[2], 12).getDay(); }
+function sesionesDelDia(f){ var d = diaSemana(f); return HORARIO ? HORARIO.sesiones.filter(function(s){ return s.dia===d; }) : []; }
+function festivos(){ return String(ajuste('festivos')||'').split(/[,\s]+/).filter(function(x){ return /^\d{4}-\d{2}-\d{2}$/.test(x); }); }
+function sumarDias(f, n){ var p = f.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]+n, 12); return clave(d); }
+function lunesDe(f){ var d = diaSemana(f); return sumarDias(f, d===0 ? -6 : 1-d); }
+
+function jsonDeFila(f){ var i = f.carta.indexOf('{'); if(i<0) return null; try{ return JSON.parse(f.carta.slice(i)); }catch(e){ return null; } }
+function claveSesion(fecha, asig){ return fecha+' · '+(asig||'EF'); }
+function planDe(g, fecha, asig){
+  var k = normal('PLAN · '+g), c = claveSesion(fecha, asig), res = null;
+  filas().forEach(function(f){ if(normal(f.alumno)===k && normal(f.accion)==='plan' && f.cartaId===c){ var j = jsonDeFila(f); if(j) res = j; } });
+  return res;
+}
+function guardarPlan(g, fecha, asig, plan){
+  return escribir({ alumno:'PLAN · '+g, accion:'Plan', cartaId:claveSesion(fecha, asig), tipo:plan.titulo||'Sesión', carta:JSON.stringify(plan) });
+}
+function fechasConPlan(g, asig){
+  var k = normal('PLAN · '+g), fs = {};
+  filas().forEach(function(f){ if(normal(f.alumno)===k && normal(f.accion)==='plan'){ var p = f.cartaId.split(' · '); if((p[1]||'EF')===(asig||'EF')) fs[p[0]] = 1; } });
+  return Object.keys(fs).sort();
+}
+function sdas(){
+  var por = {};
+  filas().forEach(function(f){
+    if(normal(f.accion)!=='sda' || normal(f.alumno).indexOf('sda · ')!==0) return;
+    var j = jsonDeFila(f); if(j && j.id) por[j.id] = j;
+  });
+  return Object.keys(por).map(function(k){ return por[k]; }).filter(function(s){ return !s.borrada; })
+    .sort(function(a,b){ return (a.inicio||'').localeCompare(b.inicio||''); });
+}
+function guardarSda(s){ return escribir({ alumno:'SDA · '+s.grupo, accion:'SdA', cartaId:s.id, tipo:s.titulo||'', carta:JSON.stringify(s) }); }
+/* reparte las sesiones de una SdA en los huecos del horario de su grupo y asignatura, desde su fecha de inicio */
+function repartirSda(s){
+  var fes = festivos(), f = s.inicio, i = 0, vueltas = 0;
+  while(i < s.sesiones.length && vueltas < 400){
+    if(fes.indexOf(f)<0){
+      sesionesDelDia(f).forEach(function(h){ if(i < s.sesiones.length && h.grupo===s.grupo && h.asig===s.asig){ s.sesiones[i].fecha = f; s.sesiones[i].ini = h.ini; i++; } });
+    }
+    f = sumarDias(f, 1); vueltas++;
+  }
+  return s;
+}
+function sdaDeSesion(g, fecha, asig){
+  var r = null;
+  sdas().forEach(function(s){
+    if(s.grupo!==g || s.asig!==(asig||'EF')) return;
+    (s.sesiones||[]).forEach(function(x, i){ if(x.fecha===fecha) r = { sda:s, i:i, sesion:x }; });
+  });
+  return r;
+}
+
+/* ============================================================
    AJUSTES (por ahora: el tema). Fila «AJUSTES», acción «Ajuste».
    ============================================================ */
 function ajuste(nombre){
@@ -309,7 +374,8 @@ function terminar(){
 }
 var pBase = cargarBase().catch(function(e){ console.warn('Javificación: sin data/alumnos.json', e); });
 var pHoja = leerHoja().catch(function(e){ console.warn('Javificación: sin Hoja', e); });
-Promise.all([pBase, Promise.race([pHoja, new Promise(function(r){ setTimeout(r, 4000); })])]).then(terminar);
+var pHorario = cargarHorario().catch(function(e){ console.warn('Javificación: sin horario', e); });
+Promise.all([pBase, pHorario, Promise.race([pHoja, new Promise(function(r){ setTimeout(r, 4000); })])]).then(terminar);
 function listo(fn){
   var run = function(){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fn); else fn(); };
   if(preparado) run(); else esperando.push(run);
@@ -319,6 +385,8 @@ window.JAVI = {
   BASE:BASE, PRUEBA:PRUEBA, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
   listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, horaHoja:function(){ return horaCSV; },
   grupo:grupo, grupos:grupos, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
+  horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
+  planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,

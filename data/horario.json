@@ -1,0 +1,32 @@
+{
+ "_nota": "Horario de Javi (curso 2026-27). dia: 1 = lunes … 5 = viernes. asig: EF o LCL. Si cambia el horario, cambia solo este archivo.",
+ "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
+ "franjas": [
+  { "ini": "09:00", "fin": "09:30", "tipo": "reduccion" },
+  { "ini": "09:30", "fin": "12:00", "tipo": "clases" },
+  { "ini": "12:00", "fin": "12:30", "tipo": "recreo" },
+  { "ini": "12:30", "fin": "13:30", "tipo": "clases" },
+  { "ini": "13:30", "fin": "14:00", "tipo": "reduccion" }
+ ],
+ "sesiones": [
+  { "dia": 1, "ini": "09:30", "fin": "11:00", "grupo": "4ºB", "asig": "EF" },
+  { "dia": 1, "ini": "11:00", "fin": "12:00", "grupo": "4ºA", "asig": "LCL" },
+  { "dia": 1, "ini": "12:30", "fin": "13:30", "grupo": "3ºB", "asig": "EF" },
+
+  { "dia": 2, "ini": "09:30", "fin": "10:30", "grupo": "3ºA", "asig": "EF" },
+  { "dia": 2, "ini": "10:30", "fin": "12:00", "grupo": "4ºA", "asig": "EF" },
+  { "dia": 2, "ini": "12:30", "fin": "13:30", "grupo": "4ºA", "asig": "LCL" },
+
+  { "dia": 3, "ini": "09:30", "fin": "11:00", "grupo": "4ºB", "asig": "EF" },
+  { "dia": 3, "ini": "11:00", "fin": "12:00", "grupo": "4ºA", "asig": "LCL" },
+  { "dia": 3, "ini": "12:30", "fin": "13:30", "grupo": "3ºA", "asig": "EF" },
+
+  { "dia": 4, "ini": "09:30", "fin": "10:30", "grupo": "3ºA", "asig": "EF" },
+  { "dia": 4, "ini": "10:30", "fin": "12:00", "grupo": "4ºA", "asig": "LCL" },
+  { "dia": 4, "ini": "12:30", "fin": "13:30", "grupo": "3ºB", "asig": "EF" },
+
+  { "dia": 5, "ini": "09:30", "fin": "11:00", "grupo": "4ºA", "asig": "EF" },
+  { "dia": 5, "ini": "11:00", "fin": "12:00", "grupo": "3ºB", "asig": "EF" },
+  { "dia": 5, "ini": "12:30", "fin": "13:30", "grupo": "4ºA", "asig": "LCL" }
+ ]
+}

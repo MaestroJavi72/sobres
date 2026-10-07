@@ -12,6 +12,9 @@
 .chip{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:8px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
 .chip[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
 .fecha{font-size:17px;padding:8px 10px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.sdaInfo{margin-bottom:14px;border-left:6px solid var(--acento)}
+.sdaInfo h2{font-family:var(--f-sub);color:var(--acento-2);font-size:19px;margin-bottom:4px}
+.sdaInfo ul{margin:6px 0 0 18px;font-size:15px;color:var(--tinta-suave);line-height:1.35}
 .barraSup{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 
 .j-panel + .j-panel, .fase + .fase{margin-top:14px}
@@ -90,13 +93,18 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
   <header class="cab">
     <h1 class="j-titulo">📋 Sesión y Ruleta</h1>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+    <a class="j-icono" id="bSemana" href="../planificacion/?profe" title="Planificación semanal" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">📅 Semana</a>
     <a class="j-icono" id="bInicio" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
   </header>
 
   <div class="barraSup">
     <nav class="grupos" id="grupos" aria-label="Clase"></nav>
+    <nav class="grupos" id="asigs" aria-label="Asignatura"></nav>
     <input class="fecha" id="fecha" type="date" aria-label="Fecha de la sesión">
+    <span class="estado" id="hueco"></span>
   </div>
+
+  <section class="j-panel sdaInfo" id="sdaInfo" hidden></section>
 
   <section class="j-panel">
     <div class="dos">
@@ -165,32 +173,32 @@ function mezclar(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.
 var q = new URLSearchParams(location.search);
 var grupo = (q.get('grupo')||'').replace(/o/i,'º').toUpperCase() || leer('sesion-grupo', null);
 var fecha = q.get('fecha') || U.clave(new Date());
+var asig = (q.get('asig')||'').toUpperCase() || null;
+var NOMBRE_ASIG = { EF:'Educación Física', LCL:'Lengua' };
+function asignaturasDe(g){ var r = JAVI.grupo(g); return r && r.asignaturas && r.asignaturas.length ? r.asignaturas : ['EF']; }
+function elegirAsig(){
+  var lista = asignaturasDe(grupo);
+  if(asig && lista.indexOf(asig)>=0) return;
+  var hoy = JAVI.sesionesDelDia(fecha).filter(function(h){ return h.grupo===grupo; });
+  asig = hoy.length ? hoy[0].asig : lista[0];
+}
 var plan = null, sucio = false;
 
 function planVacio(){ return { titulo:'', objetivo:'', fases:[] }; }
-function claveLocal(){ return 'plan|'+grupo+'|'+fecha; }
+function claveLocal(){ return 'plan|'+grupo+'|'+fecha+'|'+asig; }
 function moneda(){ var t = JAVI.TEMAS[JAVI.temaDe(grupo)]; return t ? t.moneda : 'galeones'; }
 
 /* plan guardado en la Hoja (el último de esa clase y fecha) */
-function planDeHoja(g, f){
-  var k = U.normal('PLAN · '+g), res = null;
-  JAVI.filas().forEach(function(x){
-    if(U.normal(x.alumno)!==k || U.normal(x.accion)!=='plan' || x.cartaId!==f) return;
-    var i = x.carta.indexOf('{'); if(i<0) return;
-    try{ res = JSON.parse(x.carta.slice(i)); }catch(e){}
-  });
-  return res;
-}
-function fechasConPlan(g){
-  var k = U.normal('PLAN · '+g), fs = {};
-  JAVI.filas().forEach(function(x){ if(U.normal(x.alumno)===k && U.normal(x.accion)==='plan') fs[x.cartaId] = 1; });
-  return Object.keys(fs).sort();
-}
+function planDeHoja(g, f){ return JAVI.planDe(g, f, asig); }
+function fechasConPlan(g){ return JAVI.fechasConPlan(g, asig); }
 function cargarPlan(){
   var borrador = leer(claveLocal(), null), hoja = planDeHoja(grupo, fecha);
   if(borrador && borrador.sucio){ plan = borrador.plan; sucio = true; }
   else { plan = hoja || (borrador && borrador.plan) || planVacio(); sucio = false; }
   if(!plan.fases) plan.fases = [];
+  /* si la sesión es de una situación de aprendizaje y aún no tiene plan, toma su título y objetivo */
+  var sd = JAVI.sdaDeSesion(grupo, fecha, asig);
+  if(sd && !plan.titulo && !plan.fases.length){ plan.titulo = sd.sesion.titulo||''; plan.objetivo = sd.sesion.objetivo||''; }
 }
 function marcarSucio(){ sucio = true; escribirL(claveLocal(), { plan:plan, sucio:true }); pintarEstado(); }
 function pintarEstado(){
@@ -199,7 +207,7 @@ function pintarEstado(){
   e.className = 'estado'+(sucio ? ' sucio' : '');
 }
 $('bGuardar').addEventListener('click', function(){
-  JAVI.escribir({ alumno:'PLAN · '+grupo, accion:'Plan', cartaId:fecha, tipo:plan.titulo||'Sesión', carta:JSON.stringify(plan) });
+  JAVI.guardarPlan(grupo, fecha, asig, plan);
   sucio = false; escribirL(claveLocal(), { plan:plan, sucio:false });
   aviso('Plan guardado.'); pintarEstado();
 });
@@ -221,9 +229,30 @@ function pintarGrupos(){
   JAVI.grupos().forEach(function(g){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = g;
     b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
-    b.addEventListener('click', function(){ grupo = g; escribirL('sesion-grupo', g); todo(); });
+    b.addEventListener('click', function(){ grupo = g; asig = null; escribirL('sesion-grupo', g); todo(); });
     box.appendChild(b);
   });
+}
+function pintarAsigs(){
+  var box = $('asigs'), lista = asignaturasDe(grupo); box.innerHTML = '';
+  box.hidden = lista.length < 2;
+  lista.forEach(function(a){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = NOMBRE_ASIG[a] || a;
+    b.setAttribute('aria-pressed', a===asig ? 'true' : 'false');
+    b.addEventListener('click', function(){ asig = a; todo(); });
+    box.appendChild(b);
+  });
+  var h = JAVI.sesionesDelDia(fecha).filter(function(x){ return x.grupo===grupo && x.asig===asig; })[0];
+  $('hueco').textContent = h ? '🕘 '+h.ini+'–'+h.fin : (JAVI.horario() ? 'Este día no hay '+(NOMBRE_ASIG[asig]||asig)+' con '+grupo+' en el horario' : '');
+  $('bSemana').href = '../planificacion/?profe&semana='+JAVI.lunesDe(fecha);
+}
+function pintarSda(){
+  var box = $('sdaInfo'), sd = JAVI.sdaDeSesion(grupo, fecha, asig);
+  if(!sd){ box.hidden = true; return; }
+  var s = sd.sda, h = '<h2>📚 '+esc_(s.titulo)+' · sesión '+(sd.i+1)+' de '+s.sesiones.length+'</h2>';
+  if(sd.sesion.objetivo) h += '<div>'+esc_(sd.sesion.objetivo)+'</div>';
+  if(s.criterios && s.criterios.length) h += '<div class="estado" style="margin-top:4px">Criterios: '+s.criterios.map(function(c){ return s.asig+' '+c; }).join(' · ')+'</div>';
+  box.innerHTML = h; box.hidden = false;
 }
 function pintarPlan(){
   $('pTitulo').value = plan.titulo||''; $('pObjetivo').value = plan.objetivo||'';
@@ -575,7 +604,8 @@ $('fecha').addEventListener('change', function(){ if(this.value){ fecha = this.v
 function todo(){
   if(JAVI.grupos().indexOf(grupo)<0) grupo = JAVI.grupos()[0];
   $('fecha').value = fecha;
-  ponerTema(); pintarGrupos(); cargarPlan(); pintarPlan(); pintarFaltan();
+  elegirAsig();
+  ponerTema(); pintarGrupos(); pintarAsigs(); cargarPlan(); pintarSda(); pintarPlan(); pintarFaltan();
 }
 JAVI.listo(function(){ todo(); JAVI.avisoPrueba(); });
 })();

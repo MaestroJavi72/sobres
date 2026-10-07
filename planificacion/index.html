@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Planificación</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cab h1{flex:1;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:10px 18px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.pestanas button[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.vista[hidden]{display:none}
+.mini{font-size:15px;padding:7px 12px;border-radius:10px;border:1px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.mini.rojo{border-color:#b6493f;color:#ff9a8f}
+.estado{font-size:15px;color:var(--tinta-suave)}
+.navSemana{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.navSemana h2{font-family:var(--f-sub);font-size:clamp(18px,2.4vw,24px);color:var(--acento-2);flex:1;min-width:200px}
+
+/* ---------- cuadrícula de la semana (como el horario) ---------- */
+.semana{display:grid;grid-template-columns:70px repeat(5,minmax(0,1fr));grid-template-rows:auto repeat(5,minmax(46px,auto)) 34px repeat(2,minmax(46px,auto));
+  gap:4px;background:var(--panel);border:2px solid var(--panel-borde);border-radius:var(--radio);padding:8px}
+.cabDia{font-family:var(--f-sub);font-weight:800;text-align:center;padding:6px 2px;border-radius:10px;font-size:16px}
+.cabDia small{display:block;font-weight:500;font-size:13px;color:var(--tinta-suave)}
+.cabDia.hoy{background:var(--acento);color:var(--acento-tinta)}
+.cabDia.hoy small{color:var(--acento-tinta)}
+.hora{font-size:13px;color:var(--tinta-suave);text-align:right;padding:4px 6px 0 0}
+.recreo{grid-column:1 / -1;display:grid;place-items:center;font-family:var(--f-sub);font-weight:700;letter-spacing:.2em;font-size:13px;color:var(--tinta-suave);background:rgba(0,0,0,.18);border-radius:8px}
+.ses{display:flex;flex-direction:column;gap:3px;padding:8px;border-radius:12px;text-decoration:none;color:var(--tinta);border:2px solid transparent;
+  background:rgba(0,0,0,.2);min-height:100%;transition:transform .12s, border-color .12s}
+a.ses:hover,a.ses:focus-visible{transform:translateY(-2px);border-color:var(--acento)}
+.ses .gr{font-family:var(--f-sub);font-weight:800;font-size:15px;padding:2px 8px;border-radius:8px;align-self:flex-start}
+.ses.EF .gr{background:#d7ece6;color:#1d6b5a}
+.ses.LCL .gr{background:#f6dcdc;color:#a3392f}
+.ses .tit{font-weight:700;font-size:16px;line-height:1.2}
+.ses .tit.vacio{font-weight:400;font-style:italic;color:var(--tinta-suave)}
+.ses .tit.sda{font-style:italic}
+.ses .tag{font-size:13px;color:var(--acento-2)}
+.ses .h{font-size:12px;color:var(--tinta-suave)}
+.ses.festivo{opacity:.45;border:2px dashed var(--panel-borde);background:none}
+[data-tema="pokemon"] .ses{background:#eef7ff}
+@media (max-width:760px){
+  .semana{display:flex;flex-direction:column}
+  .hora,.recreo{display:none}
+  .cabDia{text-align:left;margin-top:8px}
+}
+
+/* ---------- situaciones de aprendizaje ---------- */
+.listaSda{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.sda{display:flex;flex-direction:column;gap:6px}
+.sda h3{font-family:var(--f-sub);color:var(--titulo-color);font-size:20px}
+.sda .meta{font-size:15px;color:var(--tinta-suave)}
+.editor[hidden]{display:none}
+label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--tinta-suave);margin-bottom:10px}
+.campo input,.campo textarea,.campo select{font-size:17px;padding:9px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.22);color:var(--tinta);font-family:var(--f-texto)}
+[data-tema="pokemon"] .campo :is(input,textarea,select){background:#fff}
+.campo textarea{min-height:64px;resize:vertical}
+.tres{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:700px){ .tres,.dos{grid-template-columns:1fr} }
+.crits{max-height:340px;overflow:auto;border:1px solid var(--panel-borde);border-radius:12px;padding:8px 10px}
+.crits h4{font-family:var(--f-sub);color:var(--acento-2);font-size:15px;margin:10px 0 4px}
+.crits label{display:flex;gap:8px;align-items:flex-start;font-size:15px;line-height:1.3;padding:4px 0;cursor:pointer}
+.crits input{margin-top:3px;width:18px;height:18px;flex:none;accent-color:var(--acento)}
+.crits b{white-space:nowrap}
+.sesLista{list-style:none;counter-reset:s}
+.sesLista li{display:grid;grid-template-columns:30px 1fr 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--panel-borde)}
+.sesLista li::before{counter-increment:s;content:counter(s);font-family:var(--f-titulo);color:var(--titulo-color);font-size:20px;text-align:center}
+.sesLista input{font-size:16px;padding:7px 8px;border-radius:8px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.2);color:var(--tinta);width:100%}
+[data-tema="pokemon"] .sesLista input{background:#fff}
+.sesLista .fch{font-size:13px;color:var(--tinta-suave);white-space:nowrap}
+@media (max-width:700px){ .sesLista li{grid-template-columns:30px 1fr;} .sesLista li > :nth-child(n+3){grid-column:2} }
+.festivos{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.festivos span{display:inline-flex;gap:6px;align-items:center;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.2);font-size:15px}
+.festivos button{background:none;border:none;color:#ff9a8f;font-size:16px}
+
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .cab .j-icono,.pestanas,.navSemana button,.noImprimir{display:none!important}
+  .semana{border:1px solid #999;background:#fff}
+  .ses{background:#fff!important;border:1px solid #bbb!important;color:#000}
+  .ses .tag,.ses .h,.cabDia small{color:#444!important}
+}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">📅 Planificación</h1>
+    <a class="j-icono" href="../sesion/?profe" title="Sesión y Ruleta" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">📋 Sesión</a>
+    <a class="j-icono" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
+  </header>
+
+  <nav class="pestanas" role="tablist">
+    <button type="button" role="tab" data-v="semana" aria-selected="true">📅 Semana</button>
+    <button type="button" role="tab" data-v="sda" aria-selected="false">📚 Situaciones de aprendizaje</button>
+    <button type="button" role="tab" data-v="festivos" aria-selected="false">🏖️ Días sin clase</button>
+  </nav>
+
+  <!-- SEMANA -->
+  <section class="vista" id="v-semana">
+    <div class="navSemana">
+      <button class="mini" id="sAnt" type="button" aria-label="Semana anterior">◀</button>
+      <h2 id="sTit"></h2>
+      <button class="mini" id="sHoy" type="button">Esta semana</button>
+      <button class="mini" id="sSig" type="button" aria-label="Semana siguiente">▶</button>
+      <button class="mini" id="sImprimir" type="button">🖨️ Imprimir</button>
+    </div>
+    <div class="semana" id="semana"></div>
+    <p class="estado noImprimir" style="margin-top:8px">Toca una sesión para planificarla (fases, Ruleta de preguntas…). En cursiva: el título que viene de su situación de aprendizaje.</p>
+  </section>
+
+  <!-- SITUACIONES DE APRENDIZAJE -->
+  <section class="vista" id="v-sda" hidden>
+    <div class="noImprimir" style="margin-bottom:12px"><button class="j-boton" id="bNuevaSda" type="button">+ Nueva situación de aprendizaje</button></div>
+    <section class="j-panel editor" id="editor" hidden></section>
+    <div class="listaSda" id="listaSda" style="margin-top:12px"></div>
+  </section>
+
+  <!-- DÍAS SIN CLASE -->
+  <section class="vista" id="v-festivos" hidden>
+    <div class="j-panel">
+      <p class="estado">Los días sin clase se saltan al repartir las sesiones de una situación de aprendizaje y salen tachados en la semana.</p>
+      <div class="festivos" id="listaFestivos"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <label class="campo" style="margin:0">Desde<input id="fDesde" type="date"></label>
+        <label class="campo" style="margin:0">Hasta (opcional)<input id="fHasta" type="date"></label>
+        <button class="j-boton" id="fAnadir" type="button" style="align-self:flex-end">Añadir</button>
+      </div>
+      <p class="estado" style="margin-top:10px">Rápido: <button class="mini" data-f="2026-10-12" type="button">12 oct · Fiesta Nacional</button> <button class="mini" data-f="2026-12-08" type="button">8 dic · Inmaculada</button></p>
+    </div>
+  </section>
+</div>
+<div class="j-aviso" id="aviso" role="status" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util;
+var avisoT = 0;
+function aviso(t){ var a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3500); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function fechaBonita(f){ var p = f.split('-'); return (+p[2])+' de '+MESES[+p[1]-1]; }
+function fechaCorta(f){ var p = f.split('-'); return (+p[2])+'/'+(+p[1]); }
+var NOMBRE_ASIG = { EF:'EF', LCL:'Lengua' };
+
+/* ---------- pestañas ---------- */
+function verVista(v){
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['semana','sda','festivos'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  history.replaceState(null, '', location.search+'#'+v);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
+
+/* ============================================================
+   SEMANA
+   ============================================================ */
+var q = new URLSearchParams(location.search);
+var lunes = null;
+var FILAS = ['09:30','10:00','10:30','11:00','11:30','RECREO','12:30','13:00'];
+function filaDe(h){ var i = FILAS.indexOf(h); return i<0 ? null : i+2; }         /* +2: la fila 1 son los días */
+function filaFin(h){ if(h==='12:00') return 7; if(h==='13:30') return 10; var i = FILAS.indexOf(h); return i+2; }
+
+function pintarSemana(){
+  var H = JAVI.horario(), box = $('semana'); box.innerHTML = '';
+  if(!H){ box.textContent = 'No se ha podido leer el horario.'; return; }
+  var viernes = JAVI.sumarDias(lunes, 4), hoy = U.clave(new Date()), fes = JAVI.festivos();
+  $('sTit').textContent = 'Semana del '+fechaBonita(lunes)+' al '+fechaBonita(viernes);
+  /* cabeceras */
+  box.appendChild(celda('div', '', 1, 1));
+  H.dias.forEach(function(d, i){
+    var f = JAVI.sumarDias(lunes, i), c = celda('div', 'cabDia'+(f===hoy ? ' hoy' : ''), 1, i+2); c.style.order = (i+1)*100;
+    c.innerHTML = esc(d)+'<small>'+fechaCorta(f)+(fes.indexOf(f)>=0 ? ' · sin clase' : '')+'</small>';
+    box.appendChild(c);
+  });
+  /* horas y recreo */
+  FILAS.forEach(function(h, i){
+    if(h==='RECREO'){ var r = celda('div', 'recreo', i+2, '1 / -1'); r.textContent = 'RECREO'; box.appendChild(r); return; }
+    var c = celda('div', 'hora', i+2, 1); c.textContent = h; box.appendChild(c);
+  });
+  /* sesiones */
+  H.sesiones.forEach(function(s){
+    var f = JAVI.sumarDias(lunes, s.dia-1), sinClase = fes.indexOf(f)>=0;
+    var plan = JAVI.planDe(s.grupo, f, s.asig), sd = JAVI.sdaDeSesion(s.grupo, f, s.asig);
+    var el = document.createElement(sinClase ? 'div' : 'a');
+    el.className = 'ses '+s.asig+(sinClase ? ' festivo' : '');
+    el.style.gridColumn = s.dia+1; el.style.gridRow = filaDe(s.ini)+' / '+filaFin(s.fin); el.style.order = s.dia*100 + filaDe(s.ini);   /* order: en el móvil, cada sesión bajo su día */
+    if(!sinClase) el.href = '../sesion/?profe&grupo='+encodeURIComponent(s.grupo).replace('%C2%BA','o')+'&fecha='+f+'&asig='+s.asig;
+    var tit, cls = 'tit';
+    if(plan && plan.titulo){ tit = plan.titulo; }
+    else if(sd && sd.sesion.titulo){ tit = sd.sesion.titulo; cls += ' sda'; }
+    else { tit = sinClase ? 'Sin clase' : 'Sin planificar'; cls += ' vacio'; }
+    var ruleta = plan && (plan.fases||[]).some(function(x){ return x.tipo==='ruleta'; });
+    el.innerHTML = '<span class="gr">'+esc(s.grupo)+' · '+(NOMBRE_ASIG[s.asig]||s.asig)+'</span>'+
+      '<span class="'+cls+'">'+esc(tit)+(ruleta ? ' 🎯' : '')+'</span>'+
+      (sd ? '<span class="tag">📚 '+esc(sd.sda.titulo)+' · '+(sd.i+1)+'/'+sd.sda.sesiones.length+'</span>' : '')+
+      '<span class="h">'+s.ini+'–'+s.fin+(plan && plan.fases && plan.fases.length ? ' · '+plan.fases.length+' fases' : '')+'</span>';
+    box.appendChild(el);
+  });
+}
+function celda(tag, cls, fila, col){ var c = document.createElement(tag); c.className = cls; c.style.gridRow = fila; c.style.gridColumn = col; return c; }
+$('sAnt').addEventListener('click', function(){ lunes = JAVI.sumarDias(lunes, -7); pintarSemana(); });
+$('sSig').addEventListener('click', function(){ lunes = JAVI.sumarDias(lunes, 7); pintarSemana(); });
+$('sHoy').addEventListener('click', function(){ lunes = JAVI.lunesDe(U.clave(new Date())); pintarSemana(); });
+$('sImprimir').addEventListener('click', function(){ window.print(); });
+
+/* ============================================================
+   SITUACIONES DE APRENDIZAJE
+   ============================================================ */
+var CRIT = null;
+function cargarCriterios(){
+  if(CRIT) return Promise.resolve(CRIT);
+  return fetch('../data/criterios.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(j){ CRIT = j; return j; });
+}
+function pintarListaSda(){
+  var box = $('listaSda'), ls = JAVI.sdas(); box.innerHTML = '';
+  if(!ls.length){ box.innerHTML = '<p class="estado">Todavía no hay ninguna. Crea la primera con «+ Nueva situación de aprendizaje».</p>'; return; }
+  ls.slice().reverse().forEach(function(s){
+    var fs = (s.sesiones||[]).map(function(x){ return x.fecha; }).filter(Boolean).sort();
+    var d = document.createElement('article'); d.className = 'j-panel sda';
+    d.innerHTML = '<h3></h3><div class="meta"></div><div class="meta"></div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><button class="mini" data-a="editar" type="button">✏️ Editar</button>'+
+      (fs.length ? '<button class="mini" data-a="ver" type="button">📅 Ver en la semana</button>' : '')+'</div>';
+    d.querySelector('h3').textContent = s.titulo || '(sin título)';
+    d.querySelectorAll('.meta')[0].textContent = s.grupo+' · '+(s.asig==='LCL' ? 'Lengua' : 'Educación Física')+(s.unidad ? ' · '+s.unidad : '');
+    d.querySelectorAll('.meta')[1].textContent = (s.sesiones||[]).length+' sesiones'+(fs.length ? ' · del '+fechaCorta(fs[0])+' al '+fechaCorta(fs[fs.length-1]) : '')+' · '+(s.criterios||[]).length+' criterios';
+    d.addEventListener('click', function(e){
+      var a = e.target.dataset && e.target.dataset.a;
+      if(a==='editar') abrirEditor(JSON.parse(JSON.stringify(s)));
+      if(a==='ver'){ lunes = JAVI.lunesDe(fs[0]); pintarSemana(); verVista('semana'); }
+    });
+    box.appendChild(d);
+  });
+}
+$('bNuevaSda').addEventListener('click', function(){
+  abrirEditor({ id:U.idMov().replace('#',''), titulo:'', grupo:'4ºA', asig:'LCL', inicio:U.clave(new Date()), unidad:'', reto:'', producto:'', evaluacion:'',
+    criterios:[], sesiones:[{ titulo:'', objetivo:'' },{ titulo:'', objetivo:'' },{ titulo:'', objetivo:'' },{ titulo:'', objetivo:'' }] });
+});
+
+var actual = null;
+function abrirEditor(s){
+  actual = s;
+  var ed = $('editor'); ed.hidden = false;
+  var grupos = JAVI.grupos();
+  ed.innerHTML =
+    '<h2 class="j-sub" style="margin-bottom:10px">'+(s.titulo ? 'Editar situación de aprendizaje' : 'Nueva situación de aprendizaje')+'</h2>'+
+    '<div class="tres">'+
+      '<label class="campo">Título<input data-k="titulo" type="text" maxlength="100" placeholder="p. ej. Nos vamos a Hogwarts"></label>'+
+      '<label class="campo">Clase<select data-k="grupo">'+grupos.map(function(g){ return '<option>'+g+'</option>'; }).join('')+'</select></label>'+
+      '<label class="campo">Asignatura<select data-k="asig"></select></label>'+
+      '<label class="campo">Empieza el<input data-k="inicio" type="date"></label>'+
+    '</div>'+
+    '<div class="dos">'+
+      '<label class="campo">Unidad o tema del libro<input data-k="unidad" type="text" maxlength="80" placeholder="p. ej. Tema 1"></label>'+
+      '<label class="campo">Producto final<input data-k="producto" type="text" maxlength="160" placeholder="p. ej. Exposición oral del cuento"></label>'+
+    '</div>'+
+    '<label class="campo">Reto o descripción<textarea data-k="reto" placeholder="¿Qué problema o reto da sentido a la situación?"></textarea></label>'+
+    '<label class="campo">Evaluación (instrumentos)<input data-k="evaluacion" type="text" maxlength="200" placeholder="p. ej. Control del tema, rúbrica de la exposición, observación"></label>'+
+    '<h3 class="j-sub" style="margin:8px 0 6px">Sesiones <span class="estado" id="eReparto"></span></h3>'+
+    '<ol class="sesLista" id="eSes"></ol>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px"><button class="mini" id="eMasSes" type="button">+ Sesión</button></div>'+
+    '<h3 class="j-sub" style="margin:8px 0 6px">Criterios de evaluación <span class="estado" id="eNumCrit"></span></h3>'+
+    '<div class="crits" id="eCrits">Cargando criterios…</div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">'+
+      '<button class="j-boton" id="eGuardar" type="button">💾 Guardar y repartir en el horario</button>'+
+      '<button class="j-boton sec" id="eCancelar" type="button">Cancelar</button>'+
+      '<span style="flex:1"></span><button class="mini rojo" id="eBorrar" type="button">Borrar</button>'+
+    '</div>';
+  ['titulo','grupo','inicio','unidad','producto','reto','evaluacion'].forEach(function(k){
+    var el = ed.querySelector('[data-k='+k+']'); el.value = s[k]||'';
+    el.addEventListener('input', function(){ s[k] = el.value; if(k==='grupo'){ pintarAsigEditor(); pintarCriterios(); } if(k==='inicio' || k==='grupo') previsualizarReparto(); });
+  });
+  pintarAsigEditor();
+  ed.querySelector('[data-k=asig]').addEventListener('change', function(){ s.asig = this.value; s.criterios = []; pintarCriterios(); previsualizarReparto(); });
+  pintarSesionesEditor();
+  $('eMasSes').addEventListener('click', function(){ s.sesiones.push({ titulo:'', objetivo:'' }); pintarSesionesEditor(); });
+  $('eCancelar').addEventListener('click', function(){ ed.hidden = true; actual = null; });
+  $('eBorrar').addEventListener('click', function(){
+    if(!confirm('¿Borrar «'+(s.titulo||'esta situación')+'»? Los planes de sus sesiones no se borran.')) return;
+    s.borrada = true; JAVI.guardarSda(s); ed.hidden = true; aviso('Situación borrada.'); pintarListaSda(); pintarSemana();
+  });
+  $('eGuardar').addEventListener('click', function(){
+    if(!s.titulo.trim()){ aviso('Ponle un título.'); return; }
+    s.sesiones = s.sesiones.filter(function(x, i){ return x.titulo || x.objetivo || i===0; });
+    JAVI.repartirSda(s);
+    JAVI.guardarSda(s);
+    ed.hidden = true; aviso('Guardada y repartida en '+s.sesiones.length+' sesiones.');
+    pintarListaSda(); pintarSemana();
+  });
+  pintarCriterios(); previsualizarReparto();
+  ed.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function pintarAsigEditor(){
+  var s = actual, sel = $('editor').querySelector('[data-k=asig]'), r = JAVI.grupo(s.grupo), as = r && r.asignaturas ? r.asignaturas : ['EF'];
+  if(as.indexOf(s.asig)<0) s.asig = as[as.length-1];
+  sel.innerHTML = as.map(function(a){ return '<option value="'+a+'">'+(a==='LCL' ? 'Lengua' : 'Educación Física')+'</option>'; }).join('');
+  sel.value = s.asig;
+}
+function pintarSesionesEditor(){
+  var s = actual, ol = $('eSes'); ol.innerHTML = '';
+  s.sesiones.forEach(function(x, i){
+    var li = document.createElement('li');
+    li.innerHTML = '<input data-k="titulo" type="text" maxlength="100" placeholder="Título de la sesión"><input data-k="objetivo" type="text" maxlength="160" placeholder="Objetivo / qué haremos">'+
+      '<span><span class="fch"></span> <button class="mini rojo" type="button" aria-label="Quitar sesión">✕</button></span>';
+    li.querySelector('[data-k=titulo]').value = x.titulo||''; li.querySelector('[data-k=objetivo]').value = x.objetivo||'';
+    li.querySelector('.fch').textContent = x.fecha ? fechaCorta(x.fecha) : '';
+    li.querySelector('[data-k=titulo]').addEventListener('input', function(){ x.titulo = this.value; });
+    li.querySelector('[data-k=objetivo]').addEventListener('input', function(){ x.objetivo = this.value; });
+    li.querySelector('button').addEventListener('click', function(){ if(s.sesiones.length>1){ s.sesiones.splice(i,1); pintarSesionesEditor(); previsualizarReparto(); } });
+    ol.appendChild(li);
+  });
+}
+function previsualizarReparto(){
+  var s = actual; if(!s) return;
+  var copia = JSON.parse(JSON.stringify(s)); JAVI.repartirSda(copia);
+  copia.sesiones.forEach(function(x, i){ s.sesiones[i].fecha = x.fecha; s.sesiones[i].ini = x.ini; });
+  Array.prototype.forEach.call($('eSes').querySelectorAll('.fch'), function(el, i){ var x = s.sesiones[i]; el.textContent = x && x.fecha ? ['dom','lun','mar','mié','jue','vie','sáb'][JAVI.diaSemana(x.fecha)]+' '+fechaCorta(x.fecha)+' '+(x.ini||'') : ''; });
+  var fs = s.sesiones.map(function(x){ return x.fecha; }).filter(Boolean);
+  $('eReparto').textContent = fs.length ? '· del '+fechaCorta(fs[0])+' al '+fechaCorta(fs[fs.length-1])+' según tu horario' : '';
+}
+function pintarCriterios(){
+  var s = actual, box = $('eCrits');
+  cargarCriterios().then(function(C){
+    var area = C.areas[s.asig]; if(!area){ box.textContent = 'No hay criterios para esta asignatura.'; return; }
+    var curso = (s.grupo.match(/\d/)||['4'])[0], h = '', porComp = {};
+    area.criterios.forEach(function(c){ var k = c.id.split('.')[0]; (porComp[k] = porComp[k] || []).push(c); });
+    Object.keys(porComp).sort(function(a,b){ return a-b; }).forEach(function(k){
+      h += '<h4>Competencia '+k+'</h4>';
+      porComp[k].forEach(function(c){
+        h += '<label><input type="checkbox" value="'+c.id+'"'+((s.criterios||[]).indexOf(c.id)>=0 ? ' checked' : '')+'><span><b>'+s.asig+' '+c.id+'</b> · '+esc(c[curso]||c['4'])+'</span></label>';
+      });
+    });
+    box.innerHTML = h;
+    Array.prototype.forEach.call(box.querySelectorAll('input'), function(ch){
+      ch.addEventListener('change', function(){
+        s.criterios = Array.prototype.filter.call(box.querySelectorAll('input'), function(x){ return x.checked; }).map(function(x){ return x.value; });
+        $('eNumCrit').textContent = '· '+s.criterios.length+' marcados';
+      });
+    });
+    $('eNumCrit').textContent = '· '+(s.criterios||[]).length+' marcados';
+  }).catch(function(){ box.textContent = 'No se han podido cargar los criterios.'; });
+}
+
+/* ============================================================
+   DÍAS SIN CLASE
+   ============================================================ */
+function pintarFestivos(){
+  var box = $('listaFestivos'), fs = JAVI.festivos().sort(); box.innerHTML = '';
+  if(!fs.length) box.innerHTML = '<span>Ninguno todavía.</span>';
+  fs.forEach(function(f){
+    var sp = document.createElement('span'); sp.innerHTML = esc(fechaBonita(f)+' '+f.slice(0,4))+' <button type="button" aria-label="Quitar">✕</button>';
+    sp.querySelector('button').addEventListener('click', function(){ guardarFestivos(JAVI.festivos().filter(function(x){ return x!==f; })); });
+    box.appendChild(sp);
+  });
+}
+function guardarFestivos(lista){
+  var u = {}; lista.forEach(function(f){ u[f] = 1; });
+  JAVI.guardarAjuste('festivos', Object.keys(u).sort().join(','));
+  pintarFestivos(); pintarSemana(); aviso('Días sin clase guardados.');
+}
+$('fAnadir').addEventListener('click', function(){
+  var d = $('fDesde').value, h = $('fHasta').value || d; if(!d){ aviso('Elige una fecha.'); return; }
+  if(h < d){ var t = d; d = h; h = t; }
+  var l = JAVI.festivos(), f = d, n = 0;
+  while(f <= h && n < 60){ var w = JAVI.diaSemana(f); if(w>=1 && w<=5) l.push(f); f = JAVI.sumarDias(f, 1); n++; }
+  $('fDesde').value = ''; $('fHasta').value = ''; guardarFestivos(l);
+});
+Array.prototype.forEach.call(document.querySelectorAll('[data-f]'), function(b){ b.addEventListener('click', function(){ guardarFestivos(JAVI.festivos().concat([b.dataset.f])); }); });
+
+/* ---------- arranque ---------- */
+JAVI.listo(function(){
+  lunes = JAVI.lunesDe(q.get('semana') || U.clave(new Date()));
+  pintarSemana(); pintarListaSda(); pintarFestivos();
+  var v = (location.hash||'').replace('#',''); verVista(['semana','sda','festivos'].indexOf(v)>=0 ? v : 'semana');
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

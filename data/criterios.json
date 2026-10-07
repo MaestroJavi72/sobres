@@ -1,0 +1,588 @@
+{
+ "_nota": "Criterios de evaluación del 2º ciclo (3º y 4º). Orden de 30 de mayo de 2023 (Anexo II). Generado desde los archivos .md de Javi.",
+ "areas": {
+  "LCL": {
+   "nombre": "Lengua Castellana y Literatura",
+   "competencias": {
+    "1": "Reconocer la diversidad lingüística del mundo a partir de la identificación de las lenguas del alumnado y de la realidad plurilingüe y multicultural de España para favorecer la reflexión interlingüística, para identificar y rechazar estereotipos y prejuicios lingüísticos, y para valorar dicha diversidad como fuente de riqueza cultural.",
+    "2": "Comprender e interpretar textos orales y multimodales, identificando el sentido general y la información más relevante, y valorando con ayuda aspectos formales y de contenido básicos, para construir conocimiento y responder a diferentes necesidades comunicativas.",
+    "3": "Producir textos orales y multimodales, con coherencia, claridad y registro adecuados, para expresar ideas, sentimientos y conceptos; construir conocimiento; establecer vínculos personales; y participar con autonomía y una actitud cooperativa y empática en interacciones orales variadas.",
+    "4": "Comprender e interpretar textos escritos y multimodales, reconociendo el sentido global, las ideas principales y la información explícita e implícita, realizando con ayuda reflexiones elementales sobre aspectos formales y de contenido, para adquirir y construir conocimiento y para responder a necesidades e intereses comunicativos diversos.",
+    "5": "Producir textos escritos y multimodales, con corrección gramatical y ortográfica básicas, secuenciando correctamente los contenidos y aplicando estrategias elementales de planificación, textualización, revisión y edición, para construir conocimiento y para dar respuesta a demandas comunicativas concretas.",
+    "6": "Buscar, seleccionar y contrastar información procedente de dos o más fuentes, de forma planificada y con el debido acompañamiento, evaluando su fiabilidad y reconociendo algunos riesgos de manipulación y desinformación, para transformarla en conocimiento y para comunicarla de manera creativa, adoptando un punto de vista personal y respetuoso con la propiedad intelectual.",
+    "7": "Leer de manera autónoma obras diversas seleccionadas atendiendo a sus gustos e intereses, compartiendo las experiencias de lectura, para iniciar la construcción de la identidad lectora, para fomentar el gusto por la lectura como fuente de placer y para disfrutar de su dimensión social.",
+    "8": "Leer, interpretar y analizar, de manera acompañada, obras o fragmentos literarios adecuados a su desarrollo, estableciendo relaciones entre ellos e identificando el género literario y sus convenciones fundamentales, para iniciarse en el reconocimiento de la literatura como manifestación artística y fuente de placer, conocimiento e inspiración para crear textos de intención literaria.",
+    "9": "Reflexionar de forma guiada sobre el lenguaje a partir de procesos de producción y comprensión de textos en contextos significativos, utilizando la terminología elemental adecuada, para iniciarse en el desarrollo de la conciencia lingüística y para mejorar las destrezas de producción y comprensión oral y escrita.",
+    "10": "Poner las propias prácticas comunicativas al servicio de la convivencia democrática, utilizando un lenguaje no discriminatorio y detectando y rechazando los abusos de poder a través de la palabra, para favorecer un uso no solo eficaz sino también ético del lenguaje."
+   },
+   "criterios": [
+    {
+     "3": "Mostrar interés y respeto por las distintas lenguas y variedades dialectales de su entorno, incluidas las lenguas de signos, identificando algunas palabras sencillas de uso cotidiano.",
+     "4": "Mostrar interés y respeto a las distintas lenguas y variedades dialectales de su entorno, identificando algunas expresiones de uso cotidiano.",
+     "id": "1.1",
+     "saberes": [
+      "LCL.2.A.1",
+      "LCL.2.A.2",
+      "LCL.2.B.1.1"
+     ]
+    },
+    {
+     "3": "Identificar en contextos próximos, a partir de modelos dados, prejuicios y estereotipos lingüísticos frecuentes, reconociendo la pluralidad lingüística de su entorno como una fuente de riqueza cultural.",
+     "4": "Identificar y reconocer con autonomía y en contextos próximos, prejuicios y estereotipos lingüísticos frecuentes, aportando alternativas y reconociendo la diversidad lingüística de su entorno como una fuente de riqueza cultural.",
+     "id": "1.2",
+     "saberes": [
+      "LCL.2.A.3",
+      "LCL.2.A.4"
+     ]
+    },
+    {
+     "3": "Identificar y reconocer de manera acompañada rasgos de la modalidad lingüística andaluza.",
+     "4": "Identificar y reconocer rasgos de la modalidad lingüística andaluza, con especial atención a las variedades del entorno del alumnado.",
+     "id": "1.3",
+     "saberes": [
+      "LCL.2.A.1",
+      "LCL.2.A.2",
+      "LCL.2.A.3"
+     ]
+    },
+    {
+     "3": "Comprender el sentido de textos orales y multimodales sencillos, reconociendo las ideas principales, los mensajes explícitos y los mensajes implícitos más sencillos, iniciando, de manera acompañada, la valoración crítica del contenido y de los elementos no verbales elementales.",
+     "4": "Comprender el sentido de textos orales y multimodales sencillos, reconociendo las ideas principales, los mensajes explícitos y los mensajes implícitos más sencillos, y progresando, de manera acompañada, en la valoración crítica del contenido y de los elementos no verbales elementales.",
+     "id": "2.1",
+     "saberes": [
+      "LCL.2.B.2.3",
+      "LCL.2.B.3.2",
+      "LCL.2.B.3.4",
+      "LCL.2.B.3.6"
+     ]
+    },
+    {
+     "3": "Producir textos orales y multimodales coherentes, con planificación acompañada y a partir de modelos dados, ajustando el discurso a la situación comunicativa y utilizando recursos no verbales básicos.",
+     "4": "Producir textos orales y multimodales coherentes, con planificación acompañada, ajustando el discurso a la situación comunicativa y utilizando recursos no verbales básicos.",
+     "id": "3.1",
+     "saberes": [
+      "LCL.2.B.2.2",
+      "LCL.2.B.3.3"
+     ]
+    },
+    {
+     "3": "Participar en interacciones orales espontáneas, respetando las normas básicas de la cortesía lingüística e iniciando de manera acompañada el desarrollo de estrategias sencillas de escucha activa y de cooperación conversacional.",
+     "4": "Participar en interacciones orales espontáneas o regladas, incorporando estrategias básicas de escucha activa y cortesía lingüística.",
+     "id": "3.2",
+     "saberes": [
+      "LCL.2.B.3.1"
+     ]
+    },
+    {
+     "3": "Conocer y producir textos orales y multimodales de manera progresivamente autónoma, coherente y fluida, propios de la literatura infantil andaluza, utilizando correctamente recursos verbales y no verbales básicos.",
+     "4": "Conocer y producir textos orales y multimodales de manera autónoma, coherente y fluida, propios de la literatura infantil andaluza, utilizando correctamente recursos verbales y no verbales básicos.",
+     "id": "3.3",
+     "saberes": [
+      "LCL.2.B.3.2",
+      "LCL.2.B.3.3",
+      "LCL.2.C.1",
+      "LCL.2.C.8"
+     ]
+    },
+    {
+     "3": "Leer de manera silenciosa y en voz alta textos escritos y multimodales sencillos, identificando el sentido global y la información relevante para construir conocimiento.",
+     "4": "Comprender el sentido global y la información relevante de textos sencillos, escritos y multimodales, realizando inferencias a partir de estrategias básicas de comprensión antes, durante y después de la lectura.",
+     "id": "4.1",
+     "saberes": [
+      "LCL.2.B.2.3",
+      "LCL.2.D.6"
+     ]
+    },
+    {
+     "3": "Analizar, de manera acompañada, el contenido y aspectos formales y no formales elementales de textos escritos y multimodales sencillos, valorando su contenido y estructura e iniciándose en la evaluación de su fiabilidad, para responder a necesidades comunicativas concretas.",
+     "4": "Analizar, de manera acompañada, el contenido y aspectos formales y no formales elementales de textos escritos y multimodales sencillos, valorando su contenido y estructura e iniciándose en la evaluación de su fiabilidad.",
+     "id": "4.2",
+     "saberes": [
+      "LCL.2.B.3.4",
+      "LCL.2.B.3.6"
+     ]
+    },
+    {
+     "3": "Producir textos escritos y multimodales sencillos y coherentes, en distintos soportes, desde diferentes modelos discursivos, iniciándose en el uso de las normas gramaticales y ortográficas más sencillas y progresando, de manera acompañada, en la movilización de estrategias sencillas, individuales o grupales, de planificación, redacción, revisión y edición.",
+     "4": "Producir textos escritos y multimodales sencillos, con coherencia y adecuación, en distintos soportes, seleccionando el modelo discursivo que mejor responda a cada situación comunicativa, iniciándose en el uso de las normas gramaticales y ortográficas más sencillas al servicio de la cohesión y progresando, de manera acompañada, en la movilización de estrategias sencillas, individuales o grupales, de planificación, textualización y revisión.",
+     "id": "5.1",
+     "saberes": [
+      "LCL.2.A.4",
+      "LCL.2.B.3.5",
+      "LCL.2.D.4",
+      "LCL.2.D.5"
+     ]
+    },
+    {
+     "3": "Localizar y seleccionar información procedente de dos o más fuentes, incluidas las digitales, para un proceso de investigación, e iniciarse en procesos para contrastar los resultados, citándolos y recreándolas mediante la adaptación de modelos dados.",
+     "4": "Localizar, seleccionar y contrastar información de distintas fuentes, incluidas las digitales, citándolas y recreándolas mediante la adaptación de modelos.",
+     "id": "6.1",
+     "saberes": [
+      "LCL.2.B.3.6"
+     ]
+    },
+    {
+     "3": "Compartir los resultados de un proceso de investigación sencillo, individual o grupal, sobre algún tema de interés personal o ecosocial orientado y realizado de manera acompañada.",
+     "4": "Compartir, de manera creativa, los resultados de un proceso de investigación sencillo, individual o grupal, sobre algún tema de interés personal o ecosocial, realizado de manera progresivamente autónoma.",
+     "id": "6.2",
+     "saberes": [
+      "LCL.2.B.3.6"
+     ]
+    },
+    {
+     "3": "Adoptar, de manera acompañada, hábitos sencillos de uso crítico, seguro, sostenible y saludable de las tecnologías digitales en relación con la búsqueda y la comunicación de la información.",
+     "4": "Adoptar hábitos sencillos de uso crítico, seguro, sostenible y saludable de las tecnologías digitales en relación con la búsqueda y la comunicación de la información, de manera progresivamente autónoma.",
+     "id": "6.3",
+     "saberes": [
+      "LCL.2.B.3.6"
+     ]
+    },
+    {
+     "3": "Leer de manera autónoma o acompañada textos de diversos autores y autoras, ajustados a sus gustos e intereses y seleccionados con creciente autonomía, avanzando en la construcción de su identidad lectora para conseguir que sea una fuente de placer.",
+     "4": "Leer con progresiva autonomía o de forma acompañada textos de diversos autores y autoras, ajustados a sus gustos e intereses y seleccionados con creciente autonomía, avanzando en la construcción de su identidad lectora para conseguir que sea una fuente de placer.",
+     "id": "7.1",
+     "saberes": [
+      "LCL.2.B.3.4",
+      "LCL.2.B.3.6",
+      "LCL.2.C.1",
+      "LCL.2.C.6"
+     ]
+    },
+    {
+     "3": "Compartir la experiencia de lectura, en soportes sencillos, participando en comunidades lectoras en el ámbito escolar para conseguir disfrutar de la dimensión social de la lectura.",
+     "4": "Compartir la experiencia de lectura, en soportes diversos, participando en comunidades lectoras en el ámbito escolar para conseguir disfrutar de la dimensión social de la lectura.",
+     "id": "7.2",
+     "saberes": [
+      "LCL.2.C.2",
+      "LCL.2.C.7",
+      "LCL.2.C.9"
+     ]
+    },
+    {
+     "3": "Escuchar y leer, de manera acompañada, textos variados de la literatura infantil universal, que recojan diversidad de autores y autoras, relacionándolos en función de los temas y otras manifestaciones artísticas o culturales de manera acompañada.",
+     "4": "Escuchar y leer, de manera acompañada, textos variados de la literatura infantil universal, que recojan diversidad de autores y autoras, relacionándolos en función de temas y aspectos elementales del género literario, e interpretándolos y relacionándolos con otras manifestaciones artísticas o culturales de manera acompañada.",
+     "id": "8.1",
+     "saberes": [
+      "LCL.2.C.1",
+      "LCL.2.C.3",
+      "LCL.2.C.4",
+      "LCL.2.C.5",
+      "LCL.2.C.7"
+     ]
+    },
+    {
+     "3": "Producir, de manera acompañada, textos sencillos individuales o colectivos con intención literaria, recreando de manera personal los modelos dados, y complementándolos con otros lenguajes artísticos.",
+     "4": "Producir, de manera acompañada, textos sencillos individuales o colectivos con intención literaria, recreando de manera personal los modelos dados, en distintos soportes y complementándolos con otros lenguajes artísticos.",
+     "id": "8.2",
+     "saberes": [
+      "LCL.2.B.2.1",
+      "LCL.2.C.3",
+      "LCL.2.C.5",
+      "LCL.2.C.8",
+      "LCL.2.D.5",
+      "LCL.2.D.6"
+     ]
+    },
+    {
+     "3": "Conocer pequeños textos literarios de la literatura tradicional andaluza.",
+     "4": "Conocer y crear pequeños textos literarios a partir de pautas y modelos dados de la literatura tradicional andaluza.",
+     "id": "8.3",
+     "saberes": [
+      "LCL.2.B.2.1",
+      "LCL.2.C.7"
+     ]
+    },
+    {
+     "3": "Formular conclusiones elementales sobre el funcionamiento de la lengua, prestando especial atención a la relación entre el sujeto y el verbo, a partir de la observación, comparación y manipulación de palabras, enunciados y textos, en un proceso acompañado de producción o comprensión de textos en contextos significativos.",
+     "4": "Formular conclusiones elementales sobre el funcionamiento de la lengua, prestando especial atención a la relación entre sustantivos, adjetivos y verbos, a partir de la observación, comparación y manipulación de palabras, enunciados y textos, en un proceso acompañado de producción o comprensión de textos en contextos significativos.",
+     "id": "9.1",
+     "saberes": [
+      "LCL.2.D.1",
+      "LCL.2.D.2"
+     ]
+    },
+    {
+     "3": "Revisar y mejorar los textos propios y ajenos y subsanar algunos problemas de comprensión lectora, de manera acompañada, a partir de la reflexión metalingüística y usando la terminología básica adecuada.",
+     "4": "Revisar y mejorar los textos propios y ajenos y subsanar algunos problemas de comprensión lectora, de manera acompañada, a partir de la reflexión metalingüística e interlingüística y usando la terminología básica adecuada.",
+     "id": "9.2",
+     "saberes": [
+      "LCL.2.B.2.3",
+      "LCL.2.B.3.5",
+      "LCL.2.D.3",
+      "LCL.2.D.5",
+      "LCL.2.D.6",
+      "LCL.2.D.7"
+     ]
+    },
+    {
+     "3": "Rechazar los usos lingüísticos discriminatorios identificados a partir de la reflexión grupal acompañada sobre los aspectos básicos, verbales y no verbales, de la comunicación, teniendo en cuenta una perspectiva de género.",
+     "4": "Rechazar los usos lingüísticos discriminatorios e identificar los abusos de poder a través de la palabra a partir de la reflexión grupal acompañada sobre los aspectos básicos, verbales y no verbales, de la comunicación, teniendo en cuenta una perspectiva de género.",
+     "id": "10.1",
+     "saberes": [
+      "LCL.2.A.4",
+      "LCL.2.B.3.1",
+      "LCL.2.B.3.2",
+      "LCL.2.B.3.4"
+     ]
+    },
+    {
+     "3": "Iniciar, con la planificación y el acompañamiento necesarios, estrategias básicas para la comunicación asertiva y el consenso, progresando en la gestión dialogada de conflictos.",
+     "4": "Movilizar, con la planificación y el acompañamiento necesarios, estrategias básicas para la escucha activa, la comunicación asertiva y el consenso, progresando en la gestión dialogada de conflictos.",
+     "id": "10.2",
+     "saberes": [
+      "LCL.2.B.1.1",
+      "LCL.2.B.3.1"
+     ]
+    }
+   ]
+  },
+  "EF": {
+   "nombre": "Educación Física",
+   "competencias": {
+    "1": "Adoptar un estilo de vida activo y saludable, practicando regularmente actividades físicas, lúdicas y deportivas, adoptando comportamientos que potencien la salud física, mental y social, así como medidas de responsabilidad individual y colectiva durante la práctica motriz, para interiorizar e integrar hábitos de actividad física sistemática que contribuyan al bienestar.",
+    "2": "Adaptar los elementos propios del esquema corporal, las capacidades físicas, perceptivo-motrices y coordinativas, así como las habilidades y destrezas motrices, aplicando procesos de percepción, decisión y ejecución adecuados a la lógica interna y a los objetivos de diferentes situaciones, para dar respuesta a las demandas de proyectos motores y de prácticas motrices con distintas finalidades en contextos de la vida diaria.",
+    "3": "Desarrollar procesos de autorregulación e interacción en el marco de la práctica motriz, con actitud empática e inclusiva, haciendo uso de habilidades sociales y actitudes de cooperación, respeto, inclusión, trabajo en equipo y deportividad, con independencia de las diferencias etnoculturales, sociales, de género y de habilidad de los participantes, para contribuir a la convivencia social y al compromiso ético en los diferentes espacios en los que se participa.",
+    "4": "Reconocer y practicar diferentes manifestaciones lúdicas, físico-deportivas y artístico-expresivas propias de la cultura motriz, valorando su influencia y sus aportaciones estéticas y creativas a la cultura tradicional y contemporánea, para integrarlas dentro del repertorio de actuaciones motrices que se utilizan regularmente en la vida cotidiana.",
+    "5": "Valorar diferentes medios naturales y urbanos como contextos de práctica motriz, interactuando con ellos y comprendiendo la importancia de su conservación desde un enfoque sostenible, adoptando medidas de responsabilidad individual durante la práctica de juegos y actividades físico-deportivas, para realizar una práctica eficiente y respetuosa con el entorno y participar en su cuidado y mejora."
+   },
+   "criterios": [
+    {
+     "3": "Reconocer la actividad física como alternativa de ocio saludable, practicando desplazamientos activos y sostenibles e identificando los efectos beneficiosos a nivel físico y mental que posee adoptar un estilo de vida activo.",
+     "4": "Reconocer la actividad física como alternativa de ocio saludable, identificando desplazamientos activos y sostenibles y conociendo los efectos beneficiosos a nivel físico y mental que posee adoptar un estilo de vida activo.",
+     "id": "1.1",
+     "saberes": [
+      "EFI.2.A.1",
+      "EFI.2.A.3"
+     ]
+    },
+    {
+     "3": "Practicar medidas de educación postural, alimentación saludable, higiene corporal, normas de seguridad y preparación de la práctica motriz, asumiendo responsabilidades y generando hábitos y rutinas en situaciones cotidianas.",
+     "4": "Aplicar medidas de educación postural, alimentación saludable, higiene corporal, normas de seguridad y preparación de la práctica motriz, asumiendo responsabilidades y generando hábitos en situaciones cotidianas.",
+     "id": "1.2",
+     "saberes": [
+      "EFI.2.A.1",
+      "EFI.2.B.3",
+      "EFI.2.C.2"
+     ]
+    },
+    {
+     "3": "Ejecutar medidas de precaución y prevención de lesiones en relación con la conservación y mantenimiento del material en el marco de distintas prácticas físico-deportivas y lúdicas, vivenciando protocolos básicos de actuación ante accidentes que se puedan producir en este contexto.",
+     "4": "Tomar medidas de precaución y prevención de lesiones en relación con la conservación y el mantenimiento del material en el marco de distintas prácticas físico-deportivas y lúdicas, conociendo protocolos básicos de actuación ante accidentes que se puedan producir en este contexto.",
+     "id": "1.3",
+     "saberes": [
+      "EFI.2.B.2",
+      "EFI.2.B.5"
+     ]
+    },
+    {
+     "3": "Reconocer la propia imagen corporal y la de los demás, aceptando y respetando las diferencias individuales que puedan existir, identificando y rechazando las conductas discriminatorias que se puedan producir en contextos de práctica motriz.",
+     "4": "Reconocer la propia imagen corporal y la de los demás, aceptando y respetando las diferencias individuales que puedan existir, superando y rechazando las conductas discriminatorias que se puedan producir en contextos de práctica motriz.",
+     "id": "1.4",
+     "saberes": [
+      "EFI.2.A.2",
+      "EFI.2.A.3",
+      "EFI.2.D.2"
+     ]
+    },
+    {
+     "3": "Vivenciar la importancia de establecer metas claras a la hora de desarrollar proyectos motores de carácter individual, cooperativo o colaborativo, identificando su consecución a partir de un análisis de los resultados obtenidos.",
+     "4": "Llevar a cabo proyectos motores de carácter individual, cooperativo o colaborativo, empleando estrategias de monitorización y seguimiento que permitan analizar los resultados obtenidos.",
+     "id": "2.1",
+     "saberes": [
+      "EFI.2.B.1",
+      "EFI.2.C.1"
+     ]
+    },
+    {
+     "3": "Participar en proyectos motores de carácter individual, cooperativo o colaborativo identificando estrategias de monitorización y seguimiento que permitan analizar los resultados obtenidos.",
+     "4": "Adoptar decisiones en situaciones lúdicas, juegos y actividades deportivas, ajustándose a las demandas derivadas de los objetivos motores, de las características del grupo y de la lógica interna de situaciones individuales, de cooperación, de oposición y de colaboración-oposición, en contextos simulados de actuación.",
+     "id": "2.2",
+     "saberes": [
+      "EFI.2.B.1",
+      "EFI.2.B.4",
+      "EFI.2.C.5"
+     ]
+    },
+    {
+     "3": "Participar en proyectos motores de carácter individual, cooperativo o colaborativo, definiendo metas, secuenciando acciones, analizando si es preciso cambios durante el proceso y generando producciones motrices de calidad, a través del análisis del grado de ajuste al proceso seguido y al resultado obtenido.",
+     "4": "Emplear los componentes cualitativos y cuantitativos de la motricidad de manera eficiente y creativa en distintos contextos y situaciones motrices, lúdicas y deportivas, adquiriendo un progresivo control y dominio corporal sobre ellos.",
+     "id": "2.3",
+     "saberes": [
+      "EFI.2.C.2",
+      "EFI.2.C.3",
+      "EFI.2.C.4",
+      "EFI.2.C.5"
+     ]
+    },
+    {
+     "3": "Mostrar una disposición positiva hacia el juego, controlando las emociones negativas en contextos lúdicos de práctica motriz.",
+     "4": "Mostrar una disposición positiva hacia la práctica física y hacia el esfuerzo, controlando la impulsividad y las emociones negativas que surjan en contextos de actividad motriz.",
+     "id": "3.1",
+     "saberes": [
+      "EFI.2.D.1",
+      "EFI.2.D.2"
+     ]
+    },
+    {
+     "3": "Respetar las normas consensuadas en clase, así como las reglas de juego, actuando con deportividad y juego limpio desde el diálogo y el debate, expresando y escuchando propuestas y pensamientos de manera activa.",
+     "4": "Respetar las normas consensuadas en clase, así como las reglas de juego, y actuar desde los parámetros de la deportividad y el juego limpio, valorando la aportación de los participantes.",
+     "id": "3.2",
+     "saberes": [
+      "EFI.2.D.2"
+     ]
+    },
+    {
+     "3": "Identificar en prácticas motrices variadas habilidades sociales de acogida, inclusión, ayuda y cooperación, proponiendo soluciones a conflictos individuales y colectivos de forma dialógica y justa, y mostrando un compromiso activo frente a los estereotipos, las actuaciones discriminatorias y cualquier tipo de violencia.",
+     "4": "Desarrollar habilidades sociales de acogida, inclusión, ayuda y cooperación al participar en prácticas motrices variadas, resolviendo los conflictos individuales y colectivos de forma dialógica y justa, y mostrando un compromiso activo frente a los estereotipos, las actuaciones discriminatorias y cualquier tipo de violencia.",
+     "id": "3.3",
+     "saberes": [
+      "EFI.2.A.2",
+      "EFI.2.D.2",
+      "EFI.2.D.3",
+      "EFI.2.D.4"
+     ]
+    },
+    {
+     "3": "Participar activamente en juegos motores y otras manifestaciones artístico-expresivas con arraigo en la cultura andaluza, tradicional o actual, contextualizando su origen, su aparición y su transmisión a lo largo del tiempo.",
+     "4": "Participar activamente en juegos motores y otras manifestaciones artístico-expresivas con arraigo en la cultura andaluza, tradicional o actual, así como otros procedentes de diversas culturas, contextualizando su origen, su aparición y su transmisión a lo largo del tiempo y valorando su importancia, repercusión e influencia en las sociedades pasadas y presentes.",
+     "id": "4.1",
+     "saberes": [
+      "EFI.2.E.1",
+      "EFI.2.E.3"
+     ]
+    },
+    {
+     "3": "Experimentar prácticas deportivas individuales, colectivas y mixtas, disfrutando de su práctica y conociendo las distintas posibilidades de deporte federado que existen en su entorno cercano.",
+     "4": "Asumir una visión abierta del deporte a partir del conocimiento de distintas ligas femeninas, masculinas o mixtas, acercándose al deporte federado e identificando y rechazando comportamientos contrarios a la convivencia independientemente del contexto en el que tengan lugar.",
+     "id": "4.2",
+     "saberes": [
+      "EFI.2.D.4",
+      "EFI.2.E.4"
+     ]
+    },
+    {
+     "3": "Aplicar de forma espontánea y creativa distintas combinaciones de movimientos que incorporen prácticas comunicativas que transmitan sentimientos, emociones o ideas a través del cuerpo, empleando los distintos recursos expresivos y rítmicos de la corporalidad.",
+     "4": "Reproducir distintas combinaciones de movimientos o coreografías individuales y grupales que incorporen prácticas comunicativas que transmitan sentimientos, emociones o ideas a través del cuerpo, empleando los distintos recursos expresivos y rítmicos de la corporalidad.",
+     "id": "4.3",
+     "saberes": [
+      "EFI.2.E.2",
+      "EFI.2.E.3"
+     ]
+    },
+    {
+     "3": "Fomentar una práctica motriz teniendo en cuenta posibles dificultades en contextos naturales y urbanos de carácter terrestre o acuático, observando cada situación antes de realizar las acciones y atendiendo a las medidas de conservación ambiental existentes.",
+     "4": "Desarrollar una práctica motriz segura en contextos naturales y urbanos de carácter terrestre o acuático, adecuando las acciones al análisis de cada situación y aplicando medidas de conservación ambiental.",
+     "id": "5.1",
+     "saberes": [
+      "EFI.2.F.1",
+      "EFI.2.F.2",
+      "EFI.2.F.3",
+      "EFI.2.F.4",
+      "EFI.2.F.5",
+      "EFI.2.F.6"
+     ]
+    }
+   ]
+  },
+  "MAT": {
+   "nombre": "Matemáticas",
+   "competencias": {
+    "1": "Interpretar situaciones de la vida cotidiana proporcionando una representación matemática de las mismas mediante conceptos, herramientas y estrategias para analizar la información más relevante.",
+    "2": "Resolver situaciones problematizadas, aplicando diferentes técnicas, estrategias y formas de razonamiento, para explorar distintas maneras de proceder, obtener soluciones y asegurar su validez desde un punto de vista formal y en relación con el contexto planteado.",
+    "3": "Explorar, formular y comprobar conjeturas sencillas o plantear problemas de tipo matemático en situaciones basadas en la vida cotidiana, de forma guiada, reconociendo el valor del razonamiento y la argumentación para contrastar su validez, adquirir e integrar nuevo conocimiento.",
+    "4": "Utilizar el pensamiento computacional, organizando datos, descomponiendo en partes, reconociendo patrones, generalizando e interpretando, modificando y creando algoritmos de forma guiada, para modelizar y automatizar situaciones de la vida cotidiana.",
+    "5": "Reconocer y utilizar conexiones entre las diferentes ideas matemáticas, así como identificar las matemáticas implicadas en otras áreas o en la vida cotidiana, interrelacionando conceptos y procedimientos, para interpretar situaciones y contextos diversos.",
+    "6": "Comunicar y representar, de forma individual y colectiva, conceptos, procedimientos y resultados matemáticos, utilizando el lenguaje oral, escrito, gráfico, multimodal y la terminología matemática apropiada, para dar significado y permanencia a las ideas matemáticas.",
+    "7": "Desarrollar destrezas personales que ayuden a identificar y gestionar emociones al enfrentarse a retos matemáticos, fomentando la confianza en las propias posibilidades, aceptando el error como parte del proceso de aprendizaje y adaptándose a las situaciones de incertidumbre, para mejorar la perseverancia, disfrutar en el aprendizaje de las matemáticas y controlar situaciones de frustración en el ensayo y error.",
+    "8": "Desarrollar destrezas sociales, reconociendo y respetando las emociones, las experiencias de los demás y el valor de la diversidad y participando activamente en equipos de trabajo heterogéneos con roles asignados, para construir una identidad positiva como estudiante de matemáticas, fomentar el bienestar personal y crear relaciones saludables."
+   },
+   "criterios": [
+    {
+     "3": "Reconocer de forma verbal o gráfica, problemas de la vida cotidiana, comprendiendo las preguntas planteadas a través de diferentes estrategias o herramientas, incluidas las tecnológicas, y comenzar a interpretar mensajes verbales, escritos o visuales.",
+     "4": "Reconocer e interpretar, de forma verbal o gráfica, problemas de la vida cotidiana, comprendiendo las preguntas planteadas a través de diferentes estrategias o herramientas, incluidas las tecnológicas, e interpretar mensajes verbales, escritos o visuales.",
+     "id": "1.1",
+     "saberes": [
+      "MAT.2.A.2.1",
+      "MAT.2.A.3.1",
+      "MAT.2.A.5.1",
+      "MAT.2.D.2.1"
+     ]
+    },
+    {
+     "3": "Comprender y comenzar a producir representaciones matemáticas, con recursos manipulativos y a través de esquemas o diagramas, que ayuden en la resolución de una situación problematizada, individualmente y cooperando entre iguales.",
+     "4": "Producir representaciones matemáticas, con recursos manipulativos y a través de esquemas o diagramas, que ayuden en la resolución de una situación problematizada, individualmente y cooperando entre iguales.",
+     "id": "1.2",
+     "saberes": [
+      "MAT.2.A.3.4",
+      "MAT.2.A.4.2"
+     ]
+    },
+    {
+     "3": "Comenzar a comparar y a emplear diferentes estrategias para resolver un problema de forma pautada, implicándose en la resolución.",
+     "4": "Comparar y emplear diferentes estrategias para resolver un problema de forma pautada, implicándose en la resolución y tomando decisiones.",
+     "id": "2.1",
+     "saberes": [
+      "MAT.2.A.3.2",
+      "MAT.2.A.3.5",
+      "MAT.2.C.4.1",
+      "MAT.2.C.4.2"
+     ]
+    },
+    {
+     "3": "Obtener posibles soluciones de un problema siguiendo alguna estrategia conocida, manipulando, tanteando y realizando analogías sencillas.",
+     "4": "Obtener posibles soluciones de un problema siguiendo alguna estrategia conocida, manipulando, tanteando y realizando analogías.",
+     "id": "2.2",
+     "saberes": [
+      "MAT.2.A.1.1",
+      "MAT.2.A.2.2",
+      "MAT.2.A.2.5",
+      "MAT.2.A.3.7"
+     ]
+    },
+    {
+     "3": "",
+     "4": "Demostrar y describir la corrección matemática de las soluciones de un problema y su coherencia en el contexto planteado, argumentando la respuesta.",
+     "id": "2.3",
+     "saberes": [
+      "MAT.2.A.2.5",
+      "MAT.2.A.2.7"
+     ]
+    },
+    {
+     "3": "Realizar y comenzar a analizar conjeturas matemáticas sencillas, investigando patrones, propiedades y relaciones de forma pautada, explorando fenómenos y ordenando ideas con sentido.",
+     "4": "Realizar y analizar conjeturas matemáticas sencillas investigando patrones, propiedades y relaciones de forma pautada, explorando fenómenos y ordenando ideas con sentido y argumentando conclusiones.",
+     "id": "3.1",
+     "saberes": [
+      "MAT.2.A.3.8",
+      "MAT.2.E.2.1",
+      "MAT.2.E.2.2",
+      "MAT.2.E.2.3",
+      "MAT.2.E.3.1"
+     ]
+    },
+    {
+     "3": "Ejemplificar problemas sobre situaciones cotidianas que se resuelven matemáticamente, planteando algunas preguntas y avanzando posibles conclusiones.",
+     "4": "Dar ejemplos de problemas sobre situaciones cotidianas que se resuelven matemáticamente, planteando preguntas y comenzando a argumentar sobre las conclusiones.",
+     "id": "3.2",
+     "saberes": [
+      "MAT.2.A.3.6",
+      "MAT.2.B.1.1",
+      "MAT.2.D.2.2"
+     ]
+    },
+    {
+     "3": "Comenzar a automatizar situaciones sencillas de la vida cotidiana que se realicen paso a paso o sigan una rutina, utilizando de forma pautada principios básicos del pensamiento computacional, realizando procesos simples en formato digital.",
+     "4": "Automatizar situaciones sencillas de la vida cotidiana que se realicen paso a paso o sigan una rutina, utilizando de forma pautada principios básicos del pensamiento computacional, realizando procesos simples en formato digital y definiendo la actividad o rutina.",
+     "id": "4.1",
+     "saberes": [
+      "MAT.2.B.2.2",
+      "MAT.2.C.1.4",
+      "MAT.2.C.2.3",
+      "MAT.2.D.4.1",
+      "MAT.2.D.4.2"
+     ]
+    },
+    {
+     "3": "Iniciarse en el manejo de las herramientas tecnológicas adecuadas en el proceso de resolución de problemas.",
+     "4": "Emplear herramientas tecnológicas adecuadas, de forma guiada, en el proceso de resolución de problemas.",
+     "id": "4.2",
+     "saberes": [
+      "MAT.2.A.3.2",
+      "MAT.2.A.3.4"
+     ]
+    },
+    {
+     "3": "Comenzar a realizar conexiones entre los diferentes elementos matemáticos, aplicando conocimientos y experiencias propias, iniciando la aplicación y gestión matemática en su contexto cotidiano.",
+     "4": "Realizar conexiones entre los diferentes elementos matemáticos, aplicando conocimientos y experiencias propias, resolviendo situaciones matemáticas en su contexto cotidiano.",
+     "id": "5.1",
+     "saberes": [
+      "MAT.2.B.2.1",
+      "MAT.2.B.3.1",
+      "MAT.2.B.3.2",
+      "MAT.2.C.1.1",
+      "MAT.2.C.1.2",
+      "MAT.2.C.1.3",
+      "MAT.2.C.4.3"
+     ]
+    },
+    {
+     "3": "Comenzar a Identificar situaciones en contextos diversos, reconociendo las conexiones entre las matemáticas y la vida cotidiana, interpretando la información gráfica de diferentes medios.",
+     "4": "Identificar e interpretar situaciones en contextos diversos, reconociendo las conexiones entre las matemáticas y la vida cotidiana, interpretando la información gráfica de diferentes medios y su interrelación con situaciones contextuales.",
+     "id": "5.2",
+     "saberes": [
+      "MAT.2.B.1.2",
+      "MAT.2.B.1.3",
+      "MAT.2.C.2.1",
+      "MAT.2.C.2.2",
+      "MAT.2.C.3.1",
+      "MAT.2.C.3.2"
+     ]
+    },
+    {
+     "3": "Reconocer el lenguaje matemático sencillo e identificar mensajes presentes en la vida cotidiana en diferentes formatos, adquiriendo vocabulario específico básico, utilizando terminología matemática apropiada de forma oral.",
+     "4": "Reconocer el lenguaje matemático sencillo e identificar y comprender mensajes presentes en la vida cotidiana en diferentes formatos, adquiriendo vocabulario específico básico, utilizando dicho lenguaje para expresar ideas matemáticas elementales de forma oral y escrita.",
+     "id": "6.1",
+     "saberes": [
+      "MAT.2.A.4.1",
+      "MAT.2.A.2.8",
+      "MAT.2.A.2.4",
+      "MAT.2.A.2.7",
+      "MAT.2.D.1.1",
+      "MAT.2.D.3.1",
+      "MAT.2.D.3.2",
+      "MAT.2.D.3.3"
+     ]
+    },
+    {
+     "3": "Comenzar a analizar y explicar, de forma verbal o gráfica, ideas y procesos matemáticos sencillos, los pasos seguidos en la resolución de un problema, empleando el lenguaje verbal a través de medios tradicionales o digitales.",
+     "4": "Analizar y explicar, de forma verbal o gráfica, ideas y procesos matemáticos sencillos, los pasos seguidos en la resolución de un problema o los resultados matemáticos, empleando el lenguaje verbal y gráfico a través de medios tradicionales o digitales.",
+     "id": "6.2",
+     "saberes": [
+      "MAT.2.A.2.3",
+      "MAT.2.A.3.3",
+      "MAT.2.E.1.1",
+      "MAT.2.E.1.2",
+      "MAT.2.E.1.3",
+      "MAT.2.E.1.4",
+      "MAT.2.E.1.5"
+     ]
+    },
+    {
+     "3": "Reconocer y comenzar a identificar las emociones propias al abordar nuevos retos matemáticos, pidiendo ayuda solo cuando sea necesario y mostrando autoconfianza y perseverancia en el control de sus emociones.",
+     "4": "Reconocer e identificar las emociones propias al abordar nuevos retos matemáticos, pidiendo ayuda solo cuando sea necesario y desarrollando así la autoconfianza, la perseverancia y el control de sus emociones.",
+     "id": "7.1",
+     "saberes": [
+      "MAT.2.F.1.1"
+     ]
+    },
+    {
+     "3": "Expresar y mostrar actitudes positivas ante nuevos retos matemáticos tales como el esfuerzo y la flexibilidad, valorando el error como una oportunidad de aprendizaje, superando la frustración y desarrollando actitudes participativas.",
+     "4": "Expresar y mostrar actitudes positivas y colaborativas ante nuevos retos matemáticos tales como el esfuerzo y la flexibilidad, valorando el error como una oportunidad de aprendizaje, superando la frustración y desarrollando una actitud participativa.",
+     "id": "7.2",
+     "saberes": [
+      "MAT.2.F.1.2"
+     ]
+    },
+    {
+     "3": "Participar y comenzar a colaborar respetuosamente en el trabajo en equipo, comunicándose adecuadamente, respetando la diversidad del grupo y estableciendo relaciones saludables basadas en la igualdad y la resolución pacífica de conflictos, afianzando la autoconfianza para participar en situaciones vividas en entornos coeducativos.",
+     "4": "Participar y colaborar activa y respetuosamente en el trabajo en equipo, comunicándose adecuadamente, respetando la diversidad del grupo y estableciendo relaciones saludables basadas en la igualdad y la resolución pacífica de conflictos, afianzando la autoconfianza para participar en situaciones vividas en entornos coeducativos.",
+     "id": "8.1",
+     "saberes": [
+      "MAT.2.F.2.1",
+      "MAT.2.F.2.2",
+      "MAT.2.F.2.3"
+     ]
+    },
+    {
+     "3": "Adoptar alguna decisión en el reparto de tareas, respetando las responsabilidades individuales asignadas y comenzando a emplear estrategias sencillas de trabajo en equipo dirigidas a la consecución de objetivos compartidos y a desarrollar una escucha activa.",
+     "4": "Participar en el reparto de tareas, asumiendo y respetando las responsabilidades individuales asignadas y empleando estrategias sencillas de trabajo en equipo dirigidas a la consecución de objetivos compartidos, desarrollando destrezas de escucha activa y una comunicación efectiva.",
+     "id": "8.2",
+     "saberes": [
+      "MAT.2.F.2.5",
+      "MAT.2.F.2.6"
+     ]
+    }
+   ]
+  }
+ }
+}

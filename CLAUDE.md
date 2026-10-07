@@ -14,10 +14,13 @@ Cada módulo es una carpeta con su `index.html` autocontenido (CSS y JS dentro),
 | `hogwarts/` | **4ºA** (su tutoría): El Mercader, Sobres, Mis cartas y, con `?profe`, la pestaña **Hogwarts**. Pestaña directa con `#sobres`, `#mis`, `#hogwarts`. | 4ºA; Javi con `?profe` |
 | `ef/` | **EF** 3ºA, 3ºB, 4ºB: Coevaluación, La clase, Mercader de EF. La pestaña Bóveda lleva a `boveda/`. | Javi en la pizarra de EF |
 | `boveda/` | **Bóveda de la clase** (las 4 clases): autoevaluación, monedas al cofre y fiesta con 9–10, recompensas, movimientos y ajustes. | Pizarra |
-| `sesion/` | **Sesión y Ruleta** (todas las clases): plan de la sesión por fases (se guarda en la Hoja, acción `Plan`, alumno `PLAN · 3ºA`, CartaId = fecha, JSON) y fases **Ruleta de preguntas** a pantalla completa. Abrir con `?grupo=4oA`. | Javi en la pizarra |
+| `sesion/` | **Sesión y Ruleta** (todas las clases): plan de la sesión por fases (se guarda en la Hoja, acción `Plan`, alumno `PLAN · 3ºA`, CartaId = `fecha · asignatura`, JSON; 4ºA elige EF o Lengua) y fases **Ruleta de preguntas** a pantalla completa. Abrir con `?grupo=4oA`. | Javi en la pizarra |
+| `planificacion/` | **Planificación semanal**: cuadrícula de la semana según `data/horario.json` (cada sesión abre `sesion/` con grupo, fecha y asignatura), **situaciones de aprendizaje** (acción `SdA`, alumno `SDA · 4ºA`; título, unidad del libro, reto, producto, evaluación, criterios de `data/criterios.json` y sesiones repartidas solas en el horario) y **días sin clase** (ajuste `festivos`). | Javi |
 | `profe/` | **Panel del profe**: alumnos (altas, bajas, nombre, aspecto), tema del trimestre y enlaces para Google Sites. | Javi |
 | `comun/javi.js` | **Capa común**: leer/escribir la Hoja, alumnos (`data/alumnos.json` + cambios del panel), ajustes, temas, modo prueba, pantalla completa, exportar CSV. Para cambiar de almacenamiento, solo se toca este archivo. | — |
 | `comun/javi.css` | Temas `hp`, `vengadores`, `pokemon` (variables CSS) para la portada, el panel y los módulos nuevos. | — |
+| `data/horario.json` | Horario de Javi (EF en las 4 clases, Lengua en 4ºA). Si cambia, solo se toca este archivo. | — |
+| `data/criterios.json` | Criterios del 2º ciclo (LCL, EF, MAT; textos de 3º y 4º y saberes), generados desde los `.md` de la Orden de 30/05/2023. | — |
 | `data/alumnos.json` | Lista base de alumnos por grupo (`sistema`: hogwarts o ef; chica y aspecto del personaje). | — |
 | `ef.html` | Redirige a `ef/` (dirección antigua). | — |
 
