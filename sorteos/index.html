@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Responsable y capitanes</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cab h1{flex:1 1 260px;min-width:0;font-size:clamp(24px,4.5vw,46px);line-height:1.05;overflow-wrap:anywhere}
+.barraSup{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.chip{font-family:var(--f-sub);font-weight:700;font-size:18px;padding:9px 18px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.chip[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.estado{font-size:15px;color:var(--tinta-suave)}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:860px){ .dos{grid-template-columns:1fr} }
+.tarjeta{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.tarjeta h2{font-family:var(--f-titulo);color:var(--titulo-color);text-shadow:var(--titulo-sombra);text-transform:var(--titulo-transform);font-size:clamp(24px,3.4vw,36px)}
+.carrete{font-family:var(--f-titulo);font-size:clamp(38px,6.5vw,76px);line-height:1.08;color:var(--titulo-color);text-shadow:var(--titulo-sombra);text-transform:var(--titulo-transform);
+  min-height:1.25em;min-width:60%;padding:6px 20px;border-radius:22px;border:4px solid var(--acento);background:rgba(0,0,0,.18);box-shadow:0 0 0 7px var(--brillo);overflow-wrap:anywhere}
+[data-tema="pokemon"] .carrete{background:#fff}
+.carrete.gira{animation:tiembla .09s infinite}
+@keyframes tiembla{50%{transform:translateY(-3px)}}
+.carrete.sale{animation:aparece .5s}
+@keyframes aparece{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.carrete.vacio{opacity:.5}
+.parCap{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.parCap .carrete{min-width:42%;font-size:clamp(30px,5vw,58px)}
+.vs{font-family:var(--f-titulo);font-size:30px;color:var(--acento-2);align-self:center}
+.botonera{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.gran{font-family:var(--f-sub);font-weight:800;font-size:clamp(18px,2.4vw,26px);padding:12px 24px;border-radius:16px;border:none;box-shadow:0 4px 0 rgba(0,0,0,.35)}
+.gran.girar{background:var(--acento);color:var(--acento-tinta)}
+.gran.ok{background:#3cae5f;color:#fff}
+.gran.sec{background:transparent;color:var(--tinta);border:2px solid var(--panel-borde);box-shadow:none}
+.mini{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:transparent;color:var(--tinta)}
+.vuelta{width:100%;text-align:left}
+.vuelta summary{cursor:pointer;font-family:var(--f-sub);font-weight:700;color:var(--acento-2);font-size:16px}
+.nombres{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.nombres span{font-size:14px;padding:3px 9px;border-radius:9px;background:rgba(0,0,0,.18)}
+.nombres span.ya{opacity:.5;text-decoration:line-through}
+.barra{height:10px;border-radius:6px;background:rgba(0,0,0,.25);overflow:hidden;width:100%}
+.barra i{display:block;height:100%;background:var(--acento);transition:width .6s}
+.faltan{display:flex;flex-wrap:wrap;gap:6px}
+.faltan button{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:transparent;color:var(--tinta)}
+.faltan button[aria-pressed="true"]{background:#7a2a22;border-color:#b6493f;color:#fff;text-decoration:line-through}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🎲 Responsable y capitanes</h1>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+    <a class="j-icono" href="../?profe" aria-label="Volver a Javificación" style="text-decoration:none">⌂</a>
+  </header>
+  <div class="barraSup">
+    <nav class="barraSup" id="grupos" aria-label="Clase" style="margin:0"></nav>
+    <span class="estado" id="hoy"></span>
+  </div>
+
+  <div class="dos">
+    <section class="j-panel tarjeta" aria-labelledby="tResp">
+      <h2 id="tResp">👑 Responsable del día</h2>
+      <div class="carrete vacio" id="rNombre">?</div>
+      <div class="botonera" id="rBotones"></div>
+      <div class="barra"><i id="rBarra"></i></div>
+      <span class="estado" id="rCuenta"></span>
+      <details class="vuelta"><summary>¿Quién queda por ser responsable?</summary><div class="nombres" id="rLista"></div></details>
+    </section>
+
+    <section class="j-panel tarjeta" aria-labelledby="tCap">
+      <h2 id="tCap">⚾ Capitanes de pichi</h2>
+      <div class="parCap"><div class="carrete vacio" id="c1">?</div><span class="vs">VS</span><div class="carrete vacio" id="c2">?</div></div>
+      <div class="botonera" id="cBotones"></div>
+      <div class="barra"><i id="cBarra"></i></div>
+      <span class="estado" id="cCuenta"></span>
+      <details class="vuelta"><summary>¿Quién queda por ser capitán?</summary><div class="nombres" id="cLista"></div></details>
+    </section>
+  </div>
+
+  <section class="j-panel" style="margin-top:14px">
+    <h2 class="j-sub" style="margin-bottom:6px">¿Quién falta hoy?</h2>
+    <p class="estado" style="margin-bottom:8px">Toca a quien no esté: no saldrá en el sorteo (y conserva su turno para otro día).</p>
+    <div class="faltan" id="faltan"></div>
+  </section>
+</div>
+<div class="j-aviso" id="aviso" role="status" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   REGLAS
+   - Responsable: uno por clase y día. Capitanes de pichi: dos por día.
+   - Nadie repite hasta que haya salido toda la clase (una «vuelta»).
+   - Se guarda en la Hoja: Alumno «SORTEO · 3ºA», Acción «Responsable» o «Capitán»,
+     CartaId = fecha, Tipo = nombre. Anular = la misma fila con «anula #id».
+   - «Responsable del día» puede sumar +1 (botón aparte, como en EF).
+   ============================================================ */
+var PUNTOS_RESPONSABLE = 1;
+
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util;
+var avisoT = 0;
+function aviso(t){ var a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3800); }
+function leer(k, d){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+function escribirL(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+var q = new URLSearchParams(location.search);
+var grupo = (q.get('grupo')||'').replace(/o/i,'º').toUpperCase() || leer('sorteos-grupo', null);
+var fecha = U.clave(new Date());
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+/* ---------- historial y vueltas ---------- */
+function historial(tipo){
+  var k = U.normal('SORTEO · '+grupo), acc = U.normal(tipo), filas = [], anul = {};
+  var al = (JAVI.grupo(grupo)||{}).alias || {};
+  JAVI.filas().forEach(function(f){
+    if(U.normal(f.alumno)!==k || U.normal(f.accion)!==acc) return;
+    var a = f.carta.match(/anula (#g[a-z0-9]+)/); if(a){ anul[a[1]] = 1; return; }
+    filas.push({ id:f.id, nombre: al[U.normal(f.tipo)] || f.tipo, dia:f.cartaId });
+  });
+  return filas.filter(function(x){ return !anul[x.id]; });
+}
+/* quién ha salido en la vuelta actual (cuando sale toda la clase, empieza otra) */
+function vuelta(tipo){
+  var clase = (JAVI.grupo(grupo)||{ nombres:[] }).nombres, ya = {}, nv = 1;
+  historial(tipo).forEach(function(x){
+    if(clase.indexOf(x.nombre)<0) return;
+    ya[x.nombre] = x.dia;
+    if(clase.every(function(n){ return ya[n]; })){ ya = {}; nv++; }
+  });
+  return { ya:ya, n:nv, clase:clase, quedan: clase.filter(function(n){ return !ya[n]; }) };
+}
+function deHoy(tipo){ return historial(tipo).filter(function(x){ return x.dia===fecha; }); }
+
+/* ---------- ausentes (los mismos que en Sesión y Ruleta) ---------- */
+function claveFaltan(){ return 'faltan|'+grupo+'|'+fecha; }
+function faltan(){ return leer(claveFaltan(), []); }
+function presentes(){ var fs = faltan(); return ((JAVI.grupo(grupo)||{}).nombres||[]).filter(function(n){ return fs.indexOf(n)<0; }); }
+function marcarFalta(n){ var l = faltan(); if(l.indexOf(n)<0){ l.push(n); escribirL(claveFaltan(), l); } pintarFaltan(); }
+
+/* elige a alguien de la vuelta que esté hoy; si no queda nadie, alguien presente */
+function candidato(tipo, excluir){
+  var v = vuelta(tipo), pres = presentes().filter(function(n){ return excluir.indexOf(n)<0; });
+  var c = v.quedan.filter(function(n){ return pres.indexOf(n)>=0; });
+  var repite = false;
+  if(!c.length){ c = pres; repite = true; }
+  if(!c.length) return null;
+  return { nombre: c[Math.floor(U.rnd()*c.length)], repite: repite && v.quedan.length>0 };
+}
+
+/* ============================================================
+   RESPONSABLE DEL DÍA
+   ============================================================ */
+var rPropuesto = null, girando = false;
+function pintarResp(){
+  var hoy = deHoy('Responsable')[0], box = $('rBotones'), nom = $('rNombre'), v = vuelta('Responsable');
+  box.innerHTML = '';
+  if(hoy && !rPropuesto){
+    nom.textContent = hoy.nombre; nom.classList.remove('vacio');
+    box.innerHTML = '<button class="gran ok" id="rPunto" type="button">+'+PUNTOS_RESPONSABLE+' '+moneda()+' para '+esc(hoy.nombre)+'</button><button class="mini" id="rCambiar" type="button">Cambiar</button>';
+    var dado = leer('resp-punto|'+grupo+'|'+fecha, null)===hoy.nombre;
+    if(dado){ $('rPunto').disabled = true; $('rPunto').textContent = '✓ +'+PUNTOS_RESPONSABLE+' dado a '+hoy.nombre; }
+    $('rPunto').addEventListener('click', function(e){
+      JAVI.darPuntos(grupo, hoy.nombre, PUNTOS_RESPONSABLE, 'Responsable del día', 'Sorteo');
+      escribirL('resp-punto|'+grupo+'|'+fecha, hoy.nombre); moneda_(); aviso('+'+PUNTOS_RESPONSABLE+' para '+hoy.nombre+'.'); pintarResp();
+    });
+    $('rCambiar').addEventListener('click', function(){
+      if(!confirm('¿Anular a '+hoy.nombre+' como responsable de hoy? Conservará su turno para otro día.')) return;
+      JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:'Responsable', cartaId:fecha, tipo:hoy.nombre, carta:'anula '+hoy.id });
+      aviso('Anulado. Podéis sortear otra vez.'); pintarResp();
+    });
+  } else if(rPropuesto){
+    nom.textContent = rPropuesto.nombre; nom.classList.remove('vacio');
+    box.innerHTML = '<button class="gran ok" id="rVale" type="button">✅ ¡Vale!</button><button class="gran sec" id="rOtro" type="button">🔁 No está, otro</button>';
+    $('rVale').addEventListener('click', function(){
+      JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:'Responsable', cartaId:fecha, tipo:rPropuesto.nombre });
+      var antes = vuelta('Responsable').n; rPropuesto = null; pintarResp();
+      fanfarria(); if(vuelta('Responsable').n > antes) aviso('🎉 ¡Ya han sido responsables todos! Empieza una vuelta nueva.');
+    });
+    $('rOtro').addEventListener('click', function(){ marcarFalta(rPropuesto.nombre); rPropuesto = null; sortearResp(); });
+  } else {
+    nom.textContent = '?'; nom.classList.add('vacio');
+    box.innerHTML = '<button class="gran girar" id="rSortear" type="button">🎲 Sortear responsable</button>';
+    $('rSortear').addEventListener('click', sortearResp);
+  }
+  $('rCuenta').textContent = 'Vuelta '+v.n+': han sido '+(v.clase.length - v.quedan.length)+' de '+v.clase.length+(v.quedan.length ? ' · quedan '+v.quedan.length : '');
+  $('rBarra').style.width = (v.clase.length ? (v.clase.length - v.quedan.length)/v.clase.length*100 : 0)+'%';
+  pintarLista($('rLista'), v);
+}
+function sortearResp(){
+  if(girando) return;
+  var c = candidato('Responsable', []);
+  if(!c){ aviso('No hay nadie presente.'); return; }
+  if(c.repite) aviso('Los que quedan por ser responsable no han venido hoy: sale alguien que ya lo fue.');
+  animar($('rNombre'), c.nombre, function(){ rPropuesto = c; pintarResp(); });
+}
+
+/* ============================================================
+   CAPITANES DE PICHI
+   ============================================================ */
+var cPropuestos = null;
+function pintarCap(){
+  var hoy = deHoy('Capitán'), box = $('cBotones'), v = vuelta('Capitán');
+  box.innerHTML = '';
+  var n1 = $('c1'), n2 = $('c2');
+  if(cPropuestos){
+    n1.textContent = cPropuestos[0]; n2.textContent = cPropuestos[1]; n1.classList.remove('vacio'); n2.classList.remove('vacio');
+    box.innerHTML = '<button class="gran ok" id="cVale" type="button">✅ ¡Vale!</button>'+
+      '<button class="gran sec" id="cOtro1" type="button">🔁 '+esc(cPropuestos[0])+' no está</button><button class="gran sec" id="cOtro2" type="button">🔁 '+esc(cPropuestos[1])+' no está</button>';
+    $('cVale').addEventListener('click', function(){
+      var antes = vuelta('Capitán').n;
+      cPropuestos.forEach(function(n){ JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:'Capitán', cartaId:fecha, tipo:n }); });
+      cPropuestos = null; pintarCap(); fanfarria();
+      if(vuelta('Capitán').n > antes) aviso('🎉 ¡Ya han sido capitanes todos! Empieza una vuelta nueva.');
+    });
+    [0,1].forEach(function(i){
+      $('cOtro'+(i+1)).addEventListener('click', function(){
+        marcarFalta(cPropuestos[i]);
+        var otro = cPropuestos[1-i], c = candidato('Capitán', [otro]);
+        if(!c){ aviso('No hay más alumnos presentes.'); return; }
+        animar($(i ? 'c2' : 'c1'), c.nombre, function(){ cPropuestos[i] = c.nombre; pintarCap(); });
+      });
+    });
+  } else if(hoy.length >= 2){
+    n1.textContent = hoy[hoy.length-2].nombre; n2.textContent = hoy[hoy.length-1].nombre; n1.classList.remove('vacio'); n2.classList.remove('vacio');
+    box.innerHTML = '<span class="estado">Capitanes de hoy</span><button class="mini" id="cCambiar" type="button">Cambiar</button>';
+    $('cCambiar').addEventListener('click', function(){
+      if(!confirm('¿Anular a los capitanes de hoy? Conservarán su turno para otro día.')) return;
+      hoy.slice(-2).forEach(function(x){ JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:'Capitán', cartaId:fecha, tipo:x.nombre, carta:'anula '+x.id }); });
+      aviso('Anulados. Podéis sortear otra vez.'); pintarCap();
+    });
+  } else {
+    n1.textContent = '?'; n2.textContent = '?'; n1.classList.add('vacio'); n2.classList.add('vacio');
+    box.innerHTML = '<button class="gran girar" id="cSortear" type="button">🎲 Sortear capitanes</button>';
+    $('cSortear').addEventListener('click', sortearCap);
+  }
+  $('cCuenta').textContent = 'Vuelta '+v.n+': han sido '+(v.clase.length - v.quedan.length)+' de '+v.clase.length+(v.quedan.length ? ' · quedan '+v.quedan.length : '');
+  $('cBarra').style.width = (v.clase.length ? (v.clase.length - v.quedan.length)/v.clase.length*100 : 0)+'%';
+  pintarLista($('cLista'), v);
+}
+function sortearCap(){
+  if(girando) return;
+  var a = candidato('Capitán', []);
+  if(!a){ aviso('No hay nadie presente.'); return; }
+  /* el segundo: de los que quedan en la vuelta sin contar al primero; si solo quedaba uno, de la vuelta siguiente */
+  var v = vuelta('Capitán'), pres = presentes().filter(function(n){ return n!==a.nombre; });
+  var resto = v.quedan.filter(function(n){ return n!==a.nombre && pres.indexOf(n)>=0; });
+  if(!resto.length) resto = pres;
+  if(!resto.length){ aviso('Hace falta al menos dos alumnos presentes.'); return; }
+  var b = resto[Math.floor(U.rnd()*resto.length)];
+  animar($('c1'), a.nombre, function(){ animar($('c2'), b, function(){ cPropuestos = [a.nombre, b]; pintarCap(); }); });
+}
+
+/* ---------- comunes ---------- */
+function pintarLista(box, v){
+  box.innerHTML = '';
+  v.clase.slice().sort(function(x, y){ return (!!v.ya[x]) - (!!v.ya[y]) || x.localeCompare(y, 'es'); }).forEach(function(n){
+    var s = document.createElement('span'); if(v.ya[n]) s.className = 'ya';
+    s.textContent = n+(v.ya[n] ? ' ('+v.ya[n].split('-').reverse().slice(0,2).join('/')+')' : '');
+    box.appendChild(s);
+  });
+}
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function moneda(){ var t = JAVI.TEMAS[JAVI.temaDe(grupo)]; return t ? t.moneda : 'galeones'; }
+function animar(el, nombre, fin){
+  var pres = presentes(); girando = true; el.classList.remove('vacio','sale'); el.classList.add('gira');
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent = nombre; el.classList.remove('gira'); girando = false; fin(); return; }
+  var pasos = 16 + Math.floor(U.rnd()*6), k = 0;
+  (function paso(){
+    k++;
+    if(k>=pasos){ el.textContent = nombre; el.classList.remove('gira'); el.classList.add('sale'); girando = false; ding(); setTimeout(fin, 400); return; }
+    el.textContent = pres[Math.floor(U.rnd()*pres.length)]; tic();
+    setTimeout(paso, 40 + k*k*0.6);
+  })();
+}
+function pintarGrupos(){
+  var box = $('grupos'); box.innerHTML = '';
+  JAVI.grupos().forEach(function(g){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = g;
+    b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
+    b.addEventListener('click', function(){ grupo = g; rPropuesto = null; cPropuestos = null; escribirL('sorteos-grupo', g); todo(); });
+    box.appendChild(b);
+  });
+  var p = fecha.split('-'); $('hoy').textContent = 'Hoy, '+(+p[2])+' de '+MESES[+p[1]-1];
+}
+function pintarFaltan(){
+  var box = $('faltan'), fs = faltan(); box.innerHTML = '';
+  ((JAVI.grupo(grupo)||{}).nombres||[]).forEach(function(n){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+    b.setAttribute('aria-pressed', fs.indexOf(n)>=0 ? 'true' : 'false');
+    b.addEventListener('click', function(){ var l = faltan(), i = l.indexOf(n); if(i>=0) l.splice(i,1); else l.push(n); escribirL(claveFaltan(), l); pintarFaltan(); });
+    box.appendChild(b);
+  });
+}
+
+/* ---------- sonido ---------- */
+var sonido = leer('sorteos-sonido', true), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function tono(f, t0, dur, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+(t0||0);
+  o.type = tipo||'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol||0.15, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); }
+function tic(){ tono(900+U.rnd()*300, 0, 0.04, 'square', 0.04); }
+function ding(){ tono(1046, 0, 0.25, 'triangle', 0.15); tono(1568, 0.08, 0.3, 'triangle', 0.1); }
+function fanfarria(){ [523,659,784,1046].forEach(function(f, i){ tono(f, i*0.12, 0.28, 'square', 0.06); }); }
+function moneda_(){ [1800,2400,2900].forEach(function(f, i){ tono(f, i*0.05, 0.2, 'sine', 0.12); }); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; escribirL('sorteos-sonido', sonido); pintarSonido(); });
+pintarSonido();
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+
+function todo(){
+  if(JAVI.grupos().indexOf(grupo)<0) grupo = JAVI.grupos()[0];
+  document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo));
+  pintarGrupos(); pintarResp(); pintarCap(); pintarFaltan();
+}
+JAVI.listo(function(){ todo(); JAVI.avisoPrueba(); });
+})();
+</script>
+</body>
+</html>

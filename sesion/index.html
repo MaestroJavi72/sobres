@@ -93,6 +93,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
   <header class="cab">
     <h1 class="j-titulo">📋 Sesión y Ruleta</h1>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+    <a class="j-icono" id="bSorteos" href="../sorteos/?profe" title="Responsable y capitanes" style="text-decoration:none">👑</a>
     <a class="j-icono" id="bSemana" href="../planificacion/?profe" title="Planificación semanal" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">📅 Semana</a>
     <a class="j-icono" id="bInicio" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
   </header>
@@ -245,6 +246,7 @@ function pintarAsigs(){
   var h = JAVI.sesionesDelDia(fecha).filter(function(x){ return x.grupo===grupo && x.asig===asig; })[0];
   $('hueco').textContent = h ? '🕘 '+h.ini+'–'+h.fin : (JAVI.horario() ? 'Este día no hay '+(NOMBRE_ASIG[asig]||asig)+' con '+grupo+' en el horario' : '');
   $('bSemana').href = '../planificacion/?profe&semana='+JAVI.lunesDe(fecha);
+  $('bSorteos').href = '../sorteos/?profe&grupo='+encodeURIComponent(grupo).replace('%C2%BA','o');
 }
 function pintarSda(){
   var box = $('sdaInfo'), sd = JAVI.sdaDeSesion(grupo, fecha, asig);

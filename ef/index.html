@@ -207,6 +207,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <button class="tab" id="t_merc" role="tab" type="button">El Mercader</button>
     <button class="tab" id="t_bov" role="tab" type="button">Bóveda ↗</button>
     <button class="tab" id="t_ses" role="tab" type="button">Sesión y Ruleta ↗</button>
+    <button class="tab" id="t_sor" role="tab" type="button">Responsable y capitanes ↗</button>
   </nav>
 
   <!-- COEVALUACIÓN -->
@@ -404,6 +405,17 @@ var EF = {
     { min:78, n:'Gran Hechicero',          f:'Gran Hechicera',           c:'#ffe066' },
     { min:90, n:'Leyenda de Hogwarts',     f:'Leyenda de Hogwarts',      c:'#f6e7a4' }
   ],
+  /* nombres de nivel de los otros mundos (mismos puntos que arriba). [chico, chica] */
+  nombresNivel: {
+    vengadores: [['Civil curioso','Civil curiosa'],['Recluta','Recluta'],['Cadete del Cuartel','Cadete del Cuartel'],['Aprendiz de héroe','Aprendiz de heroína'],
+      ['Agente en prácticas','Agente en prácticas'],['Agente de campo','Agente de campo'],['Guardián del barrio','Guardiana del barrio'],['Protector de la ciudad','Protectora de la ciudad'],
+      ['Héroe con capa','Heroína con capa'],['Capitán de escuadrón','Capitana de escuadrón'],['Defensor de la Tierra','Defensora de la Tierra'],['Héroe galáctico','Heroína galáctica'],
+      ['Leyenda del multiverso','Leyenda del multiverso']],
+    pokemon: [['Novato del pueblo','Novata del pueblo'],['Aprendiz de entrenador','Aprendiz de entrenadora'],['Entrenador con mochila','Entrenadora con mochila'],
+      ['Rastreador de hierba alta','Rastreadora de hierba alta'],['Entrenador de ruta','Entrenadora de ruta'],['Coleccionista de medallas','Coleccionista de medallas'],
+      ['Retador de gimnasio','Retadora de gimnasio'],['Experto en criaturas','Experta en criaturas'],['Líder de gimnasio','Líder de gimnasio'],['Aspirante a la Liga','Aspirante a la Liga'],
+      ['Finalista de la Liga','Finalista de la Liga'],['Campeón de la Liga','Campeona de la Liga'],['Maestro legendario','Maestra legendaria']]
+  },
   /* cartas: existencias por grupo y trimestre según rareza */
   existencias: { comun:2, especial:1, legendaria:1 },
   diasMercader: [],   /* vacío = abierto todos los días; ej. [5] = solo viernes (0 domingo … 6 sábado) */
@@ -426,12 +438,20 @@ var EF = {
 var RAREZAS = { comun:'Común', especial:'Especial', legendaria:'Legendaria' };
 /* mundo del trimestre (Javificación): moneda y estilo. 4ºA no está aquí: vive siempre en Harry Potter. */
 var MON = 'galeones';
+var ESTILO = 'hp', NIVELES_HP = null;
 function ponerTema(){
   if(!window.JAVI) return;
   var t = JAVI.temaDe(grupo), w = JAVI.TEMAS[t];
   document.documentElement.setAttribute('data-tema', t);
   MON = w ? w.moneda : 'galeones';
+  /* niveles y personajes del mundo */
+  ESTILO = t;
+  if(!NIVELES_HP) NIVELES_HP = EF.niveles;
+  var nom = EF.nombresNivel[t];
+  EF.niveles = nom ? NIVELES_HP.map(function(x, i){ return { min:x.min, c:x.c, n:nom[i][0], f:nom[i][1] }; }) : NIVELES_HP;
+  G.niveles = EF.niveles;
 }
+function textoHuevo(){ return ESTILO==='vengadores' ? 'dentro de la cápsula' : 'dentro del huevo'; }
 function conMoneda(txt){ return String(txt).replace(/galeones/g, MON); }
 
 /* Las listas de alumnos y quién es chica se editan ahora en el PANEL DEL PROFE (Javificación ?profe → Alumnos).
@@ -542,6 +562,24 @@ function estrella(x, y, r, f, extra){
 }
 var ESCALAS = [0.64, 0.71, 0.78, 0.85, 0.91, 0.97, 1.02];
 var UIDP = 0;
+/* criatura compañera de los entrenadores (diseño original de Javificación): crece con el nivel */
+function criatura(esc, evolucionada){
+  var t = 'translate(100 128) scale('+esc+') translate(-100 -128)';
+  var o = ' stroke="'+OL+'" stroke-width="1.5" stroke-linejoin="round"';
+  return '<g transform="'+t+'">'+
+    '<ellipse cx="100" cy="129" rx="13" ry="2.6" fill="rgba(0,0,0,.3)"/>'+
+    '<path d="M110 118 Q122 112 118 100 Q126 108 120 120 Q116 126 110 124Z" fill="#ffb347"'+o+'/>'+                      /* cola */
+    '<path d="M89 104 L84 86 L95 98Z" fill="#ffb347"'+o+'/><path d="M111 104 L116 86 L105 98Z" fill="#ffb347"'+o+'/>'+   /* orejas */
+    '<path d="M86.5 92 L88 97 M113.5 92 L112 97" stroke="#8a4b10" stroke-width="2.2"/>'+
+    '<ellipse cx="100" cy="114" rx="15" ry="14" fill="#ffb347"'+o+'/>'+
+    '<ellipse cx="100" cy="119" rx="8.5" ry="7.5" fill="#ffe2b0"/>'+
+    '<circle cx="94.5" cy="110" r="2.8" fill="#2b2230"/><circle cx="105.5" cy="110" r="2.8" fill="#2b2230"/>'+
+    '<circle cx="95.4" cy="109" r="1" fill="#fff"/><circle cx="106.4" cy="109" r="1" fill="#fff"/>'+
+    '<path d="M97 115 Q100 117.5 103 115" fill="none" stroke="#8a4b10" stroke-width="1.4" stroke-linecap="round"/>'+
+    '<ellipse cx="90" cy="114.5" rx="2.4" ry="1.6" fill="#ff7f97" opacity=".6"/><ellipse cx="110" cy="114.5" rx="2.4" ry="1.6" fill="#ff7f97" opacity=".6"/>'+
+    (evolucionada ? '<path d="M94 100 L97 92 L100 99 L103 92 L106 100Z" fill="#ffcb05"'+o+'/>' : '')+                 /* cresta al evolucionar */
+    '</g>';
+}
 function personajeSVG(a, lv, huevo){
   var u = 'p'+(++UIDP), g = '', P = a.piel, H = a.colorPelo, R = a.ropa, Hd = mezcla(H,'#000000',.35), Hl = mezcla(H,'#ffffff',.35);
   var st = ' stroke="'+OL+'" stroke-width="1.6" stroke-linejoin="round"';
@@ -552,8 +590,28 @@ function personajeSVG(a, lv, huevo){
     '<linearGradient id="'+u+'h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3d8a"/><stop offset="1" stop-color="#271f52"/></linearGradient>'+
     '<linearGradient id="'+u+'c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a4fa8"/><stop offset="1" stop-color="#1c2766"/></linearGradient>'+
     '<radialGradient id="'+u+'a"><stop offset="0" stop-color="#fff2c2" stop-opacity=".85"/><stop offset=".6" stop-color="#ffd76a" stop-opacity=".3"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="'+u+'b"><stop offset="0" stop-color="#d8f6ff" stop-opacity=".9"/><stop offset=".6" stop-color="#5fd0ff" stop-opacity=".35"/><stop offset="1" stop-color="#5fd0ff" stop-opacity="0"/></radialGradient>'+
     '<radialGradient id="'+u+'e" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#e9d6a6"/></radialGradient>'+
     '</defs>';
+  if(huevo && ESTILO==='vengadores'){
+    /* cápsula de energía */
+    g += '<ellipse cx="60" cy="132" rx="30" ry="5" fill="rgba(0,0,0,.35)"/>'+
+         '<defs><linearGradient id="'+u+'v" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5fd0ff" stop-opacity=".55"/><stop offset=".5" stop-color="#d8f6ff" stop-opacity=".35"/><stop offset="1" stop-color="#3a8fe0" stop-opacity=".6"/></linearGradient></defs>'+
+         '<rect x="34" y="56" width="52" height="70" rx="24" fill="url(#'+u+'v)"'+st+'/>'+
+         '<path d="M62 66 L52 90 L60 90 L54 114 L70 84 L61 84 L68 66Z" fill="#fff6a8" stroke="#c79a00" stroke-width="1.4" stroke-linejoin="round"/>'+
+         '<rect x="31" y="50" width="58" height="11" rx="5" fill="#8e97ad"'+st+'/><rect x="31" y="122" width="58" height="11" rx="5" fill="#8e97ad"'+st+'/>'+
+         '<circle cx="40" cy="55.5" r="2" fill="#ff4a4a"/><circle cx="80" cy="127.5" r="2" fill="#5fd0ff"/>'+
+         '<ellipse cx="46" cy="76" rx="4" ry="12" fill="#fff" opacity=".45"/>';
+    return ini+defs+g+'</svg>';
+  }
+  if(huevo && ESTILO==='pokemon'){
+    /* huevo de criatura con manchas */
+    g += '<ellipse cx="60" cy="132" rx="30" ry="5" fill="rgba(0,0,0,.35)"/>'+
+         '<path d="M60 52 C80 52 90 82 90 102 C90 122 76 133 60 133 C44 133 30 122 30 102 C30 82 40 52 60 52Z" fill="url(#'+u+'e)"'+st+'/>'+
+         '<ellipse cx="48" cy="82" rx="7" ry="5" fill="#7cc576"/><ellipse cx="74" cy="96" rx="9" ry="6" fill="#4fb6f5"/><ellipse cx="52" cy="116" rx="8" ry="5" fill="#7cc576"/><ellipse cx="73" cy="70" rx="4.5" ry="3.5" fill="#4fb6f5"/>'+
+         '<ellipse cx="50" cy="68" rx="6" ry="10" fill="#fff" opacity=".6" transform="rotate(-20 50 68)"/>';
+    return ini+defs+g+'</svg>';
+  }
   if(huevo){
     g += '<ellipse cx="60" cy="132" rx="30" ry="5" fill="rgba(0,0,0,.35)"/>'+
          '<path d="M60 52 C80 52 90 82 90 102 C90 122 76 133 60 133 C44 133 30 122 30 102 C30 82 40 52 60 52Z" fill="url(#'+u+'e)"'+st+'/>'+
@@ -565,11 +623,17 @@ function personajeSVG(a, lv, huevo){
   var tot = Math.max(1, (G.niveles||[]).length-1), idx = Math.max(0, Math.min(tot, lv));
   lv = Math.round(idx*6/tot);                 /* complementos: uno nuevo cada dos niveles */
   var s = 0.64 + 0.38*idx/tot;                 /* y crece un poco en cada nivel */
+  var HP = ESTILO==='hp' || !ESTILO, HE = ESTILO==='vengadores', PK = ESTILO==='pokemon';
+  var TRAJE = mezcla(R,'#000000',.15), TRAJEOSC = mezcla(R,'#000000',.45), CHAQ = '#2a75bb';
   g += '<g transform="translate(60 132) scale('+s+') translate(-60 -132)">';
-  if(lv>=6) g += '<circle cx="60" cy="72" r="64" fill="url(#'+u+'a)"/>';
+  if(lv>=6) g += HE ? '<circle cx="60" cy="72" r="64" fill="url(#'+u+'b)"/>'
+                    : '<circle cx="60" cy="72" r="64" fill="url(#'+u+'a)"/>';
   g += '<ellipse cx="60" cy="132" rx="28" ry="5" fill="rgba(0,0,0,.35)"/>';
-  if(lv>=4) g += '<path d="M36 84 Q60 76 84 84 L100 128 Q60 136 20 128Z" fill="url(#'+u+'c)"'+st+'/>'+
+  if(HP && lv>=4) g += '<path d="M36 84 Q60 76 84 84 L100 128 Q60 136 20 128Z" fill="url(#'+u+'c)"'+st+'/>'+
                  '<path d="M36 84 Q60 76 84 84 L86 90 Q60 82 34 90Z" fill="#c9a34a"/>';
+  if(HE && lv>=4) g += '<path d="M38 82 Q60 76 82 82 L100 130 Q80 124 60 132 Q40 124 20 130Z" fill="#c8313a"'+st+'/>'+
+                 '<path d="M46 96 L40 126 M74 96 L80 126" stroke="#8f1f27" stroke-width="2"/>';
+  if(PK && lv>=3) g += '<rect x="35" y="80" width="50" height="30" rx="8" fill="#2f8f5b"'+st+'/><rect x="38" y="99" width="12" height="9" rx="3" fill="#3fae70"'+st+'/>';
   /* pelo largo por detrás */
   if(a.pelo==='melena') g += '<path d="M31 48 Q26 96 40 104 L80 104 Q94 96 89 48Z" fill="'+Hd+'"'+st+'/>';
   if(a.pelo==='coletas') g += '<path d="M30 54 Q16 62 20 82 Q24 92 30 88 Q26 74 34 62Z" fill="'+H+'"'+st+'/><path d="M90 54 Q104 62 100 82 Q96 92 90 88 Q94 74 86 62Z" fill="'+H+'"'+st+'/>'+
@@ -577,19 +641,46 @@ function personajeSVG(a, lv, huevo){
   if(a.pelo==='moño') g += '<circle cx="60" cy="16" r="11" fill="'+H+'"'+st+'/><path d="M54 12 Q60 8 66 12" fill="none" stroke="'+Hl+'" stroke-width="2" stroke-linecap="round"/>';
   /* piernas, calcetines y zapatos */
   g += '<rect x="50" y="108" width="8.5" height="20" rx="3" fill="'+P+'"'+st+'/><rect x="61.5" y="108" width="8.5" height="20" rx="3" fill="'+P+'"'+st+'/>'+
-       '<rect x="50" y="118" width="8.5" height="7" fill="#f4f0e6"/><rect x="61.5" y="118" width="8.5" height="7" fill="#f4f0e6"/>'+
-       '<path d="M46 129 Q46 123 54 123 Q60 124 60 129 Q53 132 46 129Z" fill="#2b2230"'+st+'/><path d="M60 129 Q60 124 66 123 Q74 123 74 129 Q67 132 60 129Z" fill="#2b2230"'+st+'/>'+
+       (HE ? '<rect x="50" y="108" width="8.5" height="20" rx="3" fill="'+TRAJE+'"'+st+'/><rect x="61.5" y="108" width="8.5" height="20" rx="3" fill="'+TRAJE+'"'+st+'/>'+
+         '<rect x="49.5" y="115" width="9.5" height="10" rx="2" fill="#c8313a"'+st+'/><rect x="61" y="115" width="9.5" height="10" rx="2" fill="#c8313a"'+st+'/>'
+       : '<rect x="50" y="118" width="8.5" height="7" fill="#f4f0e6"/><rect x="61.5" y="118" width="8.5" height="7" fill="#f4f0e6"/>')+
+       '<path d="M46 129 Q46 123 54 123 Q60 124 60 129 Q53 132 46 129Z" fill="'+(HE ? '#c8313a' : PK ? '#d94141' : '#2b2230')+'"'+st+'/><path d="M60 129 Q60 124 66 123 Q74 123 74 129 Q67 132 60 129Z" fill="'+(HE ? '#c8313a' : PK ? '#d94141' : '#2b2230')+'"'+st+'/>'+
+       (PK ? '<path d="M47 128 Q53 130 59 128 M61 128 Q67 130 73 128" stroke="#fff" stroke-width="1.6" fill="none"/>' : '')+
        '<path d="M49 126 Q52 124.5 55 125" fill="none" stroke="#6b6080" stroke-width="1.4" stroke-linecap="round"/><path d="M65 125 Q68 124.5 71 126" fill="none" stroke="#6b6080" stroke-width="1.4" stroke-linecap="round"/>';
   /* falda o pantalón */
-  if(a.chica) g += '<path d="M42 100 L78 100 L85 116 Q60 121 35 116Z" fill="#3b3550"'+st+'/><path d="M50 101 L47 117 M60 101 L60 119 M70 101 L73 117" stroke="#2a2440" stroke-width="1.2"/>';
-  else g += '<path d="M43 100 H77 L78 114 H62.5 L60 106 L57.5 114 H42Z" fill="#3b3550"'+st+'/>';
+  var FALDA = HE ? TRAJEOSC : PK ? '#2f5fa3' : '#3b3550';
+  if(a.chica) g += '<path d="M42 100 L78 100 L85 116 Q60 121 35 116Z" fill="'+FALDA+'"'+st+'/>'+(HP ? '<path d="M50 101 L47 117 M60 101 L60 119 M70 101 L73 117" stroke="#2a2440" stroke-width="1.2"/>' : '');
+  else g += '<path d="M43 100 H77 L78 114 H62.5 L60 106 L57.5 114 H42Z" fill="'+FALDA+'"'+st+'/>';
   /* brazos */
   g += '<path d="M45 86 Q34 92 33 104" fill="none" stroke="'+OL+'" stroke-width="11" stroke-linecap="round"/><path d="M45 86 Q34 92 33 104" fill="none" stroke="url(#'+u+'r)" stroke-width="8" stroke-linecap="round"/>'+
        '<path d="M75 86 Q86 92 87 104" fill="none" stroke="'+OL+'" stroke-width="11" stroke-linecap="round"/><path d="M75 86 Q86 92 87 104" fill="none" stroke="url(#'+u+'r)" stroke-width="8" stroke-linecap="round"/>'+
        '<circle cx="33" cy="106" r="5" fill="'+P+'"'+st+'/><circle cx="87" cy="106" r="5" fill="'+P+'"'+st+'/>';
+  if(PK && lv>=4) g += '<path d="M45 86 Q34 92 33.5 101" fill="none" stroke="'+CHAQ+'" stroke-width="8.4" stroke-linecap="round"/><path d="M75 86 Q86 92 86.5 101" fill="none" stroke="'+CHAQ+'" stroke-width="8.4" stroke-linecap="round"/>'+
+                      '<path d="M29.5 99 h8 M82.5 99 h8" stroke="#ffcb05" stroke-width="2.4"/>';
+  if(HE && lv>=2) g += '<rect x="28" y="95" width="11" height="7" rx="2" fill="#f5c518"'+st+'/><rect x="81" y="95" width="11" height="7" rx="2" fill="#f5c518"'+st+'/>';
   /* cuerpo: camisa con cuello y jersey */
-  g += '<path d="M44 84 Q60 79 76 84 L79 104 Q60 108 41 104Z" fill="url(#'+u+'r)"'+st+'/>'+
+  if(HE){
+    /* traje de héroe con cinturón */
+    g += '<path d="M44 84 Q60 79 76 84 L79 104 Q60 108 41 104Z" fill="url(#'+u+'r)"'+st+'/>'+
+         '<path d="M48 83 Q60 90 72 83" fill="none" stroke="'+TRAJEOSC+'" stroke-width="2"/>'+
+         '<rect x="41.5" y="99" width="37" height="5.5" rx="1.5" fill="#f5c518"'+st+'/><rect x="56.5" y="98.2" width="7" height="7" rx="1.2" fill="#c79a00"'+st+'/>';
+  } else if(PK){
+    /* camiseta con una franja */
+    g += '<path d="M44 84 Q60 79 76 84 L79 104 Q60 108 41 104Z" fill="url(#'+u+'r)"'+st+'/>'+
+         '<path d="M43 93 Q60 96 77 93 L77.6 97 Q60 100 42.4 97Z" fill="#fff" opacity=".85"/>'+
+         '<path d="M53 82.5 Q60 87 67 82.5" fill="none" stroke="'+OL+'" stroke-width="1.4"/>';
+  } else {
+    g += '<path d="M44 84 Q60 79 76 84 L79 104 Q60 108 41 104Z" fill="url(#'+u+'r)"'+st+'/>'+
        '<path d="M52 82 L60 92 L68 82 Z" fill="#f7f3ea"'+st+'/><path d="M58 88 L60 98 L62 88 Z" fill="#7a2030"/>';
+  }
+  /* Pokémon: chaqueta de la Liga, tirantes de la mochila y cinturón de medallas */
+  if(PK && lv>=4) g += '<path d="M44 84 Q51 81 55 82.5 L54 106 Q47 106 41 104Z" fill="'+CHAQ+'"'+st+'/><path d="M76 84 Q69 81 65 82.5 L66 106 Q73 106 79 104Z" fill="'+CHAQ+'"'+st+'/>'+
+                      '<path d="M55 83 L54 106 M65 83 L66 106" stroke="#ffcb05" stroke-width="2"/>';
+  if(PK && lv>=3) g += '<path d="M47 83 L45 104 M73 83 L75 104" stroke="#1f6b43" stroke-width="3.4" stroke-linecap="round"/>';
+  if(PK && lv>=5){
+    g += '<rect x="41.5" y="100" width="37" height="5" rx="1.5" fill="#3b3550"'+st+'/>';
+    ['#ffcb05','#e8504a','#4fb6f5','#7cc576','#b07aff'].forEach(function(c, i){ g += '<circle cx="'+(46+i*7)+'" cy="102.5" r="2.4" fill="'+c+'" stroke="'+OL+'" stroke-width=".8"/>'; });
+  }
   /* trenzas por delante de los hombros */
   if(a.pelo==='trenzas'){
     [[30,1],[90,-1]].forEach(function(t){
@@ -613,6 +704,9 @@ function personajeSVG(a, lv, huevo){
                                 '<path d="M50 28 L54 33 M64 24 L66 31" stroke="'+Hl+'" stroke-width="2" stroke-linecap="round"/>';
   else g += '<path d="M30 56 Q26 20 60 20 Q94 20 90 56 Q86 40 76 35 Q66 46 48 38 Q36 42 30 56Z" fill="'+H+'"'+st+'/>'+
             '<path d="M42 28 Q54 22 68 25" fill="none" stroke="'+Hl+'" stroke-width="2.4" stroke-linecap="round"/>';
+  /* antifaz de héroe (los ojos se ven por encima) */
+  if(HE && lv>=1) g += '<path d="M33 49 Q46 41 60 47 Q74 41 87 49 Q86 60 72 61 Q64 61 60 56 Q56 61 48 61 Q34 60 33 49Z" fill="'+TRAJEOSC+'"'+st+'/>'+
+                       '<path d="M33 49 L26 45 M87 49 L94 45" stroke="'+TRAJEOSC+'" stroke-width="2.4" stroke-linecap="round"/>';
   /* cara */
   [[49,1],[71,-1]].forEach(function(e){
     var x = e[0];
@@ -630,7 +724,29 @@ function personajeSVG(a, lv, huevo){
   if(a.mecha) g += '<path d="M51 22 Q58 26 55 37 Q55 43 63 42 Q69 33 64 21Z" fill="#f4f0e6" stroke="'+OL+'" stroke-width="1.2" stroke-linejoin="round"/>';
   if(a.gafas) g += '<g fill="rgba(200,230,255,.18)" stroke="#2b2230" stroke-width="2.2"><rect x="40.5" y="45.5" width="17" height="14" rx="4.5"/><rect x="62.5" y="45.5" width="17" height="14" rx="4.5"/></g>'+
                    '<path d="M57.5 51 Q60 49 62.5 51 M40.5 50 L33 48 M79.5 50 L87 48" fill="none" stroke="#2b2230" stroke-width="2"/>';
-  /* complementos */
+  /* complementos de cada mundo */
+  if(HE){
+    if(lv>=3) g += estrella(60, 91, 6.5, '#f5c518', st);                                         /* insignia */
+    if(lv>=5) g += '<circle cx="24" cy="104" r="14" fill="#8e97ad"'+st+'/><circle cx="24" cy="104" r="10.5" fill="#5a6380"/>'+
+                   estrella(24, 104, 7, '#f5c518', st)+'<circle cx="33" cy="106" r="5" fill="'+P+'"'+st+'/>';   /* escudo redondo */
+    if(lv>=6) g += '<path d="M14 30 L20 40 L16 40 L22 52" fill="none" stroke="#5fd0ff" stroke-width="2.4" stroke-linejoin="round"/>'+
+                   '<path d="M104 26 L98 38 L103 38 L97 50" fill="none" stroke="#5fd0ff" stroke-width="2.4" stroke-linejoin="round"/>'+
+                   estrella(16, 70, 3.4, '#d8f6ff')+estrella(106, 62, 3, '#d8f6ff');
+    g += '</g>';
+    return ini+defs+g+'</svg>';
+  }
+  if(PK){
+    if(lv>=1){                                                                                 /* gorra */
+      g += '<path d="M30 42 Q30 14 60 14 Q90 14 90 42 Q60 35 30 42Z" fill="#2a75bb"'+st+'/>'+
+           '<path d="M45 18 Q60 13 75 18 L72 36 Q60 33 48 36Z" fill="#fff"'+st+'/>'+
+           estrella(60, 26, 5, '#ffcb05', st)+
+           '<path d="M30 42 Q60 35 90 42 Q92 48 84 49 Q60 43 36 49 Q28 48 30 42Z" fill="#1f5aa0"'+st+'/>';
+    }
+    if(lv>=2) g += criatura(lv>=6 ? 1 : lv>=4 ? .82 : .64, lv>=6);                              /* criatura compañera */
+    if(lv>=6) g += estrella(18, 24, 5, '#ffcb05', st)+estrella(104, 30, 4.4, '#ffcb05', st)+estrella(12, 62, 3.2, '#fff6cf');
+    g += '</g>';
+    return ini+defs+g+'</svg>';
+  }
   if(lv>=1) g += '<path d="M42 79 Q60 89 78 79 L79 87 Q60 97 41 87Z" fill="#c9a34a"'+st+'/>'+
                  '<path d="M48 82.5 L48 90.5 M56 85 L56 93 M64 85 L64 93 M72 82.5 L72 90.5" stroke="'+R+'" stroke-width="2.6"/>'+
                  '<path d="M64 88 L74 88 L76 110 L66 110Z" fill="#c9a34a"'+st+'/><path d="M65 95 L75 95 M65.6 102 L75.6 102" stroke="'+R+'" stroke-width="2.6"/>'+
@@ -1075,12 +1191,12 @@ function pintarPerfil(){
   var n = perfilDe, cs = cuentas(), c = cs[n], nv = nivelDe(c.acum), huevo = c.acum<0;
   $('pAv').innerHTML = avatar(n, cs);
   $('pNom').textContent = n;
-  $('pNiv').textContent = huevo ? 'Nivel 0 · Dentro del huevo' : 'Nivel '+(nv.i+1)+' de '+EF.niveles.length+' · '+nomNivel(n, nv);
+  $('pNiv').textContent = huevo ? 'Nivel 0 · '+textoHuevo().charAt(0).toUpperCase()+textoHuevo().slice(1) : 'Nivel '+(nv.i+1)+' de '+EF.niveles.length+' · '+nomNivel(n, nv);
   $('pNiv').style.color = huevo ? '' : nv.c;
   var pct = huevo ? 0 : (nv.sig ? Math.max(0, Math.min(100, (c.acum-nv.min)/(nv.sig.min-nv.min)*100)) : 100);
   $('pBarra').style.width = pct+'%'; $('pBarra').style.background = nv.c;
   $('pNums').innerHTML = '<span><b>'+c.saldo+'</b> '+MON+' de saldo</span><span><b>'+c.acum+'</b> acumulados</span>';
-  $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir del huevo' : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+nomNivel(n, nv.sig) : '¡Nivel máximo!');
+  $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir '+(ESTILO==='vengadores' ? 'de la cápsula' : 'del huevo') : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+nomNivel(n, nv.sig) : '¡Nivel máximo!');
   var box = $('pMotivos'); box.innerHTML = '';
   EF.motivosProfe.forEach(function(m){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo'+(m.g<0 ? ' neg' : '');
@@ -1165,6 +1281,7 @@ Object.keys(EF.grupos).forEach(function(g){
   $('grupos').appendChild(b);
 });
 ['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+$('t_sor').addEventListener('click', function(){ location.href = '../sorteos/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 $('t_ses').addEventListener('click', function(){ location.href = '../sesion/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 $('t_bov').addEventListener('click', function(){ location.href = '../boveda/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 iniciarBoveda();
@@ -1179,6 +1296,21 @@ $('bSi').addEventListener('click', comprar);
 pintarTodo();
 cargar();
 if(window.JAVI){ JAVI.botonInicio({ abajo:true }); JAVI.avisoPrueba(); }
+/* solo en modo prueba: galería de personajes para revisar los dibujos (?galeria) */
+if(window.JAVI && JAVI.PRUEBA && /[?&]galeria/.test(location.search)){
+  var gal = document.createElement('div'); gal.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:#fff;padding:10px';
+  ['hp','vengadores','pokemon'].forEach(function(t){
+    ESTILO = t; var nom = EF.nombresNivel[t]; G.niveles = EF.niveles;
+    var fila = '<h3 style="font:700 16px sans-serif;margin:8px 0">'+t+'</h3><div style="display:flex;flex-wrap:wrap;gap:4px">';
+    [{n:'Lucía',chica:true,pelo:'coletas',colorPelo:'castaño',piel:'clara'},{n:'Hugo',pelo:'corto',colorPelo:'moreno',piel:'media',gafas:true}].forEach(function(al){
+      var asp = aspectoDe(al.n); for(var k in al) if(k!=='n') asp[k] = k==='colorPelo' ? COLOR_PELO[al[k]] : k==='piel' ? COLOR_PIEL[al[k]] : al[k];
+      fila += '<div style="width:80px;height:110px">'+personajeSVG(asp, 0, true)+'</div>';
+      for(var lv=0; lv<13; lv++) fila += '<div style="width:80px;height:110px" title="'+lv+'">'+personajeSVG(asp, lv, false)+'</div>';
+    });
+    gal.innerHTML += fila+'</div>';
+  });
+  ESTILO = 'hp'; document.body.appendChild(gal);
+}
 
 });
 </script>
