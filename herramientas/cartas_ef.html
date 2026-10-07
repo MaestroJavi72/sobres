@@ -1,0 +1,108 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cinzel+Decorative:wght@700&display=swap');
+body{margin:0;background:#222;display:flex;flex-wrap:wrap;gap:10px;padding:10px}
+svg{display:block}
+</style>
+<body>
+<!-- Generador de las cartas de EF: ábrelo en el navegador y haz captura de cada carta (455×641), o pide a Claude que las exporte a ef/ef-NN.webp -->
+<script>
+var RAREZA = {
+  comun:     { n:'Común',      a:'#3f9a6a', b:'#1d4a35', c:'#b8f0cc', gema:'#6fe39a' },
+  especial:  { n:'Especial',   a:'#3d6fb6', b:'#16305e', c:'#bcd6ff', gema:'#7fb2ff' },
+  legendaria:{ n:'Legendaria', a:'#d6a443', b:'#5a3a0e', c:'#fff2c2', gema:'#ffe066' }
+};
+var W = 455, H = 641;
+function star5(x,y,r,f,ex){ var p=[]; for(var i=0;i<10;i++){ var a=Math.PI/5*i-Math.PI/2, rr=i%2?r*.45:r; p.push((x+Math.cos(a)*rr).toFixed(1)+','+(y+Math.sin(a)*rr).toFixed(1)); } return '<polygon points="'+p.join(' ')+'" fill="'+f+'"'+(ex||'')+'/>'; }
+function star4(x,y,r,f,op){ return '<path d="M'+x+' '+(y-r)+' Q'+(x+r*.18)+' '+(y-r*.18)+' '+(x+r)+' '+y+' Q'+(x+r*.18)+' '+(y+r*.18)+' '+x+' '+(y+r)+' Q'+(x-r*.18)+' '+(y+r*.18)+' '+(x-r)+' '+y+' Q'+(x-r*.18)+' '+(y-r*.18)+' '+x+' '+(y-r)+'Z" fill="'+f+'" opacity="'+(op||1)+'"/>'; }
+function moneda(x,y,r,txt){ return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="url(#MONREF)" stroke="#7a5214" stroke-width="'+(r*.08)+'"/><circle cx="'+x+'" cy="'+y+'" r="'+(r*.72)+'" fill="none" stroke="#9c6b1b" stroke-width="'+(r*.07)+'"/>'+(txt?'<text x="'+x+'" y="'+(y+r*.36)+'" text-anchor="middle" font-family="Cinzel Decorative" font-size="'+(r*1.0)+'" fill="#6a4510">'+txt+'</text>':''); }
+var L = 'stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+/* iconos (centrados en 0,0, ~ 150 px) */
+var U = '';
+var ICON = {
+  fila: '<g fill="#fff">'+[-60,-20,20,60].map(function(x,i){ var s=1-i*.12; return '<circle cx="'+x+'" cy="'+(-34*s)+'" r="'+(15*s)+'"/><rect x="'+(x-15*s)+'" y="'+(-12*s)+'" width="'+(30*s)+'" height="'+(58*s)+'" rx="'+(12*s)+'"/>'; }).join('')+'</g>'+star5(-60,-78,14,'#ffe066'),
+  musica: '<path d="M-30 40 V-50 L50 -66 V24" '+L+'/><ellipse cx="-44" cy="42" rx="20" ry="15" fill="#fff"/><ellipse cx="36" cy="26" rx="20" ry="15" fill="#fff"/><path d="M-30 -24 L50 -40" '+L+'/>',
+  capitan: '<path d="M-62 30 L-50 -40 L-20 -6 L0 -56 L20 -6 L50 -40 L62 30Z" fill="#fff"/><rect x="-62" y="36" width="124" height="20" rx="6" fill="#fff"/><circle cx="0" cy="-60" r="9" fill="#ffe066"/><circle cx="-52" cy="-44" r="7" fill="#ffe066"/><circle cx="52" cy="-44" r="7" fill="#ffe066"/><text x="0" y="24" text-anchor="middle" font-family="Cinzel Decorative" font-size="40" fill="#555">C</text>',
+  repetir: '<path d="M52 -18 A55 55 0 1 0 50 26" '+L+'/><path d="M60 -56 L54 -14 L14 -26" '+L+'/><text x="0" y="16" text-anchor="middle" font-family="Cinzel Decorative" font-size="44" fill="#fff">2</text>',
+  ayudante: '<path d="M-70 -30 H6 V-6 H-70 Z" fill="#fff"/><circle cx="22" cy="10" r="44" fill="#fff"/><circle cx="22" cy="10" r="16" fill="#999"/><rect x="-6" y="-38" width="22" height="14" rx="4" fill="#fff"/><path d="M-70 -18 Q-96 -18 -96 8" fill="none" stroke="#ffe066" stroke-width="6" stroke-linecap="round"/><circle cx="-96" cy="14" r="8" fill="none" stroke="#ffe066" stroke-width="5"/>',
+  oro5: moneda(-34,10,46,'J')+moneda(34,-14,46,'J')+'<text x="0" y="78" text-anchor="middle" font-family="Cinzel Decorative" font-size="42" fill="#fff">+5</text>',
+  juego: '<circle cx="0" cy="0" r="58" fill="#fff"/><path d="M0 -58 C-30 -30 -30 30 0 58 M0 -58 C30 -30 30 30 0 58 M-58 0 H58" fill="none" stroke="#666" stroke-width="5"/>'+star4(64,-56,16,'#ffe066'),
+  escudo: '<path d="M0 -68 L58 -46 V4 C58 40 30 60 0 72 C-30 60 -58 40 -58 4 V-46Z" fill="#fff"/>'+star5(0,0,30,'#ffe066'),
+  nota: '<rect x="-60" y="-66" width="96" height="124" rx="10" fill="#fff"/><path d="M-44 -38 H18 M-44 -14 H18 M-44 10 H2" stroke="#999" stroke-width="7" stroke-linecap="round"/><circle cx="40" cy="34" r="34" fill="#ffe066"/><path d="M40 52 V16 M24 32 L40 16 L56 32" fill="none" stroke="#6a4510" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>',
+  x2: moneda(-30,-6,50,'J')+'<text x="44" y="22" text-anchor="middle" font-family="Cinzel Decorative" font-size="64" fill="#fff">×2</text>',
+  x3: moneda(-30,-6,50,'J')+'<text x="44" y="22" text-anchor="middle" font-family="Cinzel Decorative" font-size="64" fill="#fff">×3</text>',
+  maestro: '<path d="M-80 -20 L0 -56 L80 -20 L0 16Z" fill="#fff"/><path d="M-46 -4 V36 C-46 54 46 54 46 36 V-4 L0 16Z" fill="#fff"/><path d="M62 -12 V34" stroke="#ffe066" stroke-width="6" stroke-linecap="round"/><circle cx="62" cy="40" r="9" fill="#ffe066"/>'+star5(0,-20,14,'#ffe066'),
+  tiempo: '<path d="M-44 -66 H44 M-44 66 H44 M-36 -66 C-36 -16 36 -16 36 0 C36 16 -36 16 -36 66 M36 -66 C36 -16 -36 -16 -36 0 C-36 16 36 16 36 66" '+L+'/><path d="M-22 52 Q0 30 22 52Z M-14 -40 H14 L0 -22Z" fill="#ffe066"/>'
+};
+var CARTAS = [
+  { id:1,  r:'comun',      nombre:'Ordo Primus',       icon:'fila',     efecto:'Hoy eres corresponsable de la fila.' },
+  { id:2,  r:'comun',      nombre:'Melodia Motrix',    icon:'musica',   efecto:'Eliges la música del calentamiento.' },
+  { id:3,  r:'comun',      nombre:'Dux Equipus',       icon:'capitan',  efecto:'Eres capitán y eliges tu equipo.' },
+  { id:4,  r:'comun',      nombre:'Iterum Saltus',     icon:'repetir',  efecto:'Tienes un segundo intento en una prueba.' },
+  { id:5,  r:'comun',      nombre:'Auxilium Magistri', icon:'ayudante', efecto:'Eres ayudante del profe en la sesión.' },
+  { id:6,  r:'especial',   nombre:'Aurum Quintus',     icon:'oro5',     efecto:'Suma +5 galeones hoy.' },
+  { id:7,  r:'especial',   nombre:'Ludus Electus',     icon:'juego',    efecto:'Eliges el juego final de la sesión.' },
+  { id:8,  r:'especial',   nombre:'Scutum Invictus',   icon:'escudo',   efecto:'Inmunidad en un juego de pillar.' },
+  { id:9,  r:'especial',   nombre:'Gradus Ascendo',    icon:'nota',     efecto:'Subes un punto en un ítem de tu autoevaluación.' },
+  { id:10, r:'legendaria', nombre:'Duplex Aurum',      icon:'x2',       efecto:'Tus galeones valen ×2 durante una sesión.' },
+  { id:11, r:'legendaria', nombre:'Triplex Aurum',     icon:'x3',       efecto:'Tus galeones valen ×3 durante una sesión.' },
+  { id:12, r:'legendaria', nombre:'Tempus Liberum',    icon:'tiempo',   efecto:'30 minutos libres al final de la clase.' },
+  { id:13, r:'legendaria', nombre:'Magister Diei',     icon:'maestro',  efecto:'¡Eres el maestro por un día!' }
+];
+function wrap(txt, max){ var w = txt.split(' '), lines = [], cur = ''; w.forEach(function(x){ if((cur+' '+x).trim().length > max){ lines.push(cur.trim()); cur = x; } else cur += ' '+x; }); if(cur.trim()) lines.push(cur.trim()); return lines; }
+function defs(R, u){
+  return '<defs>'+
+   '<linearGradient id="'+u+'fondo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+R.a+'"/><stop offset="1" stop-color="'+R.b+'"/></linearGradient>'+
+   '<linearGradient id="'+u+'marco" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4c8"/><stop offset=".5" stop-color="#d6a443"/><stop offset="1" stop-color="#8a5d16"/></linearGradient>'+
+   '<radialGradient id="'+u+'luz" cx="50%" cy="45%" r="55%"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'+
+   '<radialGradient id="'+u+'mon" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#fff2b8"/><stop offset=".55" stop-color="#e2b54e"/><stop offset="1" stop-color="#9c6b1b"/></radialGradient>'+
+   '<linearGradient id="'+u+'panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7ecd0"/><stop offset="1" stop-color="#e6d3a6"/></linearGradient>'+
+   '<filter id="'+u+'som"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity=".45"/></filter>'+
+  '</defs>';
+}
+function frente(c){
+  U = 'k'+c.id+'_';
+  var R = RAREZA[c.r], g = '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" id="c'+c.id+'">'+defs(R, U);
+  g += '<rect width="'+W+'" height="'+H+'" rx="26" fill="url(#'+U+'marco)"/>';
+  g += '<rect x="14" y="14" width="'+(W-28)+'" height="'+(H-28)+'" rx="18" fill="url(#'+U+'fondo)"/>';
+  /* estrellitas de fondo */
+  for(var i=0;i<26;i++){ var x = 30+((i*97)%395), y = 70+((i*53)%300); g += star4(x, y, 3+(i%3)*2, R.c, .25+(i%4)*.1); }
+  /* cabecera: nombre */
+  g += '<rect x="34" y="34" width="'+(W-68)+'" height="64" rx="12" fill="rgba(0,0,0,.28)" stroke="'+R.c+'" stroke-opacity=".6" stroke-width="2"/>';
+  g += '<text x="'+(W/2)+'" y="78" text-anchor="middle" font-family="Cinzel Decorative" font-size="'+(c.nombre.length>15?28:32)+'" fill="#fff4c8">'+c.nombre+'</text>';
+  /* ventana con icono */
+  g += '<rect x="44" y="116" width="'+(W-88)+'" height="270" rx="16" fill="rgba(0,0,0,.3)" stroke="'+R.c+'" stroke-opacity=".7" stroke-width="3"/>';
+  g += '<circle cx="'+(W/2)+'" cy="250" r="125" fill="url(#'+U+'luz)"/>';
+  g += '<g transform="translate('+(W/2)+' 250) scale(1.18)" filter="url(#'+U+'som)">'+ICON[c.icon].split('MONREF').join(U+'mon')+'</g>';
+  /* rareza */
+  g += '<rect x="'+(W/2-86)+'" y="368" width="172" height="36" rx="18" fill="'+R.b+'" stroke="'+R.c+'" stroke-width="2"/>';
+  g += '<text x="'+(W/2)+'" y="393" text-anchor="middle" font-family="Cinzel" font-weight="800" font-size="19" letter-spacing="3" fill="'+R.c+'">'+R.n.toUpperCase()+'</text>';
+  /* panel de efecto */
+  g += '<rect x="44" y="418" width="'+(W-88)+'" height="150" rx="14" fill="url(#'+U+'panel)" stroke="#8a5d16" stroke-width="2"/>';
+  var ls = wrap(c.efecto, 22);
+  ls.forEach(function(t, k){ g += '<text x="'+(W/2)+'" y="'+(493 - (ls.length-1)*19 + k*38)+'" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="27" fill="#3a2610">'+t+'</text>'; });
+  /* pie */
+  g += '<text x="50" y="606" font-family="Cinzel" font-weight="700" font-size="17" fill="#fff4c8" opacity=".85">EF · JAVIFICACIÓN</text>';
+  g += '<text x="'+(W-50)+'" y="606" text-anchor="end" font-family="Cinzel" font-weight="700" font-size="17" fill="#fff4c8" opacity=".85">Nº '+c.id+'</text>';
+  var gemas = c.r==='comun' ? 1 : (c.r==='especial' ? 2 : 3);
+  [-1,1].forEach(function(lado){ for(var k=0;k<gemas;k++) g += '<g transform="translate('+(W/2+lado*(106+k*24))+' 386) rotate(45)"><rect x="-8" y="-8" width="16" height="16" fill="'+R.gema+'" stroke="#fff4c8" stroke-width="2"/></g>'; });
+  return g+'</svg>';
+}
+function reverso(){
+  U = 'rv_';
+  var R = { a:'#1f5a50', b:'#06171a' }, g = '<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" id="rev">'+defs(R, U);
+  g += '<rect width="'+W+'" height="'+H+'" rx="26" fill="url(#'+U+'marco)"/><rect x="14" y="14" width="'+(W-28)+'" height="'+(H-28)+'" rx="18" fill="url(#'+U+'fondo)"/>';
+  g += '<rect x="34" y="34" width="'+(W-68)+'" height="'+(H-68)+'" rx="14" fill="none" stroke="#e8c872" stroke-opacity=".6" stroke-width="2"/>';
+  for(var i=0;i<40;i++){ var x = 40+((i*89)%375), y = 50+((i*61)%540); g += star4(x, y, 3+(i%3)*2, '#fff2c2', .2+(i%4)*.1); }
+  g += '<circle cx="'+(W/2)+'" cy="'+(H/2-20)+'" r="120" fill="url(#'+U+'luz)"/>';
+  g += '<circle cx="'+(W/2)+'" cy="'+(H/2-20)+'" r="96" fill="none" stroke="#e8c872" stroke-width="5"/><circle cx="'+(W/2)+'" cy="'+(H/2-20)+'" r="82" fill="none" stroke="#e8c872" stroke-opacity=".5" stroke-width="2"/>';
+  g += '<g transform="translate('+(W/2)+' '+(H/2-20)+')"><circle r="50" fill="#fff" opacity=".95"/><path d="M0 -50 C-25 -25 -25 25 0 50 M0 -50 C25 -25 25 25 0 50 M-50 0 H50" fill="none" stroke="#1f5a50" stroke-width="5"/></g>';
+  g += star5(W/2, H/2-150, 18, '#e8c872');
+  g += '<text x="'+(W/2)+'" y="'+(H/2+130)+'" text-anchor="middle" font-family="Cinzel Decorative" font-size="40" fill="#ffe9a6">Javificación</text>';
+  g += '<text x="'+(W/2)+'" y="'+(H/2+170)+'" text-anchor="middle" font-family="Cinzel" font-weight="700" font-size="20" letter-spacing="6" fill="#e8c872">EDUCACIÓN FÍSICA</text>';
+  return g+'</svg>';
+}
+document.body.innerHTML = CARTAS.map(frente).join('') + reverso();
+window.CARTAS_EF = CARTAS;
+</script>
+</body>

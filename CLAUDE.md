@@ -1,0 +1,66 @@
+# Javificación — web de clase de Javi (CEIP Arias Montano)
+
+Javi es maestro de Educación Física y de Lengua (tutor de 4ºA) y ambienta sus clases con temática de Harry Potter.
+Esta web reúne sus herramientas de gamificación. Se publica con **GitHub Pages** en
+`https://maestrojavi72.github.io/sobres/` y se inserta en su **Google Sites**. Todo está en español y está pensado para niños de 8 a 10 años y para usarse en la pizarra digital.
+
+Cada página es **un único archivo HTML autocontenido** (CSS y JS dentro), sin build ni dependencias. Para cambiar algo: editar el HTML, probarlo en el navegador y subirlo a `main`. GitHub Pages lo publica en 1–2 minutos.
+
+## Páginas
+
+| Archivo | Para qué | Quién la usa |
+|---|---|---|
+| `index.html` | **Javificación de 4ºA** (su tutoría): El Mercader, Sobres, Mis cartas y, con `?profe`, la pestaña **Hogwarts** (panel del profe). | 4ºA en Google Sites; Javi con `?profe` |
+| `ef.html` | **Javificación EF** para 3ºA, 3ºB y 4ºB: Coevaluación, La clase, El Mercader de cartas de EF y la **Bóveda** de la clase (también para 4ºA). | Javi en la pizarra de EF |
+
+Recursos: `carta-NN.webp` y `reverso.webp` (cartas de Harry Potter, diseñadas por Javi en Canva), `ef/ef-NN.webp` (cartas de EF), `recursos/` (banner y fondo «Javificación», hoja de cartas de EF) y `herramientas/cartas_ef.html` (generador SVG de las cartas de EF).
+
+## Dónde se guardan los datos
+
+No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST `no-cors` a `formResponse`) y **leen** la Hoja de respuestas publicada como CSV. Las URL y los `entry.*` están en `CONFIG.registro` (index) y `EF.registro` (ef). Columnas de la Hoja:
+
+`Marca temporal, Alumno, Accion, CartaId, Tipo, Carta`
+
+| Accion | Significado | CartaId | Tipo | Carta |
+|---|---|---|---|---|
+| `Galeones` | puntos ganados o quitados (con signo) | cantidad | motivo | `#gXXXX` (id del movimiento) + detalle |
+| `Compra` | galeones gastados (resta saldo, **no** nivel) | cantidad | motivo | `#gXXXX` + detalle |
+| `Registro` | carta conseguida | nº de carta (EF: `EF7`) | tipo/rareza | nombre |
+| `Uso` | carta usada | nº de carta | … | … |
+| `Premio` | carta gratis (tarea, examen, campeón) | 0 | motivo | detalle |
+| `Boveda` | galeones de la clase (con signo) | cantidad | motivo | `#gXXXX` + detalle |
+
+- En 4ºA el campo Alumno es el nombre tal cual. En EF va como `3ºA · Nombre`, y la Bóveda como `3ºA · BÓVEDA`, para que no se mezclen.
+- La Hoja publicada tarda unos minutos en actualizarse. Por eso cada movimiento se guarda también en `localStorage` como «pendiente» (`gringotts-pendientes`, `ef-pendientes`) hasta que aparece en el CSV con su `#gXXXX`.
+- Para anular algo nunca se borra: se escribe el movimiento contrario. En EF, el detalle lleva `anula #gXXXX`.
+
+## Reglas del juego (decididas con Javi; respétalas)
+
+**Comunes**
+- **Acumulados** = todo lo ganado; marcan el **nivel** y nunca bajan al comprar. **Saldo** = acumulados − compras.
+- Con acumulados negativos el personaje está **en un huevo** (nivel 0). Gastar no puede mandar a nadie al huevo.
+- Personajes: chicos y chicas magos dibujados en SVG (`personajeSVG`). Crecen con el nivel y ganan complementos (bufanda, varita, sombrero e insignia, capa, libro, aura). El aspecto de cada alumno de 4ºA (pelo, peinado, piel, gafas, mecha) está en `G.personajes`. Los niveles tienen forma masculina y femenina según `chicas`.
+- Las cartas de Harry Potter son de Javi; las de EF son originales. No usar personajes, logotipos ni escudos con derechos.
+
+**4ºA · Hogwarts (`index.html`)**
+- ClassDojo se ha dejado de usar. Los puntos de partida están en `G.inicio` y lo gastado antes en `G.gastadoInicial` (desde `G.desde`).
+- Comportamientos en `G.motivos`, por categoría para los informes: `clase` (Trabajo de clase, Lengua), `actitud` (Actitudinal, EF y Lengua) y `ef`. La **Tarea** abre un selector de valor (+1…+5 / −1…−5).
+- 13 niveles (`G.niveles`, de 0 a 200 acumulados).
+- El Mercader cobra en galeones, aplica las ofertas del día y no deja comprar sin saldo. Existe la «carta de premio» gratis (solo con `?profe`).
+- **Campeones del mes:** puntos netos del mes, sin contar compras ni premios. 1º +3 y un pack sorpresa, 2º +3, 3º +2. Empate: gana quien tiene menos negativos; si persiste, todos.
+- Herramientas: al azar (sin repetir), temporizador y cronómetro con vueltas.
+
+**EF · 3ºA, 3ºB, 4ºB (`ef.html`)**
+- **Coevaluación:** cada alumno da **1 ficha** (+1) por sesión a un compañero, con un motivo. No puede dársela a sí mismo ni **al mismo compañero que la sesión anterior**. Nadie recibe más de 3 al día. El profe puede anular.
+- **Compi del día (+2):** al cerrar la sesión, quien más fichas ha recibido elige al compañero (si hay empate, sorteo).
+- Puntos del profe en el perfil (`EF.motivosProfe`).
+- **Mercader de EF:** 13 cartas individuales (`EF.cartas`) con precios difíciles (comunes 5–6, especiales 8–9, legendarias 14–22) y existencias por grupo y trimestre (`EF.existencias`). Efectos automáticos: Aurum Quintus +5; Duplex y Triplex ×2 y ×3 en los puntos de ese día.
+- Puntos de partida en `EF.inicio` (3ºB empieza en 0).
+- **Bóveda (colectivo, las 4 clases):** la clase puntúa en conjunto de 1 a 10 cinco aspectos (esfuerzo, cooperación, habilidades sociales, respeto de normas, organización y desplazamientos). La **media redondeada** son los galeones que gana la clase (una autoevaluación al día). Las recompensas y sus precios están en `BOV.recompensas` (juegos, días de lluvia, deportes). `BOV.inicial` guarda los galeones que ya tenía cada clase; también se pueden meter con «Ajustar».
+
+## Cómo trabajar aquí
+
+- Cambia las cosas en los bloques de configuración (`CONFIG`, `G`, `EF`, `BOV`) antes de tocar la lógica.
+- Prueba en el navegador: con Playwright se pueden simular el CSV y el Formulario interceptando `**/spreadsheets/**` y `**/forms/**`. Revisa la vista en pantalla grande y en móvil (390 px).
+- No subas cambios que afecten a lo que ven los alumnos sin que Javi los haya revisado: `index.html` está insertada en su Google Sites.
+- Habla con Javi en español, de forma sencilla y sin tecnicismos.
