@@ -180,6 +180,46 @@ function cambiarAlumno(g, op, nombre, datos){
 }
 
 /* ============================================================
+   PUNTOS DE ALUMNOS (para la Ruleta, el Duelo de tablas…)
+   Escribe con el mismo formato que la página de cada clase:
+     4ºA (hogwarts): Alumno «Nombre»,      Acción «Galeones», CartaId = puntos
+     EF:             Alumno «3ºA · Nombre», Acción «Galeones», CartaId = puntos
+   y lo deja también en los «pendientes» de esa página para que se vea al momento.
+   En EF aplica las cartas Duplex (×2) y Triplex (×3) usadas ese día.
+   ============================================================ */
+var PEND_APP = { hogwarts:'gringotts-pendientes', ef:'ef-pendientes' };
+var CARTAS_MULT_EF = { '10':2, '11':3 };   /* nº de carta de EF → multiplicador */
+function sistemaDe(g){ var b = BASE_ALUMNOS && BASE_ALUMNOS[g]; return b && b.sistema || 'ef'; }
+function claveAlumno(g, nombre){ return sistemaDe(g)==='hogwarts' ? nombre : g+' · '+nombre; }
+function multiplicadorEF(g, nombre){
+  if(sistemaDe(g)!=='ef') return 1;
+  var k = normal(g+' · '+nombre), hoy = clave(new Date()), m = 1;
+  filas().forEach(function(f){
+    if(normal(f.alumno)!==k || f.dia!==hoy || normal(f.accion).indexOf('uso')!==0) return;
+    var x = CARTAS_MULT_EF[String(f.cartaId).replace(/\D/g,'')]; if(x) m = Math.max(m, x);
+  });
+  return m;
+}
+function darPuntos(g, nombre, n, motivo, detalle){
+  var sis = sistemaDe(g), mult = sis==='ef' && n>0 ? multiplicadorEF(g, nombre) : 1;
+  var p = { id:idMov(), alumno:claveAlumno(g, nombre), accion:'Galeones', n:n*mult, motivo:(motivo||'')+(mult>1 ? ' (×'+mult+')' : ''), extra:detalle||'', cartaId:'', t:Date.now() };
+  var key = PEND_APP[sis], lista = [];
+  try{ lista = JSON.parse(leerLocal(key)||'[]') || []; }catch(e){ lista = []; }
+  lista.push(p); guardarLocal(key, JSON.stringify(lista));
+  if(!PRUEBA){
+    var e = REGISTRO.entradas, body = new URLSearchParams();
+    body.set(e.alumno, p.alumno); body.set(e.accion, p.accion); body.set(e.cartaId, String(p.n)); body.set(e.tipo, p.motivo);
+    body.set(e.carta, p.id+(p.extra ? ' · '+p.extra : ''));
+    fetch(REGISTRO.formAction, { method:'POST', mode:'no-cors', body:body }).catch(function(){});
+  } else console.info('[modo prueba] no se envía', p);
+  return { id:p.id, n:p.n, mult:mult };
+}
+/* deshacer: el movimiento contrario (nunca se borra nada) */
+function quitarPuntos(g, nombre, mov, motivo){
+  return darPuntos(g, nombre, -mov.n, 'Anulado: '+(motivo||''), 'anula '+mov.id);
+}
+
+/* ============================================================
    AJUSTES (por ahora: el tema). Fila «AJUSTES», acción «Ajuste».
    ============================================================ */
 function ajuste(nombre){
@@ -279,6 +319,7 @@ window.JAVI = {
   BASE:BASE, PRUEBA:PRUEBA, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
   listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, horaHoja:function(){ return horaCSV; },
   grupo:grupo, grupos:grupos, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
+  darPuntos:darPuntos, quitarPuntos:quitarPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,
   util:{ normal:normal, pad:pad, clave:clave, rnd:rnd, idMov:idMov, fechaFila:fechaFila, leerCSV:leerCSV }

@@ -495,6 +495,7 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
           <button class="ghost" id="bClase" type="button">Toda la clase</button>
           <button class="ghost" id="bVarios" type="button" aria-pressed="false">Seleccionar varios</button>
           <button class="ghost" id="bVista" type="button" aria-pressed="false">Vista ampliada</button>
+          <a class="ghost" href="../sesion/?grupo=4oA&amp;profe" style="text-decoration:none;display:inline-flex;align-items:center">📋 Sesión de hoy</a>
           <button class="ghost" id="bActualizar" type="button">Actualizar</button>
         </div>
       </div>
@@ -2499,7 +2500,7 @@ function rankingMes(mes){
   movimientosMes(mes).forEach(function(x){
     var r = nombreReal(x.alumno); if(!r) return;
     if(normal(x.extra).indexOf(normal(TAG_PREMIO))>=0) return;
-    t[r].neto += x.n; if(x.n<0) t[r].neg += -x.n;
+    t[r].neto += x.n; if(x.n<0 && !/^(anulado|corrección)/i.test(String(x.motivo||'').trim())) t[r].neg += -x.n;   /* anular o corregir un punto no cuenta como negativo */
   });
   var arr = Object.keys(t).map(function(k){ return t[k]; });
   arr.sort(function(a,b){ return b.neto-a.neto || a.neg-b.neg || a.nombre.localeCompare(b.nombre); });

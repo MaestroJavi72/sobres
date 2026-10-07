@@ -206,6 +206,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <button class="tab" id="t_clase" role="tab" type="button">La clase</button>
     <button class="tab" id="t_merc" role="tab" type="button">El Mercader</button>
     <button class="tab" id="t_bov" role="tab" type="button">Bóveda ↗</button>
+    <button class="tab" id="t_ses" role="tab" type="button">Sesión y Ruleta ↗</button>
   </nav>
 
   <!-- COEVALUACIÓN -->
@@ -1164,6 +1165,7 @@ Object.keys(EF.grupos).forEach(function(g){
   $('grupos').appendChild(b);
 });
 ['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+$('t_ses').addEventListener('click', function(){ location.href = '../sesion/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 $('t_bov').addEventListener('click', function(){ location.href = '../boveda/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 iniciarBoveda();
 Array.prototype.forEach.call(document.querySelectorAll('[data-cierra]'), function(b){ b.addEventListener('click', function(){ $(b.dataset.cierra).hidden = true; if(b.dataset.cierra==='mPerfil') perfilDe = ''; }); });

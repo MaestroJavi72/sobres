@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sesión y Ruleta</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cab h1{flex:1;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.grupos{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:8px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.chip[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.fecha{font-size:17px;padding:8px 10px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.barraSup{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+
+.j-panel + .j-panel, .fase + .fase{margin-top:14px}
+label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--tinta-suave);margin-bottom:10px}
+.campo input,.campo textarea,.campo select{font-size:17px;padding:9px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.22);color:var(--tinta);font-family:var(--f-texto)}
+[data-tema="pokemon"] .campo :is(input,textarea,select){background:#fff}
+.campo textarea{min-height:70px;resize:vertical}
+.dos{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+@media (max-width:620px){ .dos{grid-template-columns:1fr} }
+.estado{font-size:15px;color:var(--tinta-suave)}
+.estado.sucio{color:var(--acento-2);font-weight:700}
+.filaBotones{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+
+.fase{border-left:6px solid var(--panel-borde)}
+.fase.ruleta{border-left-color:var(--acento)}
+.faseCab{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.faseCab .num{font-family:var(--f-titulo);color:var(--titulo-color);font-size:26px;min-width:30px}
+.faseCab select{font-size:16px;padding:6px 8px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.22);color:var(--tinta)}
+[data-tema="pokemon"] .faseCab select{background:#fff}
+.faseCab .esp{flex:1}
+.mini{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.15);color:var(--tinta)}
+.mini.rojo{border-color:#b6493f;color:#ff9a8f}
+[data-tema="pokemon"] .mini.rojo{color:#b6493f}
+.empezar{font-size:20px;padding:12px 22px}
+.tablas{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 10px;padding:10px;border-radius:12px;background:rgba(0,0,0,.18)}
+.tablas label{display:flex;align-items:center;gap:4px;font-size:16px}
+.tablas input[type=number]{width:70px;font-size:16px;padding:6px;border-radius:8px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.2);color:var(--tinta)}
+.faltan{display:flex;flex-wrap:wrap;gap:6px}
+.faltan button{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:transparent;color:var(--tinta)}
+.faltan button[aria-pressed="true"]{background:#7a2a22;border-color:#b6493f;color:#fff;text-decoration:line-through}
+
+/* ================= RULETA (pantalla de pizarra) ================= */
+.ruleta{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;background:var(--fondo);background:var(--fondo-img),var(--fondo);overflow:auto}
+.ruleta[hidden]{display:none}
+.rTop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:rgba(0,0,0,.35)}
+[data-tema="pokemon"] .rTop{background:rgba(18,58,107,.85);color:#fff}
+.rTop h2{flex:1 1 240px;min-width:0;line-height:1.1;font-family:var(--f-titulo);color:var(--titulo-color);font-size:clamp(20px,3vw,32px);text-transform:var(--titulo-transform)}
+[data-tema="pokemon"] .rTop h2{color:#ffcb05}
+.rTop .cuenta{font-family:var(--f-sub);font-weight:700;font-size:18px}
+.rCuerpo{flex:1;display:grid;grid-template-columns:1fr 280px;gap:16px;padding:16px;align-items:start}
+@media (max-width:860px){ .rCuerpo{grid-template-columns:1fr} }
+.escenario{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:60vh;justify-content:center}
+.carrete{font-family:var(--f-titulo);font-size:clamp(46px,9vw,110px);line-height:1.05;color:var(--titulo-color);text-shadow:var(--titulo-sombra);
+  text-transform:var(--titulo-transform);min-height:1.2em;padding:6px 24px;border-radius:24px;border:4px solid var(--acento);background:var(--panel);box-shadow:0 0 0 8px var(--brillo);max-width:100%;overflow-wrap:anywhere}
+.carrete.gira{animation:tiembla .09s infinite}
+@keyframes tiembla{50%{transform:translateY(-3px)}}
+.carrete.sale{animation:aparece .5s}
+@keyframes aparece{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.etiqueta{font-family:var(--f-sub);font-weight:700;font-size:20px;color:var(--acento-2);letter-spacing:.06em;text-transform:uppercase}
+.pregunta{font-family:var(--f-texto);font-size:clamp(28px,5vw,60px);font-weight:700;line-height:1.15;max-width:1000px;color:var(--tinta)}
+.respuesta{font-size:clamp(22px,3.4vw,40px);color:var(--acento-2);font-weight:700}
+.botonera{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.gran{font-family:var(--f-sub);font-weight:800;font-size:clamp(20px,2.8vw,30px);padding:14px 28px;border-radius:18px;border:none;box-shadow:0 5px 0 rgba(0,0,0,.35)}
+.gran.ok{background:#3cae5f;color:#fff}
+.gran.mal{background:#d0473f;color:#fff}
+.gran.girar{background:var(--acento);color:var(--acento-tinta);font-size:clamp(26px,4vw,40px);padding:18px 40px}
+.gran.sec{background:var(--panel);color:var(--tinta);border:2px solid var(--panel-borde);box-shadow:none}
+.gran:disabled{opacity:.45}
+.pequenos{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:16px}
+.pequenos select{font-size:16px;padding:6px 8px;border-radius:10px;border:1px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
+.rebote{font-family:var(--f-sub);font-weight:800;font-size:22px;color:var(--acento-2)}
+.marcador{position:sticky;top:12px}
+.marcador ol{list-style:none;display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow:auto}
+.marcador li{display:flex;justify-content:space-between;gap:8px;font-size:18px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.18)}
+.marcador li b{color:var(--acento-2)}
+.marcador .vacio{opacity:.7;background:none}
+.flotante{position:fixed;z-index:70;pointer-events:none;font-family:var(--f-titulo);font-size:64px;color:#5ee27f;text-shadow:0 3px 10px rgba(0,0,0,.6);animation:sube 1.4s ease-out forwards}
+@keyframes sube{0%{opacity:0;transform:translate(-50%,20px) scale(.5)}20%{opacity:1;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-120px)}}
+.fin h3{font-family:var(--f-titulo);color:var(--titulo-color);font-size:clamp(34px,6vw,70px);text-shadow:var(--titulo-sombra)}
+.podio{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:22px}
+.podio span{padding:10px 16px;border-radius:14px;background:var(--panel);border:2px solid var(--acento)}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">📋 Sesión y Ruleta</h1>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+    <a class="j-icono" id="bInicio" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
+  </header>
+
+  <div class="barraSup">
+    <nav class="grupos" id="grupos" aria-label="Clase"></nav>
+    <input class="fecha" id="fecha" type="date" aria-label="Fecha de la sesión">
+  </div>
+
+  <section class="j-panel">
+    <div class="dos">
+      <label class="campo">Título de la sesión<input id="pTitulo" type="text" maxlength="80" placeholder="p. ej. Repaso del examen de la unidad 2"></label>
+      <label class="campo">Objetivo<input id="pObjetivo" type="text" maxlength="120" placeholder="p. ej. Repasar sumas llevando"></label>
+    </div>
+    <div class="filaBotones">
+      <button class="j-boton" id="bGuardar" type="button">💾 Guardar plan</button>
+      <button class="j-boton sec" id="bCopiar" type="button">Copiar el plan de la sesión anterior</button>
+      <span class="estado" id="estadoPlan"></span>
+    </div>
+  </section>
+
+  <div id="fases" style="margin-top:14px"></div>
+  <div class="filaBotones" style="margin-top:12px">
+    <button class="j-boton sec" id="bFase" type="button">+ Fase</button>
+    <button class="j-boton" id="bFaseRuleta" type="button">+ 🎯 Ruleta de preguntas</button>
+  </div>
+
+  <section class="j-panel" style="margin-top:14px">
+    <h2 class="j-sub" style="margin-bottom:6px">¿Quién falta hoy?</h2>
+    <p class="estado" style="margin-bottom:8px">Toca a quien no esté: la ruleta no le sacará.</p>
+    <div class="faltan" id="faltan"></div>
+  </section>
+</div>
+
+<!-- RULETA -->
+<div class="ruleta" id="ruleta" hidden role="dialog" aria-modal="true" aria-labelledby="rTit">
+  <div class="rTop">
+    <h2 id="rTit">Ruleta</h2>
+    <span class="cuenta" id="rCuenta"></span>
+    <button class="j-icono" id="rSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="rPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+    <button class="j-icono" id="rCerrar" type="button" aria-label="Cerrar la ruleta" title="Cerrar (se guarda por dónde ibais)">✕</button>
+  </div>
+  <div class="rCuerpo">
+    <div class="escenario" id="escenario"></div>
+    <aside class="j-panel marcador">
+      <h3 class="j-sub" style="margin-bottom:8px">🏆 Marcador</h3>
+      <ol id="marcador"></ol>
+      <div class="filaBotones" style="margin-top:10px">
+        <button class="mini" id="rExportar" type="button">📥 Exportar a Excel</button>
+        <button class="mini" id="rDeshacer" type="button">↶ Deshacer el último punto</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="j-aviso" id="aviso" role="status" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util;
+var avisoT = 0;
+function aviso(t){ var a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3500); }
+function leer(k, def){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
+function escribirL(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function mezclar(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.floor(U.rnd()*(i+1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+
+/* ============================================================
+   ESTADO: clase, fecha y plan
+   ============================================================ */
+var q = new URLSearchParams(location.search);
+var grupo = (q.get('grupo')||'').replace(/o/i,'º').toUpperCase() || leer('sesion-grupo', null);
+var fecha = q.get('fecha') || U.clave(new Date());
+var plan = null, sucio = false;
+
+function planVacio(){ return { titulo:'', objetivo:'', fases:[] }; }
+function claveLocal(){ return 'plan|'+grupo+'|'+fecha; }
+function moneda(){ var t = JAVI.TEMAS[JAVI.temaDe(grupo)]; return t ? t.moneda : 'galeones'; }
+
+/* plan guardado en la Hoja (el último de esa clase y fecha) */
+function planDeHoja(g, f){
+  var k = U.normal('PLAN · '+g), res = null;
+  JAVI.filas().forEach(function(x){
+    if(U.normal(x.alumno)!==k || U.normal(x.accion)!=='plan' || x.cartaId!==f) return;
+    var i = x.carta.indexOf('{'); if(i<0) return;
+    try{ res = JSON.parse(x.carta.slice(i)); }catch(e){}
+  });
+  return res;
+}
+function fechasConPlan(g){
+  var k = U.normal('PLAN · '+g), fs = {};
+  JAVI.filas().forEach(function(x){ if(U.normal(x.alumno)===k && U.normal(x.accion)==='plan') fs[x.cartaId] = 1; });
+  return Object.keys(fs).sort();
+}
+function cargarPlan(){
+  var borrador = leer(claveLocal(), null), hoja = planDeHoja(grupo, fecha);
+  if(borrador && borrador.sucio){ plan = borrador.plan; sucio = true; }
+  else { plan = hoja || (borrador && borrador.plan) || planVacio(); sucio = false; }
+  if(!plan.fases) plan.fases = [];
+}
+function marcarSucio(){ sucio = true; escribirL(claveLocal(), { plan:plan, sucio:true }); pintarEstado(); }
+function pintarEstado(){
+  var e = $('estadoPlan');
+  e.textContent = sucio ? '● Cambios sin guardar (se guardan en este aparato hasta que pulses «Guardar plan»)' : (planDeHoja(grupo, fecha) ? '✓ Plan guardado' : 'Sin plan guardado para este día');
+  e.className = 'estado'+(sucio ? ' sucio' : '');
+}
+$('bGuardar').addEventListener('click', function(){
+  JAVI.escribir({ alumno:'PLAN · '+grupo, accion:'Plan', cartaId:fecha, tipo:plan.titulo||'Sesión', carta:JSON.stringify(plan) });
+  sucio = false; escribirL(claveLocal(), { plan:plan, sucio:false });
+  aviso('Plan guardado.'); pintarEstado();
+});
+$('bCopiar').addEventListener('click', function(){
+  var antes = fechasConPlan(grupo).filter(function(f){ return f < fecha; }).pop();
+  if(!antes){ aviso('No hay ningún plan anterior de '+grupo+'.'); return; }
+  if((plan.titulo || plan.fases.length) && !confirm('¿Sustituir este plan por el del '+antes.split('-').reverse().join('/')+'?')) return;
+  var p = planDeHoja(grupo, antes);
+  plan = JSON.parse(JSON.stringify(p)); plan.fases.forEach(function(f){ f.id = U.idMov(); });
+  marcarSucio(); pintarPlan(); aviso('Copiado el plan del '+antes.split('-').reverse().join('/')+'.');
+});
+
+/* ============================================================
+   PINTAR: clases, plan y fases
+   ============================================================ */
+function ponerTema(){ document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo)); }
+function pintarGrupos(){
+  var box = $('grupos'); box.innerHTML = '';
+  JAVI.grupos().forEach(function(g){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = g;
+    b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
+    b.addEventListener('click', function(){ grupo = g; escribirL('sesion-grupo', g); todo(); });
+    box.appendChild(b);
+  });
+}
+function pintarPlan(){
+  $('pTitulo').value = plan.titulo||''; $('pObjetivo').value = plan.objetivo||'';
+  var box = $('fases'); box.innerHTML = '';
+  plan.fases.forEach(function(f, i){ box.appendChild(tarjetaFase(f, i)); });
+  pintarEstado();
+}
+$('pTitulo').addEventListener('input', function(){ plan.titulo = this.value; marcarSucio(); });
+$('pObjetivo').addEventListener('input', function(){ plan.objetivo = this.value; marcarSucio(); });
+
+function tarjetaFase(f, i){
+  var d = document.createElement('section'); d.className = 'j-panel fase'+(f.tipo==='ruleta' ? ' ruleta' : '');
+  var html =
+    '<div class="faseCab"><span class="num">'+(i+1)+'</span>'+
+      '<select data-k="tipo" aria-label="Tipo de fase"><option value="normal">Fase normal</option><option value="ruleta">🎯 Ruleta de preguntas</option></select>'+
+      '<span class="esp"></span>'+
+      '<button class="mini" data-a="subir" type="button" aria-label="Subir">▲</button><button class="mini" data-a="bajar" type="button" aria-label="Bajar">▼</button>'+
+      '<button class="mini rojo" data-a="borrar" type="button">✕ Quitar</button></div>'+
+    '<div class="dos"><label class="campo">Nombre de la fase<input data-k="nombre" type="text" maxlength="80"></label>'+
+      '<label class="campo">Duración (min)<input data-k="duracion" type="number" min="0" max="120" inputmode="numeric"></label></div>'+
+    '<label class="campo">Descripción<textarea data-k="descripcion"></textarea></label>'+
+    '<label class="campo">Materiales<input data-k="materiales" type="text" maxlength="160"></label>';
+  if(f.tipo==='ruleta'){
+    html +=
+      '<label class="campo">Preguntas (una por línea; si quieres, la respuesta detrás de « = »). Déjalo vacío si las preguntas las haces tú en voz alta.'+
+        '<textarea data-k="preguntas" style="min-height:120px" placeholder="¿Cuántos lados tiene un hexágono? = 6\n¿Qué es un sustantivo?"></textarea></label>'+
+      '<div class="filaBotones" style="margin-bottom:8px">'+
+        '<label class="campo" style="margin:0;flex-direction:row;align-items:center;gap:8px">Puntos por acierto <input data-k="puntos" type="number" min="1" max="5" style="width:70px"></label>'+
+        '<button class="mini" data-a="tablas" type="button">✖️ Generar preguntas de tablas</button>'+
+      '</div>'+
+      '<div class="tablas" hidden></div>'+
+      '<div class="filaBotones"><button class="j-boton empezar" data-a="empezar" type="button">▶ Empezar la ruleta</button><span class="estado" data-k="progreso"></span></div>';
+  }
+  d.innerHTML = html;
+  d.querySelector('[data-k=tipo]').value = f.tipo||'normal';
+  ['nombre','duracion','descripcion','materiales','preguntas','puntos'].forEach(function(k){
+    var el = d.querySelector('[data-k='+k+']'); if(!el) return;
+    el.value = f[k]!=null ? f[k] : (k==='puntos' ? 1 : '');
+    el.addEventListener('input', function(){ f[k] = k==='puntos' || k==='duracion' ? (+el.value||'') : el.value; marcarSucio(); });
+  });
+  d.querySelector('[data-k=tipo]').addEventListener('change', function(){ f.tipo = this.value; if(f.tipo==='ruleta' && !f.nombre) f.nombre = 'Ruleta de preguntas'; marcarSucio(); pintarPlan(); });
+  var pr = d.querySelector('[data-k=progreso]');
+  if(pr){ var st = leer(claveRuleta(f), null); if(st) pr.textContent = st.fin ? '✓ Terminada' : 'Empezada: pregunta '+(st.n||0)+(st.preguntas.length ? ' de '+st.preguntas.length : ''); }
+  d.addEventListener('click', function(e){
+    var a = e.target.dataset && e.target.dataset.a; if(!a) return;
+    var idx = plan.fases.indexOf(f);
+    if(a==='borrar'){ if(!confirm('¿Quitar la fase «'+(f.nombre||(idx+1))+'»?')) return; plan.fases.splice(idx,1); marcarSucio(); pintarPlan(); }
+    if(a==='subir' && idx>0){ plan.fases.splice(idx-1, 0, plan.fases.splice(idx,1)[0]); marcarSucio(); pintarPlan(); }
+    if(a==='bajar' && idx<plan.fases.length-1){ plan.fases.splice(idx+1, 0, plan.fases.splice(idx,1)[0]); marcarSucio(); pintarPlan(); }
+    if(a==='tablas') panelTablas(d.querySelector('.tablas'), f, d);
+    if(a==='empezar') abrirRuleta(f);
+  });
+  return d;
+}
+function nuevaFase(tipo){
+  var f = { id:U.idMov(), tipo:tipo, nombre: tipo==='ruleta' ? 'Ruleta de preguntas' : '', duracion:'', descripcion:'', materiales:'' };
+  if(tipo==='ruleta'){ f.preguntas = ''; f.puntos = 1; }
+  plan.fases.push(f); marcarSucio(); pintarPlan();
+}
+$('bFase').addEventListener('click', function(){ nuevaFase('normal'); });
+$('bFaseRuleta').addEventListener('click', function(){ nuevaFase('ruleta'); });
+
+/* generador de preguntas de tablas de multiplicar */
+function panelTablas(box, f, tarjeta){
+  if(!box.hidden){ box.hidden = true; return; }
+  box.hidden = false;
+  var h = '<span>Tablas:</span>';
+  for(var t=1;t<=10;t++) h += '<label><input type="checkbox" value="'+t+'"'+(t>=2&&t<=9?' checked':'')+'> '+t+'</label>';
+  h += '<label>· ¿Cuántas? <input type="number" min="1" max="100" value="20"></label><button class="mini" type="button">Añadir</button>';
+  box.innerHTML = h;
+  box.querySelector('button').addEventListener('click', function(){
+    var ts = Array.prototype.filter.call(box.querySelectorAll('input[type=checkbox]'), function(c){ return c.checked; }).map(function(c){ return +c.value; });
+    var n = Math.max(1, Math.min(100, +box.querySelector('input[type=number]').value||20));
+    if(!ts.length){ aviso('Marca al menos una tabla.'); return; }
+    var lineas = [];
+    for(var i=0;i<n;i++){ var a = ts[Math.floor(U.rnd()*ts.length)], b = 2+Math.floor(U.rnd()*9);   /* sin ×1 */ lineas.push(a+' × '+b+' = '+(a*b)); }
+    f.preguntas = (f.preguntas ? f.preguntas.replace(/\s+$/,'')+'\n' : '')+lineas.join('\n');
+    tarjeta.querySelector('[data-k=preguntas]').value = f.preguntas;
+    marcarSucio(); box.hidden = true; aviso('Añadidas '+n+' multiplicaciones.');
+  });
+}
+
+/* quién falta hoy */
+function claveFaltan(){ return 'faltan|'+grupo+'|'+fecha; }
+function faltan(){ return leer(claveFaltan(), []); }
+function pintarFaltan(){
+  var box = $('faltan'), fs = faltan(); box.innerHTML = '';
+  var r = JAVI.grupo(grupo); if(!r) return;
+  r.nombres.forEach(function(n){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+    b.setAttribute('aria-pressed', fs.indexOf(n)>=0 ? 'true' : 'false');
+    b.addEventListener('click', function(){
+      var l = faltan(), i = l.indexOf(n); if(i>=0) l.splice(i,1); else l.push(n);
+      escribirL(claveFaltan(), l); pintarFaltan();
+    });
+    box.appendChild(b);
+  });
+}
+function presentes(){ var fs = faltan(), r = JAVI.grupo(grupo); return r ? r.nombres.filter(function(n){ return fs.indexOf(n)<0; }) : []; }
+
+/* ============================================================
+   RULETA
+   estado guardado: { preguntas:[{p,r}], cola:[nombres], n, fase, actual:{…}, hist:[…], fin }
+   ============================================================ */
+var fase = null, st = null;
+function claveRuleta(f){ return 'ruleta|'+grupo+'|'+fecha+'|'+f.id; }
+function guardarSt(){ escribirL(claveRuleta(fase), st); }
+function leerPreguntas(txt){
+  return String(txt||'').split(/\r?\n/).map(function(l){ return l.trim(); }).filter(Boolean).map(function(l){
+    var i = l.lastIndexOf(' = '); if(i<0) i = l.lastIndexOf('=');
+    return i>0 ? { p:l.slice(0,i).trim(), r:l.slice(i+1).replace(/^=/,'').trim() } : { p:l, r:'' };
+  });
+}
+function abrirRuleta(f){
+  if(!presentes().length){ aviso('No hay alumnos presentes.'); return; }
+  fase = f;
+  st = leer(claveRuleta(f), null);
+  if(!st || !st.preguntas){
+    st = { preguntas: leerPreguntas(f.preguntas), cola:[], n:0, paso:'girar', actual:null, hist:[], fin:false };
+  } else if(st.fin && confirm('Esta ruleta ya terminó. ¿Empezarla de nuevo? (Los puntos ya dados se quedan.)')){
+    st = { preguntas: leerPreguntas(f.preguntas), cola:[], n:0, paso:'girar', actual:null, hist:[], fin:false };
+  }
+  guardarSt();
+  $('rTit').textContent = (f.nombre || 'Ruleta de preguntas')+' · ';
+  var gs = document.createElement('span'); gs.style.fontFamily = 'var(--f-sub)'; gs.textContent = grupo; $('rTit').appendChild(gs);
+  $('ruleta').hidden = false; document.body.style.overflow = 'hidden';
+  pintarRuleta();
+}
+$('rCerrar').addEventListener('click', function(){ $('ruleta').hidden = true; document.body.style.overflow = ''; pintarPlan(); });
+
+function siguienteDeCola(excluir){
+  var pres = presentes();
+  st.cola = st.cola.filter(function(n){ return pres.indexOf(n)>=0; });
+  if(!st.cola.length) st.cola = mezclar(pres);                           /* sin repetir hasta completar la clase */
+  var i = 0; while(i<st.cola.length && st.cola[i]===excluir) i++;
+  if(i>=st.cola.length) return null;
+  return st.cola.splice(i,1)[0];
+}
+function preguntaActual(){ return st.preguntas.length ? st.preguntas[st.n-1] : null; }
+function quedanPreguntas(){ return !st.preguntas.length || st.n < st.preguntas.length; }
+
+function pintarRuleta(){
+  var esc = $('escenario'), P = preguntaActual();
+  $('rCuenta').textContent = st.preguntas.length ? 'Pregunta '+Math.max(st.n,1)+' de '+st.preguntas.length : (st.n ? 'Pregunta '+st.n : '');
+  pintarMarcador();
+  if(st.fin){ return pintarFin(); }
+  var a = st.actual;
+  if(st.paso==='girar'){
+    esc.innerHTML =
+      '<div class="etiqueta">'+(st.n ? '¿A quién le toca?' : '¡Empieza la ruleta!')+'</div>'+
+      '<div class="carrete" id="carrete">?</div>'+
+      '<button class="gran girar" id="bGirar" type="button">🎲 ¡Girar!</button>'+
+      '<div class="pequenos">o elige a mano: '+selectAlumnos('selMano')+'<button class="mini" id="bTerminar" type="button">🏁 Terminar</button></div>';
+    $('bGirar').addEventListener('click', function(){ girar(null); });
+    $('selMano').addEventListener('change', function(){ if(this.value) girar(this.value); });
+    $('bTerminar').addEventListener('click', terminar);
+    return;
+  }
+  /* pregunta en juego (turno normal o rebote) */
+  var quien = a.rebote ? a.rebote.nombre : a.nombre;
+  var h = '<div class="etiqueta">'+(a.rebote ? '↪ Rebote para' : '🎯 Le toca a')+'</div>'+
+    '<div class="carrete sale">'+esc_(quien)+'</div>';
+  if(P) h += '<div class="pregunta">'+esc_(P.p)+'</div>'+(P.r ? '<div class="respuesta" id="resp" hidden>'+esc_(P.r)+'</div>' : '');
+  else h += '<div class="pregunta" style="opacity:.8">Pregunta del profe</div>';
+  var resuelto = a.rebote ? a.rebote.res : a.res;
+  if(!resuelto){
+    h += '<div class="botonera"><button class="gran ok" id="bOk" type="button">✅ ¡Acierto! +'+puntosFase()+'</button>'+
+         '<button class="gran mal" id="bMal" type="button">❌ Fallo</button></div>'+
+         '<div class="pequenos">'+(P && P.r ? '<button class="mini" id="bVer" type="button">👁 Ver respuesta</button>' : '')+
+         (a.rebote ? '' : '<button class="mini" id="bNoEsta" type="button">No está (otro)</button>')+'</div>';
+  } else if(resuelto==='mal' && !a.rebote){
+    h += '<div class="rebote">❌ ¡Rebote! ¿Quién lo intenta?</div>'+
+         '<div class="botonera"><button class="gran girar" id="bRebote" type="button">🎲 Al azar</button><button class="gran sec" id="bNadie" type="button">Nadie · siguiente</button></div>'+
+         '<div class="pequenos">o elige a mano: '+selectAlumnos('selRebote', a.nombre)+'</div>';
+  } else {
+    h += '<div class="botonera"><button class="gran girar" id="bSig" type="button">'+(quedanPreguntas() ? '➡ Siguiente pregunta' : '🏁 Ver el resultado')+'</button></div>';
+  }
+  esc.innerHTML = h;
+  if(resuelto && $('resp')) $('resp').hidden = false;
+  if($('bVer')) $('bVer').addEventListener('click', function(){ $('resp').hidden = !$('resp').hidden; });
+  if($('bOk')) $('bOk').addEventListener('click', function(e){ resolver('ok', e.currentTarget); });
+  if($('bMal')) $('bMal').addEventListener('click', function(){ resolver('mal'); });
+  if($('bNoEsta')) $('bNoEsta').addEventListener('click', function(){
+    var l = faltan(); if(l.indexOf(a.nombre)<0){ l.push(a.nombre); escribirL(claveFaltan(), l); }
+    aviso(a.nombre+' queda como ausente hoy.'); st.paso = 'girar'; st.n = Math.max(0, st.n-1); st.actual = null; guardarSt(); girar(null);
+  });
+  if($('bRebote')) $('bRebote').addEventListener('click', function(){ rebote(null); });
+  if($('selRebote')) $('selRebote').addEventListener('change', function(){ if(this.value) rebote(this.value); });
+  if($('bNadie')) $('bNadie').addEventListener('click', cerrarPregunta);
+  if($('bSig')) $('bSig').addEventListener('click', cerrarPregunta);
+}
+function esc_(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function selectAlumnos(id, excluir){
+  var s = '<select id="'+id+'"><option value="">— alumno —</option>';
+  presentes().forEach(function(n){ if(n!==excluir) s += '<option>'+esc_(n)+'</option>'; });
+  return s+'</select>';
+}
+function puntosFase(){ return Math.max(1, +fase.puntos||1); }
+
+/* giro con efecto de tragaperras */
+var girando = false;
+function girar(elegido){
+  if(girando) return;
+  if(!quedanPreguntas()){ terminar(); return; }
+  var nombre = elegido || siguienteDeCola(null);
+  if(elegido){ var i = st.cola.indexOf(elegido); if(i>=0) st.cola.splice(i,1); }
+  if(!nombre){ aviso('No hay nadie disponible.'); return; }
+  st.n++; st.actual = { nombre:nombre, res:null, rebote:null, mov:null }; st.paso = 'jugar'; guardarSt();
+  animarCarrete(nombre, function(){ pintarRuleta(); });
+}
+function animarCarrete(nombre, fin){
+  var c = $('carrete'); if(!c || elegidoSinAnimar()){ fin(); return; }
+  girando = true; c.classList.add('gira');
+  var pres = presentes(), pasos = 18 + Math.floor(U.rnd()*6), k = 0;
+  (function paso(){
+    k++;
+    if(k>=pasos){ c.textContent = nombre; c.classList.remove('gira'); girando = false; ding(); setTimeout(fin, 450); return; }
+    c.textContent = pres[Math.floor(U.rnd()*pres.length)]; tic();
+    setTimeout(paso, 40 + k*k*0.6);
+  })();
+}
+function elegidoSinAnimar(){ return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+
+function resolver(res, boton){
+  var a = st.actual, P = preguntaActual(), quien = a.rebote ? a.rebote.nombre : a.nombre;
+  if(res==='ok'){
+    var pts = puntosFase();
+    var mov = JAVI.darPuntos(grupo, quien, pts, 'Acierto', 'Ruleta · '+(fase.nombre||'')+(a.rebote ? ' · rebote' : '')+(P ? ' · '+P.p.slice(0,60) : ''));
+    if(a.rebote){ a.rebote.res = 'ok'; a.rebote.mov = mov; } else { a.res = 'ok'; a.mov = mov; }
+    flotar('+'+mov.n+(mov.mult>1 ? ' (×'+mov.mult+')' : ''), boton); moneda_();
+  } else {
+    if(a.rebote) a.rebote.res = 'mal'; else a.res = 'mal';
+    fallo();
+  }
+  guardarSt(); pintarRuleta();
+}
+function rebote(elegido){
+  var a = st.actual, pres = presentes().filter(function(n){ return n!==a.nombre; });
+  if(!pres.length){ cerrarPregunta(); return; }
+  var nombre = elegido || pres[Math.floor(U.rnd()*pres.length)];
+  a.rebote = { nombre:nombre, res:null, mov:null }; guardarSt();
+  var esc = $('escenario');
+  esc.innerHTML = '<div class="etiqueta">↪ Rebote…</div><div class="carrete" id="carrete">?</div>';
+  if(elegido) pintarRuleta(); else animarCarrete(nombre, pintarRuleta);
+}
+function cerrarPregunta(){
+  var a = st.actual, P = preguntaActual();
+  st.hist.push({ n:st.n, pregunta:P ? P.p : '(pregunta del profe)', respuesta:P ? P.r : '', nombre:a.nombre, res:a.res||'', pts:a.mov ? a.mov.n : 0, mov:a.mov,
+    rebote:a.rebote ? a.rebote.nombre : '', resRebote:a.rebote ? (a.rebote.res||'') : '', ptsRebote:a.rebote && a.rebote.mov ? a.rebote.mov.n : 0, movRebote:a.rebote ? a.rebote.mov : null });
+  st.actual = null; st.paso = 'girar';
+  if(!quedanPreguntas()) st.fin = true;
+  guardarSt(); pintarRuleta();
+}
+function terminar(){
+  if(st.actual && (st.actual.res || (st.actual.rebote && st.actual.rebote.res))) cerrarPregunta();
+  st.fin = true; st.actual = null; guardarSt(); pintarRuleta();
+}
+function puntosPorAlumno(){
+  var t = {};
+  st.hist.forEach(function(h){ if(h.pts) t[h.nombre] = (t[h.nombre]||0)+h.pts; if(h.ptsRebote) t[h.rebote] = (t[h.rebote]||0)+h.ptsRebote; });
+  var a = st.actual;
+  if(a){ if(a.mov) t[a.nombre] = (t[a.nombre]||0)+a.mov.n; if(a.rebote && a.rebote.mov) t[a.rebote.nombre] = (t[a.rebote.nombre]||0)+a.rebote.mov.n; }
+  return Object.keys(t).filter(function(n){ return t[n]; }).map(function(n){ return [n, t[n]]; }).sort(function(x,y){ return y[1]-x[1] || x[0].localeCompare(y[0],'es'); });
+}
+function pintarMarcador(){
+  var ol = $('marcador'), r = puntosPorAlumno(); ol.innerHTML = '';
+  if(!r.length){ ol.innerHTML = '<li class="vacio">Todavía nadie ha sumado.</li>'; return; }
+  r.forEach(function(x){ var li = document.createElement('li'); li.innerHTML = '<span></span><b></b>'; li.firstChild.textContent = x[0]; li.lastChild.textContent = '+'+x[1]+' '+moneda(); ol.appendChild(li); });
+}
+function pintarFin(){
+  var r = puntosPorAlumno(), aciertos = 0;
+  st.hist.forEach(function(h){ if(h.res==='ok') aciertos++; if(h.resRebote==='ok') aciertos++; });
+  var h = '<div class="fin"><h3>🏁 ¡Fin de la ruleta!</h3></div>'+
+    '<div class="etiqueta">'+st.hist.length+' preguntas · '+aciertos+' aciertos</div>';
+  if(r.length){ h += '<div class="podio">'; r.slice(0,3).forEach(function(x, i){ h += '<span>'+['🥇','🥈','🥉'][i]+' '+esc_(x[0])+' · +'+x[1]+'</span>'; }); h += '</div>'; }
+  h += '<div class="botonera"><button class="gran sec" id="bExp2" type="button">📥 Exportar a Excel</button><button class="gran girar" id="bSalir" type="button">Volver al plan</button></div>';
+  $('escenario').innerHTML = h;
+  $('bExp2').addEventListener('click', exportar);
+  $('bSalir').addEventListener('click', function(){ $('rCerrar').click(); });
+  fiesta();
+}
+$('rDeshacer').addEventListener('click', function(){
+  /* busca el último punto dado y lo anula */
+  var a = st.actual, objetivo = null, dueno = null, donde = null;
+  if(a && a.rebote && a.rebote.mov){ objetivo = a.rebote.mov; dueno = a.rebote.nombre; donde = function(){ a.rebote.mov = null; a.rebote.res = null; }; }
+  else if(a && a.mov){ objetivo = a.mov; dueno = a.nombre; donde = function(){ a.mov = null; a.res = null; }; }
+  else {
+    for(var i=st.hist.length-1;i>=0 && !objetivo;i--){ var h = st.hist[i];
+      if(h.movRebote){ objetivo = h.movRebote; dueno = h.rebote; donde = (function(h){ return function(){ h.movRebote = null; h.ptsRebote = 0; h.resRebote = 'anulado'; }; })(h); }
+      else if(h.mov){ objetivo = h.mov; dueno = h.nombre; donde = (function(h){ return function(){ h.mov = null; h.pts = 0; h.res = 'anulado'; }; })(h); } }
+  }
+  if(!objetivo){ aviso('No hay ningún punto que deshacer.'); return; }
+  if(!confirm('¿Quitar el +'+objetivo.n+' de '+dueno+'?')) return;
+  JAVI.quitarPuntos(grupo, dueno, objetivo, 'Acierto (Ruleta)');
+  donde(); guardarSt(); pintarRuleta(); aviso('Punto de '+dueno+' anulado.');
+});
+
+/* exportar a Excel (CSV) */
+function exportar(){
+  var filas = [['Fecha','Clase','Fase','Nº','Pregunta','Respuesta','Alumno/a','Resultado','Puntos','Rebote','Resultado rebote','Puntos rebote']];
+  var nom = { ok:'Acierto', mal:'Fallo', anulado:'Anulado', '':'' };
+  st.hist.forEach(function(h){
+    filas.push([fecha.split('-').reverse().join('/'), grupo, fase.nombre||'', h.n, h.pregunta, h.respuesta, h.nombre, nom[h.res]||h.res, h.pts, h.rebote, nom[h.resRebote]||h.resRebote, h.ptsRebote]);
+  });
+  JAVI.exportarCSV('ruleta-'+grupo.replace('º','')+'-'+fecha, filas);
+}
+$('rExportar').addEventListener('click', exportar);
+
+/* ============================================================
+   EFECTOS: sonido, +1 flotante y confeti final
+   ============================================================ */
+var sonido = leer('sesion-sonido', true), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function tono(f, t0, dur, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+(t0||0);
+  o.type = tipo||'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol||0.15, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); }
+function tic(){ tono(900+U.rnd()*300, 0, 0.04, 'square', 0.04); }
+function ding(){ tono(1046, 0, 0.25, 'triangle', 0.15); tono(1568, 0.08, 0.3, 'triangle', 0.1); }
+function moneda_(){ [1800,2400,2900].forEach(function(f, i){ tono(f, i*0.05, 0.2, 'sine', 0.12); }); [523,659,784,1046].forEach(function(f, i){ tono(f, 0.15+i*0.08, 0.2, 'triangle', 0.1); }); }
+function fallo(){ tono(330, 0, 0.25, 'sawtooth', 0.06); tono(247, 0.2, 0.4, 'sawtooth', 0.06); }
+function fiesta(){ [523,659,784,1046].forEach(function(f, i){ tono(f, i*0.13, 0.3, 'square', 0.06); }); confeti(); }
+function pintarSonido(){ $('rSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('rSonido').addEventListener('click', function(){ sonido = !sonido; escribirL('sesion-sonido', sonido); pintarSonido(); });
+pintarSonido();
+function flotar(t, el){
+  var r = el ? el.getBoundingClientRect() : { left:innerWidth/2, top:innerHeight/2, width:0 };
+  var f = document.createElement('div'); f.className = 'flotante'; f.textContent = t;
+  f.style.left = (r.left + r.width/2)+'px'; f.style.top = (r.top - 10)+'px';
+  document.body.appendChild(f); setTimeout(function(){ f.remove(); }, 1500);
+}
+function confeti(){
+  if(elegidoSinAnimar()) return;
+  var cs = ['#e8c872','#ee4a68','#4cc46a','#45c4e8','#b07aff','#ff8f2e'];
+  for(var i=0;i<90;i++){
+    var p = document.createElement('i');
+    p.style.cssText = 'position:fixed;z-index:80;top:-12px;left:'+(U.rnd()*100)+'vw;width:9px;height:14px;background:'+cs[i%cs.length]+';pointer-events:none;border-radius:2px';
+    document.body.appendChild(p);
+    p.animate([{ transform:'translateY(0) rotate(0)' }, { transform:'translateY('+(innerHeight+40)+'px) rotate('+(360+U.rnd()*720)+'deg)' }], { duration:1800+U.rnd()*1800, delay:U.rnd()*600, easing:'ease-in' })
+      .onfinish = (function(p){ return function(){ p.remove(); }; })(p);
+  }
+}
+
+/* ============================================================
+   ARRANQUE
+   ============================================================ */
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+$('rPantalla').addEventListener('click', JAVI.pantallaCompleta);
+$('fecha').addEventListener('change', function(){ if(this.value){ fecha = this.value; todo(); } });
+function todo(){
+  if(JAVI.grupos().indexOf(grupo)<0) grupo = JAVI.grupos()[0];
+  $('fecha').value = fecha;
+  ponerTema(); pintarGrupos(); cargarPlan(); pintarPlan(); pintarFaltan();
+}
+JAVI.listo(function(){ todo(); JAVI.avisoPrueba(); });
+})();
+</script>
+</body>
+</html>
