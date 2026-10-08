@@ -236,7 +236,7 @@ var q = new URLSearchParams(location.search);
 var grupo = (q.get('grupo')||'').replace(/o/i,'º').toUpperCase() || leer('sesion-grupo', null);
 var fecha = q.get('fecha') || U.clave(new Date());
 var asig = (q.get('asig')||'').toUpperCase() || null;
-var NOMBRE_ASIG = { EF:'Educación Física', LCL:'Lengua' };
+var NOMBRE_ASIG = { EF:'Educación Física', LCL:'Lengua', MAT:'Matemáticas' };
 function asignaturasDe(g){ var r = JAVI.grupo(g); return r && r.asignaturas && r.asignaturas.length ? r.asignaturas : ['EF']; }
 function elegirAsig(){
   var lista = asignaturasDe(grupo);

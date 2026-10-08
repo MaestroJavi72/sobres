@@ -170,7 +170,7 @@ var SECCIONES = {
     { ic:'🎲', n:'Responsable y capitanes', d:'En las clases de EF de 4ºA, sin repetir hasta que salga toda la clase.', url:'sorteos/?grupo=4oA', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/?grupo=4oA', profe:true },
     { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario.', listo:false },
-    { ic:'✖️', n:'Duelo de tablas', d:'Preguntas de tablas por alumno o por mesas.', listo:false }
+    { ic:'✖️', n:'Duelo de tablas', d:'Matemáticas: multiplicaciones al azar, por alumno o por mesas, con galeones.', url:'tablas/?grupo=4oA', alumnos:true }
   ]},
   ef: { t:'Educación Física', gr:'3ºA · 3ºB · 4ºB', ambito:'ef', multiverso:true, mods:[
     { ic:'🤸', n:'Gamificación EF', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', url:'ef/', profe:true },
@@ -184,6 +184,7 @@ var SECCIONES = {
     { ic:'📚', n:'Situaciones de aprendizaje', d:'Con criterios de la Orden de 30 de mayo de 2023 y sesiones repartidas solas.', url:'planificacion/#sda', profe:true },
     { ic:'🏖️', n:'Días sin clase', d:'Festivos y vacaciones que se saltan al repartir.', url:'planificacion/#festivos', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Planificar una sesión concreta de cualquier clase.', url:'sesion/', profe:true },
+    { ic:'✖️', n:'Duelo de tablas', d:'Matemáticas: multiplicaciones al azar, por alumno o por mesas.', url:'tablas/', profe:true },
     { ic:'📖', n:'Biblioteca', d:'Materiales y recursos: breakouts, lecturas, fichas…', listo:false },
     { ic:'🗝️', n:'Panel del profe', d:'Alumnos (altas, bajas, cambios), tema del trimestre y enlaces para Google Sites.', url:'profe/', profe:true }
   ]}
@@ -265,7 +266,7 @@ $('pestanas').querySelector('[data-v=inicio]').addEventListener('click', functio
 /* ---------- Hoy: las clases del día con sus botones (solo profe) ---------- */
 var DIAS_L = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 var MESES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-var NOMBRE_ASIG = { EF:'EF', LCL:'Lengua' };
+var NOMBRE_ASIG = { EF:'EF', LCL:'Lengua', MAT:'Matemáticas' };
 function pintarHoy(){
   if(!profe || !JAVI.horario()) return;
   var hoy = JAVI.util.clave(new Date()), p = hoy.split('-'), ahora = new Date(), min = ahora.getHours()*60+ahora.getMinutes();

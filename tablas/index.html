@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Duelo de tablas</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cab h1{flex:1 1 240px;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:15px;color:var(--acento-2);text-shadow:none;margin-top:4px}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8}
+.grupos,.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip,.pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:9px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.chip[aria-pressed="true"],.pestanas button[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.vista[hidden]{display:none!important}
+.cuenta{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:#b6493f;color:#fff;font-size:13px;padding:0 6px;margin-left:4px}
+.cuenta[hidden]{display:none}
+.estado{font-size:15px;color:var(--tinta-suave)}
+.j-panel + .j-panel{margin-top:14px}
+h2.t{font-family:var(--f-sub);color:var(--acento-2);font-size:20px;margin-bottom:10px}
+.fila{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.tablasSel{display:flex;flex-wrap:wrap;gap:6px}
+.tablasSel label{display:flex;align-items:center;gap:6px;font-size:18px;font-weight:700;padding:8px 12px;border-radius:12px;border:2px solid var(--panel-borde);cursor:pointer}
+.tablasSel label:has(input:checked){border-color:var(--acento);background:rgba(232,200,114,.15)}
+.tablasSel input{width:18px;height:18px;accent-color:var(--acento)}
+.modos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:620px){ .modos{grid-template-columns:1fr} }
+.modos label{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:14px;border:2px solid var(--panel-borde);cursor:pointer}
+.modos label:has(input:checked){border-color:var(--acento);box-shadow:0 0 0 3px var(--brillo)}
+.modos b{font-family:var(--f-sub);font-size:18px;display:block}
+.num{width:80px;font-size:18px;padding:7px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.2);color:var(--tinta)}
+select.num{width:auto}
+.mini{font-size:15px;padding:7px 12px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.15);color:var(--tinta);cursor:pointer}
+.mesas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px}
+.mesa{border:2px solid var(--panel-borde);border-radius:14px;padding:10px;background:rgba(0,0,0,.15)}
+.mesa h3{font-family:var(--f-sub);color:var(--acento-2);font-size:17px;margin-bottom:6px}
+.mesa button{display:block;width:100%;text-align:left;font-size:15px;padding:5px 8px;margin-top:4px;border-radius:8px;border:1px solid var(--panel-borde);background:transparent;color:var(--tinta);cursor:pointer}
+.mesa button:hover{border-color:var(--acento)}
+.faltan{display:flex;flex-wrap:wrap;gap:6px}
+.faltan button{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:transparent;color:var(--tinta);cursor:pointer}
+.faltan button[aria-pressed="true"]{background:#7a2a22;border-color:#b6493f;color:#fff;text-decoration:line-through}
+
+/* ---------- escenario de juego ---------- */
+.juego{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;align-items:start}
+@media (max-width:860px){ .juego{grid-template-columns:1fr} }
+.escena{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;min-height:56vh;padding:16px}
+.prog{font-family:var(--f-sub);font-weight:700;color:var(--acento-2);font-size:18px}
+.turno{font-family:var(--f-titulo);font-size:clamp(34px,6vw,70px);line-height:1.05;color:var(--titulo-color);text-shadow:var(--titulo-sombra);text-transform:var(--titulo-transform);
+  padding:6px 22px;border-radius:20px;border:3px solid var(--acento);background:var(--panel);overflow-wrap:anywhere;min-width:50%}
+.turno.gira{animation:tiembla .09s infinite}
+@keyframes tiembla{50%{transform:translateY(-3px)}}
+.oper{font-family:var(--f-titulo);font-size:clamp(70px,15vw,170px);line-height:1;color:var(--tinta);letter-spacing:.04em}
+.oper .res{color:#3cae5f}
+.reloj{width:min(100%,520px);height:12px;border-radius:8px;background:rgba(0,0,0,.25);overflow:hidden}
+.reloj i{display:block;height:100%;background:linear-gradient(90deg,#3cae5f,#e8c872,#d0473f);transition:width .25s linear}
+.botonera{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.gran{font-family:var(--f-sub);font-weight:800;font-size:clamp(20px,2.8vw,30px);padding:14px 28px;border-radius:18px;border:none;box-shadow:0 5px 0 rgba(0,0,0,.35);cursor:pointer}
+.gran.ok{background:#3cae5f;color:#fff}
+.gran.mal{background:#d0473f;color:#fff}
+.gran.go{background:var(--acento);color:var(--acento-tinta);font-size:clamp(24px,3.6vw,38px);padding:16px 38px}
+.gran.sec{background:var(--panel);color:var(--tinta);border:2px solid var(--panel-borde);box-shadow:none}
+.rebote{font-family:var(--f-sub);font-weight:800;font-size:22px;color:var(--acento-2)}
+.marcador ol{list-style:none;display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow:auto}
+.marcador li{display:flex;justify-content:space-between;gap:8px;font-size:18px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,.18)}
+.marcador li b{color:var(--acento-2)}
+.flotante{position:fixed;z-index:70;pointer-events:none;font-family:var(--f-titulo);font-size:64px;color:#5ee27f;text-shadow:0 3px 10px rgba(0,0,0,.6);animation:sube 1.4s ease-out forwards}
+@keyframes sube{0%{opacity:0;transform:translate(-50%,20px) scale(.5)}20%{opacity:1;transform:translate(-50%,0) scale(1.2)}100%{opacity:0;transform:translate(-50%,-120px)}}
+.fin h2{font-family:var(--f-titulo);color:var(--titulo-color);font-size:clamp(34px,6vw,64px);text-shadow:var(--titulo-sombra)}
+.podio{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:22px}
+.podio span{padding:10px 16px;border-radius:14px;background:var(--panel);border:2px solid var(--acento)}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">✖️ Duelo de tablas<span class="sub">Matemáticas · multiplicaciones al azar</span></h1>
+    <a class="volver" href="../#tutoria" data-volver="../#tutoria">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+
+  <nav class="grupos" id="grupos" aria-label="Clase"></nav>
+  <nav class="pestanas" role="tablist">
+    <button type="button" role="tab" data-v="jugar" aria-selected="true">🎮 Jugar</button>
+    <button type="button" role="tab" data-v="preparar" aria-selected="false">⚙️ Preparar</button>
+    <button type="button" role="tab" data-v="faltan" aria-selected="false">🙋 Quién falta<span class="cuenta" id="nFaltan" hidden></span></button>
+  </nav>
+
+  <!-- JUGAR -->
+  <section class="vista" id="v-jugar">
+    <div class="juego">
+      <div class="j-panel escena" id="escena"></div>
+      <aside class="j-panel marcador">
+        <h2 class="t">🏆 Marcador</h2>
+        <ol id="marcador"></ol>
+        <div class="fila" style="margin:10px 0 0"><button class="mini" id="bDeshacer" type="button">↶ Deshacer el último punto</button></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- PREPARAR -->
+  <section class="vista" id="v-preparar" hidden>
+    <div class="j-panel">
+      <h2 class="t">¿Qué tablas?</h2>
+      <div class="tablasSel" id="tablasSel"></div>
+    </div>
+    <div class="j-panel">
+      <h2 class="t">¿Cómo se juega?</h2>
+      <div class="modos">
+        <label><input type="radio" name="modo" value="alumno"><span><b>👤 Por alumno</b>Sale un alumno al azar (sin repetir hasta que salga toda la clase). Acierto: +1 galeón. El fallo no resta y puede rebotar a otro compañero (máximo un rebote).</span></label>
+        <label><input type="radio" name="modo" value="mesas"><span><b>🪑 Por mesas</b>Las mesas responden por turnos. Acierto: +1 punto para la mesa. Si falla, rebota a la siguiente mesa. Al final, si quieres, +1 galeón a cada miembro de la mesa ganadora.</span></label>
+      </div>
+    </div>
+    <div class="j-panel">
+      <div class="fila"><label class="estado">Preguntas <input class="num" id="nPreg" type="number" min="5" max="60" value="20"></label>
+        <label class="estado">Tiempo para contestar <select class="num" id="tPreg"><option value="0">Sin reloj</option><option value="5">5 s</option><option value="10">10 s</option><option value="15">15 s</option><option value="20">20 s</option></select></label></div>
+    </div>
+    <div class="j-panel" id="pMesas">
+      <h2 class="t">🪑 Mesas de <span class="gNom"></span></h2>
+      <div class="fila"><label class="estado">Número de mesas <input class="num" id="nMesas" type="number" min="2" max="8" value="5"></label>
+        <button class="mini" id="bRepartir" type="button">🎲 Repartir al azar</button>
+        <span class="estado">Toca un nombre para pasarlo a la mesa siguiente.</span></div>
+      <div class="mesas" id="mesas"></div>
+    </div>
+  </section>
+
+  <!-- QUIÉN FALTA -->
+  <section class="vista" id="v-faltan" hidden>
+    <div class="j-panel">
+      <h2 class="t">¿Quién falta hoy?</h2>
+      <p class="estado" style="margin-bottom:8px">Toca a quien no esté: no le saldrá en el duelo. (Es la misma lista que en la Sesión y Ruleta.)</p>
+      <div class="faltan" id="faltan"></div>
+    </div>
+  </section>
+</div>
+<div class="j-aviso" id="aviso" role="status" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util;
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+function leer(k, def){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
+function guardar(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function mezclar(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.floor(U.rnd()*(i+1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+var avisoT = 0;
+function aviso(t){ var a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3500); }
+
+var q = new URLSearchParams(location.search);
+var grupo = (q.get('grupo')||'').replace(/o/i,'º').toUpperCase() || leer('tablas-grupo', '4ºA');
+var hoy = U.clave(new Date());
+
+/* ---------- ajustes (se recuerdan en este aparato) ---------- */
+var AJ = leer('tablas-ajustes', { tablas:[2,3,4,5,6,7,8,9], modo:'alumno', n:20, t:0 });
+function guardarAj(){ guardar('tablas-ajustes', AJ); }
+function claveMesas(){ return 'tablas-mesas|'+grupo; }
+function claveFaltan(){ return 'faltan|'+grupo+'|'+hoy; }
+function claveEstado(){ return 'tablas-estado|'+grupo+'|'+hoy; }
+function moneda(){ var t = JAVI.TEMAS[JAVI.temaDe(grupo)]; return t ? t.moneda1 : 'galeón'; }
+function nombres(){ var r = JAVI.grupo(grupo); return r ? r.nombres : []; }
+function faltan(){ return leer(claveFaltan(), []); }
+function presentes(){ var f = faltan(); return nombres().filter(function(n){ return f.indexOf(n)<0; }); }
+
+/* ---------- pestañas ---------- */
+function verVista(v){
+  if(['jugar','preparar','faltan'].indexOf(v)<0) v = 'jugar';
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['jugar','preparar','faltan'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  history.replaceState(null, '', location.search+'#'+v);
+  if(v==='jugar') pintarJuego();
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
+
+/* ---------- clases ---------- */
+function pintarGrupos(){
+  var box = $('grupos'); box.innerHTML = '';
+  JAVI.gruposVisibles().forEach(function(g){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = g;
+    b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
+    b.addEventListener('click', function(){ grupo = g; guardar('tablas-grupo', g); todo(); });
+    box.appendChild(b);
+  });
+}
+
+/* ---------- preparar ---------- */
+function pintarPreparar(){
+  var h = '';
+  for(var t=1; t<=10; t++) h += '<label><input type="checkbox" value="'+t+'"'+(AJ.tablas.indexOf(t)>=0 ? ' checked' : '')+'> × '+t+'</label>';
+  $('tablasSel').innerHTML = h;
+  Array.prototype.forEach.call(document.querySelectorAll('[name=modo]'), function(r){ r.checked = r.value===AJ.modo; });
+  $('nPreg').value = AJ.n; $('tPreg').value = AJ.t;
+  $('pMesas').style.display = AJ.modo==='mesas' ? '' : 'none';
+  Array.prototype.forEach.call(document.querySelectorAll('.gNom'), function(e){ e.textContent = grupo; });
+  pintarMesas();
+}
+$('tablasSel').addEventListener('change', function(){
+  AJ.tablas = Array.prototype.filter.call(this.querySelectorAll('input'), function(c){ return c.checked; }).map(function(c){ return +c.value; });
+  guardarAj();
+});
+Array.prototype.forEach.call(document.querySelectorAll('[name=modo]'), function(r){ r.addEventListener('change', function(){ AJ.modo = r.value; guardarAj(); pintarPreparar(); }); });
+$('nPreg').addEventListener('change', function(){ AJ.n = Math.max(5, Math.min(60, +this.value||20)); this.value = AJ.n; guardarAj(); });
+$('tPreg').addEventListener('change', function(){ AJ.t = +this.value||0; guardarAj(); });
+
+/* mesas: { n, de:{ nombre: nº de mesa } } */
+function mesas(){
+  var m = leer(claveMesas(), null), ns = nombres();
+  if(!m){ m = { n:+$('nMesas').value||5, de:{} }; }
+  ns.forEach(function(x, i){ if(!m.de[x] || m.de[x]>m.n) m.de[x] = (i % m.n)+1; });
+  return m;
+}
+function pintarMesas(){
+  var m = mesas(), f = faltan(), h = '';
+  $('nMesas').value = m.n;
+  for(var i=1; i<=m.n; i++){
+    h += '<div class="mesa"><h3>Mesa '+i+'</h3>'+nombres().filter(function(x){ return m.de[x]===i; }).map(function(x){
+      return '<button type="button" data-n="'+esc(x)+'"'+(f.indexOf(x)>=0 ? ' style="opacity:.45;text-decoration:line-through"' : '')+'>'+esc(x)+'</button>';
+    }).join('')+'</div>';
+  }
+  $('mesas').innerHTML = h;
+}
+$('mesas').addEventListener('click', function(e){
+  var b = e.target.closest('[data-n]'); if(!b) return;
+  var m = mesas(); m.de[b.dataset.n] = m.de[b.dataset.n] % m.n + 1; guardar(claveMesas(), m); pintarMesas();
+});
+$('nMesas').addEventListener('change', function(){
+  var m = mesas(); m.n = Math.max(2, Math.min(8, +this.value||5)); guardar(claveMesas(), m); pintarMesas();
+});
+$('bRepartir').addEventListener('click', function(){
+  var m = mesas(); m.de = {};
+  mezclar(nombres()).forEach(function(x, i){ m.de[x] = (i % m.n)+1; });
+  guardar(claveMesas(), m); pintarMesas(); aviso('Mesas repartidas al azar.');
+});
+
+/* ---------- quién falta ---------- */
+function pintarFaltan(){
+  var fs = faltan(), box = $('faltan'); box.innerHTML = '';
+  $('nFaltan').hidden = !fs.length; $('nFaltan').textContent = fs.length;
+  nombres().forEach(function(n){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+    b.setAttribute('aria-pressed', fs.indexOf(n)>=0 ? 'true' : 'false');
+    b.addEventListener('click', function(){ var l = faltan(), i = l.indexOf(n); if(i>=0) l.splice(i,1); else l.push(n); guardar(claveFaltan(), l); pintarFaltan(); });
+    box.appendChild(b);
+  });
+}
+
+/* ============================================================
+   EL DUELO
+   estado: { modo, preguntas:[[a,b]], i, cola:[], turnoMesa, paso, actual:{ quien, rebote, res, mov }, pts:{}, hist:[], fin, premiado }
+   ============================================================ */
+var st = null, girando = false, reloj = 0;
+function nuevasPreguntas(){
+  var ts = AJ.tablas.length ? AJ.tablas : [2,3,4,5,6,7,8,9], l = [], ult = '';
+  for(var i=0; i<AJ.n; i++){
+    var a, b, k, v = 0;
+    do{ a = ts[Math.floor(U.rnd()*ts.length)]; b = 2+Math.floor(U.rnd()*9); k = a+'x'+b; v++; } while(k===ult && v<10);
+    ult = k; l.push(U.rnd()<0.5 ? [a,b] : [b,a]);
+  }
+  return l;
+}
+function empezar(){
+  if(!presentes().length){ aviso('No hay alumnos presentes.'); return; }
+  var m = mesas();
+  st = { modo:AJ.modo, preguntas:nuevasPreguntas(), i:0, cola:[], turnoMesa:0, paso:'turno', actual:null, pts:{}, hist:[], fin:false, premiado:false, nMesas:m.n };
+  guardar(claveEstado(), st); siguiente();
+}
+function mesasActivas(){ var m = mesas(), p = presentes(), l = []; for(var i=1;i<=m.n;i++) if(p.some(function(x){ return m.de[x]===i; })) l.push(i); return l; }
+function sacarAlumno(excluir){
+  var p = presentes();
+  st.cola = st.cola.filter(function(n){ return p.indexOf(n)>=0; });
+  if(!st.cola.length) st.cola = mezclar(p);
+  var i = 0; while(i<st.cola.length && st.cola[i]===excluir) i++;
+  return i<st.cola.length ? st.cola.splice(i,1)[0] : null;
+}
+function siguiente(){
+  if(st.i >= st.preguntas.length){ st.fin = true; guardar(claveEstado(), st); pintarJuego(); fanfarria(); confeti(); return; }
+  st.i++;
+  if(st.modo==='mesas'){
+    var ms = mesasActivas(); st.turnoMesa = ms[(st.i-1) % ms.length];
+    st.actual = { quien:'Mesa '+st.turnoMesa, mesa:st.turnoMesa, rebote:null, res:null };
+    st.paso = 'pregunta'; guardar(claveEstado(), st); pintarJuego(); arrancarReloj(); return;
+  }
+  st.actual = { quien:sacarAlumno(), rebote:null, res:null };
+  st.paso = 'girar'; guardar(claveEstado(), st); pintarJuego();
+}
+function nombreLabel(){ var a = st.actual; return a.rebote ? a.rebote.quien : a.quien; }
+function acierto(){
+  var a = st.actual, r = a.rebote || a, quien = r.quien;
+  if(st.modo==='mesas'){ st.pts[quien] = (st.pts[quien]||0)+1; r.res = 'ok'; }
+  else { var mov = JAVI.darPuntos(grupo, quien, 1, 'Acierto', 'Duelo de tablas'); r.mov = mov; r.res = 'ok'; st.pts[quien] = (st.pts[quien]||0)+1; }
+  cerrarPregunta(); moneda_(); flotar('+1');
+}
+function fallo(){
+  var a = st.actual;
+  if(a.rebote){ a.rebote.res = 'mal'; cerrarPregunta(); falloSon(); return; }
+  a.res = 'mal'; st.paso = 'rebote'; guardar(claveEstado(), st); pintarJuego(); falloSon();
+}
+function rebotar(){
+  var a = st.actual;
+  if(st.modo==='mesas'){ var ms = mesasActivas(), j = (ms.indexOf(a.mesa)+1) % ms.length; a.rebote = { quien:'Mesa '+ms[j], mesa:ms[j], res:null }; }
+  else { var otro = sacarAlumno(a.quien); if(!otro){ cerrarPregunta(); return; } a.rebote = { quien:otro, res:null }; }
+  st.paso = 'pregunta'; guardar(claveEstado(), st); pintarJuego(); arrancarReloj();
+}
+function cerrarPregunta(){
+  clearInterval(reloj);
+  var p = st.preguntas[st.i-1], a = st.actual;
+  st.hist.push({ n:st.i, op:p[0]+' × '+p[1], res:p[0]*p[1], quien:a.quien, r:a.res, rebote:a.rebote ? a.rebote.quien : '', rr:a.rebote ? a.rebote.res : '', mov:a.mov||null, movR:a.rebote && a.rebote.mov || null });
+  st.paso = 'hecho'; guardar(claveEstado(), st); pintarJuego();
+}
+function arrancarReloj(){
+  clearInterval(reloj); if(!AJ.t) return;
+  var t0 = Date.now(), tot = AJ.t*1000;
+  reloj = setInterval(function(){
+    var i = document.querySelector('.reloj i'); if(!i){ clearInterval(reloj); return; }
+    var resta = Math.max(0, tot-(Date.now()-t0)); i.style.width = (resta/tot*100)+'%';
+    if(!resta){ clearInterval(reloj); tono(220, 0, 0.4, 'sawtooth', 0.06); }
+  }, 200);
+}
+
+/* ---------- pintar el duelo ---------- */
+function pintarJuego(){
+  var e = $('escena'); pintarMarcador();
+  if(!st || !st.preguntas){
+    var ms = AJ.modo==='mesas' ? mesasActivas().length : 0;
+    e.innerHTML = '<div class="prog">'+esc(grupo)+' · '+(AJ.modo==='mesas' ? '🪑 Por mesas ('+ms+' mesas)' : '👤 Por alumno')+' · '+AJ.n+' preguntas</div>'+
+      '<div class="oper">7 × 8</div><div class="estado">Tablas: '+(AJ.tablas.length ? AJ.tablas.join(', ') : '2 a 9')+(AJ.t ? ' · '+AJ.t+' s para contestar' : '')+'. Cámbialo en ⚙️ Preparar.</div>'+
+      '<div class="botonera"><button class="gran go" type="button" data-a="empezar">▶ Empezar el duelo</button></div>';
+    return;
+  }
+  if(st.fin){ pintarFin(); return; }
+  var p = st.preguntas[st.i-1], a = st.actual, h = '<div class="prog">Pregunta '+st.i+' de '+st.preguntas.length+'</div>';
+  if(st.paso==='girar'){
+    h += '<div class="turno" id="turno">?</div><div class="botonera"><button class="gran go" type="button" data-a="girar">🎲 ¿A quién le toca?</button></div>';
+  } else {
+    h += (a.rebote ? '<div class="rebote">↪ Rebote</div>' : '')+'<div class="turno">'+esc(nombreLabel())+'</div>';
+    var ver = st.paso==='hecho' || st.paso==='rebote';
+    h += '<div class="oper">'+p[0]+' × '+p[1]+(ver ? ' = <span class="res">'+(p[0]*p[1])+'</span>' : '')+'</div>';
+    if(st.paso==='pregunta') h += (AJ.t ? '<div class="reloj"><i style="width:100%"></i></div>' : '')+
+      '<div class="botonera"><button class="gran ok" type="button" data-a="ok">✅ ¡Acierto! +1</button><button class="gran mal" type="button" data-a="mal">❌ Fallo</button></div>';
+    if(st.paso==='rebote') h += '<div class="botonera"><button class="gran go" type="button" data-a="rebotar">↪ Rebote '+(st.modo==='mesas' ? 'a la mesa siguiente' : 'a otro compañero')+'</button><button class="gran sec" type="button" data-a="nadie">Siguiente</button></div>';
+    if(st.paso==='hecho') h += '<div class="botonera"><button class="gran go" type="button" data-a="sig">'+(st.i<st.preguntas.length ? '➡ Siguiente' : '🏁 Ver el resultado')+'</button></div>';
+  }
+  h += '<div class="botonera"><button class="mini" type="button" data-a="terminar">🏁 Terminar ya</button></div>';
+  e.innerHTML = h;
+}
+function ranking(){ return Object.keys(st.pts).map(function(k){ return [k, st.pts[k]]; }).filter(function(x){ return x[1]>0; }).sort(function(a,b){ return b[1]-a[1] || a[0].localeCompare(b[0],'es'); }); }
+function pintarMarcador(){
+  var ol = $('marcador');
+  if(!st || !st.preguntas){ ol.innerHTML = '<li style="background:none;opacity:.7">Aún no hay puntos.</li>'; return; }
+  var r = ranking();
+  ol.innerHTML = r.length ? r.map(function(x){ return '<li><span>'+esc(x[0])+'</span><b>'+x[1]+'</b></li>'; }).join('') : '<li style="background:none;opacity:.7">Aún no hay puntos.</li>';
+}
+function pintarFin(){
+  var r = ranking(), max = r.length ? r[0][1] : 0, gan = r.filter(function(x){ return x[1]===max && max>0; }).map(function(x){ return x[0]; });
+  var h = '<div class="fin"><h2>🏁 ¡Fin del duelo!</h2>';
+  h += gan.length ? '<div class="podio">'+gan.map(function(g){ return '<span>🏆 '+esc(g)+' · '+max+'</span>'; }).join('')+'</div>' : '<p class="estado">Nadie ha puntuado esta vez.</p>';
+  if(st.modo==='mesas' && gan.length){
+    var m = mesas(), miembros = [];
+    gan.forEach(function(g){ var n = +g.replace(/\D/g,''); presentes().forEach(function(x){ if(m.de[x]===n) miembros.push(x); }); });
+    h += st.premiado ? '<p class="estado">✓ Ya se ha dado +1 '+moneda()+' a: '+esc(miembros.join(', '))+'.</p>'
+      : '<div class="botonera"><button class="gran ok" type="button" data-a="premio">🪙 +1 '+moneda()+' a cada uno ('+miembros.length+')</button></div><p class="estado">'+esc(miembros.join(', '))+'</p>';
+  }
+  h += '<div class="botonera"><button class="gran go" type="button" data-a="otra">🔁 Otro duelo</button><button class="gran sec" type="button" data-a="exportar">📥 Exportar</button></div></div>';
+  $('escena').innerHTML = h;
+}
+$('escena').addEventListener('click', function(e){
+  var b = e.target.closest('[data-a]'); if(!b || girando) return;
+  var a = b.dataset.a;
+  if(a==='empezar') empezar();
+  if(a==='girar') girar();
+  if(a==='ok') acierto();
+  if(a==='mal') fallo();
+  if(a==='rebotar') rebotar();
+  if(a==='nadie') cerrarPregunta();
+  if(a==='sig') siguiente();
+  if(a==='terminar' && confirm('¿Terminar el duelo ahora?')){ clearInterval(reloj); st.fin = true; guardar(claveEstado(), st); pintarJuego(); }
+  if(a==='otra'){ st = null; try{ localStorage.removeItem(claveEstado()); }catch(err){} pintarJuego(); }
+  if(a==='exportar') exportar();
+  if(a==='premio') premiar();
+});
+function girar(){
+  var el = $('turno'), pres = presentes(), fin = st.actual.quien, n = 0, vueltas = 14+Math.floor(U.rnd()*6);
+  girando = true; el.classList.add('gira');
+  (function paso(){
+    n++; el.textContent = n>=vueltas ? fin : pres[Math.floor(U.rnd()*pres.length)]; tic();
+    if(n<vueltas){ setTimeout(paso, 40+n*12); return; }
+    el.classList.remove('gira'); girando = false; ding();
+    st.paso = 'pregunta'; guardar(claveEstado(), st); setTimeout(function(){ pintarJuego(); arrancarReloj(); }, 450);
+  })();
+}
+function premiar(){
+  if(st.premiado) return;
+  var r = ranking(), max = r[0][1], m = mesas(), dados = [];
+  r.filter(function(x){ return x[1]===max; }).forEach(function(x){
+    var n = +x[0].replace(/\D/g,'');
+    presentes().forEach(function(al){ if(m.de[al]===n){ JAVI.darPuntos(grupo, al, 1, 'Duelo de tablas', 'Mesa ganadora'); dados.push(al); } });
+  });
+  st.premiado = true; guardar(claveEstado(), st); pintarJuego(); moneda_(); aviso('+1 '+moneda()+' para '+dados.length+(JAVI.DEMO ? ' (demostración: no se guarda)' : '')+'.');
+}
+$('bDeshacer').addEventListener('click', function(){
+  if(!st || st.modo==='mesas'){ aviso(st && st.modo==='mesas' ? 'En mesas, los puntos son del duelo: no hay galeones que deshacer.' : 'No hay ningún punto que deshacer.'); return; }
+  var cand = [];
+  if(st.actual){ if(st.actual.rebote && st.actual.rebote.mov) cand.push([st.actual.rebote, st.actual.rebote.quien]); else if(st.actual.mov) cand.push([st.actual, st.actual.quien]); }
+  if(!cand.length) for(var i=st.hist.length-1; i>=0 && !cand.length; i--){ var h = st.hist[i]; if(h.movR) cand.push([h, h.rebote, 'movR']); else if(h.mov) cand.push([h, h.quien, 'mov']); }
+  if(!cand.length){ aviso('No hay ningún punto que deshacer.'); return; }
+  var c = cand[0], obj = c[0], k = c[2] || 'mov', mov = obj[k];
+  if(!confirm('¿Quitar el +1 de '+c[1]+'?')) return;
+  JAVI.quitarPuntos(grupo, c[1], mov, 'Acierto (Duelo de tablas)');
+  obj[k] = null; st.pts[c[1]] = Math.max(0, (st.pts[c[1]]||0)-1);
+  guardar(claveEstado(), st); pintarJuego(); aviso('Punto de '+c[1]+' anulado.');
+});
+function exportar(){
+  var f = [['Fecha','Clase','Nº','Operación','Resultado','Turno','Respuesta','Rebote','Respuesta rebote']], nom = { ok:'Acierto', mal:'Fallo' };
+  st.hist.forEach(function(h){ f.push([hoy.split('-').reverse().join('/'), grupo, h.n, h.op, h.res, h.quien, nom[h.r]||'', h.rebote, nom[h.rr]||'']); });
+  JAVI.exportarCSV('duelo-tablas-'+grupo.replace('º','')+'-'+hoy, f);
+}
+
+/* ---------- efectos ---------- */
+var sonido = leer('tablas-sonido', true), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function tono(f, t0, dur, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+(t0||0);
+  o.type = tipo||'sine'; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol||0.15, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.05); }
+function tic(){ tono(900+U.rnd()*300, 0, 0.04, 'square', 0.04); }
+function ding(){ tono(1046, 0, 0.25, 'triangle', 0.15); tono(1568, 0.08, 0.3, 'triangle', 0.1); }
+function moneda_(){ [1800,2400,2900].forEach(function(f, i){ tono(f, i*0.05, 0.2, 'sine', 0.12); }); }
+function falloSon(){ tono(330, 0, 0.25, 'sawtooth', 0.06); tono(247, 0.2, 0.4, 'sawtooth', 0.06); }
+function fanfarria(){ [523,659,784,1046].forEach(function(f, i){ tono(f, i*0.13, 0.3, 'square', 0.06); }); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; guardar('tablas-sonido', sonido); pintarSonido(); });
+pintarSonido();
+function flotar(t){
+  var f = document.createElement('div'); f.className = 'flotante'; f.textContent = t;
+  f.style.left = '50%'; f.style.top = '40%'; document.body.appendChild(f); setTimeout(function(){ f.remove(); }, 1500);
+}
+function confeti(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cs = ['#e8c872','#ee4a68','#4cc46a','#45c4e8','#b07aff','#ff8f2e'];
+  for(var i=0;i<80;i++){
+    var p = document.createElement('i');
+    p.style.cssText = 'position:fixed;z-index:80;top:-12px;left:'+(U.rnd()*100)+'vw;width:9px;height:14px;background:'+cs[i%cs.length]+';pointer-events:none;border-radius:2px';
+    document.body.appendChild(p);
+    p.animate([{ transform:'translateY(0) rotate(0)' }, { transform:'translateY('+(innerHeight+40)+'px) rotate('+(360+U.rnd()*720)+'deg)' }], { duration:1800+U.rnd()*1800, delay:U.rnd()*600, easing:'ease-in' })
+      .onfinish = (function(p){ return function(){ p.remove(); }; })(p);
+  }
+}
+
+/* ---------- arranque ---------- */
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+function todo(){
+  if(JAVI.gruposVisibles().indexOf(grupo)<0) grupo = JAVI.gruposVisibles()[0];
+  document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo));
+  st = leer(claveEstado(), null);
+  pintarGrupos(); pintarPreparar(); pintarFaltan(); pintarJuego();
+}
+JAVI.listo(function(){ todo(); verVista((location.hash||'').replace('#','')); JAVI.avisoPrueba(); });
+})();
+</script>
+</body>
+</html>
