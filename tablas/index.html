@@ -74,7 +74,7 @@ select.num{width:auto}
 <body>
 <div class="j-envoltorio">
   <header class="cab">
-    <h1 class="j-titulo">✖️ Duelo de tablas<span class="sub">Matemáticas · multiplicaciones al azar</span></h1>
+    <h1 class="j-titulo">✖️ Duelo de tablas<span class="sub">Matemáticas · multiplicaciones al azar · no da galeones</span></h1>
     <a class="volver" href="../#tutoria" data-volver="../#tutoria">← Volver</a>
     <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
@@ -94,7 +94,6 @@ select.num{width:auto}
       <aside class="j-panel marcador">
         <h2 class="t">🏆 Marcador</h2>
         <ol id="marcador"></ol>
-        <div class="fila" style="margin:10px 0 0"><button class="mini" id="bDeshacer" type="button">↶ Deshacer el último punto</button></div>
       </aside>
     </div>
   </section>
@@ -108,8 +107,8 @@ select.num{width:auto}
     <div class="j-panel">
       <h2 class="t">¿Cómo se juega?</h2>
       <div class="modos">
-        <label><input type="radio" name="modo" value="alumno"><span><b>👤 Por alumno</b>Sale un alumno al azar (sin repetir hasta que salga toda la clase). Acierto: +1 galeón. El fallo no resta y puede rebotar a otro compañero (máximo un rebote).</span></label>
-        <label><input type="radio" name="modo" value="mesas"><span><b>🪑 Por mesas</b>Las mesas responden por turnos. Acierto: +1 punto para la mesa. Si falla, rebota a la siguiente mesa. Al final, si quieres, +1 galeón a cada miembro de la mesa ganadora.</span></label>
+        <label><input type="radio" name="modo" value="alumno"><span><b>👤 Por alumno</b>Sale un alumno al azar (sin repetir hasta que salga toda la clase). Acierto: +1 punto del duelo. El fallo no resta y puede rebotar a otro compañero (máximo un rebote).</span></label>
+        <label><input type="radio" name="modo" value="mesas"><span><b>🪑 Por mesas</b>Las mesas responden por turnos. Acierto: +1 punto para la mesa. Si falla, rebota a la siguiente mesa. Gana la mesa con más puntos.</span></label>
       </div>
     </div>
     <div class="j-panel">
@@ -159,7 +158,6 @@ function guardarAj(){ guardar('tablas-ajustes', AJ); }
 function claveMesas(){ return 'tablas-mesas|'+grupo; }
 function claveFaltan(){ return 'faltan|'+grupo+'|'+hoy; }
 function claveEstado(){ return 'tablas-estado|'+grupo+'|'+hoy; }
-function moneda(){ var t = JAVI.TEMAS[JAVI.temaDe(grupo)]; return t ? t.moneda1 : 'galeón'; }
 function nombres(){ var r = JAVI.grupo(grupo); return r ? r.nombres : []; }
 function faltan(){ return leer(claveFaltan(), []); }
 function presentes(){ var f = faltan(); return nombres().filter(function(n){ return f.indexOf(n)<0; }); }
@@ -289,7 +287,7 @@ function nombreLabel(){ var a = st.actual; return a.rebote ? a.rebote.quien : a.
 function acierto(){
   var a = st.actual, r = a.rebote || a, quien = r.quien;
   if(st.modo==='mesas'){ st.pts[quien] = (st.pts[quien]||0)+1; r.res = 'ok'; }
-  else { var mov = JAVI.darPuntos(grupo, quien, 1, 'Acierto', 'Duelo de tablas'); r.mov = mov; r.res = 'ok'; st.pts[quien] = (st.pts[quien]||0)+1; }
+  else { r.res = 'ok'; st.pts[quien] = (st.pts[quien]||0)+1; }   /* solo puntos del duelo: no da galeones */
   cerrarPregunta(); moneda_(); flotar('+1');
 }
 function fallo(){
@@ -356,12 +354,6 @@ function pintarFin(){
   var r = ranking(), max = r.length ? r[0][1] : 0, gan = r.filter(function(x){ return x[1]===max && max>0; }).map(function(x){ return x[0]; });
   var h = '<div class="fin"><h2>🏁 ¡Fin del duelo!</h2>';
   h += gan.length ? '<div class="podio">'+gan.map(function(g){ return '<span>🏆 '+esc(g)+' · '+max+'</span>'; }).join('')+'</div>' : '<p class="estado">Nadie ha puntuado esta vez.</p>';
-  if(st.modo==='mesas' && gan.length){
-    var m = mesas(), miembros = [];
-    gan.forEach(function(g){ var n = +g.replace(/\D/g,''); presentes().forEach(function(x){ if(m.de[x]===n) miembros.push(x); }); });
-    h += st.premiado ? '<p class="estado">✓ Ya se ha dado +1 '+moneda()+' a: '+esc(miembros.join(', '))+'.</p>'
-      : '<div class="botonera"><button class="gran ok" type="button" data-a="premio">🪙 +1 '+moneda()+' a cada uno ('+miembros.length+')</button></div><p class="estado">'+esc(miembros.join(', '))+'</p>';
-  }
   h += '<div class="botonera"><button class="gran go" type="button" data-a="otra">🔁 Otro duelo</button><button class="gran sec" type="button" data-a="exportar">📥 Exportar</button></div></div>';
   $('escena').innerHTML = h;
 }
@@ -378,7 +370,6 @@ $('escena').addEventListener('click', function(e){
   if(a==='terminar' && confirm('¿Terminar el duelo ahora?')){ clearInterval(reloj); st.fin = true; guardar(claveEstado(), st); pintarJuego(); }
   if(a==='otra'){ st = null; try{ localStorage.removeItem(claveEstado()); }catch(err){} pintarJuego(); }
   if(a==='exportar') exportar();
-  if(a==='premio') premiar();
 });
 function girar(){
   var el = $('turno'), pres = presentes(), fin = st.actual.quien, n = 0, vueltas = 14+Math.floor(U.rnd()*6);
@@ -390,27 +381,6 @@ function girar(){
     st.paso = 'pregunta'; guardar(claveEstado(), st); setTimeout(function(){ pintarJuego(); arrancarReloj(); }, 450);
   })();
 }
-function premiar(){
-  if(st.premiado) return;
-  var r = ranking(), max = r[0][1], m = mesas(), dados = [];
-  r.filter(function(x){ return x[1]===max; }).forEach(function(x){
-    var n = +x[0].replace(/\D/g,'');
-    presentes().forEach(function(al){ if(m.de[al]===n){ JAVI.darPuntos(grupo, al, 1, 'Duelo de tablas', 'Mesa ganadora'); dados.push(al); } });
-  });
-  st.premiado = true; guardar(claveEstado(), st); pintarJuego(); moneda_(); aviso('+1 '+moneda()+' para '+dados.length+(JAVI.DEMO ? ' (demostración: no se guarda)' : '')+'.');
-}
-$('bDeshacer').addEventListener('click', function(){
-  if(!st || st.modo==='mesas'){ aviso(st && st.modo==='mesas' ? 'En mesas, los puntos son del duelo: no hay galeones que deshacer.' : 'No hay ningún punto que deshacer.'); return; }
-  var cand = [];
-  if(st.actual){ if(st.actual.rebote && st.actual.rebote.mov) cand.push([st.actual.rebote, st.actual.rebote.quien]); else if(st.actual.mov) cand.push([st.actual, st.actual.quien]); }
-  if(!cand.length) for(var i=st.hist.length-1; i>=0 && !cand.length; i--){ var h = st.hist[i]; if(h.movR) cand.push([h, h.rebote, 'movR']); else if(h.mov) cand.push([h, h.quien, 'mov']); }
-  if(!cand.length){ aviso('No hay ningún punto que deshacer.'); return; }
-  var c = cand[0], obj = c[0], k = c[2] || 'mov', mov = obj[k];
-  if(!confirm('¿Quitar el +1 de '+c[1]+'?')) return;
-  JAVI.quitarPuntos(grupo, c[1], mov, 'Acierto (Duelo de tablas)');
-  obj[k] = null; st.pts[c[1]] = Math.max(0, (st.pts[c[1]]||0)-1);
-  guardar(claveEstado(), st); pintarJuego(); aviso('Punto de '+c[1]+' anulado.');
-});
 function exportar(){
   var f = [['Fecha','Clase','Nº','Operación','Resultado','Turno','Respuesta','Rebote','Respuesta rebote']], nom = { ok:'Acierto', mal:'Fallo' };
   st.hist.forEach(function(h){ f.push([hoy.split('-').reverse().join('/'), grupo, h.n, h.op, h.res, h.quien, nom[h.r]||'', h.rebote, nom[h.rr]||'']); });
