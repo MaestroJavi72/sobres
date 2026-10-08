@@ -79,6 +79,52 @@ body{background:var(--fondo-img),var(--fondo)}
 .ses .ir{margin-top:auto;align-self:flex-start;font:700 14px 'Cinzel',serif;color:#14403a;text-decoration:none;border-bottom:2px solid var(--oro)}
 
 .cargando{color:#d9cfae;font-size:18px;padding:30px;text-align:center}
+
+/* ---------- cabecera compacta + pestañas ---------- */
+.heroe.compacta{padding:16px clamp(16px,3vw,26px);margin-bottom:12px;border-radius:20px}
+.heroe.compacta h1{font-size:clamp(24px,3.6vw,38px);margin:2px 0 4px}
+.heroe.compacta .sub{font-size:16px}
+.heroe.compacta .fosil{font-size:90px;bottom:-12px}
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:10px 18px;border-radius:14px;cursor:pointer;
+  background:rgba(10,31,34,.85);color:#e8cf8a;border:2px solid #2f5a54}
+.pestanas button[aria-selected="true"]{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border-color:#fff1b8}
+.panel[hidden]{display:none!important}
+
+/* ---------- semana ---------- */
+.semnav{display:flex;align-items:center;gap:10px;margin-bottom:12px;background:rgba(10,31,34,.85);border:2px solid #2f5a54;border-radius:16px;padding:8px 10px}
+.semnav button{width:44px;height:44px;border-radius:12px;border:2px solid var(--oro);background:transparent;color:#f3d27a;font-size:22px;cursor:pointer}
+.semnav button:disabled{opacity:.3;cursor:default}
+.semnav .t{flex:1;text-align:center;font-family:var(--f-sub);font-weight:700;color:#f3d27a;font-size:19px}
+.semnav .t small{display:block;color:#d9cfae;font-weight:400;font-size:14px}
+.dias{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.dia{position:relative;background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta-p);border:3px solid #b8934f;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.dia.hoy{border-color:#f3d27a;box-shadow:0 0 0 4px rgba(243,210,122,.45),0 10px 24px rgba(0,0,0,.35)}
+.dia.hoy::after{content:'HOY';position:absolute;top:-11px;right:14px;background:var(--granate);color:#fff;font:700 12px/1 'Cinzel',serif;padding:5px 9px;border-radius:8px;letter-spacing:.1em}
+.dia.pasada{opacity:.7}
+.dia .cab{display:flex;align-items:center;gap:10px}
+.dia .num{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--noche);color:#f3d27a;font:800 17px 'Cinzel',serif}
+.dia .fch{font-family:'Cinzel',serif;font-weight:800;color:var(--granate);font-size:18px;line-height:1.1;text-transform:capitalize}
+.dia .fch small{display:block;font-weight:700;color:#6b5732;font-size:13px;text-transform:none}
+.dia h4{font-family:'Cinzel',serif;color:#3a2a16;font-size:18px;line-height:1.2}
+.dia p{font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.35}
+.botones{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.btn{display:flex;align-items:center;gap:10px;text-decoration:none;border-radius:12px;padding:9px 12px;font-family:var(--f-sub);font-weight:700;font-size:16px;line-height:1.2}
+.btn .ic{font-size:24px;flex:none}
+.btn small{display:block;font-weight:400;font-size:13px;opacity:.85}
+.btn.juego{background:#14403a;color:#f6e3a1;border:2px solid #2d6b47}
+.btn.juego:hover{background:#1d5c54}
+.btn.ficha{background:#fffaf0;color:#7a2030;border:2px solid #d9c08a}
+.btn.ficha:hover{background:#fff}
+.btn.plan{background:transparent;color:#14403a;border:2px dashed #b8934f;font-size:14px;padding:6px 12px}
+.etq{margin-left:auto;font-size:11px;font-family:'Cinzel',serif;padding:3px 7px;border-radius:999px;background:#f3d27a;color:#3a2a16;white-space:nowrap}
+.vacio{color:#d9cfae;font-size:18px;text-align:center;padding:24px}
+
+/* ---------- juegos y fichas ---------- */
+.seccion{font-family:var(--f-sub);color:#f3d27a;font-size:20px;margin:6px 0 10px}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px;margin-bottom:20px}
+.galeria .btn{min-height:64px}
+@media print{ .pestanas,.semnav{display:none!important} }
 @media print{
   body{background:#fff!important}
   .barra,.indice,.ir,.heroe .fosil{display:none!important}
@@ -102,18 +148,38 @@ body{background:var(--fondo-img),var(--fondo)}
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
   </div>
 
-  <header class="heroe" id="heroe">
+  <header class="heroe compacta" id="heroe">
     <span class="fosil" aria-hidden="true">🦴</span>
     <div class="tema" id="hTema">Situación de aprendizaje</div>
     <h1 id="hTit">Cargando…</h1>
     <div class="sub" id="hSub"></div>
-    <div class="chips" id="hChips"></div>
   </header>
 
-  <div class="cuerpo">
-    <nav class="indice" id="indice" aria-label="Índice"><h2>ÍNDICE</h2></nav>
-    <article class="doc" id="doc"><p class="cargando">Abriendo el pergamino…</p></article>
+  <div class="pestanas" role="tablist">
+    <button type="button" role="tab" data-p="semana" aria-selected="true">📅 Semana</button>
+    <button type="button" role="tab" data-p="juegos" aria-selected="false">🎮 Juegos y fichas</button>
+    <button type="button" role="tab" data-p="plan" aria-selected="false">📜 Planificación completa</button>
   </div>
+
+  <section class="panel" id="p-semana">
+    <div class="semnav"><button type="button" id="semAnt" aria-label="Semana anterior">‹</button><div class="t" id="semTit"></div><button type="button" id="semSig" aria-label="Semana siguiente">›</button></div>
+    <div class="dias" id="dias"><p class="vacio">Cargando…</p></div>
+  </section>
+
+  <section class="panel" id="p-juegos" hidden>
+    <h2 class="seccion">🎮 Juegos para la pizarra</h2>
+    <div class="galeria" id="galJuegos"></div>
+    <h2 class="seccion">🖨️ Fichas e imprimibles</h2>
+    <div class="galeria" id="galFichas"></div>
+  </section>
+
+  <section class="panel" id="p-plan" hidden>
+    <div class="chips" id="hChips" style="margin:0 0 12px"></div>
+    <div class="cuerpo">
+      <nav class="indice" id="indice" aria-label="Índice"><h2>ÍNDICE</h2></nav>
+      <article class="doc" id="doc"><p class="cargando">Abriendo el pergamino…</p></article>
+    </div>
+  </section>
 </div>
 <div class="globo" id="globo" role="tooltip" hidden></div>
 
@@ -161,30 +227,68 @@ document.addEventListener('click', function(e){
   g.style.top = (r.bottom + 8 + g.offsetHeight > innerHeight ? Math.max(8, r.top - g.offsetHeight - 8) : r.bottom + 8)+'px';
 });
 
-/* ---------- la tabla de temporalización se convierte en tarjetas ---------- */
-function tarjetasSesiones(doc){
-  var tablas = doc.querySelectorAll('table'), hoy = U.clave(new Date());
-  Array.prototype.forEach.call(tablas, function(t){
-    var cab = Array.prototype.map.call(t.querySelectorAll('th'), function(th){ return th.textContent.trim(); });
-    if(cab[0]!=='S' || cab[1]!=='Fecha') return;
-    var box = document.createElement('div'); box.className = 'sesiones';
-    (SDA && SDA.sesiones || []).forEach(function(s, i){
-      var d = document.createElement('div');
-      d.className = 'ses'+(s.fecha===hoy ? ' hoy' : s.fecha < hoy ? ' pasada' : '');
-      d.innerHTML = '<div class="cab"><span class="num">'+(i+1)+'</span><span class="fch">'+fechaBonita(s.fecha)+'</span><span class="dur'+(parseInt(s.duracion)>60 ? ' largo' : '')+'">'+esc(s.duracion)+'</span></div>'+
-        '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
-        (s.interactivas ? '<div class="ints">'+s.interactivas.split(/,\s*(?=I-)/).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('')+'</div>' : '')+
-        recursosDe(i+1).map(function(r){ return '<a class="recurso" href="'+r.url+'">'+r.ic+' '+esc(r.n)+'</a>'; }).join('')+
-        '<a class="ir" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'">📋 Planificar esta sesión</a>';
-      box.appendChild(d);
-    });
-    var envoltorio = t.closest('.tablaScroll') || t;
-    envoltorio.parentNode.replaceChild(box, envoltorio);
-  });
-}
-
 /* recursos imprimibles (fichas, plantillas…) de una sesión */
 function recursosDe(n){ return ((SDA && SDA.recursos) || []).filter(function(r){ return (r.sesiones||[]).indexOf(n)>=0; }); }
+var PROFE = JAVI.ES_PROFE ? '?profe' : '';
+var ICONOS = { 'I-1':'📖','I-2':'👏','I-3':'🔀','I-4':'🗂️','I-5':'🏭','I-6':'⚙️','I-7':'🔍','I-8':'🎡','I-9':'🃏','I-10':'🔮','I-11':'⚖️','I-12':'💡','I-13':'🎙️','I-14':'📚','I-15':'🎲','I-16':'⚔️' };
+var DIAS_LARGOS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+/* «I-4 Clasificador de sílabas (puntúa), I-5 …» → [{cod, nombre, etq}] */
+function actividades(s){
+  return (s.interactivas || '').split(/,\s*(?=I-)/).filter(Boolean).map(function(x){
+    var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/);
+    return m ? { cod:m[1], nombre:m[2], etq:m[3] || '' } : null;
+  }).filter(Boolean);
+}
+function btnJuego(a, extra){
+  var u = SDA.enlaces && SDA.enlaces[a.cod];
+  var etq = /^puntúa$/i.test(a.etq) ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(a.etq) ? '<span class="etq">➕ ampliación</span>' : '';
+  return u ? '<a class="btn juego" href="'+u+PROFE+'"><span class="ic">'+(ICONOS[a.cod]||'🎮')+'</span><span>'+esc(a.nombre)+(extra ? '<small>'+extra+'</small>' : '')+'</span>'+etq+'</a>' : '';
+}
+function btnFicha(r, extra){ return '<a class="btn ficha" href="'+r.url+PROFE+'"><span class="ic">'+r.ic+'</span><span>'+esc(r.n.replace(/^Ficha para familias · /, 'Ficha: '))+(extra ? '<small>'+extra+'</small>' : '')+'</span></a>'; }
+
+/* ---------- pestaña Semana ---------- */
+var semana = null;
+function semanas(){ var l = []; SDA.sesiones.forEach(function(s){ var w = JAVI.lunesDe(s.fecha); if(l.indexOf(w)<0) l.push(w); }); return l; }
+function pintarSemana(){
+  var ws = semanas(), i = ws.indexOf(semana), hoy = U.clave(new Date());
+  var fin = JAVI.sumarDias(semana, 4), p1 = semana.split('-'), p2 = fin.split('-');
+  $('semTit').innerHTML = 'Semana '+(i+1)+' de '+ws.length+'<small>del '+(+p1[2])+' '+MESES[+p1[1]-1]+' al '+(+p2[2])+' '+MESES[+p2[1]-1]+'</small>';
+  $('semAnt').disabled = i<=0; $('semSig').disabled = i>=ws.length-1;
+  $('dias').innerHTML = SDA.sesiones.map(function(s, k){
+    if(JAVI.lunesDe(s.fecha)!==semana) return '';
+    var p = s.fecha.split('-');
+    return '<article class="dia'+(s.fecha===hoy ? ' hoy' : s.fecha < hoy ? ' pasada' : '')+'">'+
+      '<div class="cab"><span class="num">'+(k+1)+'</span><span class="fch">'+DIAS_LARGOS[JAVI.diaSemana(s.fecha)]+' '+(+p[2])+'<small>Sesión '+(k+1)+' · '+esc(s.duracion)+'</small></span></div>'+
+      '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
+      '<div class="botones">'+actividades(s).map(function(a){ return btnJuego(a); }).join('')+
+        recursosDe(k+1).map(function(r){ return btnFicha(r); }).join('')+
+        (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'">📋 Planificar esta sesión</a>' : '')+
+      '</div></article>';
+  }).join('') || '<p class="vacio">No hay sesiones esta semana.</p>';
+}
+function moverSemana(d){ var ws = semanas(), i = ws.indexOf(semana)+d; if(ws[i]){ semana = ws[i]; pintarSemana(); } }
+$('semAnt').addEventListener('click', function(){ moverSemana(-1); });
+$('semSig').addEventListener('click', function(){ moverSemana(1); });
+
+/* ---------- pestaña Juegos y fichas ---------- */
+function pintarGalerias(){
+  var j = [];
+  SDA.sesiones.forEach(function(s, k){ actividades(s).forEach(function(a){ j.push(btnJuego(a, 'Sesión '+(k+1)+' · '+fechaBonita(s.fecha))); }); });
+  $('galJuegos').innerHTML = j.join('');
+  $('galFichas').innerHTML = (SDA.recursos||[]).map(function(r){ return btnFicha(r, 'Sesión '+r.sesiones.join(', ')); }).join('');
+}
+
+/* ---------- pestañas ---------- */
+function abrir(p){
+  if(['semana','juegos','plan'].indexOf(p)<0) p = 'semana';
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.p===p ? 'true' : 'false'); });
+  ['semana','juegos','plan'].forEach(function(x){ $('p-'+x).hidden = x!==p; });
+}
+document.querySelector('.pestanas').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  abrir(b.dataset.p); history.replaceState(null, '', '#'+b.dataset.p);
+});
 
 /* ---------- pintar ---------- */
 function pintar(md){
@@ -194,19 +298,22 @@ function pintar(md){
   $('hTit').textContent = SDA ? SDA.titulo : h1;
   $('hTema').textContent = h1.split('·')[0].trim() || 'Situación de aprendizaje';
   document.title = SDA ? SDA.titulo : h1;
-  var resumen = (md.match(/## Datos generales\s+([^\n]+)/)||[])[1];
-  $('hSub').textContent = resumen || '';
   if(SDA){
     var fs = SDA.sesiones.map(function(s){ return s.fecha; });
-    $('hChips').innerHTML = ['🏰 '+SDA.grupo+' · Lengua', '📖 '+SDA.unidad, '🗓️ '+SDA.sesiones.length+' sesiones · '+fechaBonita(fs[0])+' – '+fechaBonita(fs[fs.length-1]),
-      '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('')+
-      (SDA.recursos||[]).map(function(r){ return '<span><a href="'+r.url+(JAVI.ES_PROFE ? '?profe' : '')+'">'+r.ic+' '+esc(r.n)+'</a></span>'; }).join('');
+    $('hSub').textContent = SDA.grupo+' · Lengua · '+SDA.sesiones.length+' sesiones, del '+fechaBonita(fs[0])+' al '+fechaBonita(fs[fs.length-1]);
+    $('hChips').innerHTML = ['📖 '+SDA.unidad, '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('');
+    /* semana que se abre: la de hoy, o la siguiente con clase, o la última */
+    var ws = semanas(), hoyW = JAVI.lunesDe(U.clave(new Date()));
+    semana = ws.filter(function(w){ return w>=hoyW; })[0] || ws[ws.length-1];
+    pintarSemana(); pintarGalerias();
+  } else {
+    $('hSub').textContent = (md.match(/## Datos generales\s+([^\n]+)/)||[])[1] || '';
+    abrir('plan');
   }
   var doc = $('doc');
   doc.innerHTML = marked.parse(cuerpo);
   /* tablas anchas con desplazamiento en el móvil */
   Array.prototype.forEach.call(doc.querySelectorAll('table'), function(t){ var w = document.createElement('div'); w.className = 'tablaScroll'; t.parentNode.insertBefore(w, t); w.appendChild(t); });
-  tarjetasSesiones(doc);
   marcarCodigos(doc);
   /* índice */
   var ind = $('indice'), n = 0;
@@ -216,6 +323,9 @@ function pintar(md){
   });
 }
 
+function desdeHash(){ var h = location.hash.slice(1); abrir(/^sec\d+$/.test(h) ? 'plan' : h); }
+desdeHash();
+window.addEventListener('hashchange', desdeHash);
 $('bImprimir').addEventListener('click', function(){ window.print(); });
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
 JAVI.listo(function(){
