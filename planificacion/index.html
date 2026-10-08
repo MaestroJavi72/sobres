@@ -149,7 +149,6 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
     <button type="button" data-fil="todo" aria-pressed="true">🗓️ Todas</button>
     <button type="button" data-fil="LCL" aria-pressed="false">📖 Lengua</button>
     <button type="button" data-fil="EF" aria-pressed="false">⚽ Educación Física</button>
-    <button type="button" data-fil="MAT" aria-pressed="false">✖️ Matemáticas</button>
   </nav>
   <nav class="pestanas" role="tablist">
     <button type="button" role="tab" data-v="semana" aria-selected="true">📅 Semana</button>
@@ -240,6 +239,7 @@ function filaFin(h){ if(h==='12:00') return 7; if(h==='13:30') return 10; var i 
 /* modo de la semana (por días / horario) y filtro de asignatura; se recuerdan en este navegador */
 var MODO = 'dias', FILTRO = 'todo';
 try{ MODO = localStorage.getItem('plan-modo') || 'dias'; FILTRO = localStorage.getItem('plan-filtro') || 'todo'; }catch(e){}
+if(['todo','LCL','EF'].indexOf(FILTRO)<0) FILTRO = 'todo';
 function pintarModo(){
   Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.setAttribute('aria-pressed', b.dataset.m===MODO ? 'true' : 'false'); });
   Array.prototype.forEach.call(document.querySelectorAll('[data-fil]'), function(b){ b.setAttribute('aria-pressed', b.dataset.fil===FILTRO ? 'true' : 'false'); });
@@ -296,8 +296,6 @@ function pintarDias(){
     });
     html += '</article>';
   }
-  if(FILTRO==='MAT' && !H.sesiones.some(function(s){ return s.asig==='MAT'; }))
-    html = '<p class="estado" style="grid-column:1/-1;font-size:18px">No tienes Matemáticas en el horario. Sus herramientas (como el ✖️ Duelo de tablas) están en <b>🧰 Recursos</b>.</p>';
   box.innerHTML = html;
 }
 function pintarHorario(){
@@ -384,16 +382,15 @@ var RECURSOS = {
     { ic:'📋', n:'Sesión y Ruleta', d:'La sesión de EF de hoy, por fases.', url:'../sesion/?asig=EF#clase' }
   ],
   MAT: [
-    { ic:'✖️', n:'Duelo de tablas', d:'Multiplicaciones al azar, por alumno o por mesas, con galeones.', url:'../tablas/', nuevo:true },
-    { ic:'🎯', n:'Ruleta con tablas', d:'En una sesión: «+ Ruleta de preguntas» → «Generar preguntas de tablas».', url:'../sesion/?grupo=4oA&ambito=tutoria#preparar' }
+    { ic:'✖️', n:'Duelo de tablas', d:'Multiplicaciones al azar, por alumno o por mesas, con galeones.', url:'../tablas/', nuevo:true }
   ]
 };
 function pintarRecursos(){
-  var as = FILTRO==='todo' ? ['LCL','EF','MAT'] : [FILTRO], h = '';
+  var as = FILTRO==='todo' ? ['LCL','EF','MAT'] : [FILTRO], h = '';   /* MAT: herramientas para el compañero de Matemáticas (Javi no la da) */
   as.forEach(function(a){
     var l = (RECURSOS[a]||[]).slice();
     JAVI.sdas().forEach(function(s){ if(s.asig===a && s.pagina) l.unshift({ ic:'📚', n:s.titulo, d:'Situación de aprendizaje de '+s.grupo+': semana a semana, juegos y fichas.', url:s.pagina+'#semana' }); });
-    h += '<section class="recAsig"><h2>'+({ LCL:'📖 ', EF:'⚽ ', MAT:'✖️ ' }[a])+NOMBRE_LARGO[a]+'</h2><div class="recGrid">'+
+    h += '<section class="recAsig"><h2>'+({ LCL:'📖 ', EF:'⚽ ', MAT:'✖️ ' }[a])+(a==='MAT' ? 'Para el compañero de Matemáticas' : NOMBRE_LARGO[a])+'</h2><div class="recGrid">'+
       l.map(function(r){ return '<a class="rec'+(r.nuevo ? ' nuevo' : '')+'" href="'+r.url+'"><span class="t"><span class="ic">'+r.ic+'</span>'+esc(r.n)+'</span><p>'+esc(r.d)+'</p></a>'; }).join('')+
       '</div></section>';
   });
