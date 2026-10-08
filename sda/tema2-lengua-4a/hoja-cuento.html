@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plan de mi cuento</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=EB+Garamond:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.dadosF{display:grid;grid-template-columns:repeat(5,1fr);gap:2mm}
+.dadosF .hueco{min-height:20mm;border-width:2px}
+.dadosF .n{font-weight:700;font-size:10pt}
+.tres{display:flex;flex-direction:column;gap:3mm}
+.parteC{border:2px solid var(--col);border-radius:3mm;padding:2mm 3mm;min-height:42mm;display:flex;flex-direction:column;gap:1.5mm}
+.parteC h3{font-family:'Cinzel',serif;color:var(--col);font-size:12pt}
+.parteC .q{font-size:10pt;color:var(--suave)}
+.parteC .lin{border-bottom:1.5px dotted var(--linea);height:7mm}
+.condiciones{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:3mm}
+.condiciones .hueco{min-height:18mm}
+.lista-control li{font-family:'Andika',sans-serif;font-size:13pt;list-style:none;display:flex;gap:3mm;align-items:center;padding:2.5mm 0;border-bottom:1px dotted var(--linea)}
+.lista-control .cas{flex:none;width:7mm;height:7mm;border:2px solid var(--granate);border-radius:1.5mm}
+.lista-control .cols{display:flex;gap:6mm;margin-left:auto;font-size:10pt;color:var(--suave)}
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="i15-dados.html" id="bVolver">← Volver</a>
+  <button class="prim" type="button" onclick="window.print()">🖨️ Imprimir (2 hojas)</button>
+</nav>
+
+<section class="hoja">
+  <header class="cabecera"><span class="buho" aria-hidden="true">📝</span><div><h1>El plan de mi cuento</h1><div class="sub">Lengua · Tema 2 · Paleontólogos de Hogwarts</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <div class="datos"><span>Nombre:</span><span class="corto">Fecha:</span></div>
+  <div class="ej"><h2><span class="num">1</span>Lo que me ha salido en los dados</h2>
+    <div class="dadosF"><div class="hueco"><span class="n">🧒 Personaje</span></div><div class="hueco"><span class="n">🗺️ Lugar</span></div><div class="hueco"><span class="n">💎 Hallazgo</span></div><div class="hueco"><span class="n">⚡ Problema</span></div><div class="hueco"><span class="n">🌀 Giro final</span></div></div></div>
+  <div class="ej"><h2><span class="num">2</span>Título de mi cuento</h2><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:8mm"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Las tres partes</h2>
+    <div class="tres">
+      <div class="parteC" style="--col:#2f9a5a"><h3>Planteamiento</h3><span class="q">¿Quién es el personaje? ¿Dónde está? ¿Cuándo pasa?</span><div class="lin"></div><div class="lin"></div><div class="lin"></div></div>
+      <div class="parteC" style="--col:#d0473f"><h3>Nudo</h3><span class="q">¿Qué problema aparece con el hallazgo?</span><div class="lin"></div><div class="lin"></div><div class="lin"></div></div>
+      <div class="parteC" style="--col:#3a6fd0"><h3>Desenlace</h3><span class="q">¿Cómo se resuelve? ¡Usa el giro final!</span><div class="lin"></div><div class="lin"></div><div class="lin"></div></div>
+    </div></div>
+  <div class="ej"><h2><span class="num">4</span>Palabras que voy a usar</h2>
+    <div class="condiciones"><div class="hueco"><span class="n">3 palabras del glosario</span></div><div class="hueco"><span class="n">1 pareja de sinónimos</span></div><div class="hueco"><span class="n">1 pareja de antónimos</span></div></div></div>
+  <footer class="pie"><span>Borrador: de 12 a 20 líneas, con título</span><span>Javificación 🦉</span></footer>
+</section>
+
+<section class="hoja">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🔍</span><div><h1>Lista de control: revisamos el cuento</h1><div class="sub">Revisión por parejas · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <div class="datos"><span>Autor/a:</span><span>Revisor/a:</span></div>
+  <div class="nota">Lee el cuento de tu compañero o compañera. Marca cada casilla y, si algo falta, díselo con amabilidad: «Me gusta… Podrías mejorar…».</div>
+  <ul class="lista-control">
+    <li><span class="cas"></span>¿Tiene título?</li>
+    <li><span class="cas"></span>¿Tiene las tres partes: planteamiento, nudo y desenlace?</li>
+    <li><span class="cas"></span>¿Usa lo que salió en los cinco dados?</li>
+    <li><span class="cas"></span>¿El final tiene el giro del dado 5?</li>
+    <li><span class="cas"></span>¿Usa al menos 3 palabras del glosario?</li>
+    <li><span class="cas"></span>¿Usa una pareja de sinónimos para no repetir palabras?</li>
+    <li><span class="cas"></span>¿Usa una pareja de antónimos?</li>
+    <li><span class="cas"></span>¿Los nombres concuerdan en género y número? (el fósil, las cuevas…)</li>
+    <li><span class="cas"></span>¿Hay mayúscula al empezar y punto al terminar cada oración?</li>
+    <li><span class="cas"></span>¿Se entiende la letra?</li>
+  </ul>
+  <div class="ej"><h2><span class="num">★</span>Lo que más me ha gustado</h2><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:9mm"></div><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:9mm"></div></div>
+  <div class="ej"><h2><span class="num">✎</span>Podrías mejorar…</h2><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:9mm"></div><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:9mm"></div></div>
+  <footer class="pie"><span>Después: versión final en limpio con un dibujo · ¡y a la silla del autor!</span><span>Javificación 🦉</span></footer>
+</section>
+<script>
+document.getElementById('bVolver').addEventListener('click', function(e){ try{ if(document.referrer && new URL(document.referrer).origin===location.origin){ e.preventDefault(); history.back(); } }catch(err){} });
+</script>
+</body>
+</html>

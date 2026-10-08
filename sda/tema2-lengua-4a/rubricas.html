@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rúbricas del debate y del cuento</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=EB+Garamond:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.rub{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:10.5pt;table-layout:fixed}
+.rub th{background:#f3ead5;border:1.5px solid var(--linea);padding:2mm;font-size:10.5pt}
+.rub td{border:1.5px solid var(--linea);padding:2mm;vertical-align:top;line-height:1.3}
+.rub td:first-child{font-weight:700}
+.rub td:first-child small{display:block;font-weight:400;color:var(--suave);font-size:9pt;margin-top:1mm}
+.rub th.n{width:21%}
+.reg{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:9.5pt;table-layout:fixed}
+.reg th,.reg td{border:1px solid var(--linea);padding:1mm 1.5mm;text-align:center}
+.reg th{background:#f3ead5;font-size:8.5pt}
+.reg td:first-child{text-align:left;font-weight:700}
+.reg tr{height:7.4mm}
+.obs td{height:13mm}
+.barra select{font-size:15px;padding:6px;border-radius:8px}
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../?id=tema2-lengua-4a" id="bVolver">← Volver</a>
+  <button class="prim" type="button" onclick="window.print()">🖨️ Imprimir todo</button>
+  <button type="button" data-p="rDebate">🖨️ Rúbrica del debate</button>
+  <button type="button" data-p="rObs">🖨️ Hoja del observador</button>
+  <button type="button" data-p="rCuento">🖨️ Rúbrica del cuento</button>
+  <button type="button" data-p="rReg">🖨️ Registro de la clase</button>
+</nav>
+
+<section class="hoja" id="rDebate">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🎙️</span><div><h1>Rúbrica del debate</h1><div class="sub">«¿Deberían devolver a la vida al mamut?» · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <table class="rub" id="tDebate"></table>
+  <p class="aviso">Nota del aspecto: 1 = 2,5 · 2 = 5 · 3 = 7,5 · 4 = 10. La nota del debate es la media de los cuatro aspectos.</p>
+  <footer class="pie"><span>Idea Javificación: galeones extra al mejor argumento de cada equipo, elegido por los observadores</span><span>🦉</span></footer>
+</section>
+
+<section class="hoja" id="rObs">
+  <header class="cabecera"><span class="buho" aria-hidden="true">👀</span><div><h1>Hoja del observador</h1><div class="sub">Debate · marca de 1 a 4 · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">Observador/a:<br>______________</div></header>
+  <div class="nota">Observa a los compañeros que te diga el maestro. Escucha con atención y marca de 1 (poco) a 4 (muy bien). Al final, elige el mejor argumento de cada equipo.</div>
+  <table class="reg obs"><tr><th style="width:30%">Nombre</th><th>Argumentos</th><th>Escucha y réplica</th><th>Turno y respeto</th><th>Voz y cuerpo</th></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></table>
+  <div class="ej"><h2><span class="num">👍</span>Mejor argumento del equipo A FAVOR</h2><div style="border-bottom:1.5px dotted var(--linea);height:9mm"></div><div style="border-bottom:1.5px dotted var(--linea);height:9mm"></div></div>
+  <div class="ej"><h2><span class="num">👎</span>Mejor argumento del equipo EN CONTRA</h2><div style="border-bottom:1.5px dotted var(--linea);height:9mm"></div><div style="border-bottom:1.5px dotted var(--linea);height:9mm"></div></div>
+  <footer class="pie"><span>Recuerda: respetar el turno, sin comentarios ofensivos, con buen tono</span><span>🦉</span></footer>
+</section>
+
+<section class="hoja" id="rCuento">
+  <header class="cabecera"><span class="buho" aria-hidden="true">📖</span><div><h1>Rúbrica del cuento</h1><div class="sub">Cuento de los dados · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <table class="rub" id="tCuento"></table>
+  <p class="aviso">Nota del aspecto: 1 = 2,5 · 2 = 5 · 3 = 7,5 · 4 = 10. La nota del cuento es la media de los cuatro aspectos.</p>
+  <footer class="pie"><span>Producto final de la SA · se lee en voz alta (silla del autor)</span><span>🦉</span></footer>
+</section>
+
+<section class="hoja" id="rReg">
+  <header class="cabecera"><span class="buho" aria-hidden="true">📋</span><div><h1>Registro de la clase</h1><div class="sub">Debate y cuento · de 1 a 4 · para pasar a Séneca</div></div><span class="esp"></span><div class="sello">4ºA · Tema 2</div></header>
+  <table class="reg" id="tReg"></table>
+  <footer class="pie"><span>Debate: LCL.2.3.1 · 2.3.2 · 2.10.2 — Cuento: LCL.2.5.1 · 2.8.2 · 2.9.1 · 2.9.2</span><span>🦉</span></footer>
+</section>
+
+<script src="../../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* RÚBRICAS: niveles 1 y 4 del documento de Javi; 2 y 3 añadidos para completar la escala */
+var DEBATE = [
+  { a:'Argumentos', c:'LCL.2.3.1', n:['Da su opinión sin razones.','Da alguna razón, pero poco clara.','Da razones claras.','Da razones claras y un ejemplo.'] },
+  { a:'Escucha y réplica', c:'LCL.2.10.2', n:['No tiene en cuenta lo que dicen otros.','Escucha, pero no responde a lo que se ha dicho.','A veces responde a lo que ha dicho el otro equipo.','Responde a lo que ha dicho el otro equipo.'] },
+  { a:'Turno y respeto', c:'LCL.2.3.2', n:['Interrumpe o se burla.','A veces interrumpe.','Respeta el turno.','Respeta el turno y usa fórmulas de cortesía.'] },
+  { a:'Voz y cuerpo', c:'LCL.2.3.1', n:['No se le oye o no mira.','Se le oye poco o casi no mira al público.','Volumen y postura adecuados casi siempre.','Volumen, tono y postura adecuados.'] }
+];
+var CUENTO = [
+  { a:'Estructura', c:'LCL.2.5.1', n:['Falta alguna parte.','Tiene las tres partes, pero poco conectadas.','Tiene las tres partes bien conectadas.','Planteamiento, nudo y desenlace claros y conectados.'] },
+  { a:'Creatividad', c:'LCL.2.8.2', n:['Repite el modelo sin cambios.','Usa los dados, pero con pocas ideas propias.','Usa los dados con ideas propias.','Usa los dados con ideas propias y un final sorprendente.'] },
+  { a:'Vocabulario', c:'LCL.2.9.1', n:['Repite palabras, no usa el glosario.','Usa alguna palabra del glosario.','Usa 3 palabras del glosario y sinónimos o antónimos.','Usa glosario, sinónimos y antónimos con sentido.'] },
+  { a:'Revisión y presentación', c:'LCL.2.9.2', n:['Muchos errores, no corrige.','Corrige algunos errores.','Corrige con su pareja; pocos errores.','Corrige con su pareja; letra clara, mayúsculas y puntos.'] }
+];
+function $(id){ return document.getElementById(id); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function tabla(rs){
+  return '<tr><th style="width:16%">Aspecto</th><th class="n">1 · Inicial</th><th class="n">2 · En proceso</th><th class="n">3 · Conseguido</th><th class="n">4 · Excelente</th></tr>'+
+    rs.map(function(r){ return '<tr><td>'+esc(r.a)+'<small>'+r.c+'</small></td>'+r.n.map(function(x){ return '<td>'+esc(x)+'</td>'; }).join('')+'</tr>'; }).join('');
+}
+$('tDebate').innerHTML = tabla(DEBATE);
+$('tCuento').innerHTML = tabla(CUENTO);
+function registro(nombres){
+  var cab = '<tr><th rowspan="2" style="width:22%">Alumno/a</th><th colspan="5">Debate</th><th colspan="5">Cuento</th></tr><tr>'+
+    ['Arg.','Escucha','Turno','Voz','Nota','Estr.','Creat.','Vocab.','Revis.','Nota'].map(function(x){ return '<th>'+x+'</th>'; }).join('')+'</tr>';
+  var filas = (nombres.length ? nombres : new Array(23).fill('')).map(function(n){ return '<tr><td>'+esc(n)+'</td>'+new Array(10).fill('<td></td>').join('')+'</tr>'; }).join('');
+  $('tReg').innerHTML = cab+filas;
+}
+registro([]);
+if(window.JAVI) JAVI.listo(function(){ var r = JAVI.grupo('4ºA'); if(r) registro(r.nombres); });
+Array.prototype.forEach.call(document.querySelectorAll('[data-p]'), function(b){
+  b.addEventListener('click', function(){
+    var id = b.dataset.p; Array.prototype.forEach.call(document.querySelectorAll('.hoja'), function(h){ h.style.display = h.id===id ? '' : 'none'; });
+    setTimeout(function(){ window.print(); Array.prototype.forEach.call(document.querySelectorAll('.hoja'), function(h){ h.style.display = ''; }); }, 50);
+  });
+});
+$('bVolver').addEventListener('click', function(e){ try{ if(document.referrer && new URL(document.referrer).origin===location.origin){ e.preventDefault(); history.back(); } }catch(err){} });
+})();
+</script>
+</body>
+</html>

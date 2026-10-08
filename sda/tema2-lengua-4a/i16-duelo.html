@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Duelo de repaso del Tema 2</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.marcador{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;width:100%;max-width:1000px}
+.eq{border-radius:18px;padding:10px;border:4px solid var(--col);background:#fffaf0;text-align:center;transition:all .2s}
+.eq.turno{box-shadow:0 0 0 6px var(--col),0 0 30px var(--col);transform:scale(1.03)}
+.eq h2{font-family:'Cinzel',serif;color:var(--col);font-size:clamp(18px,2.4vw,26px)}
+.eq .pts{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(40px,6vw,64px);color:#3a2a16;line-height:1}
+.eq .quien{font-size:16px;color:#6b5732;min-height:22px}
+.vs{font-family:'Cinzel',serif;font-weight:800;font-size:26px;color:#7a2030}
+.pregunta{font-family:'EB Garamond',Georgia,serif;font-weight:700;font-size:clamp(24px,3.6vw,42px);line-height:1.25;max-width:900px}
+.pregunta .w{font-family:'Cinzel',serif;color:#7a2030}
+.cat{font-family:'Cinzel',serif;font-size:14px;letter-spacing:.06em;color:#6b5732}
+.opciones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:800px}
+.opciones button{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(18px,2.6vw,28px);padding:14px;border-radius:16px;border:3px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.opciones button.bien{background:#3cae5f;border-color:#1e6b3c;color:#fff}
+.opciones button.mal{background:#d0473f;border-color:#8f2a24;color:#fff}
+.opciones button:disabled{cursor:default}
+.config{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;max-width:800px}
+.config input{font-family:'Cinzel',serif;font-size:18px;padding:8px 10px;border-radius:10px;border:2px solid #b8934f;background:#fffaf0;text-align:center}
+.miembros{font-size:15px;color:#6b5732;max-width:420px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⚔️ Duelo de repaso del Tema 2<span class="sub">I-16 · Repaso final · Paleontólogos de Hogwarts</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   BANCOS DEL TEMA 2 (de la situación de aprendizaje) y número de preguntas del duelo
+   ============================================================ */
+var PREGUNTAS = 20, GALEONES_GANADOR = 1;
+var SILABAS = ['sol','mar','pez','mamut','hueso','fósil','cueva','piedra','cantera','molusco','tiburón','carretera','yacimiento','paleontóloga','dinosaurio','Triásico','mariposa','bicicleta','tren','helado'];
+var VARINV = [['ayer','I'],['niño','V'],['con','I'],['enorme','V'],['y','I'],['nosotros','V'],['muy','I'],['cantera','V'],['¡oh!','I'],['siempre','I'],['vimos','V'],['pero','I'],['peludo','V'],['mañana (el día de después)','I'],['los','V'],['en','I']];
+var FEMENINO = [['niño','niña'],['león','leona'],['actor','actriz'],['emperador','emperatriz'],['caballo','yegua'],['toro','vaca'],['duque','duquesa'],['poeta','poetisa'],['rey','reina'],['príncipe','princesa'],['héroe','heroína'],['gallo','gallina']];
+var PLURAL = ['pez','luz','hueso','clan','metal','choza','vasija','rueda','collar','nariz','árbol','cazador','tiburón','fósil'];
+var SINON = [['cara','rostro'],['pelo','cabello'],['fácil','sencillo'],['camino','sendero'],['alumbrar','iluminar'],['comer','ingerir'],['dibujar','trazar'],['luchar','combatir']];
+var ANTON = [['frío','calor'],['subir','bajar'],['útil','inútil'],['posible','imposible'],['hacer','deshacer'],['ordenado','desordenado'],['antiguo','moderno'],['encontrar','perder']];
+var TONICA = ['cazador','protección','metal','amontonó','jamás','difícil','chispas','mamut','hambre','girando','conseguimos','fósil','cueva','paleontóloga'];
+var PARTES = [['Lía era una niña que vivía junto a una cantera de Algeciras.','Planteamiento'],['Un día encontró un fósil que brillaba y empezó a temblar.','Nudo'],
+  ['Lía llamó a una paleontóloga, que llevó el fósil al museo.','Desenlace'],['Hace miles de años, Ugo vivía con su tribu en una cueva.','Planteamiento'],
+  ['Una noche de tormenta, un mamut bebé se perdió cerca de la cueva.','Nudo'],['Ugo lo guio con una antorcha hasta el valle.','Desenlace']];
+
+var $ = ACT.$, A = ACT;
+function nombreSil(n){ return ['','Monosílaba','Bisílaba','Trisílaba','Polisílaba'][Math.min(4,n)]; }
+function opcionesDe(bien, falsas){
+  var u = falsas.filter(function(x, i, a){ return x!==bien && a.indexOf(x)===i; });   /* sin repetidas */
+  return A.mezclar([bien].concat(A.mezclar(u).slice(0, 3)));
+}
+/* generadores de preguntas: devuelven { cat, txt (HTML), ops, bien } */
+var GEN = [
+  function(){ var p = A.azar(SILABAS), n = A.silabas(p).length; return { cat:'SÍLABAS', txt:'¿Cuántas sílabas tiene <span class="w">'+A.esc(p)+'</span>?', ops:['1','2','3','4','5','6'].filter(function(x){ return Math.abs(+x-n)<=2; }).slice(0,4), bien:String(n), ex:A.silabas(p).join('-') }; },
+  function(){ var p = A.azar(SILABAS), n = A.silabas(p).length; return { cat:'SÍLABAS', txt:'<span class="w">'+A.esc(p)+'</span> es una palabra…', ops:['Monosílaba','Bisílaba','Trisílaba','Polisílaba'], bien:nombreSil(n), ex:A.silabas(p).join('-') }; },
+  function(){ var w = A.azar(VARINV); return { cat:'CLASES DE PALABRAS', txt:'¿<span class="w">'+A.esc(w[0])+'</span> es variable o invariable?', ops:['Variable','Invariable'], bien:w[1]==='V' ? 'Variable' : 'Invariable' }; },
+  function(){ var w = A.azar(FEMENINO); return { cat:'GÉNERO', txt:'¿Cuál es el femenino de <span class="w">'+A.esc(w[0])+'</span>?', ops:opcionesDe(w[1], FEMENINO.map(function(x){ return x[1]; }).concat([w[0]+'a', w[0].replace(/o$/,'a')])), bien:w[1] }; },
+  function(){ var p = A.azar(PLURAL), b = A.plural(p).f; var falsas = [p+'s', p+'es', /z$/.test(p) ? p+'s' : p+'z', A.sinTildes(b)].filter(function(x){ return x!==b && x!==p+'z'; }); return { cat:'NÚMERO', txt:'¿Cuál es el plural de <span class="w">'+A.esc(p)+'</span>?', ops:opcionesDe(b, falsas), bien:b }; },
+  function(){ var w = A.azar(SINON); return { cat:'SINÓNIMOS', txt:'¿Cuál es un sinónimo de <span class="w">'+A.esc(w[0])+'</span>?', ops:opcionesDe(w[1], SINON.map(function(x){ return x[1]; }).concat(ANTON.map(function(x){ return x[1]; }))), bien:w[1] }; },
+  function(){ var w = A.azar(ANTON); return { cat:'ANTÓNIMOS', txt:'¿Cuál es el antónimo de <span class="w">'+A.esc(w[0])+'</span>?', ops:opcionesDe(w[1], ANTON.map(function(x){ return x[1]; }).concat(SINON.map(function(x){ return x[1]; }))), bien:w[1] }; },
+  function(){ var p = A.azar(TONICA), s = A.silabas(p); return { cat:'SÍLABA TÓNICA', txt:'¿Cuál es la sílaba tónica de <span class="w">'+A.esc(p)+'</span>?', ops:s.slice(0, 4).concat(s.length>4 ? [s[A.tonica(p)]] : []).filter(function(x, i, a){ return a.indexOf(x)===i; }), bien:s[A.tonica(p)] }; },
+  function(){ var w = A.azar(PARTES); return { cat:'EL CUENTO', txt:'«'+A.esc(w[0])+'» ¿En qué parte del cuento va?', ops:['Planteamiento','Nudo','Desenlace'], bien:w[1] }; }
+];
+
+var EQ = { A:{ n:'Equipo Fósil', col:'#2f9a5a', m:[], cola:[], pts:0 }, B:{ n:'Equipo Mamut', col:'#d0473f', m:[], cola:[], pts:0 } };
+var lista = [], k = 0, turno = 'A', rebote = false, quien = '';
+
+function config(){
+  $('escena').innerHTML =
+    '<div class="config"><p class="instr">Dos equipos se baten en duelo con preguntas de todo el tema. Si un equipo falla, ¡rebota al otro!</p>'+
+    '<div class="botones"><input id="nA" value="'+EQ.A.n+'" aria-label="Nombre del equipo 1"><span class="vs">VS</span><input id="nB" value="'+EQ.B.n+'" aria-label="Nombre del equipo 2"></div>'+
+    '<button class="mini" id="bSortear" type="button">🎲 Sortear los equipos con la lista de 4ºA</button>'+
+    '<div class="miembros" id="miembros">Si no sorteáis, el duelo es entre dos equipos sin nombres de alumnos.</div>'+
+    '<button class="gran" id="bEmpezar" type="button">⚔️ ¡Empezar el duelo! ('+PREGUNTAS+' preguntas)</button></div>';
+  $('bSortear').addEventListener('click', function(){
+    var r = window.JAVI && JAVI.grupo('4ºA'); if(!r){ alert('No se ha podido leer la lista de 4ºA.'); return; }
+    var l = A.mezclar(r.nombres); EQ.A.m = []; EQ.B.m = []; l.forEach(function(n, i){ (i%2 ? EQ.B.m : EQ.A.m).push(n); });
+    $('miembros').innerHTML = '<b>'+A.esc($('nA').value)+':</b> '+EQ.A.m.map(A.esc).join(', ')+'<br><b>'+A.esc($('nB').value)+':</b> '+EQ.B.m.map(A.esc).join(', ');
+    A.SON.magia();
+  });
+  $('bEmpezar').addEventListener('click', empezar);
+}
+function empezar(){
+  EQ.A.n = $('nA').value.trim() || 'Equipo 1'; EQ.B.n = $('nB').value.trim() || 'Equipo 2';
+  EQ.A.pts = 0; EQ.B.pts = 0; EQ.A.cola = []; EQ.B.cola = [];
+  lista = []; for(var i=0;i<PREGUNTAS;i++) lista.push(GEN[i % GEN.length]());
+  lista = A.mezclar(lista); k = 0; turno = 'A'; pintar();
+}
+function siguienteDe(e){ var q = EQ[e]; if(!q.m.length) return ''; if(!q.cola.length) q.cola = A.mezclar(q.m); return q.cola.shift(); }
+function pintar(){
+  var q = lista[k]; rebote = false; quien = siguienteDe(turno);
+  $('escena').innerHTML =
+    '<div class="barraSup"><span>Pregunta '+(k+1)+' de '+lista.length+'</span><div class="progreso"><i style="width:'+(k/lista.length*100)+'%"></i></div></div>'+
+    '<div class="marcador">'+eqHTML('A')+'<span class="vs">VS</span>'+eqHTML('B')+'</div>'+
+    '<div class="cat">'+q.cat+'</div><div class="pregunta">'+q.txt+'</div>'+
+    '<div class="opciones" id="ops"></div><div class="mensaje" id="msg"></div>'+
+    '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente pregunta</button></div>';
+  q.ops.forEach(function(o){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = o;
+    b.addEventListener('click', function(){ responder(b, o); });
+    $('ops').appendChild(b);
+  });
+  $('bSig').addEventListener('click', function(){ k++; turno = turno==='A' ? 'B' : 'A'; if(k < lista.length) pintar(); else fin(); });
+}
+function eqHTML(e){ var q = EQ[e], activo = e===turno; return '<div class="eq'+(activo ? ' turno' : '')+'" style="--col:'+q.col+'"><h2>'+A.esc(q.n)+'</h2><div class="pts">'+q.pts+'</div><div class="quien">'+(activo && quien ? '🎯 Responde: <b>'+A.esc(quien)+'</b>' : '')+'</div></div>'; }
+function responder(b, o){
+  var q = lista[k], m = $('msg'), quienResp = rebote ? (turno==='A' ? 'B' : 'A') : turno;
+  if(o===q.bien){
+    EQ[quienResp].pts++; b.classList.add('bien'); A.SON.acierto();
+    m.className = 'mensaje bien'; m.textContent = '¡Correcto! Punto para '+EQ[quienResp].n+(q.ex ? ' ('+q.ex+')' : '')+'.';
+    terminar();
+  } else {
+    b.classList.add('mal'); b.disabled = true; A.SON.fallo();
+    if(!rebote){
+      rebote = true; var otro = turno==='A' ? 'B' : 'A', qOtro = siguienteDe(otro);
+      m.className = 'mensaje mal'; m.textContent = '¡Fallo! Rebote para '+EQ[otro].n+(qOtro ? ': responde '+qOtro : '')+'.';
+      Array.prototype.forEach.call(document.querySelectorAll('.eq'), function(el, i){ el.classList.toggle('turno', (i===0 ? 'A' : 'B')===otro); });
+    } else {
+      m.className = 'mensaje mal'; m.textContent = 'Nadie acierta. La respuesta era «'+q.bien+'»'+(q.ex ? ' ('+q.ex+')' : '')+'.';
+      Array.prototype.forEach.call(document.querySelectorAll('#ops button'), function(x){ if(x.textContent===q.bien) x.classList.add('bien'); });
+      terminar();
+    }
+  }
+}
+function terminar(){
+  Array.prototype.forEach.call(document.querySelectorAll('#ops button'), function(x){ x.disabled = true; });
+  document.querySelectorAll('.eq .pts')[0].textContent = EQ.A.pts; document.querySelectorAll('.eq .pts')[1].textContent = EQ.B.pts;
+  $('bSig').hidden = false; if(k+1===lista.length) $('bSig').textContent = '🏁 Ver quién gana';
+}
+function fin(){
+  var g = EQ.A.pts===EQ.B.pts ? null : (EQ.A.pts > EQ.B.pts ? 'A' : 'B');
+  var extra = '<div class="marcador">'+['A','B'].map(function(e){ return '<div class="eq" style="--col:'+EQ[e].col+'"><h2>'+A.esc(EQ[e].n)+'</h2><div class="pts">'+EQ[e].pts+'</div></div>'; }).join('<span class="vs">VS</span>')+'</div>';
+  if(g && EQ[g].m.length && window.JAVI && JAVI.ES_PROFE) extra += '<button class="gran verde" id="bGaleones" type="button">🪙 Dar +'+GALEONES_GANADOR+' galeón a cada miembro de '+A.esc(EQ[g].n)+'</button>';
+  A.final($('escena'), { titulo: g ? '🏆 ¡Gana '+A.esc(EQ[g].n)+'!' : '🤝 ¡Empate!', puntos:EQ.A.pts+EQ.B.pts, total:lista.length, estrellas:3,
+    detalle:'preguntas acertadas entre los dos equipos', mensajes:['','','','¡Paleontólogos acreditados! Mañana, ¡control!'], extra:extra, textoRepetir:'Otro duelo', repetir:config });
+  var bg = $('bGaleones');
+  if(bg) bg.addEventListener('click', function(){
+    if(!confirm('¿Dar +'+GALEONES_GANADOR+' galeón a los '+EQ[g].m.length+' miembros de '+EQ[g].n+'?')) return;
+    EQ[g].m.forEach(function(n){ JAVI.darPuntos('4ºA', n, GALEONES_GANADOR, 'Acierto', 'Duelo de repaso del Tema 2'); });
+    bg.disabled = true; bg.textContent = '✓ Galeones dados'; A.SON.fanfarria();
+  });
+}
+config();
+A.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

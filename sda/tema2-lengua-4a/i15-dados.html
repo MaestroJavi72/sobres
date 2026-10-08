@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dados de cuentos</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.dados{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(8px,1.4vw,16px);width:100%;max-width:1150px}
+@media (max-width:900px){ .dados{grid-template-columns:repeat(2,minmax(0,1fr))} .dado:last-child{grid-column:1 / -1;max-width:50%;justify-self:center} }
+.dado{display:flex;flex-direction:column;align-items:center;gap:8px}
+.dado h3{font-family:'Cinzel',serif;color:var(--col);font-size:clamp(14px,1.6vw,18px)}
+.cubo{width:100%;aspect-ratio:1;border-radius:22px;background:#fffaf0;border:5px solid var(--col);box-shadow:0 8px 0 var(--col),0 14px 24px rgba(0,0,0,.3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;cursor:pointer;transition:transform .2s}
+.cubo .ic{font-size:clamp(28px,3.6vw,46px);line-height:1}
+.cubo .cara{font-family:'EB Garamond',Georgia,serif;font-weight:700;font-size:clamp(15px,1.7vw,21px);line-height:1.2;color:#3a2a16}
+.cubo .cara.elige{font-family:'Cinzel',serif;color:var(--col)}
+.cubo.rueda{animation:rueda .12s infinite}
+@keyframes rueda{0%{transform:rotate(-8deg) scale(.96)}50%{transform:rotate(8deg) scale(1.02)}100%{transform:rotate(-8deg) scale(.96)}}
+.cubo.cae{animation:cae .5s}
+@keyframes cae{0%{transform:translateY(-30px) rotate(25deg)}60%{transform:translateY(6px) rotate(-6deg)}100%{transform:none}}
+.historia{width:100%;max-width:900px}
+.historia ol{margin:8px 0 0 22px}
+.historia li{margin:4px 0}
+.historia li b{color:#7a2030}
+.tiradas{font-size:15px;color:#6b5732;max-width:900px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🎲 Dados de cuentos<span class="sub">I-15 · Expresión escrita · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <p class="instr">Los tres primeros dados construyen el <b>planteamiento</b>, el cuarto el <b>nudo</b> y el quinto obliga a un <b>giro en el desenlace</b>. Toca un dado para tirarlo solo.</p>
+    <div class="dados" id="dados"></div>
+    <div class="botones">
+      <button class="gran" id="bTodos" type="button">🎲 ¡Tirar todos!</button>
+      <button class="gran sec" id="bUno" type="button">🎲 Uno a uno</button>
+      <a class="gran sec" href="dados-imprimibles.html" style="text-decoration:none">🖨️ Dados para recortar</a>
+      <a class="gran sec" href="hoja-cuento.html" style="text-decoration:none">📝 Hoja del plan del cuento</a>
+    </div>
+    <div class="caja historia" id="historia" hidden></div>
+    <div class="tiradas" id="tiradas"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="dados-datos.js"></script>
+<script>
+(function(){
+'use strict';
+var $ = ACT.$, valor = [null,null,null,null,null], tirando = 0, siguienteUno = 0, historial = [];
+function pintarDados(){
+  var box = $('dados'); box.innerHTML = '';
+  DADOS.forEach(function(d, i){
+    var e = document.createElement('div'); e.className = 'dado'; e.style.setProperty('--col', d.col);
+    e.innerHTML = '<h3>'+(i+1)+'. '+ACT.esc(d.n)+'</h3><button class="cubo" type="button" aria-label="Tirar el dado '+ACT.esc(d.n)+'"><span class="ic" aria-hidden="true">'+d.ic+'</span><span class="cara">?</span></button>';
+    e.querySelector('.cubo').addEventListener('click', function(){ tirar(i); });
+    box.appendChild(e);
+  });
+}
+function mostrar(i, k){
+  var c = document.querySelectorAll('.cubo')[i], t = DADOS[i].caras[k], el = c.querySelector('.cara');
+  el.textContent = t; el.classList.toggle('elige', t==='Elige tú');
+}
+function tirar(i, fin){
+  var c = document.querySelectorAll('.cubo')[i]; if(c.classList.contains('rueda')) return;
+  tirando++; c.classList.add('rueda');
+  var pasos = 10 + Math.floor(ACT.rnd()*6), n = 0;
+  (function paso(){
+    mostrar(i, Math.floor(ACT.rnd()*6)); ACT.SON.tono(300+ACT.rnd()*400, 0, 0.04, 'square', 0.03);
+    if(++n < pasos){ setTimeout(paso, 60 + n*8); return; }
+    var k = Math.floor(ACT.rnd()*6); valor[i] = k; mostrar(i, k);
+    c.classList.remove('rueda'); c.classList.remove('cae'); void c.offsetWidth; c.classList.add('cae'); ACT.SON.tono(180, 0, 0.12, 'triangle', 0.15);
+    tirando--; pintarHistoria(); if(fin) fin();
+  })();
+}
+function pintarHistoria(){
+  if(valor.some(function(v){ return v===null; })){ $('historia').hidden = true; return; }
+  var t = valor.map(function(k, i){ return DADOS[i].caras[k]; });
+  $('historia').hidden = false;
+  $('historia').innerHTML = '<b>📜 Tu cuento</b><ol>'+
+    '<li><b>Planteamiento:</b> personaje: '+ACT.esc(t[0])+' · lugar: '+ACT.esc(t[1])+' · hallazgo: '+ACT.esc(t[2])+'.</li>'+
+    '<li><b>Nudo:</b> '+ACT.esc(t[3])+'.</li><li><b>Desenlace (giro):</b> '+ACT.esc(t[4])+'</li></ol>'+
+    (t.indexOf('Elige tú')>=0 ? '<p class="detalle">Donde pone «Elige tú», lo decides tú.</p>' : '')+
+    '<p class="detalle">Recuerda: al menos 3 palabras del glosario, 1 pareja de sinónimos y 1 de antónimos.</p>';
+  if(!tirando){
+    var resumen = t.join(' · ');
+    if(historial[0]!==resumen){ historial.unshift(resumen); $('tiradas').innerHTML = '<b>Tiradas anteriores:</b><br>'+historial.slice(1, 6).map(ACT.esc).join('<br>'); }
+    ACT.SON.magia();
+  }
+}
+$('bTodos').addEventListener('click', function(){ valor = [null,null,null,null,null]; DADOS.forEach(function(_, i){ setTimeout(function(){ tirar(i); }, i*180); }); });
+$('bUno').addEventListener('click', function(){ if(siguienteUno===0) valor = [null,null,null,null,null]; var i = siguienteUno; tirar(i); siguienteUno = (siguienteUno+1)%5; $('bUno').textContent = siguienteUno ? '🎲 Siguiente dado ('+(siguienteUno+1)+')' : '🎲 Uno a uno'; });
+pintarDados();
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

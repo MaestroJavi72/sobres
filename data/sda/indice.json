@@ -140,7 +140,9 @@
     "I-11": "tema2-lengua-4a/i11-sinonimo-antonimo.html",
     "I-12": "tema2-lengua-4a/i12-lumos.html",
     "I-13": "tema2-lengua-4a/i13-debate.html",
-    "I-14": "tema2-lengua-4a/i14-ordena-cuento.html"
+    "I-14": "tema2-lengua-4a/i14-ordena-cuento.html",
+    "I-15": "tema2-lengua-4a/i15-dados.html",
+    "I-16": "tema2-lengua-4a/i16-duelo.html"
    },
    "recursos": [
     {
@@ -149,6 +151,33 @@
      "url": "tema2-lengua-4a/ficha-silabas.html",
      "sesiones": [
       4
+     ]
+    },
+    {
+     "n": "Rúbricas del debate y del cuento",
+     "ic": "📋",
+     "url": "tema2-lengua-4a/rubricas.html",
+     "sesiones": [
+      9,
+      10,
+      13
+     ]
+    },
+    {
+     "n": "Dados de cuentos para recortar",
+     "ic": "🎲",
+     "url": "tema2-lengua-4a/dados-imprimibles.html",
+     "sesiones": [
+      12
+     ]
+    },
+    {
+     "n": "Hoja del plan del cuento",
+     "ic": "📝",
+     "url": "tema2-lengua-4a/hoja-cuento.html",
+     "sesiones": [
+      12,
+      13
      ]
     }
    ]
