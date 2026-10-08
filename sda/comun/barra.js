@@ -35,7 +35,8 @@ fetch('../../data/sda/indice.json', { cache:'no-store' }).then(function(r){ retu
     });
   });
   var cods = Object.keys(s.enlaces).sort(function(a,b){ return +a.slice(2) - +b.slice(2); });
-  var yo = cods.filter(function(c){ return s.enlaces[c].split('/').pop()===ARCHIVO; })[0]; if(!yo) return;
+  var yo = cods.filter(function(c){ return s.enlaces[c].split('/').pop()===ARCHIVO; })[0];
+  if(!yo){ barraRecurso(s); return; }
   var i = cods.indexOf(yo), ant = cods[i-1], sig = cods[i+1], d = info[yo] || {};
   function enl(c, flecha){
     if(!c) return '<a class="vacio" aria-hidden="true">·</a>';
@@ -49,7 +50,35 @@ fetch('../../data/sda/indice.json', { cache:'no-store' }).then(function(r){ retu
     '<span class="info">'+esc(yo)+' de '+cods.length+(d.n ? ' · Sesión '+d.n+(dia ? ', '+dia : '') : '')+' '+etq+'</span>'+
     enl(sig, '›')+
     '<a class="todos" href="../?id='+encodeURIComponent(ID)+(PROFE ? '&profe' : '')+'#juegos">🎮 Todos los juegos</a>';
-  var cab = document.querySelector('header.cab');
-  if(cab) cab.parentNode.insertBefore(nav, cab.nextSibling);
+  colocar(nav);
 }).catch(function(){});
+
+/* debajo de la cabecera de la actividad, o debajo de la barra de imprimir de las fichas */
+function colocar(nav){
+  var ref = document.querySelector('header.cab') || document.querySelector('nav.barra');
+  if(ref) ref.parentNode.insertBefore(nav, ref.nextSibling); else document.body.insertBefore(nav, document.body.firstChild);
+}
+function fechaCorta(f){ var p = f.split('-'); return DIAS[new Date(+p[0], +p[1]-1, +p[2], 12).getDay()]+' '+(+p[2])+' '+MESES[+p[1]-1]; }
+
+/* fichas e imprimibles (recursos de indice.json) */
+function barraRecurso(s){
+  var rs = s.recursos || [], i = -1;
+  rs.forEach(function(r, k){ if(r.url.split('/').pop()===ARCHIVO) i = k; });
+  if(i<0) return;
+  var r = rs[i], ant = rs[i-1], sig = rs[i+1];
+  function corto(x){ return x.n.replace(/^Ficha para familias · /, 'Ficha: '); }
+  function enl(x, flecha){
+    if(!x) return '<a class="vacio" aria-hidden="true">·</a>';
+    var u = x.url.split('/').pop()+PROFE;
+    return '<a href="'+u+'" title="'+esc(x.n)+'">'+(flecha==='‹' ? '‹ <span class="ic">'+x.ic+'</span>'+esc(corto(x)) : esc(corto(x))+' <span class="ic">'+x.ic+'</span> ›')+'</a>';
+  }
+  var ses = (r.sesiones||[]).map(function(n){ var se = (s.sesiones||[])[n-1]; return se ? n+' ('+fechaCorta(se.fecha)+')' : String(n); });
+  var nav = document.createElement('nav'); nav.className = 'barraAct'; nav.setAttribute('aria-label', 'Fichas del tema');
+  nav.style.cssText = 'max-width:210mm;margin:12px auto 0;padding:0 10px';
+  nav.innerHTML = enl(ant, '‹')+
+    '<span class="info">'+r.ic+' '+(i+1)+' de '+rs.length+(ses.length ? ' · Sesi'+(ses.length>1 ? 'ones ' : 'ón ')+ses.join(', ') : '')+'</span>'+
+    enl(sig, '›')+
+    '<a class="todos" href="../?id='+encodeURIComponent(ID)+(PROFE ? '&profe' : '')+'#juegos">🖨️ Todas las fichas</a>';
+  colocar(nav);
+}
 })();
