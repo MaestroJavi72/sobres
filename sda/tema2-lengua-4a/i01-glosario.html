@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Glosario mágico</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<style>
+:root{ --perg:#f6ead0; --perg2:#ead7a8; --tinta-p:#3a2a16; --oro:#c9a34a; --granate:#7a2030; --noche:#0e2a28; }
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.cab h1{flex:1 1 280px;min-width:0;font-size:clamp(26px,4.6vw,50px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:clamp(14px,1.6vw,18px);color:var(--acento-2);letter-spacing:.06em;margin-top:4px;text-shadow:none}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.reto{color:#d9cfae;font-size:18px;margin:4px 0 14px;max-width:900px}
+.herr{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.chip{font-family:var(--f-sub);font-weight:700;font-size:16px;padding:8px 14px;border-radius:999px;border:2px solid #c9a34a;background:transparent;color:#f6e3a1}
+.chip[aria-pressed="true"]{background:#c9a34a;color:#1c1404}
+.boton{font-family:var(--f-sub);font-weight:800;font-size:16px;padding:9px 16px;border-radius:12px;border:none;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.boton.sec{background:rgba(0,0,0,.3);color:#f6e3a1;border:2px solid #5a7a72;box-shadow:none}
+.esp{flex:1}
+.cuenta{color:#d9cfae;font-size:15px}
+
+/* ---------- tarjetas que se dan la vuelta ---------- */
+.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.tarjeta{position:relative;height:270px;perspective:1100px;cursor:pointer;border:none;background:none;padding:0;text-align:inherit;color:inherit}
+.tarjeta .gira{position:absolute;inset:0;transition:transform .7s cubic-bezier(.3,.75,.25,1);transform-style:preserve-3d}
+.tarjeta.vuelta .gira{transform:rotateY(180deg)}
+.cara{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 26px rgba(0,0,0,.45)}
+.frente{align-items:center;justify-content:center;gap:10px;padding:18px;text-align:center;
+  background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.55),transparent 60%),linear-gradient(180deg,var(--perg),var(--perg2));border:3px solid #b8934f}
+.frente .ic{font-size:64px;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.frente .pal{font-family:'Cinzel',Georgia,serif;font-weight:800;color:var(--granate);font-size:clamp(22px,2.4vw,30px);line-height:1.1;hyphens:auto;-webkit-hyphens:auto}
+.frente .pal.larga{font-size:clamp(18px,2vw,24px)}
+.frente .pista{font-size:14px;color:#6b5732;font-style:italic}
+.sello{position:absolute;top:10px;left:10px;font:800 11px/1 'Cinzel',serif;letter-spacing:.06em;padding:5px 8px;border-radius:8px}
+.sello.obl{background:var(--granate);color:#fff}
+.sello.clase{background:#3d2a7a;color:#fff}
+.dorso{transform:rotateY(180deg);background:linear-gradient(170deg,#14403a,#0a1f22);border:3px solid var(--oro);color:#f6ead0;padding:14px 16px;gap:8px}
+.dorso .pal{font-family:'Cinzel',Georgia,serif;font-weight:800;color:#f3d27a;font-size:20px}
+.dorso .def{font-size:17px;line-height:1.35}
+.dorso .frase{font-size:15.5px;line-height:1.35;font-style:italic;color:#d9cfae;border-left:3px solid var(--oro);padding-left:8px}
+.dorso .frase b{font-style:normal;color:#e8cf8a;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.06em;display:block}
+.dorso .acc{margin-top:auto;display:flex;gap:6px;flex-wrap:wrap}
+.dorso .acc button{font-size:14px;padding:5px 9px;border-radius:9px;border:1px solid #5a7a72;background:rgba(0,0,0,.25);color:#f6e3a1}
+.tarjeta.destacada{z-index:5}
+.tarjeta.destacada .cara{box-shadow:0 0 0 6px #f3d27a,0 0 40px 10px rgba(243,210,122,.6)}
+.tarjeta:focus-visible{outline:none}
+.tarjeta:focus-visible .cara{outline:4px solid #f6e3a1;outline-offset:3px}
+
+/* ---------- ventana de añadir/editar ---------- */
+.velo{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:14px}
+.velo[hidden]{display:none}
+.caja{width:min(100%,560px);background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta-p);border:3px solid #b8934f;border-radius:20px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.caja h2{font-family:'Cinzel',serif;color:var(--granate);margin-bottom:10px}
+.caja label{display:flex;flex-direction:column;gap:4px;font-size:15px;color:#6b5732;margin-bottom:10px}
+.caja input,.caja textarea{font-size:18px;padding:9px 10px;border-radius:10px;border:1px solid #b8934f;background:#fffaf0;color:var(--tinta-p);font-family:'EB Garamond',Georgia,serif}
+.caja textarea{min-height:70px;resize:vertical}
+.caja .fila{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.caja .borrar{margin-right:auto;background:none;border:none;color:#a3392f;font-weight:700;font-size:15px}
+
+@media (max-width:520px){ .rejilla{grid-template-columns:1fr;gap:12px} .tarjeta{height:290px} .frente .ic{font-size:54px} .frente .pal{font-size:24px} .frente .pal.larga{font-size:20px} .chip,.boton{font-size:14px;padding:7px 11px} .dorso .def{font-size:15px} .dorso .frase{font-size:14px} }
+
+/* ---------- hoja del alumno para imprimir ---------- */
+#hoja{display:none}
+@media print{
+  body{background:#fff!important}
+  .j-envoltorio,.velo,.j-aviso{display:none!important}
+  #hoja{display:block;color:#000;font-family:Georgia,serif}
+  #hoja h1{font-size:22pt;margin-bottom:2mm}
+  #hoja p{font-size:11pt;margin-bottom:4mm}
+  #hoja table{width:100%;border-collapse:collapse}
+  #hoja th,#hoja td{border:1px solid #555;padding:2mm;font-size:11pt;vertical-align:top;text-align:left}
+  #hoja td{height:24mm}
+  #hoja th{background:#eee}
+}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">📜 Glosario mágico<span class="sub">I-1 · Paleontólogos de Hogwarts · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bVoz" type="button" aria-label="Voz" title="Leer en voz alta al dar la vuelta">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <p class="reto">Para ser <b>paleontólogos aprendices</b> hay que descifrar las palabras raras del hallazgo de Algeciras. Toca una tarjeta para darle la vuelta: ¿sabías lo que significaba?</p>
+
+  <div class="herr">
+    <button class="chip" data-f="todas" aria-pressed="true" type="button">Todas</button>
+    <button class="chip" data-f="obl" aria-pressed="false" type="button">⭐ Obligatorias</button>
+    <button class="chip" data-f="texto" aria-pressed="false" type="button">📖 Del texto</button>
+    <button class="chip" data-f="clase" aria-pressed="false" type="button">✨ De la clase</button>
+    <span class="esp"></span>
+    <button class="boton" id="bAzar" type="button">🎲 Palabra al azar</button>
+    <button class="boton sec" id="bVoltear" type="button">🔄 Dar la vuelta a todas</button>
+    <button class="boton sec" id="bAnadir" type="button" hidden>✨ Añadir palabra</button>
+    <button class="boton sec" id="bHoja" type="button">🖨️ Hoja del alumno</button>
+  </div>
+  <p class="cuenta" id="cuenta"></p>
+  <div class="rejilla" id="rejilla"></div>
+</div>
+
+<!-- añadir o editar -->
+<div class="velo" id="velo" hidden role="dialog" aria-modal="true" aria-labelledby="vTit">
+  <div class="caja">
+    <h2 id="vTit">Añadir palabra</h2>
+    <label>Palabra<input id="vPal" type="text" maxlength="40"></label>
+    <label>Frase del texto donde aparece (opcional)<textarea id="vFrase"></textarea></label>
+    <label>Significado (con palabras de la clase)<textarea id="vDef"></textarea></label>
+    <div class="fila">
+      <button class="borrar" id="vBorrar" type="button" hidden>Quitar del glosario</button>
+      <button class="boton sec" id="vCancelar" type="button">Cancelar</button>
+      <button class="boton" id="vGuardar" type="button">Guardar</button>
+    </div>
+  </div>
+</div>
+<div class="j-aviso" id="aviso" role="status" hidden></div>
+
+<!-- hoja «Mi glosario de paleontólogo» (solo al imprimir) -->
+<div id="hoja"></div>
+
+<script src="../../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   PALABRAS (Tema 2 · «Extraordinario hallazgo en Algeciras», págs. 22-23)
+   obl: obligatoria (recuadro «Amplía tu vocabulario»)
+   def: significado adaptado a 4º · ej: frase de ejemplo (no es del libro)
+   La frase real del texto la puede escribir el profe con «✏️» en cada tarjeta.
+   ============================================================ */
+var ID_SDA = 'tema2-lengua-4a';
+var PALABRAS = [
+  { p:'fósil', ic:'🦴', obl:true, def:'Resto de un animal o de una planta que vivió hace muchísimo tiempo y que se ha convertido en piedra, o la huella que dejó en una roca.', ej:'En la excursión encontramos el fósil de una concha.' },
+  { p:'yacimiento', ic:'⛏️', obl:true, def:'Lugar donde se encuentran enterrados restos antiguos, como fósiles o minerales.', ej:'Los científicos trabajan con pinceles en el yacimiento.' },
+  { p:'estrato', ic:'🗻', obl:true, def:'Cada una de las capas de tierra o de roca que se forman unas encima de otras con el paso del tiempo.', ej:'Cuanto más profundo está un estrato, más antiguo es.' },
+  { p:'moluscos', ic:'🐌', obl:true, def:'Animales de cuerpo blando; muchos tienen concha, como los caracoles, las almejas o los pulpos.', ej:'El caracol y la sepia son moluscos.' },
+  { p:'bivalvos', ic:'🐚', obl:true, def:'Moluscos con una concha de dos partes que se abren y se cierran, como las almejas o los mejillones.', ej:'Las almejas son bivalvos porque su concha tiene dos partes.' },
+  { p:'paleontólogo / paleontóloga', ic:'🔍', def:'Persona que estudia los fósiles para saber cómo eran los seres vivos del pasado.', ej:'La paleontóloga limpió el hueso con mucho cuidado.' },
+  { p:'orgánico', ic:'🌿', def:'Que procede de un ser vivo, animal o planta.', ej:'Las hojas secas son restos orgánicos.' },
+  { p:'casual', ic:'🍀', def:'Que ocurre por casualidad, sin buscarlo ni planearlo.', ej:'Fue un encuentro casual: nos vimos sin quedar.' },
+  { p:'patrimonial', ic:'🏛️', def:'Que forma parte del patrimonio: lo que tiene valor para todos y hay que cuidar y proteger.', ej:'El castillo tiene un gran valor patrimonial.' },
+  { p:'plagado', ic:'🐜', def:'Lleno de algo; que tiene muchísima cantidad de una cosa.', ej:'El examen estaba plagado de faltas de ortografía.' },
+  { p:'Triásico', ic:'🦕', def:'Periodo de la historia de la Tierra (hace unos 250 a 200 millones de años) en el que aparecieron los primeros dinosaurios.', ej:'En el Triásico todos los continentes estaban unidos.' },
+  { p:'Mioceno', ic:'🐋', def:'Periodo de la historia de la Tierra (hace unos 23 a 5 millones de años) en el que vivieron muchos mamíferos y animales marinos.', ej:'Ese tiburón gigante nadaba en los mares del Mioceno.' },
+  { p:'cantera', ic:'🏗️', def:'Lugar del que se sacan piedras para construir.', ej:'Los camiones salen de la cantera cargados de piedra.' },
+  { p:'desertización', ic:'🏜️', def:'Proceso por el que una zona se va convirtiendo en desierto porque pierde agua, plantas y vida.', ej:'Plantar árboles ayuda a frenar la desertización.' },
+  { p:'calentamiento global', ic:'🌡️', def:'Aumento de la temperatura media de la Tierra, que cambia el clima de todo el planeta.', ej:'El calentamiento global hace que se derrita el hielo de los polos.' },
+  { p:'reconstrucción', ic:'🧩', def:'Acción de volver a montar algo; por ejemplo, el esqueleto de un animal a partir de sus fósiles.', ej:'En el museo hay una reconstrucción del dinosaurio.' },
+  { p:'fauna', ic:'🦌', def:'Conjunto de animales que viven en un lugar o en una época.', ej:'La fauna de Doñana es muy variada.' }
+];
+
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util, profe = JAVI.ES_PROFE;
+var avisoT = 0;
+function aviso(t){ var a = $('aviso'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3200); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+function clavePal(p){ return U.normal(p).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-'); }
+
+/* ---------- palabras de la clase y frases del texto (se guardan en la Hoja) ---------- */
+function cambios(){
+  var k = U.normal('GLOSARIO · '+ID_SDA), por = {};
+  JAVI.filas().forEach(function(f){
+    if(U.normal(f.alumno)!==k || U.normal(f.accion)!=='glosario') return;
+    var i = f.carta.indexOf('{'); if(i<0) return;
+    try{ por[f.cartaId] = JSON.parse(f.carta.slice(i)); }catch(e){}
+  });
+  return por;
+}
+function lista(){
+  var c = cambios(), out = [];
+  PALABRAS.forEach(function(w){
+    var k = clavePal(w.p), x = c[k] || {};
+    if(x.borrada) return;
+    out.push({ k:k, p:w.p, ic:w.ic, obl:!!w.obl, def:x.definicion || w.def, frase:x.frase || '', ej:w.ej, clase:false });
+  });
+  Object.keys(c).forEach(function(k){
+    if(PALABRAS.some(function(w){ return clavePal(w.p)===k; }) || c[k].borrada) return;
+    out.push({ k:k, p:c[k].palabra, ic:'✨', obl:false, def:c[k].definicion || '', frase:c[k].frase || '', ej:'', clase:true });
+  });
+  return out;
+}
+function guardarCambio(w){ JAVI.escribir({ alumno:'GLOSARIO · '+ID_SDA, accion:'Glosario', cartaId:clavePal(w.palabra), tipo:w.palabra, carta:JSON.stringify(w) }); }
+
+/* ---------- pintar ---------- */
+var filtro = 'todas', vueltas = {};
+function pintar(){
+  var box = $('rejilla'), ws = lista(); box.innerHTML = '';
+  var vis = ws.filter(function(w){ return filtro==='todas' || (filtro==='obl' && w.obl) || (filtro==='texto' && !w.clase) || (filtro==='clase' && w.clase); });
+  $('cuenta').textContent = ws.length+' palabras en el glosario · '+ws.filter(function(w){ return w.obl; }).length+' obligatorias'+(ws.some(function(w){ return w.clase; }) ? ' · '+(function(n){ return n===1 ? '1 añadida por la clase' : n+' añadidas por la clase'; })(ws.filter(function(w){ return w.clase; }).length) : '')+' · Mínimo 8 en tu cuaderno.';
+  if(!vis.length){ box.innerHTML = '<p class="cuenta">Todavía no hay palabras aquí.</p>'; return; }
+  vis.forEach(function(w){
+    var t = document.createElement('div'); t.className = 'tarjeta'+(vueltas[w.k] ? ' vuelta' : ''); t.tabIndex = 0; t.setAttribute('role','button');
+    t.setAttribute('aria-label', w.p+(vueltas[w.k] ? ': '+w.def : '. Toca para ver su significado'));
+    t.dataset.k = w.k;
+    var frase = w.frase ? '<div class="frase"><b>EN EL TEXTO</b>'+esc(w.frase)+'</div>' : (w.ej ? '<div class="frase"><b>EJEMPLO</b>'+esc(w.ej)+'</div>' : '');
+    t.innerHTML = '<div class="gira">'+
+      '<div class="cara frente">'+(w.obl ? '<span class="sello obl">⭐ OBLIGATORIA</span>' : w.clase ? '<span class="sello clase">✨ DE LA CLASE</span>' : '')+
+        '<span class="ic" aria-hidden="true">'+w.ic+'</span><span class="pal'+(w.p.length>11 ? ' larga' : '')+'">'+esc(w.p)+'</span><span class="pista">¿Qué significa?</span></div>'+
+      '<div class="cara dorso"><span class="pal">'+esc(w.p)+'</span><div class="def">'+(w.def ? esc(w.def) : '<i>Sin significado todavía.</i>')+'</div>'+frase+
+        '<div class="acc"><button type="button" data-a="oir">🔊 Escuchar</button>'+(profe ? '<button type="button" data-a="editar">✏️ Editar</button>' : '')+'</div></div>'+
+      '</div>';
+    t.addEventListener('click', function(e){
+      var a = e.target.dataset && e.target.dataset.a;
+      if(a==='oir'){ e.stopPropagation(); hablar(w.p+'. '+(w.def||'')); return; }
+      if(a==='editar'){ e.stopPropagation(); abrirEditor(w); return; }
+      voltear(t, w);
+    });
+    t.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); voltear(t, w); } });
+    box.appendChild(t);
+  });
+}
+function voltear(t, w){
+  vueltas[w.k] = !vueltas[w.k];
+  t.classList.toggle('vuelta', vueltas[w.k]);
+  t.setAttribute('aria-label', w.p+(vueltas[w.k] ? ': '+w.def : '. Toca para ver su significado'));
+  if(vueltas[w.k] && voz) hablar(w.p+'. '+(w.def||''));
+  else if(window.speechSynthesis) speechSynthesis.cancel();
+}
+
+/* ---------- herramientas ---------- */
+Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(b){
+  b.addEventListener('click', function(){
+    filtro = b.dataset.f;
+    Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    pintar();
+  });
+});
+$('bVoltear').addEventListener('click', function(){
+  var todas = lista(), alguna = todas.some(function(w){ return !vueltas[w.k]; });
+  todas.forEach(function(w){ vueltas[w.k] = alguna; });
+  $('bVoltear').textContent = alguna ? '🔄 Tapar todas' : '🔄 Dar la vuelta a todas';
+  if(window.speechSynthesis) speechSynthesis.cancel();
+  pintar();
+});
+/* palabra al azar: se ilumina una tarjeta tapada; la clase dice lo que cree que significa y luego se le da la vuelta */
+var ultimaAzar = null;
+$('bAzar').addEventListener('click', function(){
+  var ts = Array.prototype.slice.call(document.querySelectorAll('.tarjeta'));
+  var tapadas = ts.filter(function(t){ return !t.classList.contains('vuelta') && t.dataset.k!==ultimaAzar; });
+  var pool = tapadas.length ? tapadas : ts; if(!pool.length) return;
+  ts.forEach(function(t){ t.classList.remove('destacada'); });
+  var k = 0, pasos = 14 + Math.floor(U.rnd()*6), elegida = pool[Math.floor(U.rnd()*pool.length)];
+  (function paso(){
+    ts.forEach(function(t){ t.classList.remove('destacada'); });
+    if(k >= pasos){ elegida.classList.add('destacada'); elegida.scrollIntoView({ behavior:'smooth', block:'center' }); ultimaAzar = elegida.dataset.k; ding(); return; }
+    pool[Math.floor(U.rnd()*pool.length)].classList.add('destacada'); tic(); k++;
+    setTimeout(paso, 60 + k*k*0.8);
+  })();
+});
+
+/* ---------- añadir o editar (solo el profe) ---------- */
+var editando = null;
+function abrirEditor(w){
+  editando = w || null;
+  $('vTit').textContent = w ? 'Editar «'+w.p+'»' : 'Añadir palabra de la clase';
+  $('vPal').value = w ? w.p : ''; $('vPal').disabled = !!(w && !w.clase);
+  $('vFrase').value = w ? w.frase : ''; $('vDef').value = w ? w.def : '';
+  $('vBorrar').hidden = !w;
+  $('velo').hidden = false; (w ? $('vFrase') : $('vPal')).focus();
+}
+$('vCancelar').addEventListener('click', function(){ $('velo').hidden = true; });
+$('vGuardar').addEventListener('click', function(){
+  var p = $('vPal').value.trim(); if(!p){ aviso('Escribe la palabra.'); return; }
+  if(!editando && lista().some(function(w){ return w.k===clavePal(p); })){ aviso('«'+p+'» ya está en el glosario.'); return; }
+  guardarCambio({ palabra:p, frase:$('vFrase').value.trim(), definicion:$('vDef').value.trim() });
+  $('velo').hidden = true; aviso(editando ? 'Cambios guardados.' : '«'+p+'» añadida al glosario.'); pintar();
+});
+$('vBorrar').addEventListener('click', function(){
+  if(!editando || !confirm('¿Quitar «'+editando.p+'» del glosario?')) return;
+  guardarCambio({ palabra:editando.p, borrada:true });
+  $('velo').hidden = true; aviso('Palabra quitada.'); pintar();
+});
+$('bAnadir').addEventListener('click', function(){ abrirEditor(null); });
+
+/* ---------- hoja del alumno «Mi glosario de paleontólogo» ---------- */
+$('bHoja').addEventListener('click', function(){
+  var ws = lista(), filas = '';
+  ws.filter(function(w){ return w.obl; }).forEach(function(w){ filas += '<tr><td><b>'+esc(w.p)+'</b></td><td></td><td></td><td></td></tr>'; });
+  for(var i=0;i<5;i++) filas += '<tr><td></td><td></td><td></td><td></td></tr>';
+  $('hoja').innerHTML = '<h1>Mi glosario de paleontólogo 🦴</h1>'+
+    '<p>Nombre: ______________________________ · Tema 2 · «Extraordinario hallazgo en Algeciras». Escribe al menos 8 palabras (las 5 obligatorias y 3 más, dos de ellas que no entiendas).</p>'+
+    '<table><tr><th style="width:18%">Palabra</th><th style="width:30%">Frase del texto</th><th style="width:32%">Significado (diccionario)</th><th style="width:20%">Dibujo o ejemplo</th></tr>'+filas+'</table>';
+  setTimeout(function(){ window.print(); }, 50);
+});
+
+/* ---------- voz y sonidos ---------- */
+var voz = (function(){ try{ return localStorage.getItem('glosario-voz') !== 'no'; }catch(e){ return true; } })();
+function pintarVoz(){ $('bVoz').textContent = voz ? '🔊' : '🔇'; $('bVoz').title = voz ? 'Lee en voz alta al dar la vuelta (pulsa para quitar)' : 'Sin voz (pulsa para activar)'; }
+$('bVoz').addEventListener('click', function(){ voz = !voz; try{ localStorage.setItem('glosario-voz', voz ? 'si' : 'no'); }catch(e){} pintarVoz(); if(!voz && window.speechSynthesis) speechSynthesis.cancel(); });
+pintarVoz();
+function hablar(t){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(t.replace(/\//g, ' o ')); u.lang = 'es-ES'; u.rate = 0.92;
+  var v = speechSynthesis.getVoices().filter(function(x){ return /^es(-ES)?/i.test(x.lang); })[0]; if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+var actx = null;
+function tono(f, d, tipo, vol){ try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); var o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+  o.type = tipo||'sine'; o.frequency.value = f; g.gain.setValueAtTime(vol||0.08, t); g.gain.exponentialRampToValueAtTime(0.0001, t+d); o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+d+0.02); }catch(e){} }
+function tic(){ tono(900+U.rnd()*300, 0.04, 'square', 0.03); }
+function ding(){ tono(1046, 0.3, 'triangle', 0.12); setTimeout(function(){ tono(1568, 0.35, 'triangle', 0.08); }, 90); }
+
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+if(profe) $('bAnadir').hidden = false;
+pintar();
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  /* «Volver» lleva a la situación de aprendizaje si no hay pantalla anterior */
+  document.querySelector('.volver').setAttribute('data-volver', '../?id='+ID_SDA+(profe ? '&profe' : ''));
+  pintar(); JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

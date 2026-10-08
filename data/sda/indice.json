@@ -125,7 +125,10 @@
      "duracion": "90'",
      "interactivas": "I-16 Duelo de repaso del Tema 2 (puntúa)"
     }
-   ]
+   ],
+   "enlaces": {
+    "I-1": "tema2-lengua-4a/i01-glosario.html"
+   }
   }
  ]
 }

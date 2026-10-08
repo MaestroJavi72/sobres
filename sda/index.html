@@ -55,6 +55,8 @@ body{background:var(--fondo-img),var(--fondo)}
 /* chips de criterios e interactivas */
 .crit{display:inline-block;font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:.82em;padding:1px 8px;border-radius:999px;background:var(--noche);color:#f3d27a;cursor:pointer;white-space:nowrap;border:none}
 .crit:hover{background:#1d5c54}
+.inter.listo{background:#2d6b47;color:#fff;text-decoration:none}
+.inter.listo:hover{background:#1c4d31}
 .inter{display:inline-block;font-weight:700;font-size:.85em;padding:1px 7px;border-radius:7px;background:#e2d2ff;color:#3d2a7a;white-space:nowrap}
 .globo{position:fixed;z-index:80;max-width:min(92vw,420px);background:#0e2a28;color:#f6ead0;border:2px solid var(--oro);border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.4;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 .globo b{color:#f3d27a;font-family:'Cinzel',Georgia,serif}
@@ -139,7 +141,10 @@ function marcarCodigos(root){
   nodos.forEach(function(t){
     var frag = document.createElement('span');
     frag.innerHTML = esc(t.nodeValue).replace(/LCL\.2\.\d+\.\d+/g, function(c){ return '<button type="button" class="crit" data-c="'+c+'">'+c+'</button>'; })
-                                      .replace(/\b(I-\d{1,2})\b/g, '<span class="inter">$1</span>');
+                                      .replace(/\b(I-\d{1,2})\b/g, function(c){
+                                        var u = SDA && SDA.enlaces && SDA.enlaces[c];   /* actividad ya creada: enlace */
+                                        return u ? '<a class="inter listo" href="'+u+(JAVI.ES_PROFE ? '?profe' : '')+'" title="Abrir la actividad">▶ '+c+'</a>' : '<span class="inter">'+c+'</span>';
+                                      });
     while(frag.firstChild) t.parentNode.insertBefore(frag.firstChild, t);
     t.remove();
   });
