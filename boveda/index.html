@@ -548,16 +548,14 @@ function ajustar(sg){
 }
 $('ajDar').addEventListener('click', function(){ ajustar(1); });
 $('ajQuitar').addEventListener('click', function(){ ajustar(-1); });
+/* Neutral a propósito: no se recomienda ninguna recompensa. La clase decide si canjea o ahorra (estrategia). */
 function pintarProx(s){
-  var rs = todasRecompensas().sort(function(a,b){ return a[1]-b[1]; });
-  var sig = rs.filter(function(r){ return r[1] > s; })[0];
-  var ya = rs.filter(function(r){ return r[1] <= s; });
-  var t = '';
-  if(ya.length) t = '¡Ya podéis canjear '+ya.length+(ya.length===1 ? ' recompensa' : ' recompensas')+'! ';
-  if(sig) t += (sig[1]-s===1 ? 'Os falta 1' : 'Os faltan '+(sig[1]-s))+' para «'+sig[0]+'» ('+sig[1]+').';
-  $('prox').textContent = t;
-  var tope = sig ? sig[1] : s || 1;
-  $('barra').style.width = Math.max(3, Math.min(100, s/tope*100))+'%';
+  var rs = todasRecompensas(), ya = rs.filter(function(r){ return r[1] <= s; }).length;
+  var max = rs.reduce(function(m, r){ return Math.max(m, r[1]); }, 1);
+  $('prox').textContent = ya
+    ? 'Os llega para '+ya+' de las '+rs.length+' recompensas. ¿Canjear ahora o ahorrar para algo más grande? ¡Lo decidís vosotros!'
+    : 'Todavía no os llega para ninguna recompensa. ¡A seguir ganando '+W.moneda+'!';
+  $('barra').style.width = Math.max(3, Math.min(100, s/max*100))+'%';   /* barra hasta la recompensa más cara */
 }
 
 /* ---------- guardar ---------- */
