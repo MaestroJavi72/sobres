@@ -11,7 +11,7 @@
 .pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:10px 18px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
 .pestanas button[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
-.vista[hidden]{display:none}
+.vista[hidden],.semana[hidden],.dias[hidden]{display:none!important}
 .mini{font-size:15px;padding:7px 12px;border-radius:10px;border:1px solid var(--panel-borde);background:var(--panel);color:var(--tinta)}
 .mini.rojo{border-color:#b6493f;color:#ff9a8f}
 .estado{font-size:15px;color:var(--tinta-suave)}
@@ -45,6 +45,43 @@ a.ses:hover,a.ses:focus-visible{transform:translateY(-2px);border-color:var(--ac
   .hora,.recreo{display:none}
   .cabDia{text-align:left;margin-top:8px}
 }
+
+/* ---------- vista por días (tarjetas, como la página de la SA) ---------- */
+.navSemana .grande{flex:1;min-width:200px;text-align:center}
+.navSemana .grande h2{flex:none;min-width:0}
+.navSemana .grande small{display:block;color:var(--tinta-suave);font-size:14px}
+.flecha{width:46px;height:46px;border-radius:12px;border:2px solid var(--acento);background:transparent;color:var(--acento-2);font-size:24px;cursor:pointer}
+.modo{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.modo button{font-size:15px;padding:7px 12px;border-radius:999px;border:1px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.modo button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.modo .sep{flex:1}
+.dias{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px}
+.dia{position:relative;background:linear-gradient(180deg,#f6ead0,#ead7a8);color:#3a2a16;border:3px solid #b8934f;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.dia.hoy{border-color:#f3d27a;box-shadow:0 0 0 4px rgba(243,210,122,.45),0 10px 24px rgba(0,0,0,.35)}
+.dia.hoy::after{content:'HOY';position:absolute;top:-11px;right:14px;background:#7a2030;color:#fff;font:700 12px/1 'Cinzel',serif;padding:5px 9px;border-radius:8px;letter-spacing:.1em}
+.dia.pasado{opacity:.72}
+.dia.sinclase{opacity:.5}
+.dia > h3{font-family:'Cinzel',Georgia,serif;font-weight:800;color:#7a2030;font-size:20px;text-transform:capitalize;line-height:1.1}
+.dia > h3 small{font-weight:700;color:#6b5732;font-size:13px;text-transform:none;margin-left:6px}
+.bloque{background:#fffaf0;border:2px solid #d9c08a;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.bloque .arr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bloque .gr{font-family:var(--f-sub);font-weight:800;font-size:14px;padding:2px 9px;border-radius:8px}
+.bloque.EF .gr{background:#d7ece6;color:#1d6b5a}
+.bloque.LCL .gr{background:#f6dcdc;color:#a3392f}
+.bloque .h{font-size:13px;color:#6b5732;margin-left:auto}
+.bloque h4{font-family:'Cinzel',Georgia,serif;font-size:17px;line-height:1.2;color:#3a2a16}
+.bloque h4.vacio{font-family:inherit;font-weight:400;font-style:italic;color:#8a7650;font-size:16px}
+.bloque p{font-family:'EB Garamond',Georgia,serif;font-size:16.5px;line-height:1.3;margin:0}
+.bloque .sdaT{font-size:13px;color:#6b5732}
+.bloque .sdaT a{color:#14403a}
+.btn{display:flex;align-items:center;gap:9px;text-decoration:none;border-radius:11px;padding:7px 10px;font-family:var(--f-sub);font-weight:700;font-size:15px;line-height:1.2}
+.btn .ic{font-size:21px;flex:none}
+.btn.juego{background:#14403a;color:#f6e3a1;border:2px solid #2d6b47}
+.btn.ficha{background:#fff;color:#7a2030;border:2px solid #d9c08a}
+.btn.plan{background:transparent;color:#14403a;border:2px dashed #b8934f;font-size:14px;padding:5px 10px}
+.btn.plan.hecho{border-style:solid;background:#eef6ea}
+.etq{margin-left:auto;font-size:11px;font-family:'Cinzel',serif;padding:3px 7px;border-radius:999px;background:#f3d27a;color:#3a2a16;white-space:nowrap}
+@media print{ .modo,.flecha{display:none!important} .dia,.bloque{background:#fff!important;break-inside:avoid} .btn{border:1px solid #999!important;background:#fff!important;color:#000!important} }
 
 /* ---------- situaciones de aprendizaje ---------- */
 .listaSda{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
@@ -101,14 +138,24 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
   <!-- SEMANA -->
   <section class="vista" id="v-semana">
     <div class="navSemana">
-      <button class="mini" id="sAnt" type="button" aria-label="Semana anterior">◀</button>
-      <h2 id="sTit"></h2>
-      <button class="mini" id="sHoy" type="button">Esta semana</button>
-      <button class="mini" id="sSig" type="button" aria-label="Semana siguiente">▶</button>
-      <button class="mini" id="sImprimir" type="button">🖨️ Imprimir</button>
+      <button class="flecha" id="sAnt" type="button" aria-label="Semana anterior">‹</button>
+      <div class="grande"><h2 id="sTit"></h2><small id="sSub"></small></div>
+      <button class="flecha" id="sSig" type="button" aria-label="Semana siguiente">›</button>
     </div>
-    <div class="semana" id="semana"></div>
-    <p class="estado noImprimir" style="margin-top:8px">Toca una sesión para planificarla (fases, Ruleta de preguntas…). En cursiva: el título que viene de su situación de aprendizaje.</p>
+    <div class="modo noImprimir">
+      <button type="button" data-m="dias" aria-pressed="true">🗂️ Por días</button>
+      <button type="button" data-m="horario" aria-pressed="false">▦ Horario</button>
+      <span class="sep"></span>
+      <button type="button" data-fil="todo" aria-pressed="true">Todo</button>
+      <button type="button" data-fil="LCL" aria-pressed="false">📖 Lengua</button>
+      <button type="button" data-fil="EF" aria-pressed="false">⚽ EF</button>
+      <span class="sep"></span>
+      <button type="button" id="sHoy">Esta semana</button>
+      <button type="button" id="sImprimir">🖨️</button>
+    </div>
+    <div class="dias" id="dias"></div>
+    <div class="semana" id="semana" hidden></div>
+    <p class="estado noImprimir" id="ayudaHorario" style="margin-top:8px" hidden>Toca una sesión para planificarla (fases, Ruleta de preguntas…). En cursiva: el título que viene de su situación de aprendizaje.</p>
   </section>
 
   <!-- SITUACIONES DE APRENDIZAJE -->
@@ -165,11 +212,71 @@ var FILAS = ['09:30','10:00','10:30','11:00','11:30','RECREO','12:30','13:00'];
 function filaDe(h){ var i = FILAS.indexOf(h); return i<0 ? null : i+2; }         /* +2: la fila 1 son los días */
 function filaFin(h){ if(h==='12:00') return 7; if(h==='13:30') return 10; var i = FILAS.indexOf(h); return i+2; }
 
+/* modo de la semana (por días / horario) y filtro de asignatura; se recuerdan en este navegador */
+var MODO = 'dias', FILTRO = 'todo';
+try{ MODO = localStorage.getItem('plan-modo') || 'dias'; FILTRO = localStorage.getItem('plan-filtro') || 'todo'; }catch(e){}
+function pintarModo(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.setAttribute('aria-pressed', b.dataset.m===MODO ? 'true' : 'false'); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-fil]'), function(b){ b.setAttribute('aria-pressed', b.dataset.fil===FILTRO ? 'true' : 'false'); });
+  $('dias').hidden = MODO!=='dias'; $('semana').hidden = MODO!=='horario'; $('ayudaHorario').hidden = MODO!=='horario';
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.addEventListener('click', function(){ MODO = b.dataset.m; try{ localStorage.setItem('plan-modo', MODO); }catch(e){} pintarModo(); pintarSemana(); }); });
+Array.prototype.forEach.call(document.querySelectorAll('[data-fil]'), function(b){ b.addEventListener('click', function(){ FILTRO = b.dataset.fil; try{ localStorage.setItem('plan-filtro', FILTRO); }catch(e){} pintarModo(); pintarSemana(); }); });
+function pasaFiltro(s){ return FILTRO==='todo' || s.asig===FILTRO; }
+
+/* juegos de una sesión de SA: «I-4 Clasificador de sílabas (puntúa), I-5 …» */
+var ICONOS = { 'I-1':'📖','I-2':'👏','I-3':'🔀','I-4':'🗂️','I-5':'🏭','I-6':'⚙️','I-7':'🔍','I-8':'🎡','I-9':'🃏','I-10':'🔮','I-11':'⚖️','I-12':'💡','I-13':'🎙️','I-14':'📚','I-15':'🎲','I-16':'⚔️' };
+var DIAS_LARGOS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+function botonesSda(sd){
+  var P = JAVI.ES_PROFE ? '?profe' : '', h = '';
+  (sd.sesion.interactivas || '').split(/,\s*(?=I-)/).forEach(function(x){
+    var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
+    if(!u) return;
+    var etq = /^puntúa$/i.test(m[3]||'') ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(m[3]||'') ? '<span class="etq">➕ ampliación</span>' : '';
+    h += '<a class="btn juego" href="../sda/'+u+P+'"><span class="ic">'+(ICONOS[m[1]]||'🎮')+'</span><span>'+esc(m[2])+'</span>'+etq+'</a>';
+  });
+  (sd.sda.recursos || []).forEach(function(r){
+    if((r.sesiones||[]).indexOf(sd.i+1)<0) return;
+    h += '<a class="btn ficha" href="../sda/'+r.url+P+'"><span class="ic">'+r.ic+'</span><span>'+esc(r.n.replace(/^Ficha para familias · /, 'Ficha: '))+'</span></a>';
+  });
+  return h;
+}
+
 function pintarSemana(){
+  var viernes = JAVI.sumarDias(lunes, 4);
+  $('sTit').textContent = 'Semana del '+fechaBonita(lunes)+' al '+fechaBonita(viernes);
+  var L = JAVI.lunesDe(U.clave(new Date())), dif = Math.round((new Date(lunes) - new Date(L)) / 864e5 / 7);
+  $('sSub').textContent = dif===0 ? 'Esta semana' : dif===1 ? 'La semana que viene' : dif===-1 ? 'La semana pasada' : dif>0 ? 'Dentro de '+dif+' semanas' : 'Hace '+(-dif)+' semanas';
+  if(MODO==='dias') pintarDias(); else pintarHorario();
+}
+function pintarDias(){
+  var H = JAVI.horario(), box = $('dias');
+  if(!H){ box.textContent = 'No se ha podido leer el horario.'; return; }
+  var hoy = U.clave(new Date()), fes = JAVI.festivos(), html = '';
+  for(var d=1; d<=5; d++){
+    var f = JAVI.sumarDias(lunes, d-1), sinClase = fes.indexOf(f)>=0, p = f.split('-');
+    var ses = H.sesiones.filter(function(s){ return s.dia===d && pasaFiltro(s); }).sort(function(a,b){ return a.ini.localeCompare(b.ini); });
+    html += '<article class="dia'+(f===hoy ? ' hoy' : f<hoy ? ' pasado' : '')+(sinClase ? ' sinclase' : '')+'"><h3>'+DIAS_LARGOS[d]+' '+(+p[2])+'<small>'+(sinClase ? 'sin clase' : MESES[+p[1]-1])+'</small></h3>';
+    if(!ses.length) html += '<p class="estado" style="color:#6b5732">Sin sesiones.</p>';
+    ses.forEach(function(s){
+      var plan = JAVI.planDe(s.grupo, f, s.asig), sd = JAVI.sdaDeSesion(s.grupo, f, s.asig);
+      var tit = plan && plan.titulo || sd && sd.sesion.titulo || '', ruleta = plan && (plan.fases||[]).some(function(x){ return x.tipo==='ruleta'; });
+      var nf = plan && plan.fases ? plan.fases.length : 0;
+      html += '<div class="bloque '+s.asig+'"><div class="arr"><span class="gr">'+esc(s.grupo)+' · '+(NOMBRE_ASIG[s.asig]||s.asig)+'</span><span class="h">'+s.ini+'–'+s.fin+'</span></div>'+
+        (tit ? '<h4>'+esc(tit)+(ruleta ? ' 🎯' : '')+'</h4>' : '<h4 class="vacio">'+(sinClase ? 'Sin clase' : 'Sin planificar')+'</h4>')+
+        (sd && sd.sesion.objetivo ? '<p>'+esc(sd.sesion.objetivo)+'</p>' : '')+
+        (sd ? '<div class="sdaT">📚 '+(sd.sda.pagina ? '<a href="'+sd.sda.pagina+(JAVI.ES_PROFE ? '&profe' : '')+'#semana">'+esc(sd.sda.titulo)+'</a>' : esc(sd.sda.titulo))+' · sesión '+(sd.i+1)+' de '+sd.sda.sesiones.length+'</div>'+botonesSda(sd) : '')+
+        (sinClase ? '' : '<a class="btn plan'+(nf ? ' hecho' : '')+'" href="../sesion/?profe&grupo='+encodeURIComponent(s.grupo).replace('%C2%BA','o')+'&fecha='+f+'&asig='+s.asig+'">📋 '+(nf ? 'Sesión planificada · '+nf+' fases' : 'Planificar esta sesión')+'</a>')+
+        '</div>';
+    });
+    html += '</article>';
+  }
+  box.innerHTML = html;
+}
+function pintarHorario(){
   var H = JAVI.horario(), box = $('semana'); box.innerHTML = '';
   if(!H){ box.textContent = 'No se ha podido leer el horario.'; return; }
-  var viernes = JAVI.sumarDias(lunes, 4), hoy = U.clave(new Date()), fes = JAVI.festivos();
-  $('sTit').textContent = 'Semana del '+fechaBonita(lunes)+' al '+fechaBonita(viernes);
+  var hoy = U.clave(new Date()), fes = JAVI.festivos();
   /* cabeceras */
   box.appendChild(celda('div', '', 1, 1));
   H.dias.forEach(function(d, i){
@@ -183,7 +290,7 @@ function pintarSemana(){
     var c = celda('div', 'hora', i+2, 1); c.textContent = h; box.appendChild(c);
   });
   /* sesiones */
-  H.sesiones.forEach(function(s){
+  H.sesiones.filter(pasaFiltro).forEach(function(s){
     var f = JAVI.sumarDias(lunes, s.dia-1), sinClase = fes.indexOf(f)>=0;
     var plan = JAVI.planDe(s.grupo, f, s.asig), sd = JAVI.sdaDeSesion(s.grupo, f, s.asig);
     var el = document.createElement(sinClase ? 'div' : 'a');
@@ -374,7 +481,7 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-f]'), function(b){
 /* ---------- arranque ---------- */
 JAVI.listo(function(){
   lunes = JAVI.lunesDe(q.get('semana') || U.clave(new Date()));
-  pintarSemana(); pintarListaSda(); pintarFestivos();
+  pintarModo(); pintarSemana(); pintarListaSda(); pintarFestivos();
   var v = (location.hash||'').replace('#',''); verVista(['semana','sda','festivos'].indexOf(v)>=0 ? v : 'semana');
   JAVI.avisoPrueba();
 });
