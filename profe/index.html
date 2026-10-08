@@ -41,10 +41,20 @@ h2{font-family:var(--f-sub);color:var(--acento-2);font-size:20px;margin-bottom:1
 .temas input{width:20px;height:20px;accent-color:var(--acento)}
 .temas label:has(input:checked){border-color:var(--acento);box-shadow:0 0 0 3px var(--brillo)}
 
-/* enlaces */
-.enl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--panel-borde)}
-.enl b{min-width:200px}
-.enl code{flex:1;min-width:200px;font-size:14px;background:rgba(0,0,0,.2);padding:6px 8px;border-radius:8px;overflow-wrap:anywhere}
+.grupos button small{font-weight:400;font-size:13px;opacity:.8;margin-left:4px}
+details.bajas{margin-top:12px;border:1px dashed var(--panel-borde);border-radius:12px;padding:8px 12px}
+details.bajas summary{cursor:pointer;font-family:var(--f-sub);font-weight:700;color:var(--tinta-suave)}
+
+/* enlaces (tarjetas por grupos) */
+.enls{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:10px}
+.enl{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:14px;border:2px solid var(--panel-borde);background:rgba(0,0,0,.15)}
+.enl .t{display:flex;gap:8px;align-items:center;font-family:var(--f-sub);font-weight:700;font-size:17px}
+.enl .t .ic{font-size:24px}
+.enl .d{font-size:14px;color:var(--tinta-suave);line-height:1.3}
+.enl code{font-size:13px;background:rgba(0,0,0,.2);padding:5px 8px;border-radius:8px;overflow-wrap:anywhere}
+.enl .acc{display:flex;gap:6px}
+.enl .acc .mini{text-decoration:none}
+h3.grupoEnl{font-family:var(--f-sub);color:var(--acento-2);font-size:18px;margin:4px 0 10px}
 ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
 </style>
 </head>
@@ -68,6 +78,7 @@ ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
         <b>Dar de baja</b> no borra nada: su historial se conserva y se puede volver a dar de alta. Si cambias un nombre, sus puntos y cartas siguen siendo suyos.</p>
       <div class="grupos" id="grupos"></div>
       <ul class="lista" id="lista"></ul>
+      <details class="bajas" id="bajasBox" hidden><summary id="bajasT"></summary><ul class="lista" id="listaBajas"></ul></details>
       <div class="nuevo">
         <input id="nNombre" type="text" maxlength="30" placeholder="Nombre del nuevo alumno/a" aria-label="Nombre">
         <select id="nSexo" aria-label="Chico o chica"><option value="">Chico</option><option value="chica">Chica</option></select>
@@ -101,8 +112,12 @@ ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
         Para los alumnos usa las direcciones <b>sin</b> «?profe».</p>
     </div>
     <div class="j-panel">
-      <h2>Direcciones</h2>
-      <div id="enlaces"></div>
+      <h3 class="grupoEnl">🎒 Para los alumnos (sin «?profe»)</h3>
+      <div class="enls" id="enlAlumnos"></div>
+    </div>
+    <div class="j-panel">
+      <h3 class="grupoEnl">🗝️ Para ti (con «?profe»)</h3>
+      <div class="enls" id="enlProfe"></div>
     </div>
   </section>
 </div>
@@ -122,7 +137,7 @@ function verVista(v){
   vista = v;
   Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
   ['alumnos','tema','enlaces'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
-  history.replaceState(null, '', '#'+v);
+  history.replaceState(null, '', location.search+'#'+v);
 }
 Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
 
@@ -142,6 +157,7 @@ function pintarGrupos(){
   if(gs.indexOf(grupo)<0) grupo = gs[0];
   gs.forEach(function(g){
     var b = document.createElement('button'); b.type = 'button'; b.textContent = g;
+    var c = JAVI.grupoCompleto(g); if(c){ var s = document.createElement('small'); s.textContent = c.todos.filter(function(a){ return a.activo; }).length; b.appendChild(s); }
     b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
     b.addEventListener('click', function(){ grupo = g; abierto = null; try{ localStorage.setItem('profe-grupo', g); }catch(e){} pintar(); });
     box.appendChild(b);
@@ -153,9 +169,10 @@ function sel(nombre, opciones, valor){
   return s+'</select>';
 }
 function pintarLista(){
-  var c = JAVI.grupoCompleto(grupo), ul = $('lista'); ul.innerHTML = '';
+  var c = JAVI.grupoCompleto(grupo), ul = $('lista'); ul.innerHTML = ''; $('listaBajas').innerHTML = '';
   if(!c){ ul.innerHTML = '<li>No se ha podido leer la lista de alumnos.</li>'; return; }
-  var activos = c.todos.filter(function(a){ return a.activo; }).length;
+  var activos = c.todos.filter(function(a){ return a.activo; }).length, bajas = c.todos.length - activos;
+  $('bajasBox').hidden = !bajas; $('bajasT').textContent = 'Dados de baja ('+bajas+')';
   c.todos.slice().sort(function(a,b){ return (b.activo-a.activo) || a.n.localeCompare(b.n, 'es'); }).forEach(function(a){
     var li = document.createElement('li'); li.className = 'alu'+(a.activo ? '' : ' baja');
     li.innerHTML = '<span class="nom"></span><span class="etq"></span>'+
@@ -170,7 +187,7 @@ function pintarLista(){
       if(acc==='vuelve'){ JAVI.cambiarAlumno(grupo, 'vuelve', a.n); aviso(a.n+' vuelve a '+grupo+'.'); pintar(); }
     });
     if(abierto===a.n) li.appendChild(editor(a));
-    ul.appendChild(li);
+    (a.activo ? ul : $('listaBajas')).appendChild(li);
   });
   var hora = JAVI.horaHoja();
   $('estado').textContent = activos+' alumnos activos en '+grupo+'.'+(hora ? ' Hoja leída a las '+JAVI.util.pad(hora.getHours())+':'+JAVI.util.pad(hora.getMinutes())+'.' : ' (No se ha podido leer la Hoja.)');
@@ -251,31 +268,40 @@ function pintarTemas(){
    ============================================================ */
 function pintarEnlaces(){
   var base = new URL(JAVI.BASE, location.href).href.replace(/\/?$/, '/');
-  var lista = [
-    ['Portada (alumnos)', base],
-    ['Portada (profe)', base+'?profe'],
-    ['Tutoría 4ºA (alumnos)', base+'#tutoria'],
-    ['Educación Física (alumnos)', base+'#ef'],
-    ['4ºA · El Mercader (alumnos)', base+'hogwarts/'],
-    ['4ºA · Mis cartas (alumnos)', base+'hogwarts/#mis'],
-    ['4ºA · Hogwarts (profe)', base+'hogwarts/?profe#hogwarts'],
-    ['Gamificación EF', base+'ef/'],
-    ['Bóveda de la clase', base+'boveda/'],
-    ['Sesión y Ruleta', base+'sesion/?profe'],
-    ['Planificación semanal', base+'planificacion/?profe'],
-    ['Responsable y capitanes', base+'sorteos/?profe'],
-    ['Panel del profe', base+'profe/?profe']
+  /* [icono, nombre, para qué, dirección] */
+  var alumnos = [
+    ['🏠', 'Portada', 'Tutoría y EF, sin la planificación.', base],
+    ['🏰', 'Tutoría 4ºA', 'La portada abierta en la parte de 4ºA.', base+'#tutoria'],
+    ['⚽', 'Educación Física', 'La portada abierta en la parte de EF.', base+'#ef'],
+    ['🛒', '4ºA · El Mercader', 'Comprar cartas con galeones.', base+'hogwarts/'],
+    ['🃏', '4ºA · Mis cartas', 'Cada alumno ve sus cartas.', base+'hogwarts/#mis']
   ];
-  var box = $('enlaces'); box.innerHTML = '';
-  lista.forEach(function(e){
-    var d = document.createElement('div'); d.className = 'enl';
-    d.innerHTML = '<b></b><code></code><button class="mini" type="button">Copiar</button><a class="mini" target="_blank" rel="noopener">Abrir</a>';
-    d.querySelector('b').textContent = e[0]; d.querySelector('code').textContent = e[1]; d.querySelector('a').href = e[1];
-    d.querySelector('button').addEventListener('click', function(){
-      (navigator.clipboard ? navigator.clipboard.writeText(e[1]) : Promise.reject()).then(function(){ aviso('Copiado.'); }, function(){ prompt('Copia esta dirección:', e[1]); });
+  var profe = [
+    ['🗝️', 'Portada del profe', 'Las tres puertas: Tutoría, EF y Planificación.', base+'?profe'],
+    ['🏰', '4ºA · Hogwarts', 'Dar puntos, campeones del mes e informe.', base+'hogwarts/?profe#hogwarts'],
+    ['⚽', 'Gamificación EF', 'Coevaluación, la clase y el Mercader de EF.', base+'ef/?profe'],
+    ['🏦', 'Bóveda de la clase', 'Autoevaluación, recompensas y movimientos.', base+'boveda/?profe'],
+    ['📋', 'Sesión y Ruleta', 'La sesión de hoy para la pizarra.', base+'sesion/?profe'],
+    ['📅', 'Planificación semanal', 'La semana por días o en horario.', base+'planificacion/?profe'],
+    ['👑', 'Responsable y capitanes', 'Sorteos sin repetir.', base+'sorteos/?profe'],
+    ['📚', 'Tema 2 de Lengua', 'La situación de aprendizaje, por semanas, con juegos y fichas.', base+'sda/?id=tema2-lengua-4a&profe'],
+    ['⚙️', 'Panel del profe', 'Esta página.', base+'profe/?profe']
+  ];
+  function tarjetas(id, lista){
+    var box = $(id); box.innerHTML = '';
+    lista.forEach(function(e){
+      var d = document.createElement('div'); d.className = 'enl';
+      d.innerHTML = '<div class="t"><span class="ic"></span><span class="n"></span></div><div class="d"></div><code></code>'+
+        '<div class="acc"><button class="mini" type="button">📋 Copiar</button><a class="mini" target="_blank" rel="noopener">↗ Abrir</a></div>';
+      d.querySelector('.ic').textContent = e[0]; d.querySelector('.n').textContent = e[1]; d.querySelector('.d').textContent = e[2];
+      d.querySelector('code').textContent = e[3]; d.querySelector('a').href = e[3];
+      d.querySelector('button').addEventListener('click', function(){
+        (navigator.clipboard ? navigator.clipboard.writeText(e[3]) : Promise.reject()).then(function(){ aviso('Copiado.'); }, function(){ prompt('Copia esta dirección:', e[3]); });
+      });
+      box.appendChild(d);
     });
-    box.appendChild(d);
-  });
+  }
+  tarjetas('enlAlumnos', alumnos); tarjetas('enlProfe', profe);
 }
 
 function pintar(){ pintarGrupos(); pintarLista(); pintarTemas(); }
