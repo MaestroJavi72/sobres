@@ -156,6 +156,15 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#16263a;border:2px solid var(--oro);color:var(--oro2);
   padding:12px 18px;border-radius:12px;z-index:60;font-size:17px;max-width:92vw;text-align:center}
 @media (prefers-reduced-motion:reduce){ .fiesta,.fiesta .mensaje{animation:none} }
+/* pestañas (como la SA, la planificación y la sesión) */
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pestanas button{font-family:var(--fT);font-weight:800;font-size:clamp(16px,2vw,19px);padding:10px 18px;border-radius:14px;background:rgba(22,38,58,.9);color:var(--oro2);border:2px solid #3a4c66}
+.pestanas button[aria-selected="true"]{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border-color:#fff1b8}
+[data-tema="vengadores"] .pestanas button[aria-selected="true"]{background:var(--oro);color:#fff;border-color:var(--oro2)}
+[data-tema="pokemon"] .pestanas button[aria-selected="true"]{background:var(--oro);color:#1d2a44;border-color:#fff}
+.vista[hidden]{display:none!important}
+#v-mov > .caja{margin-bottom:0}
+.saldoMini .saldo b{font-size:48px}
 </style>
 </head>
 <body>
@@ -170,6 +179,14 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
   <nav class="grupos" id="grupos" aria-label="Clase"></nav>
 
+  <nav class="pestanas" role="tablist">
+    <button type="button" role="tab" data-v="auto" aria-selected="true">⭐ Autoevaluación</button>
+    <button type="button" role="tab" data-v="rec" aria-selected="false">🎁 Recompensas</button>
+    <button type="button" role="tab" data-v="mov" aria-selected="false">📜 Movimientos</button>
+  </nav>
+
+  <!-- AUTOEVALUACIÓN -->
+  <div class="vista" id="v-auto">
   <div class="cols">
     <section class="perg" aria-labelledby="tAuto">
       <h2 id="tAuto">Autoevaluación de la clase · <span id="tGrupo"></span></h2>
@@ -192,20 +209,32 @@ button{font-family:inherit;color:inherit;cursor:pointer}
         <div class="prox" id="prox"></div>
         <div class="barra"><i id="barra" style="width:0"></i></div>
       </div>
-      <div class="caja">
-        <h3>ÚLTIMAS AUTOEVALUACIONES</h3>
-        <ul class="hist" id="hist"><li>…</li></ul>
-        <div class="estado" id="estado"></div>
-      </div>
       <button class="ensayo" id="bEnsayo" type="button">✨ Ensayar la animación (no guarda nada)</button>
     </aside>
   </div>
+  </div>
 
+  <!-- RECOMPENSAS -->
+  <div class="vista" id="v-rec" hidden>
+  <div class="caja saldoMini">
+    <div class="saldo">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#cofre"/></svg>
+      <div><b id="saldo2">…</b><small id="saldoTxt2"></small></div>
+    </div>
+  </div>
   <section class="bloque" aria-labelledby="tRec">
     <h2 id="tRec">🎁 Recompensas de <span class="gNom"></span></h2>
     <div id="recompensas"></div>
   </section>
+  </div>
 
+  <!-- MOVIMIENTOS -->
+  <div class="vista" id="v-mov" hidden>
+  <div class="caja">
+    <h3>ÚLTIMAS AUTOEVALUACIONES</h3>
+    <ul class="hist" id="hist"><li>…</li></ul>
+    <div class="estado" id="estado"></div>
+  </div>
   <section class="bloque" aria-labelledby="tMov">
     <h2 id="tMov">📜 Movimientos</h2>
     <ul class="movs" id="movs"></ul>
@@ -217,6 +246,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       <button class="peq rojo" id="ajQuitar" type="button">Quitar</button>
     </div>
   </section>
+  </div>
 </div>
 
 <!-- escena de monedas -->
@@ -488,10 +518,10 @@ function pintar(){
   }
 
   /* saldo, próxima recompensa e historial */
-  if(!cargado){ $('saldo').textContent = '…'; return; }
+  if(!cargado){ $('saldo').textContent = $('saldo2').textContent = '…'; return; }
   var s = saldoDe(grupo);
-  $('saldo').textContent = s;
-  $('saldoTxt').textContent = W.moneda+' de '+grupo;
+  $('saldo').textContent = $('saldo2').textContent = s;
+  $('saldoTxt').textContent = $('saldoTxt2').textContent = W.moneda+' de '+grupo;
   pintarProx(s);
   var hs = bovMovs(grupo).filter(esAutoev).slice(-6).reverse(), ul = $('hist'); ul.innerHTML = '';
   if(!hs.length){ ul.innerHTML = '<li>Todavía no hay ninguna.</li>'; }
@@ -725,6 +755,16 @@ $('cerrarEsc').addEventListener('click', function(){
   if(!animando) $('bGuardar') && $('bGuardar').focus();
 });
 window.addEventListener('resize', function(){ if(!$('escena').hidden) fxTam(); });
+
+/* pestañas: Autoevaluación · Recompensas · Movimientos (#auto, #rec, #mov) */
+function verVista(v){
+  if(['auto','rec','mov'].indexOf(v)<0) v = 'auto';
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['auto','rec','mov'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  history.replaceState(null, '', location.search+'#'+v);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
+verVista((location.hash||'').replace('#',''));
 
 /* ensayo: elige una nota y mira la animación sin guardar */
 $('bEnsayo').addEventListener('click', function(){
