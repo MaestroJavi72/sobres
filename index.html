@@ -7,46 +7,57 @@
 <link rel="stylesheet" href="comun/javi.css">
 <style>
 /* ---------- cabecera ---------- */
-.cab{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
 .cab .marca{flex:1;min-width:0}
 .cab h1{font-size:clamp(30px,7vw,80px);line-height:1;overflow-wrap:anywhere}
 .cab .lema{font-family:var(--f-sub);color:var(--tinta-suave);font-size:clamp(15px,1.8vw,20px);margin-top:6px;letter-spacing:.06em}
-.botones{display:flex;gap:8px}
+.botones{display:flex;gap:8px;align-items:center}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:17px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.volver[hidden]{display:none}
 
-/* ---------- multiverso ---------- */
-.multiTit{margin-top:14px;font-family:var(--f-sub);font-weight:700;font-size:15px;color:var(--tinta-suave);letter-spacing:.04em}
-.multiTit span{font-weight:500;opacity:.85}
-.multi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 22px}
+/* ---------- las tres puertas ---------- */
+.puertas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+@media (max-width:820px){ .puertas{grid-template-columns:1fr} }
+.puerta{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;min-height:clamp(200px,34vh,340px);padding:22px;border-radius:26px;
+  text-decoration:none;color:var(--tinta);background:var(--panel);border:3px solid var(--panel-borde);box-shadow:0 14px 30px rgba(0,0,0,.35);overflow:hidden;
+  transition:transform .15s, box-shadow .15s, border-color .15s}
+.puerta:hover,.puerta:focus-visible{transform:translateY(-4px);border-color:var(--acento);box-shadow:0 18px 36px rgba(0,0,0,.45),0 0 0 4px var(--brillo)}
+.puerta .ic{position:absolute;top:18px;right:20px;font-size:clamp(56px,8vw,96px);line-height:1;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+.puerta h2{font-family:var(--f-titulo);color:var(--titulo-color);text-shadow:var(--titulo-sombra);text-transform:var(--titulo-transform);font-size:clamp(30px,3.6vw,44px);line-height:1.05}
+.puerta .gr{font-family:var(--f-sub);font-weight:700;color:var(--acento-2);font-size:18px;letter-spacing:.04em}
+.puerta p{color:var(--tinta-suave);font-size:16px;line-height:1.3}
+.puerta.tutoria{background:linear-gradient(160deg,#123a33,#0b1f22);border-color:#c9a34a}
+.puerta.plan{background:linear-gradient(160deg,#2a2440,#141228);border-color:#8a7ac8;color:#e9e2ff}
+.puerta.plan h2{color:#e9e2ff;text-shadow:0 2px 12px rgba(138,122,200,.6);font-family:'Cinzel',Georgia,serif;text-transform:none}
+.puerta.plan .gr{color:#c9bfff}
+.puerta.plan p{color:#bdb4e0}
+
+/* ---------- sección ---------- */
+.titSec{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 6px}
+.titSec h2{font-family:var(--f-titulo);color:var(--titulo-color);text-shadow:var(--titulo-sombra);text-transform:var(--titulo-transform);font-size:clamp(28px,4vw,48px)}
+.titSec .gr{font-family:var(--f-sub);font-weight:700;color:var(--acento-2);font-size:18px}
+.multi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 16px}
 .mundo{position:relative;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radio);border:2px dashed var(--panel-borde);
   background:rgba(0,0,0,.18);color:var(--tinta-suave);font-family:var(--f-sub);font-weight:700;font-size:clamp(14px,1.6vw,18px)}
 .mundo .ic{font-size:26px;filter:grayscale(.8);opacity:.6}
 .mundo small{display:block;font-weight:500;font-size:13px;opacity:.85}
 .mundo.ahora{border-style:solid;border-color:var(--acento);background:var(--panel);color:var(--tinta);box-shadow:0 0 0 4px var(--brillo)}
-.mundo.ahora .ic{filter:none;opacity:1;animation:flota 3s ease-in-out infinite}
+.mundo.ahora .ic{filter:none;opacity:1}
 .mundo.ahora::after{content:'AHORA';position:absolute;top:-10px;right:12px;background:var(--acento);color:var(--acento-tinta);font-size:11px;padding:2px 8px;border-radius:8px;letter-spacing:.08em}
-@keyframes flota{50%{transform:translateY(-4px) rotate(-6deg)}}
 @media (max-width:620px){ .multi{grid-template-columns:1fr} }
-
-/* ---------- módulos ---------- */
-.sec{font-family:var(--f-sub);font-weight:700;color:var(--acento-2);font-size:clamp(16px,2vw,21px);letter-spacing:.05em;margin:20px 0 10px;text-transform:uppercase}
-.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-.mod{position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px;padding:16px 16px 14px;text-decoration:none;color:var(--tinta);
-  background:var(--panel);border:2px solid var(--panel-borde);border-radius:var(--radio);box-shadow:0 10px 24px rgba(0,0,0,.25);
-  transition:transform .15s, box-shadow .15s, border-color .15s}
-a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--acento);box-shadow:0 14px 30px rgba(0,0,0,.35),0 0 0 3px var(--brillo)}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:12px}
+.mod{position:relative;display:flex;flex-direction:column;gap:6px;min-height:140px;padding:16px;text-decoration:none;color:var(--tinta);
+  background:var(--panel);border:2px solid var(--panel-borde);border-radius:var(--radio);box-shadow:0 10px 24px rgba(0,0,0,.25);transition:transform .15s, border-color .15s}
+a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--acento)}
 .mod .ic{font-size:40px;line-height:1}
 .mod h3{font-family:var(--f-titulo);text-transform:var(--titulo-transform);color:var(--titulo-color);font-size:clamp(20px,2.3vw,26px);line-height:1.1}
 .mod p{color:var(--tinta-suave);font-size:16px;line-height:1.3}
-.mod .gr{font-family:var(--f-sub);font-size:13px;font-weight:700;color:var(--acento-2);letter-spacing:.04em}
 .mod.pronto{opacity:.55;border-style:dashed;box-shadow:none}
-.mod.pronto::after{content:'Próximamente';position:absolute;top:12px;right:12px;font-family:var(--f-sub);font-size:12px;font-weight:700;
-  background:rgba(0,0,0,.25);color:var(--tinta-suave);padding:3px 8px;border-radius:8px}
+.mod.pronto::after{content:'Próximamente';position:absolute;top:12px;right:12px;font-family:var(--f-sub);font-size:12px;font-weight:700;background:rgba(0,0,0,.25);color:var(--tinta-suave);padding:3px 8px;border-radius:8px}
 .mod.profe{border-color:var(--acento)}
-.bloqueSec[data-tema]{margin:0 -10px;padding:2px 10px 14px;border-radius:calc(var(--radio) + 6px);background:var(--fondo-img),var(--fondo);background-attachment:scroll;background-size:cover}
-.bloqueSec[data-tema]{font-family:var(--f-texto);color:var(--tinta)}
-.bloqueSec[data-tema="hp"]{background:#0b1a1c;background:linear-gradient(180deg,#0e2a28,#0a1a22)}
+.vista[hidden],.puerta[hidden]{display:none}
 .pie{margin-top:28px;text-align:center;color:var(--tinta-suave);font-size:15px}
-.pie a{color:var(--acento-2)}
 </style>
 </head>
 <body>
@@ -57,14 +68,36 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
       <div class="lema" id="lema">CEIP Arias Montano</div>
     </div>
     <div class="botones">
+      <a class="volver" id="bVolver" href="#" hidden>← Volver</a>
       <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
     </div>
   </header>
 
-  <p class="multiTit">Multiverso de Educación Física · 3ºA, 3ºB y 4ºB <span>(4ºA vive siempre en Hogwarts)</span></p>
-  <nav class="multi" id="multi" aria-label="Mundos del curso"></nav>
+  <!-- PUERTAS -->
+  <main class="vista" id="v-inicio">
+    <nav class="puertas" aria-label="Secciones">
+      <a class="puerta tutoria" href="#tutoria" data-tema="hp">
+        <span class="ic" aria-hidden="true">🏰</span>
+        <h2>Tutoría</h2><span class="gr">4ºA · Hogwarts</span>
+        <p>Galeones, cartas, Mercader, Bóveda y sorteos.</p>
+      </a>
+      <a class="puerta ef" href="#ef" id="puertaEF">
+        <span class="ic" aria-hidden="true">🤸</span>
+        <h2>Educación Física</h2><span class="gr">3ºA · 3ºB · 4ºB</span>
+        <p>Coevaluación, Mercader de EF, Bóveda y sorteos.</p>
+      </a>
+      <a class="puerta plan" href="#planificacion" id="puertaPlan">
+        <span class="ic" aria-hidden="true">📅</span>
+        <h2>Planificación</h2><span class="gr">Todas las clases</span>
+        <p>La semana, las situaciones de aprendizaje y las sesiones.</p>
+      </a>
+    </nav>
+  </main>
 
-  <main id="modulos"></main>
+  <!-- SECCIONES -->
+  <section class="vista" id="v-tutoria" hidden></section>
+  <section class="vista" id="v-ef" hidden></section>
+  <section class="vista" id="v-planificacion" hidden></section>
 
   <p class="pie" id="pie"></p>
 </div>
@@ -74,89 +107,111 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
 (function(){
 'use strict';
 /* ============================================================
-   MÓDULOS DE LA PORTADA
-   url: carpeta del módulo · listo:false = «Próximamente»
-   profe:true = solo se ve con ?profe
-   alumnos:true = también lo ven los alumnos (sin ?profe)
+   SECCIONES DE LA PORTADA
+   url: dirección del módulo · listo:false = «Próximamente»
+   profe:true = solo con ?profe · alumnos:true = también lo ven los alumnos
+   ambito: los módulos abiertos desde la sección solo muestran sus clases
    ============================================================ */
-var SECCIONES = [
-  { t:'4ºA · Hogwarts', tema:'hp', mods:[
-    { ic:'🏰', n:'Hogwarts', d:'Galeones, niveles, personajes y campeones del mes.', g:'4ºA', url:'hogwarts/#hogwarts', profe:true },
-    { ic:'🧙', n:'El Mercader', d:'Compra sobres de cartas con tus galeones. Ofertas del día.', g:'4ºA', url:'hogwarts/', alumnos:true },
-    { ic:'✉️', n:'Sobres', d:'Abrir sobres de cartas cuando el profe lo decida.', g:'4ºA', url:'hogwarts/#sobres', profe:true },
-    { ic:'🃏', n:'Mis cartas', d:'Consulta tus cartas, tus galeones y tu nivel.', g:'4ºA', url:'hogwarts/#mis', alumnos:true },
-    { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario.', g:'4ºA', listo:false },
-    { ic:'✖️', n:'Duelo de tablas', d:'Preguntas de tablas por alumno o por mesas.', g:'4ºA', listo:false }
+var SECCIONES = {
+  tutoria: { t:'Tutoría', gr:'4ºA · Hogwarts', ambito:'tutoria', mods:[
+    { ic:'🏰', n:'Hogwarts', d:'Galeones, niveles, personajes y campeones del mes.', url:'hogwarts/#hogwarts', profe:true },
+    { ic:'🧙', n:'El Mercader', d:'Compra sobres de cartas con tus galeones. Ofertas del día.', url:'hogwarts/', alumnos:true },
+    { ic:'✉️', n:'Sobres', d:'Abrir sobres de cartas cuando el profe lo decida.', url:'hogwarts/#sobres', profe:true },
+    { ic:'🃏', n:'Mis cartas', d:'Consulta tus cartas, tus galeones y tu nivel.', url:'hogwarts/#mis', alumnos:true },
+    { ic:'🏦', n:'Bóveda de 4ºA', d:'Autoevaluación de la clase en EF, galeones de todos y recompensas.', url:'boveda/?grupo=4oA', alumnos:true },
+    { ic:'🎲', n:'Responsable y capitanes', d:'En las clases de EF de 4ºA, sin repetir hasta que salga toda la clase.', url:'sorteos/?grupo=4oA', profe:true },
+    { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/?grupo=4oA', profe:true },
+    { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario.', listo:false },
+    { ic:'✖️', n:'Duelo de tablas', d:'Preguntas de tablas por alumno o por mesas.', listo:false }
   ]},
-  { t:'Educación Física', mods:[
-    { ic:'🤸', n:'Gamificación EF', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', g:'3ºA · 3ºB · 4ºB', url:'ef/' },
-    { ic:'🏦', n:'Bóveda de la clase', d:'Autoevaluación de la clase, galeones colectivos y recompensas.', g:'3ºA · 3ºB · 4ºA · 4ºB', url:'boveda/', alumnos:true },
-    { ic:'🎲', n:'Responsable y capitanes', d:'Responsable del día y capitanes de pichi, sin repetir hasta que salga toda la clase.', g:'3ºA · 3ºB · 4ºA · 4ºB', url:'sorteos/', profe:true },
-    { ic:'🚦', n:'Semáforo de contenidos', d:'Autoevaluación y heteroevaluación por tercios con criterios, exportable para Séneca.', g:'EF', listo:false }
+  ef: { t:'Educación Física', gr:'3ºA · 3ºB · 4ºB', ambito:'ef', multiverso:true, mods:[
+    { ic:'🤸', n:'Gamificación EF', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', url:'ef/', profe:true },
+    { ic:'🏦', n:'Bóveda de la clase', d:'Autoevaluación de la clase, galeones de todos y recompensas.', url:'boveda/', alumnos:true },
+    { ic:'🎲', n:'Responsables y capitanes', d:'Responsable del día y capitanes de pichi, sin repetir.', url:'sorteos/', profe:true },
+    { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/', profe:true },
+    { ic:'🚦', n:'Semáforo de contenidos', d:'Autoevaluación y heteroevaluación por tercios, exportable para Séneca.', listo:false }
   ]},
-  { t:'Todas las clases', mods:[
-    { ic:'📅', n:'Planificación', d:'La semana según tu horario y las situaciones de aprendizaje, con sus criterios.', g:'Todas', url:'planificacion/', profe:true },
-    { ic:'📋', n:'Sesión y Ruleta', d:'Planifica la sesión por fases. La Ruleta de preguntas da los puntos sola.', g:'Todas', url:'sesion/', profe:true },
-    { ic:'📚', n:'Biblioteca', d:'Materiales y recursos: breakouts, lecturas, fichas…', g:'Todas', listo:false },
-    { ic:'🗝️', n:'Panel del profe', d:'Alumnos (altas, bajas, cambios), tema del trimestre y enlaces para Google Sites.', g:'Profe', url:'profe/', profe:true }
+  planificacion: { t:'Planificación', gr:'Todas las clases', mods:[
+    { ic:'📅', n:'La semana', d:'Tu horario con cada sesión: tócala para planificarla.', url:'planificacion/', profe:true },
+    { ic:'📚', n:'Situaciones de aprendizaje', d:'Con criterios de la Orden de 30 de mayo de 2023 y sesiones repartidas solas.', url:'planificacion/#sda', profe:true },
+    { ic:'🏖️', n:'Días sin clase', d:'Festivos y vacaciones que se saltan al repartir.', url:'planificacion/#festivos', profe:true },
+    { ic:'📋', n:'Sesión y Ruleta', d:'Planificar una sesión concreta de cualquier clase.', url:'sesion/', profe:true },
+    { ic:'📖', n:'Biblioteca', d:'Materiales y recursos: breakouts, lecturas, fichas…', listo:false },
+    { ic:'🗝️', n:'Panel del profe', d:'Alumnos (altas, bajas, cambios), tema del trimestre y enlaces para Google Sites.', url:'profe/', profe:true }
   ]}
-];
+};
 
 function $(id){ return document.getElementById(id); }
 var profe = JAVI.ES_PROFE;
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
 
-function pintarMundos(){
-  var t = JAVI.temaActual(), box = $('multi'); box.innerHTML = '';
-  ['hp','vengadores','pokemon'].forEach(function(k){
-    var m = JAVI.TEMAS[k], d = document.createElement('div');
-    d.className = 'mundo'+(k===t ? ' ahora' : '');
-    d.innerHTML = '<span class="ic" aria-hidden="true">'+m.icono+'</span><span><span class="nm"></span><small></small></span>';
-    d.querySelector('.nm').textContent = m.n;
-    d.querySelector('small').textContent = m.trimestre+'º trimestre · '+m.mundo;
-    box.appendChild(d);
-  });
-  var tm = JAVI.TEMAS[t];
-  $('lema').textContent = tm.trimestre+'º trimestre · '+tm.mundo+' · CEIP Arias Montano';
-}
-
-function enlace(url){
+/* añade ?profe, ?prueba y el ámbito de la sección a los enlaces de los módulos */
+function enlace(url, ambito){
   var extra = [];
   if(profe) extra.push('profe');
   if(/[?&]prueba/.test(location.search)) extra.push('prueba');
+  if(ambito) extra.push('ambito='+ambito);
   if(!extra.length) return url;
   var p = url.split('#');
   return p[0]+(p[0].indexOf('?')>=0 ? '&' : '?')+extra.join('&')+(p[1] ? '#'+p[1] : '');
 }
 
-function pintarModulos(){
-  var main = $('modulos'); main.innerHTML = '';
-  SECCIONES.forEach(function(sec){
-    var mods = sec.mods.filter(function(m){ return profe ? true : (m.alumnos && m.listo!==false); });
-    if(!mods.length) return;
-    var caja = document.createElement('section'); caja.className = 'bloqueSec'; if(sec.tema) caja.setAttribute('data-tema', sec.tema);
-    var h = document.createElement('h2'); h.className = 'sec'; h.textContent = sec.t; caja.appendChild(h);
-    var g = document.createElement('div'); g.className = 'mods';
-    mods.forEach(function(m){
-      var listo = m.listo!==false && m.url;
-      var el = document.createElement(listo ? 'a' : 'div');
-      el.className = 'mod'+(listo ? '' : ' pronto')+(m.profe ? ' profe' : '');
-      if(listo) el.href = enlace(m.url);
-      el.innerHTML = '<span class="ic" aria-hidden="true"></span><h3></h3><p></p><span class="gr"></span>';
-      el.querySelector('.ic').textContent = m.ic;
-      el.querySelector('h3').textContent = m.n;
-      el.querySelector('p').textContent = m.d;
-      el.querySelector('.gr').textContent = m.g;
-      g.appendChild(el);
-    });
-    caja.appendChild(g); main.appendChild(caja);
+function pintarSeccion(clave){
+  var S = SECCIONES[clave], box = $('v-'+clave), h = '';
+  h += '<div class="titSec"><h2>'+esc(S.t)+'</h2><span class="gr">'+esc(S.gr)+'</span></div>';
+  if(S.multiverso) h += '<p class="lema" style="font-family:var(--f-sub);color:var(--tinta-suave)">El mundo cambia con el trimestre:</p><nav class="multi" id="multi" aria-label="Mundos del curso"></nav>';
+  h += '<div class="mods"></div>';
+  box.innerHTML = h;
+  var g = box.querySelector('.mods');
+  S.mods.filter(function(m){ return profe ? true : (m.alumnos && m.listo!==false); }).forEach(function(m){
+    var listo = m.listo!==false && m.url;
+    var el = document.createElement(listo ? 'a' : 'div');
+    el.className = 'mod'+(listo ? '' : ' pronto')+(m.profe ? ' profe' : '');
+    if(listo) el.href = enlace(m.url, S.ambito);
+    el.innerHTML = '<span class="ic" aria-hidden="true"></span><h3></h3><p></p>';
+    el.querySelector('.ic').textContent = m.ic; el.querySelector('h3').textContent = m.n; el.querySelector('p').textContent = m.d;
+    g.appendChild(el);
   });
-  $('pie').innerHTML = profe ? 'Modo profe. Los alumnos ven esta portada sin <b>?profe</b> (solo El Mercader, Mis cartas y la Bóveda).' : '';
+  if(S.multiverso) pintarMundos();
+}
+function pintarMundos(){
+  var t = JAVI.temaActual(), box = $('multi'); if(!box) return; box.innerHTML = '';
+  ['hp','vengadores','pokemon'].forEach(function(k){
+    var m = JAVI.TEMAS[k], d = document.createElement('div');
+    d.className = 'mundo'+(k===t ? ' ahora' : '');
+    d.innerHTML = '<span class="ic" aria-hidden="true">'+m.icono+'</span><span><span class="nm"></span><small></small></span>';
+    d.querySelector('.nm').textContent = m.n; d.querySelector('small').textContent = m.trimestre+'º trimestre · '+m.mundo;
+    box.appendChild(d);
+  });
 }
 
+/* navegación por secciones con #: así «← Volver» y el botón atrás del navegador funcionan */
+var dentro = false;
+function mostrar(){
+  var v = (location.hash||'').replace('#','');
+  if(!SECCIONES[v]) v = 'inicio';
+  ['inicio','tutoria','ef','planificacion'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  $('bVolver').hidden = v==='inicio';
+  /* Tutoría: siempre Harry Potter. EF: el mundo del trimestre */
+  var tEF = JAVI.temaActual();
+  document.documentElement.setAttribute('data-tema', v==='tutoria' || v==='inicio' || v==='planificacion' ? 'hp' : tEF);
+  $('puertaEF').setAttribute('data-tema', tEF);
+  var t = JAVI.TEMAS[tEF];
+  $('lema').textContent = v==='ef' ? t.trimestre+'º trimestre · '+t.mundo+' · CEIP Arias Montano' : 'CEIP Arias Montano';
+  window.scrollTo(0, 0);
+}
+$('bVolver').addEventListener('click', function(e){
+  e.preventDefault();
+  if(dentro) history.back(); else location.hash = '';
+});
+window.addEventListener('hashchange', function(){ dentro = !!location.hash.replace('#',''); mostrar(); });
+
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
-pintarModulos();
-pintarMundos();
-JAVI.listo(function(){ pintarMundos(); JAVI.avisoPrueba(); });
+if(!profe) $('puertaPlan').hidden = true;   /* los alumnos no ven la planificación */
+Object.keys(SECCIONES).forEach(pintarSeccion);
+mostrar();
+$('pie').innerHTML = profe ? 'Modo profe. Los alumnos ven esta portada sin <b>?profe</b> (solo El Mercader, Mis cartas y las Bóvedas).' : '';
+JAVI.listo(function(){ pintarMundos(); mostrar(); JAVI.avisoPrueba(); });
 })();
 </script>
 </body>

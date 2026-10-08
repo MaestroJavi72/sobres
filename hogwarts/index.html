@@ -470,7 +470,7 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
     <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   </button>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Sección">
-    <a class="tab inicio" id="tabInicio" href="../" title="Volver a la portada de Javificación">⌂ Inicio</a>
+    <a class="tab inicio" id="tabInicio" href="../#tutoria" data-volver="../#tutoria" title="Volver a la pantalla anterior">← Volver</a>
     <button class="tab" id="tabTienda" role="tab" aria-selected="true" type="button">El Mercader</button>
     <button class="tab" id="tabSobres" role="tab" aria-selected="false" type="button">Sobres</button>
     <button class="tab" id="tabMis" role="tab" aria-selected="false" type="button">Mis cartas</button>
@@ -497,8 +497,8 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
           <button class="ghost" id="bClase" type="button">Toda la clase</button>
           <button class="ghost" id="bVarios" type="button" aria-pressed="false">Seleccionar varios</button>
           <button class="ghost" id="bVista" type="button" aria-pressed="false">Vista ampliada</button>
-          <a class="ghost" href="../sesion/?grupo=4oA&amp;profe" style="text-decoration:none;display:inline-flex;align-items:center">📋 Sesión de hoy</a>
-          <a class="ghost" href="../sorteos/?grupo=4oA&amp;profe" style="text-decoration:none;display:inline-flex;align-items:center">👑 Responsable y capitanes</a>
+          <a class="ghost" href="../sesion/?grupo=4oA&amp;profe&amp;ambito=tutoria" style="text-decoration:none;display:inline-flex;align-items:center">📋 Sesión de hoy</a>
+          <a class="ghost" href="../sorteos/?grupo=4oA&amp;profe&amp;ambito=tutoria" style="text-decoration:none;display:inline-flex;align-items:center">👑 Responsable y capitanes</a>
           <button class="ghost" id="bActualizar" type="button">Actualizar</button>
         </div>
       </div>
@@ -2633,7 +2633,7 @@ iniciarGaleones();
 pintarTienda();
 setVista(vistaInicial());
 if(window.JAVI){ JAVI.avisoPrueba(); }
-$('tabInicio').href = '../'+(esProfe ? '?profe' : '');
+$('tabInicio').setAttribute('data-volver', '../'+(esProfe ? '?profe' : '')+'#tutoria');
 if(/[?&]solo/.test(location.search)) $('tabInicio').hidden = true;
 });
 

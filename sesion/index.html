@@ -95,7 +95,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
     <a class="j-icono" id="bSorteos" href="../sorteos/?profe" title="Responsable y capitanes" style="text-decoration:none">👑</a>
     <a class="j-icono" id="bSemana" href="../planificacion/?profe" title="Planificación semanal" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">📅 Semana</a>
-    <a class="j-icono" id="bInicio" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
+    <a class="j-icono" id="bInicio" href="../?profe" data-volver="" title="Volver a la pantalla anterior" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
   </header>
 
   <div class="barraSup">
@@ -227,7 +227,7 @@ $('bCopiar').addEventListener('click', function(){
 function ponerTema(){ document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo)); }
 function pintarGrupos(){
   var box = $('grupos'); box.innerHTML = '';
-  JAVI.grupos().forEach(function(g){
+  JAVI.gruposVisibles().forEach(function(g){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = g;
     b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
     b.addEventListener('click', function(){ grupo = g; asig = null; escribirL('sesion-grupo', g); todo(); });
@@ -246,7 +246,7 @@ function pintarAsigs(){
   var h = JAVI.sesionesDelDia(fecha).filter(function(x){ return x.grupo===grupo && x.asig===asig; })[0];
   $('hueco').textContent = h ? '🕘 '+h.ini+'–'+h.fin : (JAVI.horario() ? 'Este día no hay '+(NOMBRE_ASIG[asig]||asig)+' con '+grupo+' en el horario' : '');
   $('bSemana').href = '../planificacion/?profe&semana='+JAVI.lunesDe(fecha);
-  $('bSorteos').href = '../sorteos/?profe&grupo='+encodeURIComponent(grupo).replace('%C2%BA','o');
+  $('bSorteos').href = JAVI.conAmbito('../sorteos/?profe&grupo='+encodeURIComponent(grupo).replace('%C2%BA','o'));
 }
 function pintarSda(){
   var box = $('sdaInfo'), sd = JAVI.sdaDeSesion(grupo, fecha, asig);
@@ -604,7 +604,8 @@ $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
 $('rPantalla').addEventListener('click', JAVI.pantallaCompleta);
 $('fecha').addEventListener('change', function(){ if(this.value){ fecha = this.value; todo(); } });
 function todo(){
-  if(JAVI.grupos().indexOf(grupo)<0) grupo = JAVI.grupos()[0];
+  if(JAVI.gruposVisibles().indexOf(grupo)<0) grupo = JAVI.gruposVisibles()[0];
+  $('bInicio').setAttribute('data-volver', JAVI.destinoVolver());
   $('fecha').value = fecha;
   elegirAsig();
   ponerTema(); pintarGrupos(); pintarAsigs(); cargarPlan(); pintarSda(); pintarPlan(); pintarFaltan();

@@ -52,7 +52,7 @@ ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
 <div class="j-envoltorio">
   <header class="cab">
     <h1 class="j-titulo">🗝️ Panel del profe</h1>
-    <a class="j-icono" id="bInicio" href="../?profe" aria-label="Volver a Javificación" title="Volver a Javificación" style="text-decoration:none">⌂</a>
+    <a class="j-icono" id="bInicio" href="../?profe#planificacion" data-volver="../?profe#planificacion" title="Volver a la pantalla anterior" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
   </header>
 
   <nav class="pestanas" role="tablist">
@@ -254,6 +254,8 @@ function pintarEnlaces(){
   var lista = [
     ['Portada (alumnos)', base],
     ['Portada (profe)', base+'?profe'],
+    ['Tutoría 4ºA (alumnos)', base+'#tutoria'],
+    ['Educación Física (alumnos)', base+'#ef'],
     ['4ºA · El Mercader (alumnos)', base+'hogwarts/'],
     ['4ºA · Mis cartas (alumnos)', base+'hogwarts/#mis'],
     ['4ºA · Hogwarts (profe)', base+'hogwarts/?profe#hogwarts'],

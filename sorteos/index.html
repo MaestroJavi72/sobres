@@ -78,7 +78,7 @@
     <h1 class="j-titulo">🎲 Responsables y capitanes</h1>
     <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
-    <a class="j-icono" href="../?profe" aria-label="Volver a Javificación" style="text-decoration:none">⌂</a>
+    <a class="j-icono" id="bInicio" href="../?profe" data-volver="" title="Volver a la pantalla anterior" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
   </header>
   <div class="sub" id="hoy"></div>
 
@@ -340,7 +340,7 @@ function animar(el, nombre, fin){
 /* solo se ve la clase elegida: las pestañas muestran el nombre de la clase, nada más */
 function pintarGrupos(){
   var box = $('grupos'); box.innerHTML = '';
-  JAVI.grupos().forEach(function(g){
+  JAVI.gruposVisibles().forEach(function(g){
     var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role','tab'); b.textContent = g;
     b.setAttribute('aria-selected', g===grupo ? 'true' : 'false');
     b.addEventListener('click', function(){ if(girando) return; grupo = g; rPropuesto = null; cPropuestos = null; escribirL('sorteos-grupo', g); todo(); });
@@ -415,7 +415,8 @@ pintarSonido();
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
 
 function todo(){
-  if(JAVI.grupos().indexOf(grupo)<0) grupo = JAVI.grupos()[0];
+  if(JAVI.gruposVisibles().indexOf(grupo)<0) grupo = JAVI.gruposVisibles()[0];
+  $('bInicio').setAttribute('data-volver', JAVI.destinoVolver());
   document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo));
   pintarGrupos(); pintarTodo(); pintarFaltan();
 }

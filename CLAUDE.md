@@ -10,7 +10,7 @@ Cada módulo es una carpeta con su `index.html` autocontenido (CSS y JS dentro),
 
 | Ruta | Para qué | Quién la usa |
 |---|---|---|
-| `index.html` | **Portada**: multiverso (tema del trimestre) y menú de módulos. Con `?profe` muestra todo; sin él, solo lo de los alumnos. | Google Sites (una sola incrustación por URL) |
+| `index.html` | **Portada** con tres puertas: **Tutoría** (4ºA, siempre Harry Potter), **Educación Física** (3ºA, 3ºB, 4ºB, con el multiverso del trimestre) y **Planificación** (solo con `?profe`). Secciones con `#tutoria`, `#ef`, `#planificacion`. Los módulos se abren con `ambito=tutoria|ef` y solo muestran esas clases (`JAVI.gruposVisibles`). Todas las páginas tienen «← Volver» (`data-volver`, `JAVI.volver`): pantalla anterior o, si no la hay, su sección. | Google Sites (una sola incrustación por URL) |
 | `hogwarts/` | **4ºA** (su tutoría): El Mercader, Sobres, Mis cartas y, con `?profe`, la pestaña **Hogwarts**. Pestaña directa con `#sobres`, `#mis`, `#hogwarts`. | 4ºA; Javi con `?profe` |
 | `ef/` | **EF** 3ºA, 3ºB, 4ºB: Coevaluación, La clase, Mercader de EF. La pestaña Bóveda lleva a `boveda/`. | Javi en la pizarra de EF |
 | `boveda/` | **Bóveda de la clase** (las 4 clases): autoevaluación, monedas al cofre y fiesta con 9–10, recompensas, movimientos y ajustes. | Pizarra |

@@ -176,6 +176,29 @@ function grupo(g){
   };
 }
 function grupos(){ return BASE_ALUMNOS ? Object.keys(BASE_ALUMNOS) : []; }
+/* ÁMBITO: los módulos abiertos desde una sección de la portada solo muestran sus clases
+   ?ambito=tutoria → 4ºA (la tutoría) · ?ambito=ef → 3ºA, 3ºB y 4ºB */
+var AMBITO = (location.search.match(/[?&]ambito=(tutoria|ef)\b/)||[])[1] || null;
+function gruposVisibles(){
+  var gs = grupos();
+  if(AMBITO==='tutoria') return gs.filter(function(g){ return BASE_ALUMNOS[g].tutoria; });
+  if(AMBITO==='ef') return gs.filter(function(g){ return BASE_ALUMNOS[g].sistema==='ef'; });
+  return gs;
+}
+function conAmbito(url){ if(!AMBITO) return url; var p = url.split('#'); return p[0]+(p[0].indexOf('?')>=0 ? '&' : '?')+'ambito='+AMBITO+(p[1] ? '#'+p[1] : ''); }
+/* VOLVER: a la pantalla anterior; si no la hay (entrada directa o desde Google Sites), a la sección de la portada */
+function destinoVolver(){ return BASE+(ES_PROFE ? '?profe' : '')+(AMBITO==='ef' ? '#ef' : AMBITO==='tutoria' ? '#tutoria' : ''); }
+function volver(destino){
+  try{
+    if(document.referrer && new URL(document.referrer).origin===location.origin && history.length>1){ history.back(); return; }
+  }catch(e){}
+  location.href = destino || destinoVolver();
+}
+/* cualquier enlace con data-volver se comporta como «← Volver» */
+document.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('[data-volver]'); if(!a) return;
+  e.preventDefault(); volver(a.getAttribute('data-volver') || a.getAttribute('href'));
+});
 function cambiarAlumno(g, op, nombre, datos){
   return escribir({ alumno:'ALUMNOS · '+g, accion:'Alumnos', cartaId:op, tipo:nombre, carta: datos ? JSON.stringify(datos) : '' });
 }
@@ -385,7 +408,7 @@ function listo(fn){
 window.JAVI = {
   BASE:BASE, PRUEBA:PRUEBA, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
   listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, horaHoja:function(){ return horaCSV; },
-  grupo:grupo, grupos:grupos, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
+  grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,

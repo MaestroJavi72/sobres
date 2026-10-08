@@ -165,7 +165,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     <h1>🏦 <span id="tBoveda">Bóveda de la clase</span></h1>
     <button class="icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
     <button class="icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
-    <a class="icono" id="bInicio" href="../" title="Volver a la portada de Javificación" style="text-decoration:none;color:var(--oro2);font-weight:700">⌂ Inicio</a>
+    <a class="icono" id="bInicio" href="../" data-volver="../" title="Volver a la pantalla anterior" style="text-decoration:none;color:var(--oro2);font-weight:700">← Volver</a>
   </header>
 
   <nav class="grupos" id="grupos" aria-label="Clase"></nav>
@@ -258,7 +258,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 <script>
 (function(){
 'use strict';
-if(window.JAVI) JAVI.listo(function(){ if(JAVI.ES_PROFE) document.getElementById('bInicio').href = '../?profe'; if(/[?&]solo/.test(location.search)) document.getElementById('bInicio').hidden = true; if(typeof pintar==='function') pintar(); });
+if(window.JAVI) JAVI.listo(function(){ document.getElementById('bInicio').setAttribute('data-volver', JAVI.destinoVolver()); if(/[?&]solo/.test(location.search)) document.getElementById('bInicio').hidden = true; if(typeof pintar==='function') pintar(); });
 /* ============================================================
    CONFIGURACIÓN  (puedes tocar estos valores)
    ============================================================ */
@@ -387,6 +387,12 @@ var qg = new URLSearchParams(location.search).get('grupo');
 if(qg){ qg = qg.replace(/o/i,'º').toUpperCase(); }   /* ?grupo=3oA o ?grupo=3ºA */
 if(qg && CONF.grupos.indexOf(qg)>=0) grupo = qg;
 if(CONF.grupos.indexOf(grupo)<0) grupo = CONF.grupos[0];
+/* clases de la sección desde la que se abre (Tutoría: 4ºA · EF: 3ºA, 3ºB, 4ºB) */
+function gruposBoveda(){
+  var v = window.JAVI && JAVI.gruposVisibles ? JAVI.gruposVisibles() : [];
+  var l = CONF.grupos.filter(function(g){ return !v.length || v.indexOf(g)>=0; });
+  return l.length ? l : CONF.grupos;
+}
 /* mundo de la clase: 4ºA siempre Harry Potter; EF, el del trimestre */
 var TEMAS_LOCAL = { hp:{ moneda:'galeones', simbolo:'G', boveda:'Bóveda de Gringotts', lugar:'Gringotts' } };
 var tema = 'hp', W = TEMAS_LOCAL.hp;
@@ -412,7 +418,8 @@ function media(){
 
 function pintarGrupos(){
   var nav = $('grupos'); nav.innerHTML = '';
-  CONF.grupos.forEach(function(g){
+  if(gruposBoveda().indexOf(grupo)<0) grupo = gruposBoveda()[0];
+  gruposBoveda().forEach(function(g){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'grupo'; b.textContent = g;
     b.setAttribute('aria-pressed', g===grupo ? 'true' : 'false');
     b.addEventListener('click', function(){ grupo = g; notas = []; guardarLocal('boveda-grupo', g); pintar(); });

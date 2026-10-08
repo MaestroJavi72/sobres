@@ -199,7 +199,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
 <body>
 <div class="app" id="app">
   <header class="top">
-    <a class="ghost inicio" id="bInicio" href="../?profe" title="Volver a la portada de Javificación">⌂ Inicio</a>
+    <a class="ghost inicio" id="bInicio" href="../?profe#ef" data-volver="../?profe#ef" title="Volver a la pantalla anterior">← Volver</a>
     <div class="marca">Javificación<small>EF</small></div>
     <div class="grupos" id="grupos" role="tablist" aria-label="Grupo"></div>
   </header>
@@ -1283,9 +1283,9 @@ Object.keys(EF.grupos).forEach(function(g){
   $('grupos').appendChild(b);
 });
 ['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
-$('t_sor').addEventListener('click', function(){ location.href = '../sorteos/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
-$('t_ses').addEventListener('click', function(){ location.href = '../sesion/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
-$('t_bov').addEventListener('click', function(){ location.href = '../boveda/?grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
+$('t_sor').addEventListener('click', function(){ location.href = '../sorteos/?ambito=ef&profe&grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
+$('t_ses').addEventListener('click', function(){ location.href = '../sesion/?ambito=ef&profe&grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
+$('t_bov').addEventListener('click', function(){ location.href = '../boveda/?ambito=ef&profe&grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 iniciarBoveda();
 Array.prototype.forEach.call(document.querySelectorAll('[data-cierra]'), function(b){ b.addEventListener('click', function(){ $(b.dataset.cierra).hidden = true; if(b.dataset.cierra==='mPerfil') perfilDe = ''; }); });
 Array.prototype.forEach.call(document.querySelectorAll('.modal'), function(m){ m.addEventListener('click', function(e){ if(e.target===m){ m.hidden = true; if(m.id==='mPerfil') perfilDe = ''; } }); });
