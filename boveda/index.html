@@ -355,8 +355,9 @@ function guardarLocal(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
 function leerLocal(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 
 /* En el ordenador de pruebas (o con ?prueba) no se envía nada a la Hoja */
-var PRUEBA = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol==='file:' || /[?&]prueba/.test(location.search);
-if(PRUEBA) $('avisoPrueba').hidden = false;
+/* …ni sin el código para actuar (demostración: comun/javi.js) */
+var PRUEBA = window.JAVI ? JAVI.PRUEBA : (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol==='file:' || /[?&]prueba/.test(location.search));
+if(PRUEBA && !(window.JAVI && JAVI.DEMO)) $('avisoPrueba').hidden = false;
 
 /* ---------- registro (mismo formato y mismos «pendientes» que ef.html) ---------- */
 var CLAVE_PEND = PRUEBA ? 'boveda-prueba-pendientes' : 'ef-pendientes';

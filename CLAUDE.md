@@ -32,6 +32,8 @@ Cada módulo es una carpeta con su `index.html` autocontenido (CSS y JS dentro),
 
 Recursos: `img/cartas-hp/` (cartas de Harry Potter, diseñadas por Javi en Canva), `img/cartas-ef/` (cartas de EF), `recursos/` (banner y fondo «Javificación», hoja de cartas de EF) y `herramientas/cartas_ef.html` (generador SVG de las cartas de EF).
 
+**Código para actuar (decisión de Javi, 8/10/2026):** todo se ve para todos (`JAVI.ES_PROFE` siempre es `true`; `?profe` ya no hace falta), pero **solo se guarda con el código**. Sin código la página está en **demostración** (`JAVI.DEMO`, `JAVI.PRUEBA` = true): se puede tocar todo y no se envía nada; lo de la demostración va a claves `prueba-…` / `javi-prueba-pendientes` / `boveda-prueba-pendientes` y se borra al entrar. Al escribir el código (botón 🔓 abajo a la derecha) se abre una llave (`localStorage javi-llave`) para **30 minutos** en ese aparato y todas sus páginas; luego aparece un aviso que lo vuelve a pedir (o pasa a demostración). El 🔒 la cierra antes. El código se guarda como huella SHA-256 (`'javificacion:'+código`) en el ajuste `codigo` y se crea o cambia en `profe/#codigo` (`JAVI.fijarCodigo`). Mientras no exista, «Entrar y crearlo» abre sin pedir nada. Es un candado de clase, no seguridad real. Para probar el candado en local sin enviar nada: `?candado`.
+
 **Modo prueba:** en `localhost` o con `?prueba` no se envía nada al Formulario (`JAVI.PRUEBA`; la Bóveda tiene su propia comprobación). Para probar en local, servidor estático en la carpeta: `npx http-server -c-1`.
 
 ## Dónde se guardan los datos

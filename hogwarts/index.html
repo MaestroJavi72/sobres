@@ -1749,13 +1749,13 @@ $('miBuscar').addEventListener('click', consultarMisCartas);
    Saldo      = Acumulados - suma de "Compra"
    ============================================================ */
 var esProfe = false;
-try{ esProfe = new URLSearchParams(location.search).has('profe'); }catch(e){}
+esProfe = true;   /* todo se ve; para guardar hace falta el código (comun/javi.js) */
 var banco = { cargado:false, error:false, hora:null, filas:[] };
 var pendientesG = [];          /* movimientos enviados que la Hoja aún no muestra */
 var sesionG = [];              /* movimientos de esta sesión (para deshacer) */
 var seleccion = {};            /* alumnos marcados en el panel */
 var motivoSel = -1, signo = 1;
-var CLAVE_PEND = 'gringotts-pendientes';
+var CLAVE_PEND = (window.JAVI && JAVI.PRUEBA ? 'prueba-' : '')+'gringotts-pendientes';   /* sin código (demostración) no se mezcla con lo de verdad */
 
 function normal(n){ return String(n||'').trim().toLowerCase(); }
 function nombreReal(n){

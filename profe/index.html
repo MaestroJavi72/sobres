@@ -69,6 +69,7 @@ ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
     <button type="button" role="tab" data-v="alumnos" aria-selected="true">👥 Alumnos</button>
     <button type="button" role="tab" data-v="tema" aria-selected="false">🎨 Tema del trimestre</button>
     <button type="button" role="tab" data-v="enlaces" aria-selected="false">🔗 Enlaces para Google Sites</button>
+    <button type="button" role="tab" data-v="codigo" aria-selected="false">🔐 Código</button>
   </nav>
 
   <!-- ALUMNOS -->
@@ -120,6 +121,23 @@ ol.pasos{margin:6px 0 0 22px;line-height:1.5;color:var(--tinta)}
       <div class="enls" id="enlProfe"></div>
     </div>
   </section>
+
+  <!-- CÓDIGO -->
+  <section class="vista" id="v-codigo" hidden>
+    <div class="j-panel">
+      <h2>🔐 Código para guardar</h2>
+      <p class="ayuda">Todo se puede ver y probar. Pero solo se <b>guarda</b> en la Hoja (puntos, compras, sorteos, Bóveda, planes, alumnos…) si alguien ha escrito el código en ese aparato.
+        Sirve <b>30 minutos</b>; después lo vuelve a pedir. Con el candado 🔒 de la esquina se cierra antes.</p>
+      <p class="ayuda" id="cEstado"></p>
+      <div class="nuevo" id="cForm">
+        <input id="cNuevo" type="password" inputmode="numeric" maxlength="20" placeholder="Nuevo código (mín. 4)" aria-label="Nuevo código" autocomplete="new-password">
+        <input id="cRepite" type="password" inputmode="numeric" maxlength="20" placeholder="Repítelo" aria-label="Repite el código" autocomplete="new-password">
+        <button class="j-boton" id="cGuardar" type="button">Guardar código</button>
+      </div>
+      <p class="ayuda" style="margin-top:12px;font-size:14px">Es un candado para la clase, no una caja fuerte: evita que alguien guarde cosas sin querer o jugando, pero quien sepa mucho de informática podría saltárselo.
+        Si lo olvidas, en la Hoja de respuestas borra las filas «AJUSTES · Ajuste · codigo» y podrás crear otro.</p>
+    </div>
+  </section>
 </div>
 <div class="j-aviso" id="aviso" role="status" hidden></div>
 
@@ -136,7 +154,7 @@ var vista = (location.hash||'').replace('#','') || 'alumnos';
 function verVista(v){
   vista = v;
   Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
-  ['alumnos','tema','enlaces'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  ['alumnos','tema','enlaces','codigo'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
   history.replaceState(null, '', location.search+'#'+v);
 }
 Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
@@ -304,9 +322,29 @@ function pintarEnlaces(){
   tarjetas('enlAlumnos', alumnos); tarjetas('enlProfe', profe);
 }
 
+/* ============================================================
+   CÓDIGO
+   ============================================================ */
+function pintarCodigo(){
+  var hay = JAVI.hayCodigo(), puede = !hay || !JAVI.DEMO;
+  $('cEstado').innerHTML = !hay ? '⚠️ <b>Todavía no hay código.</b> Créalo ahora: mientras no exista, cualquiera puede entrar a guardar.'
+    : JAVI.DEMO ? '✅ El código está creado. Para cambiarlo, entra primero con el código actual (🔓 Código, abajo a la derecha).'
+    : '✅ El código está creado y ahora estás dentro ('+JAVI.minutosLlave()+' min). Puedes cambiarlo aquí.';
+  $('cForm').style.display = puede ? '' : 'none';
+}
+$('cGuardar').addEventListener('click', function(){
+  var a = $('cNuevo').value.trim(), b = $('cRepite').value.trim();
+  if(a.length < 4){ aviso('El código debe tener al menos 4 caracteres.'); return; }
+  if(a!==b){ aviso('Los dos códigos no coinciden.'); return; }
+  JAVI.fijarCodigo(a).then(function(){
+    $('cNuevo').value = $('cRepite').value = '';
+    aviso('Código guardado. Apúntalo: no se puede ver después.'); pintarCodigo();
+  }, function(e){ aviso(e.message); });
+});
+
 function pintar(){ pintarGrupos(); pintarLista(); pintarTemas(); }
 JAVI.listo(function(){
-  pintar(); pintarEnlaces(); verVista(['alumnos','tema','enlaces'].indexOf(vista)>=0 ? vista : 'alumnos');
+  pintar(); pintarEnlaces(); pintarCodigo(); verVista(['alumnos','tema','enlaces','codigo'].indexOf(vista)>=0 ? vista : 'alumnos');
   JAVI.avisoPrueba();
 });
 })();

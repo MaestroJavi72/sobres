@@ -38,8 +38,18 @@ var TEMAS = {
 var yo = document.currentScript && document.currentScript.src || '';
 var BASE = yo ? yo.replace(/comun\/javi\.js.*$/, '') : '../';
 
-var PRUEBA = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === 'file:' || /[?&]prueba/.test(location.search);
-var ES_PROFE = /[?&]profe/.test(location.search);
+/* MODO PRUEBA fijo: en el ordenador (localhost) o con ?prueba */
+var PRUEBA_FIJA = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === 'file:' || /[?&]prueba/.test(location.search);
+/* CÓDIGO PARA ACTUAR: todo se ve, pero solo se guarda en la Hoja con el código.
+   Al escribirlo, sirve 30 minutos en este aparato (todas las páginas); luego se vuelve a pedir.
+   Sin código, la página funciona como DEMOSTRACIÓN: se puede tocar todo, pero no se guarda nada. */
+var LLAVE = 'javi-llave', DURACION_LLAVE = 30*60*1000;
+function llave(){ var t = +(leerLocal(LLAVE)||0); return t && Date.now()-t >= 0 && Date.now()-t < DURACION_LLAVE ? t : 0; }
+var PRUEBA = PRUEBA_FIJA || !llave();
+/* ?candado en el ordenador: enseña el candado para probarlo, sin enviar nada nunca */
+var PROBAR_CANDADO = PRUEBA_FIJA && /[?&]candado/.test(location.search);
+var DEMO = PROBAR_CANDADO ? !llave() : (!PRUEBA_FIJA && PRUEBA);
+var ES_PROFE = true;   /* todo se ve para todos; para guardar hace falta el código */
 
 /* ---------- utilidades ---------- */
 function normal(n){ return String(n||'').trim().toLowerCase(); }
@@ -227,7 +237,7 @@ function multiplicadorEF(g, nombre){
 function darPuntos(g, nombre, n, motivo, detalle){
   var sis = sistemaDe(g), mult = sis==='ef' && n>0 ? multiplicadorEF(g, nombre) : 1;
   var p = { id:idMov(), alumno:claveAlumno(g, nombre), accion:'Galeones', n:n*mult, motivo:(motivo||'')+(mult>1 ? ' (×'+mult+')' : ''), extra:detalle||'', cartaId:'', t:Date.now() };
-  var key = PEND_APP[sis], lista = [];
+  var key = (PRUEBA ? 'prueba-' : '')+PEND_APP[sis], lista = [];
   try{ lista = JSON.parse(leerLocal(key)||'[]') || []; }catch(e){ lista = []; }
   lista.push(p); guardarLocal(key, JSON.stringify(lista));
   if(!PRUEBA){
@@ -386,12 +396,124 @@ function botonInicio(opc){
   document.body.appendChild(a);
 }
 function avisoPrueba(){
-  if(!PRUEBA) return;
+  if(!PRUEBA_FIJA) return;   /* la demostración tiene su propio aviso (el candado) */
   var d = document.createElement('div');
   d.textContent = 'MODO PRUEBA · no se guarda nada en la Hoja';
   d.style.cssText = 'position:fixed;z-index:9998;left:50%;bottom:0;transform:translateX(-50%);background:#7a2a22;color:#fff;font:600 12px/1 sans-serif;padding:5px 10px;border-radius:8px 8px 0 0;pointer-events:none';
   document.body.appendChild(d);
 }
+
+/* ============================================================
+   CÓDIGO PARA ACTUAR
+   - El código se guarda en la Hoja como huella (SHA-256), nunca tal cual: ajuste «codigo».
+   - Mientras no haya código creado, «Entrar» abre sin pedirlo (para poder crearlo en el Panel del profe).
+   - Ojo: es un candado para la clase, no una caja fuerte (la web es pública).
+   ============================================================ */
+function huella(txt){
+  var datos = new TextEncoder().encode('javificacion:'+String(txt).trim());
+  return crypto.subtle.digest('SHA-256', datos).then(function(b){
+    return Array.prototype.map.call(new Uint8Array(b), function(x){ return ('0'+x.toString(16)).slice(-2); }).join('');
+  });
+}
+function codigoGuardado(){ return ajuste('codigo') || leerLocal('javi-codigo') || ''; }
+function hayCodigo(){ return !!codigoGuardado(); }
+function limpiarDemo(){
+  ['javi-prueba-pendientes','boveda-prueba-pendientes','prueba-gringotts-pendientes','prueba-ef-pendientes'].forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+}
+function abrirLlave(){ guardarLocal(LLAVE, String(Date.now())); limpiarDemo(); }
+function bloquear(){ try{ localStorage.removeItem(LLAVE); }catch(e){} location.reload(); }
+
+var CSS_LLAVE =
+  '.jv-pill{position:fixed;z-index:9997;right:10px;bottom:10px;display:flex;align-items:center;gap:6px;font:700 13px/1.2 system-ui,sans-serif;'+
+    'padding:7px 8px 7px 12px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.45);max-width:calc(100vw - 20px)}'+
+  '.jv-pill.demo{background:#3a2a16;color:#f6e3a1;border:2px solid #c9a34a}'+
+  '.jv-pill.real{background:#1c4d31;color:#d9f5e1;border:2px solid #6fd39a}'+
+  '.jv-pill button{font:800 13px/1 system-ui,sans-serif;border:none;border-radius:999px;padding:6px 10px;cursor:pointer}'+
+  '.jv-pill.demo button{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05}'+
+  '.jv-pill.real button{background:rgba(255,255,255,.15);color:#fff}'+
+  '.jv-velo{position:fixed;inset:0;z-index:9999;background:rgba(5,10,16,.78);display:grid;place-items:center;padding:16px}'+
+  '.jv-caja{width:min(100%,380px);background:linear-gradient(180deg,#f6ead0,#ead7a8);color:#3a2a16;border:3px solid #b8934f;border-radius:20px;padding:20px;text-align:center;font:16px/1.4 Georgia,serif;box-shadow:0 20px 50px rgba(0,0,0,.6)}'+
+  '.jv-caja h2{font:800 22px/1.2 Cinzel,Georgia,serif;color:#7a2030;margin:0 0 8px}'+
+  '.jv-caja p{margin:0 0 12px}'+
+  '.jv-caja input{width:100%;font:700 26px/1 system-ui,sans-serif;text-align:center;letter-spacing:.3em;padding:10px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;margin-bottom:10px}'+
+  '.jv-caja .err{color:#a3392f;font-weight:700;min-height:1.4em;margin-bottom:6px}'+
+  '.jv-caja .bts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}'+
+  '.jv-caja button{font:800 16px/1 system-ui,sans-serif;padding:11px 16px;border-radius:12px;cursor:pointer;border:2px solid #8a6a1f}'+
+  '.jv-caja .si{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05}'+
+  '.jv-caja .no{background:transparent;color:#3a2a16;border-color:#b8934f}'+
+  '.jv-caja.mal{animation:jvTiembla .3s}'+
+  '@keyframes jvTiembla{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}'+
+  '@media print{.jv-pill,.jv-velo{display:none!important}}';
+var modalAbierto = false;
+/* pide el código. o = { titulo, texto, alAcertar, alCancelar, textoCancelar } */
+function pedirCodigo(o){
+  o = o || {};
+  if(!preparado){ listo(function(){ pedirCodigo(o); }); return; }   /* espera a la Hoja para saber si hay código */
+  if(modalAbierto) return; modalAbierto = true;
+  var hay = hayCodigo(), velo = document.createElement('div'); velo.className = 'jv-velo';
+  velo.innerHTML = '<div class="jv-caja" role="dialog" aria-modal="true" aria-labelledby="jvT"><h2 id="jvT"></h2><p></p>'+
+    (hay ? '<input type="password" inputmode="numeric" autocomplete="off" aria-label="Código"><div class="err" role="alert"></div>' : '')+
+    '<div class="bts"><button type="button" class="no"></button><button type="button" class="si"></button></div></div>';
+  var caja = velo.querySelector('.jv-caja'), inp = velo.querySelector('input'), err = velo.querySelector('.err');
+  velo.querySelector('h2').textContent = o.titulo || '🔐 Código para guardar';
+  velo.querySelector('p').textContent = hay ? (o.texto || 'Sin el código puedes mirar y probar todo, pero no se guarda nada. Con el código se guarda durante 30 minutos.')
+    : 'Todavía no has creado el código. Entra y créalo en el Panel del profe → 🔐 Código.';
+  velo.querySelector('.si').textContent = hay ? '🔓 Entrar' : '🔓 Entrar y crearlo';
+  velo.querySelector('.no').textContent = o.textoCancelar || 'Solo mirar';
+  function cerrar(){ velo.remove(); modalAbierto = false; }
+  function probar(){
+    if(!hay){ abrirLlave(); cerrar(); (o.alAcertar || function(){ location.reload(); })(); return; }
+    var v = inp.value.trim(); if(!v){ inp.focus(); return; }
+    huella(v).then(function(h){
+      if(h===codigoGuardado()){ abrirLlave(); cerrar(); (o.alAcertar || function(){ location.reload(); })(); }
+      else { err.textContent = 'Código incorrecto'; inp.value = ''; caja.classList.remove('mal'); void caja.offsetWidth; caja.classList.add('mal'); inp.focus(); }
+    }).catch(function(){ err.textContent = 'Este navegador no puede comprobar el código.'; });
+  }
+  velo.querySelector('.si').addEventListener('click', probar);
+  velo.querySelector('.no').addEventListener('click', function(){ cerrar(); if(o.alCancelar) o.alCancelar(); });
+  if(inp) inp.addEventListener('keydown', function(e){ if(e.key==='Enter') probar(); });
+  document.body.appendChild(velo);
+  if(inp) setTimeout(function(){ inp.focus(); }, 50);
+}
+/* crea o cambia el código (desde el Panel del profe). Solo con la llave abierta o si aún no hay código. */
+function fijarCodigo(nuevo){
+  if(hayCodigo() && DEMO) return Promise.reject(new Error('Primero entra con el código actual.'));
+  return huella(nuevo).then(function(h){
+    var p = { id:idMov(), alumno:'AJUSTES', accion:'Ajuste', cartaId:'codigo', tipo:h, carta:'', t:Date.now() };
+    pendientes.push(p); guardarPend(); guardarLocal('javi-codigo', h);
+    if(!PRUEBA_FIJA){
+      var e = REGISTRO.entradas, body = new URLSearchParams();
+      body.set(e.alumno, p.alumno); body.set(e.accion, p.accion); body.set(e.cartaId, p.cartaId); body.set(e.tipo, p.tipo); body.set(e.carta, p.id);
+      fetch(REGISTRO.formAction, { method:'POST', mode:'no-cors', body:body }).catch(function(){});
+    }
+    return h;
+  });
+}
+/* el candado de la esquina y el aviso cada 30 minutos */
+function pintarLlave(){
+  if((PRUEBA_FIJA && !PROBAR_CANDADO) || /[?&]solo/.test(location.search)) return;
+  var css = document.createElement('style'); css.textContent = CSS_LLAVE; document.head.appendChild(css);
+  var pill = document.createElement('div'); pill.className = 'jv-pill '+(DEMO ? 'demo' : 'real');
+  document.body.appendChild(pill);
+  function pintar(){
+    if(DEMO){ pill.innerHTML = '<span>👀 Demostración: no se guarda nada</span><button type="button">🔓 Código</button>'; return; }
+    var resta = Math.max(0, Math.ceil((llave() + DURACION_LLAVE - Date.now())/60000));
+    pill.innerHTML = '<span>🔓 Guardando · '+resta+' min</span><button type="button" title="Cerrar el candado">🔒</button>';
+  }
+  pill.addEventListener('click', function(e){
+    if(!e.target.closest('button')) return;
+    if(DEMO) pedirCodigo(); else bloquear();
+  });
+  pintar();
+  if(!DEMO) setInterval(function(){
+    pintar();
+    if(!llave() && !modalAbierto) pedirCodigo({
+      titulo:'⏰ Han pasado 30 minutos', texto:'Escribe el código para seguir guardando. Si no, la página pasa a modo demostración.',
+      textoCancelar:'Pasar a demostración', alAcertar:function(){ pintar(); }, alCancelar:function(){ location.reload(); }
+    });
+  }, 15000);
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', pintarLlave); else pintarLlave();
 
 /* ============================================================
    ARRANQUE: JAVI.listo(fn) espera a la lista de alumnos y a la Hoja
@@ -401,6 +523,7 @@ var esperando = [], preparado = false;
 function terminar(){
   if(preparado) return; preparado = true;
   aplicarTema();
+  var cod = ajuste('codigo'); if(cod) guardarLocal('javi-codigo', cod);   /* para comprobar el código aunque la Hoja tarde */
   esperando.splice(0).forEach(function(fn){ try{ fn(); }catch(e){ console.error(e); } });
 }
 var pBase = cargarBase().catch(function(e){ console.warn('Javificación: sin data/alumnos.json', e); });
@@ -414,7 +537,8 @@ function listo(fn){
 }
 
 window.JAVI = {
-  BASE:BASE, PRUEBA:PRUEBA, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
+  BASE:BASE, PRUEBA:PRUEBA, PRUEBA_FIJA:PRUEBA_FIJA, DEMO:DEMO, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
+  pedirCodigo:pedirCodigo, fijarCodigo:fijarCodigo, hayCodigo:hayCodigo, bloquear:bloquear, minutosLlave:function(){ var t = llave(); return t ? Math.ceil((t + DURACION_LLAVE - Date.now())/60000) : 0; },
   listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, horaHoja:function(){ return horaCSV; },
   grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,

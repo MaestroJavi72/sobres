@@ -296,7 +296,7 @@ function pintarHoy(){
 }
 Object.keys(SECCIONES).forEach(pintarSeccion);
 mostrar();
-$('pie').innerHTML = profe ? 'Modo profe. Los alumnos ven esta portada sin <b>?profe</b> (solo El Mercader, Mis cartas y las Bóvedas).' : '';
+$('pie').innerHTML = JAVI.DEMO ? '👀 Se puede ver y probar todo. Para que se guarde, toca <b>🔓 Código</b> (abajo a la derecha).' : '';
 /* Tutoría: acceso directo a la situación de aprendizaje en curso (o la próxima) de 4ºA */
 function sdaEnCurso(){
   if(!profe) return;

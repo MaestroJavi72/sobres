@@ -792,7 +792,7 @@ var grupo = '3ºA';
 try{ var gq = new URLSearchParams(location.search).get('grupo'); if(gq && EF.grupos[gq.replace('o','º')]) grupo = gq.replace('o','º'); }catch(e){}
 try{ var gl = localStorage.getItem('ef-grupo'); if(gl && EF.grupos[gl]) grupo = gl; }catch(e){}
 var filas = [], cargado = false, horaCarga = null;
-var CLAVE_PEND = 'ef-pendientes', pendientes = [];
+var CLAVE_PEND = (window.JAVI && JAVI.PRUEBA ? 'prueba-' : '')+'ef-pendientes', pendientes = [];   /* sin código (demostración) no se mezcla con lo de verdad */
 try{ pendientes = JSON.parse(localStorage.getItem(CLAVE_PEND)||'[]') || []; }catch(e){ pendientes = []; }
 function guardarPend(){ try{ localStorage.setItem(CLAVE_PEND, JSON.stringify(pendientes)); }catch(e){} }
 function idMov(){ return '#g'+Date.now().toString(36)+Math.floor(rnd()*1e8).toString(36); }
