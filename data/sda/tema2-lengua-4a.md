@@ -96,11 +96,11 @@ Cada alumno abre una página «Mi glosario de paleontólogo». Por cada palabra:
 
 **Explicación.** Las palabras pueden ser variables (cambian de forma: nombres, adjetivos, determinantes, pronombres y verbos) o invariables (no cambian: adverbios, preposiciones, conjunciones e interjecciones). Las sílabas son los golpes de voz: las contamos con palmadas.
 
-**Libro, pág. 26 ej. 5 (individual).** Del texto de los dinosaurios: monosílabas (el, en, la, que, los, un, se, de, y, su); bisílabas (clima, mucho, época, todos, cambió); trisílabas (vivieron, estaban, unidos, formaban, conocido, Pangea, manera, durante, periodos); polisílabas (dinosaurios, principio, continentes, supercontinente, progresiva, mesozoica, existencia, encontrados).
+**Libro, pág. 26 ej. 5 (individual).** Del texto de los dinosaurios: monosílabas (el, en, la, que, los, un, se, de, y, su); bisílabas (clima, mucho, todos, cambió); trisílabas (é-po-ca, vivieron, estaban, unidos, formaban, Pangea, manera, durante, periodos, prin-ci-pio); polisílabas (dinosaurios, co-no-ci-do, continentes, supercontinente, progresiva, mesozoica, existencia, encontrados).
 
 **Actividades para copiar**
 
-- **A. Separa y clasifica.** Separa en sílabas y clasifica en una tabla de cuatro columnas: fósil, mar, yacimiento, cantera, Triásico, pez, molusco, hueso, paleontóloga, sol, tiburón, carretera.
+- **A. Separa y clasifica.** Separa en sílabas y clasifica en una tabla de cuatro columnas: fósil, mar, yacimiento, cantera, Triásico, pez, molusco, hueso, paleontóloga, sol, tiburón, carretera. (Ojo al corregir: Triásico se separa triá-si-co, porque «iá» es diptongo; es trisílaba).
 - **B. ¿Cambia o no cambia?** Copia las oraciones y rodea las palabras que pueden cambiar de forma (prueba a ponerlas en plural o femenino):
   - El niño encontró ayer un fósil.
   - Los dinosaurios vivieron hace mucho tiempo.

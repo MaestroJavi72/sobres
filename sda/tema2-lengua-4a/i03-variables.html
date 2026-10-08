@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Variables o invariables</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<style>
+:root{ --perg:#f6ead0; --perg2:#ead7a8; --oro:#c9a34a; --granate:#7a2030; --var:#2f9a5a; --inv:#3a6fd0; }
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 280px;min-width:0;font-size:clamp(26px,4.6vw,50px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:clamp(14px,1.6vw,18px);color:var(--acento-2);letter-spacing:.06em;margin-top:4px;text-shadow:none}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.escena{background:linear-gradient(180deg,var(--perg),var(--perg2));color:#3a2a16;border:3px solid #b8934f;border-radius:24px;padding:clamp(16px,3vw,30px);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:460px}
+.barraSup{display:flex;gap:10px;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;font-family:'Cinzel',serif;font-weight:700;color:#6b5732}
+.progreso{flex:1;min-width:120px;height:12px;border-radius:8px;background:rgba(0,0,0,.12);overflow:hidden}
+.progreso i{display:block;height:100%;background:linear-gradient(90deg,#c9972e,#f3d27a);transition:width .4s}
+.instr{font-size:18px;color:#5a3d12}
+.leyenda{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:16px}
+.leyenda span{padding:5px 12px;border-radius:999px;color:#fff;font-weight:700}
+.leyenda .v{background:var(--var)} .leyenda .i{background:var(--inv)} .leyenda .n{background:#fffaf0;color:#6b5732;border:2px dashed #b8934f}
+.oracion{display:flex;flex-wrap:wrap;gap:10px 8px;justify-content:center;align-items:flex-start;margin:6px 0}
+.pal{display:flex;flex-direction:column;align-items:center;gap:4px}
+.pal button{font-family:'EB Garamond',Georgia,serif;font-weight:700;font-size:clamp(26px,4.2vw,46px);padding:4px 14px;border-radius:14px;border:3px dashed #b8934f;
+  background:#fffaf0;color:#3a2a16;min-width:60px;transition:transform .12s}
+.pal button:active{transform:scale(.95)}
+.pal button.V{background:var(--var);border:3px solid #1e6b3c;color:#fff}
+.pal button.I{background:var(--inv);border:3px solid #23478f;color:#fff}
+.pal .marca{font:800 13px 'Cinzel',serif;min-height:18px}
+.pal .clase{font-size:14px;color:#6b5732;font-style:italic;min-height:18px}
+.pal.bien .marca{color:#1e6b3c} .pal.mal .marca{color:#a3392f}
+.pal.mal button{outline:4px solid #e2685c;outline-offset:2px}
+.filaPal{display:flex;align-items:center;gap:2px}
+.punt{font-family:'Cinzel',serif;font-size:clamp(26px,4.4vw,42px);font-weight:800;color:#7a2030}
+.botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.gran{font-family:var(--f-sub);font-weight:800;font-size:clamp(18px,2.6vw,26px);padding:12px 26px;border-radius:16px;border:none;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;box-shadow:0 5px 0 #7a5a14}
+.gran.sec{background:#fffaf0;color:#3a2a16;border:2px solid #b8934f;box-shadow:none}
+.gran:disabled{opacity:.5}
+.mensaje{font-size:19px;min-height:26px;font-weight:700}
+.mensaje.bien{color:#1e6b3c} .mensaje.mal{color:#a3392f}
+.truco{background:#fffaf0;border:2px solid #b8934f;border-radius:14px;padding:12px 16px;font-size:17px;text-align:left;max-width:760px}
+.truco[hidden]{display:none}
+.truco b{color:#7a2030}
+.final h2{font-family:'Cinzel Decorative','Cinzel',serif;color:#7a2030;font-size:clamp(30px,5vw,52px)}
+.estrellas{font-size:clamp(44px,8vw,80px);letter-spacing:6px}
+.cifra{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,72px);font-weight:800;color:#3a2a16}
+.detalle{font-size:18px;color:#6b5732}
+@media (max-width:520px){ .pal button{font-size:24px;padding:3px 10px} }
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🔀 Variables o invariables<span class="sub">I-3 · Las palabras y las sílabas · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena" aria-live="polite"></section>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   ORACIONES DEL TEMA, con la clase de cada palabra
+   VARIABLES (cambian de forma): nom = nombre, adj = adjetivo, det = determinante, pro = pronombre, ver = verbo
+   INVARIABLES (no cambian):     adv = adverbio, pre = preposición, con = conjunción, int = interjección
+   En cada ronda salen RONDA oraciones al azar.
+   ============================================================ */
+var RONDA = 8;
+var ORACIONES = [
+  [['El','det'],['niño','nom'],['encontró','ver'],['ayer','adv'],['un','det'],['fósil','nom'],'.'],
+  [['Los','det'],['dinosaurios','nom'],['vivieron','ver'],['hace','ver'],['mucho','det'],['tiempo','nom'],'.'],
+  ['¡',['Oh','int'],'!',['Hay','ver'],['un','det'],['hueso','nom'],['bajo','pre'],['la','det'],['piedra','nom'],'.'],
+  [['La','det'],['paleontóloga','nom'],['limpia','ver'],['el','det'],['fósil','nom'],['con','pre'],['cuidado','nom'],'.'],
+  [['Los','det'],['científicos','nom'],['trabajan','ver'],['aquí','adv'],['todos','det'],['los','det'],['días','nom'],'.'],
+  [['El','det'],['mamut','nom'],['era','ver'],['enorme','adj'],['y','con'],['muy','adv'],['peludo','adj'],'.'],
+  [['Mañana','adv'],['buscaremos','ver'],['fósiles','nom'],['en','pre'],['la','det'],['cantera','nom'],'.'],
+  ['¡',['Ay','int'],'!',['Mi','det'],['hermano','nom'],['y','con'],['yo','pro'],['vimos','ver'],['un','det'],['dinosaurio','nom'],'.'],
+  [['Nosotros','pro'],['leemos','ver'],['el','det'],['texto','nom'],',',['pero','con'],['ellos','pro'],['escriben','ver'],'.'],
+  [['Los','det'],['moluscos','nom'],['viven','ver'],['siempre','adv'],['bajo','pre'],['el','det'],['agua','nom'],'.'],
+  [['Mañana','adv'],['iremos','ver'],['con','pre'],['mi','det'],['abuela','nom'],['a','pre'],['un','det'],['museo','nom'],'.'],
+  [['Los','det'],['fósiles','nom'],['antiguos','adj'],['están','ver'],['en','pre'],['el','det'],['museo','nom'],'.'],
+  ['¡',['Bravo','int'],'!',['Ella','pro'],['dibujó','ver'],['un','det'],['tiburón','nom'],['gigante','adj'],'.'],
+  [['Hoy','adv'],['estudiamos','ver'],['las','det'],['sílabas','nom'],['despacio','adv'],'.']
+];
+var CLASES = { nom:'nombre', adj:'adjetivo', det:'determinante', pro:'pronombre', ver:'verbo', adv:'adverbio', pre:'preposición', con:'conjunción', int:'interjección' };
+function esVariable(c){ return ['nom','adj','det','pro','ver'].indexOf(c)>=0; }
+
+function $(id){ return document.getElementById(id); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function mezclar(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.floor(JAVI.util.rnd()*(i+1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+
+var ronda = [], n = 0, marcas = [], comprobada = false, aciertos = 0, total = 0, fallos = {};
+
+function empezar(){
+  ronda = mezclar(ORACIONES).slice(0, RONDA); n = 0; aciertos = 0; total = 0; fallos = {};
+  pintarOracion();
+}
+function pintarOracion(){
+  var o = ronda[n]; marcas = o.map(function(){ return null; }); comprobada = false;
+  var esc_ = $('escena');
+  esc_.innerHTML =
+    '<div class="barraSup"><span>Oración '+(n+1)+' de '+ronda.length+'</span><div class="progreso"><i style="width:'+(n/ronda.length*100)+'%"></i></div><span>⭐ '+aciertos+' / '+total+'</span></div>'+
+    '<p class="instr">Toca cada palabra: una vez si es <b style="color:var(--var)">variable</b>, dos veces si es <b style="color:var(--inv)">invariable</b>.</p>'+
+    '<div class="leyenda"><span class="v">V · Variable</span><span class="i">I · Invariable</span><span class="n">Sin marcar</span></div>'+
+    '<div class="oracion" id="oracion"></div>'+
+    '<div class="mensaje" id="mensaje"></div>'+
+    '<div class="botones"><button class="gran" id="bComprobar" type="button">✔ Comprobar</button><button class="gran sec" id="bTruco" type="button">💡 Truco</button></div>'+
+    '<div class="truco" id="truco" hidden><b>Truco:</b> prueba a cambiar la palabra a <b>plural</b>, a <b>femenino</b> o de persona (yo, tú, nosotros…). '+
+      'Si puede cambiar de forma, es <b>variable</b> (nombres, adjetivos, determinantes, pronombres y verbos). '+
+      'Si no cambia nunca, es <b>invariable</b> (adverbios, preposiciones, conjunciones e interjecciones).</div>';
+  var box = $('oracion');
+  /* los signos (¡ ! , .) van pegados a su palabra */
+  var antes = {}, despues = {};
+  o.forEach(function(w, i){
+    if(typeof w!=='string') return;
+    if(w==='¡'){ for(var j=i+1;j<o.length;j++) if(typeof o[j]!=='string'){ antes[j] = (antes[j]||'')+w; break; } }
+    else { for(var k=i-1;k>=0;k--) if(typeof o[k]!=='string'){ despues[k] = (despues[k]||'')+w; break; } }
+  });
+  o.forEach(function(w, i){
+    if(typeof w==='string') return;
+    var d = document.createElement('div'); d.className = 'pal';
+    d.innerHTML = '<div class="filaPal">'+(antes[i] ? '<span class="punt">'+antes[i]+'</span>' : '')+'<button type="button"></button>'+(despues[i] ? '<span class="punt">'+despues[i]+'</span>' : '')+'</div><span class="marca"></span><span class="clase"></span>';
+    d.querySelector('button').textContent = w[0];
+    d.querySelector('button').setAttribute('aria-label', w[0]+': sin marcar');
+    d.querySelector('button').addEventListener('click', function(){
+      if(comprobada) return;
+      marcas[i] = marcas[i]===null ? 'V' : marcas[i]==='V' ? 'I' : null;
+      var b = this; b.className = marcas[i]||''; b.setAttribute('aria-label', w[0]+': '+(marcas[i]==='V' ? 'variable' : marcas[i]==='I' ? 'invariable' : 'sin marcar'));
+      d.querySelector('.marca').textContent = marcas[i] ? (marcas[i]==='V' ? 'VARIABLE' : 'INVARIABLE') : '';
+      tic();
+    });
+    box.appendChild(d);
+  });
+  $('bComprobar').addEventListener('click', comprobar);
+  $('bTruco').addEventListener('click', function(){ $('truco').hidden = !$('truco').hidden; });
+}
+function comprobar(){
+  if(comprobada){ n++; if(n < ronda.length) pintarOracion(); else final(); return; }
+  var o = ronda[n], pals = $('oracion').querySelectorAll('.pal'), k = 0, bien = 0, cuenta = 0, sinMarcar = 0;
+  o.forEach(function(w, i){
+    if(typeof w==='string') return;
+    var d = pals[k++], ok = (marcas[i]==='V') === esVariable(w[1]) && marcas[i]!==null;
+    if(marcas[i]===null) sinMarcar++;
+    cuenta++; if(ok) bien++; else fallos[CLASES[w[1]]] = (fallos[CLASES[w[1]]]||0)+1;
+    d.classList.add(ok ? 'bien' : 'mal');
+    var b = d.querySelector('button'); b.className = esVariable(w[1]) ? 'V' : 'I';
+    d.querySelector('.marca').textContent = (ok ? '✓ ' : '✗ ')+(esVariable(w[1]) ? 'VARIABLE' : 'INVARIABLE');
+    d.querySelector('.clase').textContent = CLASES[w[1]];
+  });
+  aciertos += bien; total += cuenta; comprobada = true;
+  var m = $('mensaje');
+  if(bien===cuenta){ m.className = 'mensaje bien'; m.textContent = '¡Perfecto! Todas bien. 🎉'; fanfarria(); }
+  else { m.className = 'mensaje mal'; m.textContent = bien+' de '+cuenta+' bien'+(sinMarcar ? ' ('+sinMarcar+' sin marcar)' : '')+'. Mira debajo de cada palabra qué clase es.'; fallo(); }
+  $('bComprobar').textContent = n+1 < ronda.length ? '➡ Siguiente oración' : '🏁 Ver resultado';
+  document.querySelector('.barraSup span:last-child').textContent = '⭐ '+aciertos+' / '+total;
+}
+function final(){
+  var pct = total ? aciertos/total : 0, est = pct>=0.9 ? 3 : pct>=0.7 ? 2 : pct>=0.5 ? 1 : 0;
+  var mens = ['¡A repasar el truco y a por otra ronda!','¡Bien! Ya vas entendiéndolo.','¡Muy bien, aprendiz de paleontólogo!','¡Extraordinario hallazgo! Eres un experto.'][est];
+  var peor = Object.keys(fallos).sort(function(a,b){ return fallos[b]-fallos[a]; })[0];
+  $('escena').innerHTML =
+    '<div class="final"><h2>🏁 ¡Ronda terminada!</h2></div>'+
+    '<div class="estrellas" aria-label="'+est+' estrellas de 3">'+'★★★'.slice(0, est)+'<span style="opacity:.25">'+'★★★'.slice(0, 3-est)+'</span></div>'+
+    '<div class="cifra">'+aciertos+' / '+total+'</div>'+
+    '<div class="detalle">palabras bien clasificadas ('+Math.round(pct*100)+' %)</div>'+
+    '<p class="mensaje bien">'+mens+'</p>'+
+    (peor ? '<p class="detalle">Donde más fallos ha habido: <b>'+esc(peor)+'s</b>.</p>' : '')+
+    '<div class="botones"><button class="gran" id="bRepetir" type="button">🔁 Repetir con otras oraciones</button></div>';
+  $('bRepetir').addEventListener('click', empezar);
+  if(est>=2) fanfarria();
+}
+
+/* ---------- sonido ---------- */
+var sonido = (function(){ try{ return localStorage.getItem('variables-sonido')!=='no'; }catch(e){ return true; } })(), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function tono(f, t0, d, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+t0;
+  o.type = tipo; o.frequency.value = f; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+0.02); }
+function tic(){ tono(880, 0, 0.06, 'triangle', 0.06); }
+function fanfarria(){ [523,659,784,1046].forEach(function(f, i){ tono(f, i*0.1, 0.25, 'triangle', 0.1); }); }
+function fallo(){ tono(330, 0, 0.2, 'sawtooth', 0.05); tono(262, 0.15, 0.3, 'sawtooth', 0.05); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; try{ localStorage.setItem('variables-sonido', sonido ? 'si' : 'no'); }catch(e){} pintarSonido(); });
+pintarSonido();
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+
+empezar();
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  document.querySelector('.volver').setAttribute('data-volver', '../?id=tema2-lengua-4a'+(JAVI.ES_PROFE ? '&profe' : ''));
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>
