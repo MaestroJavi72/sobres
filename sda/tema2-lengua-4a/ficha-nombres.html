@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha para familias · El nombre: género y número</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=EB+Garamond:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.par{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm}
+.par .hueco{min-height:10mm;flex-direction:row;align-items:flex-end;gap:2mm}
+.par .hueco .pal{white-space:nowrap}
+.par .hueco .lin{flex:1}
+.mf{display:grid;grid-template-columns:repeat(6,1fr);gap:2mm}
+.mf .hueco{align-items:center;min-height:12mm}
+.ej5 .oracion{font-size:13pt;line-height:1.4;padding:1.2mm 3mm}
+.mf .op{font-size:10.5pt;color:var(--suave)}
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../?id=tema2-lengua-4a" id="bVolver">← Volver</a>
+  <button class="prim" type="button" id="pFicha">🖨️ Imprimir la ficha</button>
+  <button type="button" id="pSol">🖨️ Imprimir las soluciones</button>
+  <button type="button" id="pAmbas">🖨️ Las dos</button>
+</nav>
+
+<section class="hoja ficha">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🦉</span><div><h1>El nombre: género y número</h1><div class="sub">Lengua · Tema 2 · Paleontólogos de Hogwarts</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <div class="datos"><span>Nombre:</span><span class="corto">Fecha:</span></div>
+  <div class="nota">Estimadas familias: estos días estamos trabajando el nombre: su género (masculino o femenino) y su número (singular o plural). Os enviamos esta ficha para repasar en casa. Un truco: si delante podemos poner «el», es masculino; si ponemos «la», es femenino. Gracias por vuestra colaboración. Javi, tutor de 4ºA.</div>
+  <div class="ej"><h2><span class="num">1</span>Recuerda</h2>
+    <div class="recuerda">
+      <div class="caja"><p><b>Género.</b> Masculino: <i>el niño</i>. Femenino: <i>la niña</i>.</p><p>El femenino se forma cambiando la -o por -a (<i>niño → niña</i>), añadiendo -a (<i>león → leona</i>), con otra terminación (<i>actor → actriz</i>) o con una palabra distinta (<i>caballo → yegua</i>).</p></div>
+      <div class="caja"><p><b>Número.</b> Singular: uno. Plural: varios.</p><p>Acaba en vocal: <b>+ s</b> (<i>hueso → huesos</i>). Acaba en consonante: <b>+ es</b> (<i>collar → collares</i>). Acaba en z: <b>z → c + es</b> (<i>luz → luces</i>).</p></div>
+    </div></div>
+  <div class="ej"><h2><span class="num">2</span>Escribe el femenino.</h2><div class="par" id="f2"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Escribe el plural.</h2><div class="par" id="f3"></div></div>
+  <div class="ej"><h2><span class="num">4</span>¿Masculino (M) o femenino (F)? Escribe el, la delante.</h2><div class="mf" id="f4"></div></div>
+  <div class="ej ej5"><h2><span class="num">5</span>Rodea el error y escribe la oración bien.</h2>
+    <p class="oracion">La paleontóloga encontró unas conchas pequeños.</p><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:7mm"></div>
+    <p class="oracion">El niña vio un mamut en el museo.</p><div class="lin" style="border-bottom:1.5px dotted var(--linea);height:7mm"></div></div>
+  <div class="ej reto"><h2><span class="num">6</span>Reto: una oración con un nombre femenino plural y otro masculino singular.</h2><div class="lin"></div></div>
+  <footer class="pie"><span>Javificación · Ficha para familias</span><span>Soluciones: pídeselas a tu maestro 🦉</span></footer>
+</section>
+
+<section class="hoja sol">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🔑</span><div><h1>Soluciones · El nombre</h1><div class="sub">Ficha para familias · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">Para el maestro</div></header>
+  <div class="ej"><h2><span class="num">2</span>Femenino</h2><div class="par" id="s2"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Plural</h2><div class="par" id="s3"></div></div>
+  <div class="ej"><h2><span class="num">4</span>Masculino o femenino</h2><div class="mf" id="s4"></div></div>
+  <div class="ej"><h2><span class="num">5</span>Oraciones corregidas</h2>
+    <p class="oracion">La paleontóloga encontró unas conchas <span class="marca">pequeñas</span>.</p>
+    <p class="oracion"><span class="marca">La</span> niña vio un mamut en el museo.</p></div>
+  <div class="ej"><h2><span class="num">6</span>Reto (respuesta libre)</h2><p>Ejemplo: <span class="resp">Las niñas encontraron un fósil.</span> → <i>niñas</i> (femenino plural), <i>fósil</i> (masculino singular).</p></div>
+  <footer class="pie"><span>Javificación · Soluciones</span><span>LCL.2.9.1 · LCL.2.9.2</span></footer>
+</section>
+<script>
+(function(){
+var FEM = [['niño','niña'],['león','leona'],['actor','actriz'],['caballo','yegua'],['rey','reina'],['duque','duquesa']];
+var PLU = [['pez','peces'],['árbol','árboles'],['cueva','cuevas'],['collar','collares'],['luz','luces'],['hueso','huesos']];
+var MF = [['piedra','F','la'],['fósil','M','el'],['nariz','F','la'],['mamut','M','el'],['extinción','F','la'],['fuego','M','el']];
+function $(id){ return document.getElementById(id); }
+$('f2').innerHTML = FEM.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' →</span><span class="lin"></span></div>'; }).join('');
+$('f3').innerHTML = PLU.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' →</span><span class="lin"></span></div>'; }).join('');
+$('f4').innerHTML = MF.map(function(w){ return '<div class="hueco"><span class="op">___ '+w[0]+'</span><span class="op">M · F</span></div>'; }).join('');
+$('s2').innerHTML = FEM.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' →</span><span class="resp">'+w[1]+'</span></div>'; }).join('');
+$('s3').innerHTML = PLU.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' →</span><span class="resp">'+w[1]+'</span></div>'; }).join('');
+$('s4').innerHTML = MF.map(function(w){ return '<div class="hueco"><span class="resp">'+w[2]+' '+w[0]+'</span><span class="resp">'+w[1]+'</span></div>'; }).join('');
+})();
+</script>
+<script src="../comun/ficha.js"></script>
+</body>
+</html>

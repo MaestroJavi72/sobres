@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha para familias · Sinónimos y antónimos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=EB+Garamond:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.hoja{gap:1.8mm}
+.une{display:grid;grid-template-columns:1fr 1fr;gap:.4mm 30mm;max-width:150mm;margin:0 auto;font-family:'Andika',sans-serif;font-size:12.5pt}
+.une span{display:flex;align-items:center;gap:2mm}
+.une span::after,.une span.d::before{content:'●';color:var(--granate);font-size:9pt}
+.une span.d::after{content:none}
+.une span.i{justify-content:flex-end}
+.par{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm}
+.par .hueco{min-height:9mm;flex-direction:row;align-items:flex-end;gap:2mm}
+.par .hueco .pal{white-space:nowrap}
+.par .hueco .lin{flex:1}
+.sa{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm}
+.sa .hueco{flex-direction:row;align-items:center;justify-content:space-between;min-height:8mm}
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../?id=tema2-lengua-4a" id="bVolver">← Volver</a>
+  <button class="prim" type="button" id="pFicha">🖨️ Imprimir la ficha</button>
+  <button type="button" id="pSol">🖨️ Imprimir las soluciones</button>
+  <button type="button" id="pAmbas">🖨️ Las dos</button>
+</nav>
+
+<section class="hoja ficha">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🦉</span><div><h1>Sinónimos y antónimos</h1><div class="sub">Lengua · Tema 2 · Paleontólogos de Hogwarts</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <div class="datos"><span>Nombre:</span><span class="corto">Fecha:</span></div>
+  <div class="nota">Estimadas familias: estos días estamos trabajando los sinónimos y los antónimos. Os enviamos esta ficha para repasar en casa. Jugad a «Simón dice al revés»: decid una palabra y que respondan con su contraria. Gracias por vuestra colaboración. Javi, tutor de 4ºA.</div>
+  <div class="ej"><h2><span class="num">1</span>Recuerda</h2>
+    <div class="recuerda">
+      <div class="caja"><p><b>Sinónimos:</b> palabras que significan lo mismo o casi lo mismo: <i>cara / rostro</i>. Sirven para no repetir palabras.</p></div>
+      <div class="caja"><p><b>Antónimos:</b> palabras de significado contrario. Con una palabra distinta (<i>frío / calor</i>) o con un prefijo: <b>in-</b> (<i>útil / inútil</i>), <b>im-</b> delante de p y b (<i>posible / imposible</i>), <b>des-</b> (<i>hacer / deshacer</i>).</p></div>
+    </div></div>
+  <div class="ej"><h2><span class="num">2</span>Une con flechas cada palabra con su sinónimo.</h2><div class="une" id="f2"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Escribe el antónimo.</h2><div class="par" id="f3"></div></div>
+  <div class="ej"><h2><span class="num">4</span>Forma el antónimo con in-, im- o des-.</h2><div class="par" id="f4"></div></div>
+  <div class="ej"><h2><span class="num">5</span>¿Sinónimos (S) o antónimos (A)?</h2><div class="sa" id="f5"></div></div>
+  <div class="ej reto"><h2><span class="num">6</span>Reto: cambia «grande» por sinónimos para no repetir: «El mamut era grande y tenía un colmillo grande».</h2><div class="lin"></div></div>
+  <footer class="pie"><span>Javificación · Ficha para familias</span><span>Soluciones: pídeselas a tu maestro 🦉</span></footer>
+</section>
+
+<section class="hoja sol">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🔑</span><div><h1>Soluciones · Sinónimos y antónimos</h1><div class="sub">Ficha para familias · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">Para el maestro</div></header>
+  <div class="ej"><h2><span class="num">2</span>Sinónimos</h2><div class="par" id="s2"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Antónimos</h2><div class="par" id="s3"></div></div>
+  <div class="ej"><h2><span class="num">4</span>Antónimos con prefijo</h2><div class="par" id="s4"></div></div>
+  <div class="ej"><h2><span class="num">5</span>¿S o A?</h2><div class="sa" id="s5"></div></div>
+  <div class="ej"><h2><span class="num">6</span>Reto (respuesta abierta)</h2><p>Ejemplo: <span class="resp">El mamut era enorme y tenía un colmillo gigante.</span> (También valen: inmenso, gigantesco…)</p></div>
+  <footer class="pie"><span>Javificación · Soluciones</span><span>LCL.2.9.1</span></footer>
+</section>
+<script>
+(function(){
+var SIN = [['cara','rostro'],['fácil','sencillo'],['camino','sendero'],['pelo','cabello'],['comer','ingerir']];
+var DER = ['sendero','cabello','rostro','ingerir','sencillo'];
+var ANT = [['frío','calor'],['subir','bajar'],['antiguo','moderno'],['día','noche'],['lleno','vacío'],['ganar','perder']];
+var PRE = [['útil','inútil'],['posible','imposible'],['hacer','deshacer'],['feliz','infeliz'],['paciente','impaciente'],['ordenado','desordenado']];
+var SA = [['alto / bajo','A'],['cara / rostro','S'],['abrir / cerrar','A'],['contento / alegre','S'],['lleno / vacío','A'],['hablar / conversar','S']];
+function $(id){ return document.getElementById(id); }
+$('f2').innerHTML = SIN.map(function(w, i){ return '<span class="i">'+w[0]+'</span><span class="d">'+DER[i]+'</span>'; }).join('');
+function pares(id, l, sol){ $(id).innerHTML = l.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' →</span>'+(sol ? '<span class="resp">'+w[1]+'</span>' : '<span class="lin"></span>')+'</div>'; }).join(''); }
+pares('f3', ANT); pares('f4', PRE); pares('s2', SIN, true); pares('s3', ANT, true); pares('s4', PRE, true);
+$('f5').innerHTML = SA.map(function(w){ return '<div class="hueco"><span>'+w[0]+'</span><span class="op">___</span></div>'; }).join('');
+$('s5').innerHTML = SA.map(function(w){ return '<div class="hueco"><span>'+w[0]+'</span><span class="resp">'+w[1]+'</span></div>'; }).join('');
+})();
+</script>
+<script src="../comun/ficha.js"></script>
+</body>
+</html>

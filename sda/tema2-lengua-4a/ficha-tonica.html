@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ficha para familias · Sílaba tónica y átona</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=EB+Garamond:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.par{display:grid;grid-template-columns:repeat(4,1fr);gap:2.5mm}
+.par .hueco{min-height:19mm}
+.tilde{display:grid;grid-template-columns:repeat(4,1fr);gap:2.5mm}
+.tilde .hueco{align-items:center;justify-content:center;font-size:15pt;letter-spacing:1px;white-space:nowrap;min-height:16mm}
+.cambio{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm}
+.cambio .hueco{min-height:26mm}
+.oracion b{letter-spacing:1px}
+.cambio .lin+.lin{margin-top:3mm}
+.oracion b{text-decoration:underline dotted}
+.ton{font-weight:700;text-decoration:underline;text-decoration-thickness:2px}
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../?id=tema2-lengua-4a" id="bVolver">← Volver</a>
+  <button class="prim" type="button" id="pFicha">🖨️ Imprimir la ficha</button>
+  <button type="button" id="pSol">🖨️ Imprimir las soluciones</button>
+  <button type="button" id="pAmbas">🖨️ Las dos</button>
+</nav>
+
+<section class="hoja ficha">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🦉</span><div><h1>Sílaba tónica y sílaba átona</h1><div class="sub">Lengua · Tema 2 · Paleontólogos de Hogwarts</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>4ºA</div></header>
+  <div class="datos"><span>Nombre:</span><span class="corto">Fecha:</span></div>
+  <div class="nota">Estimadas familias: estos días estamos trabajando la sílaba tónica, la que suena más fuerte en cada palabra. Os enviamos esta ficha para repasar en casa. Un truco: «llamad» a la palabra desde lejos (¡ca-za-DOOOR!) y escuchad qué sílaba se alarga. Gracias por vuestra colaboración. Javi, tutor de 4ºA.</div>
+  <div class="ej"><h2><span class="num">1</span>Recuerda</h2>
+    <div class="recuerda">
+      <div class="caja"><p>La <b>sílaba tónica</b> es la que suena más fuerte: <i>ca-za-<b>DOR</b></i>, <i><b>CUE</b>-va</i>. A veces lleva tilde: <i><b>FÓ</b>-sil</i>.</p></div>
+      <div class="caja"><p>Las <b>sílabas átonas</b> son las demás, las que suenan más flojito. En <i>ca-za-dor</i> son átonas <i>ca</i> y <i>za</i>.</p></div>
+    </div></div>
+  <div class="ej"><h2><span class="num">2</span>Separa en sílabas y rodea la sílaba tónica.</h2><div class="par" id="f2"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Estas palabras llevan tilde: rodea su sílaba tónica.</h2><div class="tilde" id="f3"></div></div>
+  <div class="ej"><h2><span class="num">4</span>Cambia la sílaba tónica y explica qué cambia.</h2><div class="cambio" id="f4"></div></div>
+  <div class="ej"><h2><span class="num">5</span>Rodea la sílaba tónica de las palabras en negrita.</h2><p class="oracion">El <b>paleontólogo encontró</b> un <b>fósil enorme</b> en la <b>cueva</b>.</p></div>
+  <div class="ej reto"><h2><span class="num">6</span>Reto: escribe tres palabras cuya sílaba tónica sea la última.</h2><div class="lin"></div><div class="lin"></div></div>
+  <footer class="pie"><span>Javificación · Ficha para familias</span><span>Soluciones: pídeselas a tu maestro 🦉</span></footer>
+</section>
+
+<section class="hoja sol">
+  <header class="cabecera"><span class="buho" aria-hidden="true">🔑</span><div><h1>Soluciones · Tónica y átona</h1><div class="sub">Ficha para familias · Lengua · Tema 2</div></div><span class="esp"></span><div class="sello">Para el maestro</div></header>
+  <div class="ej"><h2><span class="num">2</span>Separación y sílaba tónica (subrayada)</h2><div class="par" id="s2"></div></div>
+  <div class="ej"><h2><span class="num">3</span>Sílaba tónica de las palabras con tilde</h2><div class="tilde" id="s3"></div></div>
+  <div class="ej"><h2><span class="num">4</span>Cambiar la tónica</h2><div class="cambio" id="s4"></div></div>
+  <div class="ej"><h2><span class="num">5</span>Sílaba tónica en la oración</h2><p class="oracion">pa-le-on-<span class="marca">tó</span>-lo-go · en-con-<span class="marca">tró</span> · <span class="marca">fó</span>-sil · e-<span class="marca">nor</span>-me · <span class="marca">cue</span>-va</p></div>
+  <div class="ej"><h2><span class="num">6</span>Reto (respuesta libre)</h2><p>Ejemplos: <span class="resp">cazador, mamut, reloj, canción, jamás, metal</span>.</p></div>
+  <footer class="pie"><span>Javificación · Soluciones</span><span>LCL.2.9.1</span></footer>
+</section>
+<script>
+(function(){
+/* separación y tónica comprobadas con las reglas de acentuación */
+var EJ2 = [['cazador',['ca','za','dor'],2],['metal',['me','tal'],1],['difícil',['di','fí','cil'],1],['hambre',['ham','bre'],0],
+           ['cueva',['cue','va'],0],['jamás',['ja','más'],1],['girando',['gi','ran','do'],1],['mamut',['ma','mut'],1]];
+var EJ3 = [['fósil',['fó','sil'],0],['tiburón',['ti','bu','rón'],2],['árbol',['ár','bol'],0],['lápiz',['lá','piz'],0]];
+var EJ4 = [['beso','besó','beso: un nombre (un beso) · besó: un verbo en pasado (él besó)'],['camino','caminó','camino: un nombre o «yo camino» · caminó: pasado (ella caminó)'],['pago','pagó','pago: un nombre o «yo pago» · pagó: pasado (él pagó)']];
+function $(id){ return document.getElementById(id); }
+function sil(s, t){ return s.map(function(x, i){ return i===t ? '<span class="ton resp">'+x+'</span>' : x; }).join('-'); }
+$('f2').innerHTML = EJ2.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+'</span><span class="lin"></span></div>'; }).join('');
+$('f3').innerHTML = EJ3.map(function(w){ return '<div class="hueco">'+w[1].join(' - ')+'</div>'; }).join('');
+$('f4').innerHTML = EJ4.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' → __________</span><span class="lin"></span><span class="lin"></span></div>'; }).join('');
+$('s2').innerHTML = EJ2.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+'</span><span>'+sil(w[1], w[2])+'</span></div>'; }).join('');
+$('s3').innerHTML = EJ3.map(function(w){ return '<div class="hueco">'+sil(w[1], w[2])+'</div>'; }).join('');
+$('s4').innerHTML = EJ4.map(function(w){ return '<div class="hueco"><span class="pal">'+w[0]+' → <span class="resp">'+w[1]+'</span></span><span class="aviso">'+w[2]+'</span></div>'; }).join('');
+})();
+</script>
+<script src="../comun/ficha.js"></script>
+</body>
+</html>
