@@ -57,6 +57,43 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
 .mod.pronto::after{content:'Próximamente';position:absolute;top:12px;right:12px;font-family:var(--f-sub);font-size:12px;font-weight:700;background:rgba(0,0,0,.25);color:var(--tinta-suave);padding:3px 8px;border-radius:8px}
 .mod.profe{border-color:var(--acento)}
 .vista[hidden],.puerta[hidden]{display:none}
+
+/* ---------- pestañas (como el resto de páginas) ---------- */
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.pestanas a{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:10px 18px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);text-decoration:none}
+.pestanas a[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.pestanas a[hidden]{display:none}
+.pronto{margin-top:14px;font-size:15px;color:var(--tinta-suave)}
+.pronto b{font-family:var(--f-sub)}
+
+/* ---------- Hoy (solo profe) ---------- */
+.hoyCab{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:26px 0 10px}
+.hoyCab h2{font-family:var(--f-titulo);color:var(--titulo-color);text-shadow:var(--titulo-sombra);font-size:clamp(24px,3vw,34px)}
+.hoyCab span{font-family:var(--f-sub);color:var(--tinta-suave);font-size:16px}
+.clasesHoy{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:12px}
+.cHoy{position:relative;background:linear-gradient(180deg,#f6ead0,#ead7a8);color:#3a2a16;border:3px solid #b8934f;border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.cHoy.ahora{border-color:#f3d27a;box-shadow:0 0 0 4px rgba(243,210,122,.45)}
+.cHoy.ahora::after{content:'AHORA';position:absolute;top:-11px;right:14px;background:#7a2030;color:#fff;font:700 12px/1 'Cinzel',serif;padding:5px 9px;border-radius:8px;letter-spacing:.1em}
+.cHoy.pasada{opacity:.65}
+.cHoy .arr{display:flex;align-items:center;gap:8px}
+.cHoy .gr{font-family:var(--f-sub);font-weight:800;font-size:14px;padding:2px 9px;border-radius:8px}
+.cHoy.EF .gr{background:#d7ece6;color:#1d6b5a}
+.cHoy.LCL .gr{background:#f6dcdc;color:#a3392f}
+.cHoy .h{margin-left:auto;font-size:13px;color:#6b5732}
+.cHoy h3{font-family:'Cinzel',Georgia,serif;font-size:18px;line-height:1.2}
+.cHoy h3.vacio{font-family:inherit;font-style:italic;font-weight:400;color:#8a7650;font-size:16px}
+.cHoy .sdaT{font-size:13px;color:#6b5732}
+.cHoy .sdaT a{color:#14403a}
+.bts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.bt{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:6px 10px;font-family:var(--f-sub);font-weight:700;font-size:14px;line-height:1.2}
+.bt.prin{background:#14403a;color:#f6e3a1;border:2px solid #2d6b47}
+.bt.sec{background:#fffaf0;color:#3a2a16;border:2px solid #d9c08a}
+.bt.juego{background:#fff;color:#7a2030;border:2px solid #d9c08a}
+.sinClase{color:var(--tinta-suave);font-size:17px;padding:12px 0}
+#hoy .hoyCab{margin-top:14px}
+.puertas.bajas .puerta{min-height:clamp(120px,18vh,180px);padding:16px 18px}
+.puertas.bajas .puerta .ic{font-size:clamp(40px,5vw,60px)}
+.puertas.bajas .puerta h2{font-size:clamp(24px,2.8vw,34px)}
 .pie{margin-top:28px;text-align:center;color:var(--tinta-suave);font-size:15px}
 </style>
 </head>
@@ -72,6 +109,13 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
       <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
     </div>
   </header>
+
+  <nav class="pestanas" id="pestanas" aria-label="Secciones">
+    <a href="#" data-v="inicio">🏠 Inicio</a>
+    <a href="#tutoria" data-v="tutoria">🏰 Tutoría</a>
+    <a href="#ef" data-v="ef">🤸 Educación Física</a>
+    <a href="#planificacion" data-v="planificacion" id="pestPlan">📅 Planificación</a>
+  </nav>
 
   <!-- PUERTAS -->
   <main class="vista" id="v-inicio">
@@ -92,6 +136,10 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
         <p>La semana, las situaciones de aprendizaje y las sesiones.</p>
       </a>
     </nav>
+    <section id="hoy" hidden>
+      <div class="hoyCab"><h2>Hoy</h2><span id="hoyFecha"></span></div>
+      <div class="clasesHoy" id="clasesHoy"></div>
+    </section>
   </main>
 
   <!-- SECCIONES -->
@@ -161,9 +209,12 @@ function pintarSeccion(clave){
   h += '<div class="titSec"><h2>'+esc(S.t)+'</h2><span class="gr">'+esc(S.gr)+'</span></div>';
   if(S.multiverso) h += '<p class="lema" style="font-family:var(--f-sub);color:var(--tinta-suave)">El mundo cambia con el trimestre:</p><nav class="multi" id="multi" aria-label="Mundos del curso"></nav>';
   h += '<div class="mods"></div>';
+  /* lo que aún no está hecho va en una sola línea, para no llenar la pantalla */
+  var pronto = profe ? S.mods.filter(function(m){ return m.listo===false; }) : [];
+  if(pronto.length) h += '<p class="pronto"><b>Próximamente:</b> '+pronto.map(function(m){ return m.ic+' '+esc(m.n); }).join(' · ')+'</p>';
   box.innerHTML = h;
   var g = box.querySelector('.mods');
-  S.mods.filter(function(m){ return profe ? true : (m.alumnos && m.listo!==false); }).forEach(function(m){
+  S.mods.filter(function(m){ return m.listo!==false && (profe || m.alumnos); }).forEach(function(m){
     var listo = m.listo!==false && m.url;
     var el = document.createElement(listo ? 'a' : 'div');
     el.className = 'mod'+(listo ? '' : ' pronto')+(m.profe ? ' profe' : '');
@@ -191,6 +242,7 @@ function mostrar(){
   var v = (location.hash||'').replace('#','');
   if(!SECCIONES[v]) v = 'inicio';
   ['inicio','tutoria','ef','planificacion'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  Array.prototype.forEach.call(document.querySelectorAll('#pestanas a'), function(a){ a.setAttribute('aria-selected', a.dataset.v===v ? 'true' : 'false'); });
   $('bVolver').hidden = v==='inicio';
   /* Tutoría: siempre Harry Potter. EF: el mundo del trimestre */
   var tEF = JAVI.temaActual();
@@ -207,7 +259,41 @@ $('bVolver').addEventListener('click', function(e){
 window.addEventListener('hashchange', function(){ dentro = !!location.hash.replace('#',''); mostrar(); });
 
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
-if(!profe) $('puertaPlan').hidden = true;   /* los alumnos no ven la planificación */
+if(!profe) $('puertaPlan').hidden = $('pestPlan').hidden = true;   /* los alumnos no ven la planificación */
+$('pestanas').querySelector('[data-v=inicio]').addEventListener('click', function(e){ e.preventDefault(); if(location.hash) location.hash = ''; });
+
+/* ---------- Hoy: las clases del día con sus botones (solo profe) ---------- */
+var DIAS_L = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+var MESES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var NOMBRE_ASIG = { EF:'EF', LCL:'Lengua' };
+function pintarHoy(){
+  if(!profe || !JAVI.horario()) return;
+  var hoy = JAVI.util.clave(new Date()), p = hoy.split('-'), ahora = new Date(), min = ahora.getHours()*60+ahora.getMinutes();
+  $('hoy').hidden = false;
+  /* para el profe, «Hoy» va primero y las puertas se hacen más bajas */
+  var vi = $('v-inicio'); vi.insertBefore($('hoy'), vi.firstChild); vi.querySelector('.puertas').classList.add('bajas');
+  $('hoyFecha').textContent = DIAS_L[JAVI.diaSemana(hoy)]+' '+(+p[2])+' de '+MESES_L[+p[1]-1];
+  var ses = JAVI.festivos().indexOf(hoy)>=0 ? [] : JAVI.sesionesDelDia(hoy).slice().sort(function(a,b){ return a.ini.localeCompare(b.ini); });
+  if(!ses.length){ $('clasesHoy').innerHTML = '<p class="sinClase">Hoy no tienes clases en el horario. <a href="'+enlace('planificacion/')+'" style="color:inherit">📅 Ver la semana</a></p>'; return; }
+  function aMin(h){ var x = h.split(':'); return +x[0]*60 + +x[1]; }
+  $('clasesHoy').innerHTML = ses.map(function(s){
+    var g = encodeURIComponent(s.grupo).replace('%C2%BA','o'), amb = s.grupo==='4ºA' ? 'tutoria' : 'ef';
+    var plan = JAVI.planDe(s.grupo, hoy, s.asig), sd = JAVI.sdaDeSesion(s.grupo, hoy, s.asig);
+    var tit = plan && plan.titulo || sd && sd.sesion.titulo || '';
+    var est = min>=aMin(s.ini) && min<aMin(s.fin) ? ' ahora' : min>=aMin(s.fin) ? ' pasada' : '';
+    var h = '<article class="cHoy '+s.asig+est+'"><div class="arr"><span class="gr">'+esc(s.grupo)+' · '+(NOMBRE_ASIG[s.asig]||s.asig)+'</span><span class="h">'+s.ini+'–'+s.fin+'</span></div>'+
+      (tit ? '<h3>'+esc(tit)+'</h3>' : '<h3 class="vacio">Sin planificar</h3>');
+    if(sd) h += '<div class="sdaT">📚 '+(sd.sda.pagina ? '<a href="'+sd.sda.pagina+'&profe#semana">'+esc(sd.sda.titulo)+'</a>' : esc(sd.sda.titulo))+' · sesión '+(sd.i+1)+' de '+sd.sda.sesiones.length+'</div>';
+    h += '<div class="bts"><a class="bt prin" href="'+enlace('sesion/?grupo='+g+'&fecha='+hoy+'&asig='+s.asig+'#clase', amb)+'">🎬 Sesión</a>';
+    if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('boveda/?grupo='+g, amb)+'">🏦 Bóveda</a><a class="bt sec" href="'+enlace('sorteos/?grupo='+g, amb)+'">👑 Sorteos</a>';
+    if(s.asig==='EF' && s.grupo!=='4ºA') h += '<a class="bt sec" href="'+enlace('ef/', amb)+'">🤝 Coevaluación</a>';
+    if(sd && sd.sesion.interactivas) (sd.sesion.interactivas.split(/,\s*(?=I-)/)).forEach(function(x){
+      var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
+      if(u) h += '<a class="bt juego" href="sda/'+u+'?profe">🎮 '+esc(m[2])+'</a>';
+    });
+    return h+'</div></article>';
+  }).join('');
+}
 Object.keys(SECCIONES).forEach(pintarSeccion);
 mostrar();
 $('pie').innerHTML = profe ? 'Modo profe. Los alumnos ven esta portada sin <b>?profe</b> (solo El Mercader, Mis cartas y las Bóvedas).' : '';
@@ -224,7 +310,7 @@ function sdaEnCurso(){
   a.querySelector('p').textContent = 'Situación de aprendizaje de '+(act.asig==='LCL' ? 'Lengua' : 'EF')+' en curso: sesiones, actividades, rúbricas y criterios.';
   var g = document.querySelector('#v-tutoria .mods'); g.insertBefore(a, g.firstChild);
 }
-JAVI.listo(function(){ pintarMundos(); sdaEnCurso(); mostrar(); JAVI.avisoPrueba(); });
+JAVI.listo(function(){ pintarMundos(); sdaEnCurso(); pintarHoy(); mostrar(); JAVI.avisoPrueba(); });
 })();
 </script>
 </body>
