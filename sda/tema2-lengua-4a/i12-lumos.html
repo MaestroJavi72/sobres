@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lumos: ilumina la tónica</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.cueva{width:100%;max-width:1000px;border-radius:22px;background:radial-gradient(ellipse at 50% 30%,#1f2a3a,#090d14);border:3px solid #3a4c66;padding:clamp(18px,3vw,34px);display:flex;flex-direction:column;align-items:center;gap:16px;color:#f6ead0}
+.silabas{display:flex;gap:clamp(6px,1vw,12px);flex-wrap:wrap;justify-content:center}
+.sil{font-family:'Cinzel',Georgia,serif;font-weight:800;font-size:clamp(34px,6.4vw,80px);padding:6px clamp(10px,1.6vw,20px);border-radius:16px;color:#5d6678;background:#141b27;border:3px solid #283246;transition:all .3s;cursor:default}
+.sil.paso{color:#c9d3e6;border-color:#8aa0c8}
+.sil.luz{color:#2b1c05;background:radial-gradient(circle,#fff6c4,#f3d27a);border-color:#fff1b8;box-shadow:0 0 30px 10px rgba(255,236,150,.65);transform:scale(1.12)}
+.sil.atona{color:#c9d3e6}
+.practica .sil{cursor:pointer}
+.practica .sil:hover{border-color:#f3d27a}
+.sil.mal{background:#5a1f22;border-color:#d0473f;color:#ffd1cc}
+.varita{font-size:clamp(40px,6vw,64px);transition:transform .2s}
+.varita.agita{animation:agita .6s}
+@keyframes agita{25%{transform:rotate(-25deg)}75%{transform:rotate(20deg)}}
+.leyenda{font-size:18px;color:#d9cfae}
+.leyenda b{color:#f3d27a}
+.modo{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.nota{font-size:17px;color:#d9cfae;max-width:720px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">✨ Lumos: ilumina la tónica<span class="sub">I-12 · Sílaba tónica y átona · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena">
+    <div class="modo">
+      <button class="mini" data-m="explica" aria-pressed="true" type="button">📖 Modo explicación</button>
+      <button class="mini" data-m="practica" aria-pressed="false" type="button">🎯 Modo práctica (puntúa)</button>
+    </div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* PALABRAS (banco «Tónica» de la SA). La sílaba tónica la calcula ACT.tonica() con las reglas de acentuación. */
+var PALABRAS = ['cazador','protección','metal','amontonó','jamás','difícil','chispas','mamut','hambre','girando','conseguimos','fósil','cueva','paleontóloga',
+  'caminó','camino','besó','beso','dinosaurio','tiburón','cantera','árbol','lápiz','reloj'];
+var RONDA = 10;
+var $ = ACT.$, modo = 'explica', i = 0, ronda = [], k = 0, puntos = 0, fallos = [], intentado = false;
+
+function silabasHTML(p, clase){ return '<div class="silabas '+(clase||'')+'">'+ACT.silabas(p).map(function(s, j){ return '<span class="sil" data-j="'+j+'">'+ACT.esc(s)+'</span>'; }).join('')+'</div>'; }
+
+/* ---------- explicación ---------- */
+function explica(){
+  var p = PALABRAS[i];
+  $('zona').innerHTML =
+    '<div class="cueva"><div class="leyenda">La <b>sílaba tónica</b> es la que suena más fuerte. Las demás son <b>átonas</b>. Truco: llamad a la palabra desde lejos, ¡ca-za-DOOOR!</div>'+
+    silabasHTML(p)+'<div class="varita" id="varita" aria-hidden="true">✨</div>'+
+    '<div class="botones"><button class="gran" id="bLumos" type="button">✨ ¡Lumos!</button></div><div class="nota" id="nota"></div></div>'+
+    '<div class="botones"><button class="mini" id="bAnt" type="button">◀</button><span class="detalle">'+(i+1)+' / '+PALABRAS.length+'</span><button class="mini" id="bSig" type="button">▶</button><button class="mini" id="bAzar" type="button">🎲 Al azar</button></div>';
+  $('varita').textContent = '✨';
+  $('bLumos').addEventListener('click', lumos);
+  $('bAnt').addEventListener('click', function(){ i = (i-1+PALABRAS.length)%PALABRAS.length; explica(); });
+  $('bSig').addEventListener('click', function(){ i = (i+1)%PALABRAS.length; explica(); });
+  $('bAzar').addEventListener('click', function(){ i = Math.floor(ACT.rnd()*PALABRAS.length); explica(); });
+}
+function lumos(){
+  var p = PALABRAS[i], t = ACT.tonica(p), sils = document.querySelectorAll('.cueva .sil'), v = $('varita');
+  v.classList.remove('agita'); void v.offsetWidth; v.classList.add('agita');
+  Array.prototype.forEach.call(sils, function(s){ s.className = 'sil'; });
+  var j = 0;
+  (function paso(){
+    if(j < sils.length){
+      sils[j].classList.add(j===t ? 'luz' : 'paso');
+      /* ritmo: la tónica suena más fuerte y más larga */
+      ACT.SON.tono(j===t ? 880 : 520, 0, j===t ? 0.55 : 0.18, 'triangle', j===t ? 0.16 : 0.06);
+      j++; setTimeout(paso, j-1===t ? 650 : 330); return;
+    }
+    Array.prototype.forEach.call(sils, function(s, k){ if(k!==t){ s.classList.remove('paso'); s.classList.add('atona'); } });
+    var s = ACT.silabas(p);
+    $('nota').innerHTML = 'La tónica es <b>«'+ACT.esc(s[t])+'»</b>'+(/[áéíóú]/.test(s[t]) ? ': lleva tilde.' : '. Esta vez no lleva tilde.')+' Las átonas: '+s.filter(function(_, k){ return k!==t; }).map(ACT.esc).join(', ')+'.';
+    ACT.voz(p);
+  })();
+}
+
+/* ---------- práctica ---------- */
+function practica(){ ronda = ACT.mezclar(PALABRAS).slice(0, RONDA); k = 0; puntos = 0; fallos = []; pregunta(); }
+function pregunta(){
+  var p = ronda[k]; intentado = false;
+  $('zona').innerHTML =
+    '<div class="barraSup"><span>Palabra '+(k+1)+' de '+ronda.length+'</span><div class="progreso"><i style="width:'+(k/ronda.length*100)+'%"></i></div><span>⭐ '+puntos+'</span></div>'+
+    '<div class="cueva"><div class="leyenda">Toca la sílaba <b>tónica</b> (la que suena más fuerte).</div>'+silabasHTML(p, 'practica')+
+    '<button class="mini" id="bOir" type="button">🔊 Escuchar la palabra</button><div class="mensaje" id="msg"></div></div>'+
+    '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  $('bOir').addEventListener('click', function(){ ACT.voz(p); });
+  $('bSig').addEventListener('click', function(){ k++; if(k < ronda.length) pregunta(); else fin(); });
+  Array.prototype.forEach.call(document.querySelectorAll('.practica .sil'), function(s){
+    s.addEventListener('click', function(){
+      if(!$('bSig').hidden) return;
+      var t = ACT.tonica(p), m = $('msg');
+      if(+s.dataset.j===t){
+        if(!intentado) puntos++;
+        s.classList.add('luz'); m.className = 'mensaje bien'; m.textContent = '¡Lumos! «'+s.textContent+'» es la tónica.'; ACT.SON.acierto();
+        $('bSig').hidden = false; if(k+1===ronda.length) $('bSig').textContent = '🏁 Ver resultado';
+      } else {
+        if(!intentado) fallos.push(p);
+        intentado = true; s.classList.add('mal'); m.className = 'mensaje mal'; m.textContent = 'Esa es átona. Llama a la palabra desde lejos y vuelve a probar.'; ACT.SON.fallo();
+      }
+    });
+  });
+  ACT.voz(p);
+}
+function fin(){
+  ACT.final($('zona'), { titulo:'🏁 ¡Cueva iluminada!', puntos:puntos, total:ronda.length, detalle:'tónicas encontradas a la primera',
+    extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">'+fallos.map(function(p){ var s = ACT.silabas(p), t = ACT.tonica(p); return '<span>'+s.map(function(x, j){ return j===t ? '<b>'+ACT.esc(x.toUpperCase())+'</b>' : ACT.esc(x); }).join('-')+'</span>'; }).join('')+'</div>' : '',
+    textoRepetir:'Otra ronda', repetir:practica });
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){
+  b.addEventListener('click', function(){
+    modo = b.dataset.m;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    if(modo==='explica') explica(); else practica();
+  });
+});
+document.addEventListener('keydown', function(e){ if(modo==='explica' && e.key===' '){ e.preventDefault(); lumos(); } });
+explica();
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

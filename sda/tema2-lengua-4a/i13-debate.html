@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cronómetro del debate</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.tema{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(20px,2.8vw,32px);color:#7a2030;max-width:900px;line-height:1.2}
+.fases{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.fases button{font-family:var(--f-sub);font-weight:700;font-size:15px;padding:7px 12px;border-radius:999px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.fases button[aria-pressed="true"]{background:#7a2030;color:#fff;border-color:#7a2030}
+.equipos{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch;width:100%;max-width:1100px}
+@media (max-width:820px){ .equipos{grid-template-columns:1fr} }
+.equipo{border-radius:20px;padding:12px;border:4px solid var(--col);background:#fffaf0;display:flex;flex-direction:column;gap:8px;transition:box-shadow .2s, transform .2s}
+.equipo.activo{box-shadow:0 0 0 6px var(--col),0 0 34px var(--col);transform:scale(1.02)}
+.equipo h2{font-family:'Cinzel',serif;color:var(--col);font-size:clamp(20px,2.4vw,28px)}
+.equipo .tot{font-size:15px;color:#6b5732}
+.miembros{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.miembros button{font-size:16px;padding:6px 10px;border-radius:10px;border:2px solid var(--col);background:#fff;color:#3a2a16;cursor:pointer}
+.miembros button b{display:inline-block;min-width:22px;margin-left:4px;padding:0 5px;border-radius:999px;background:var(--col);color:#fff;font-size:14px}
+.reloj{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:240px}
+.tiempo{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(56px,9vw,110px);line-height:1;color:#3a2a16}
+.tiempo.poco{color:#d0473f;animation:latido .5s infinite alternate}
+@keyframes latido{to{transform:scale(1.08)}}
+.turno{font-family:'Cinzel',serif;font-weight:800;font-size:20px;color:#6b5732}
+.papeles{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:16px}
+.papeles span{padding:5px 10px;border-radius:10px;background:#f3ead5;border:1px solid #b8934f}
+.config{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:16px}
+.config select,.config input{font-size:16px;padding:6px 8px;border-radius:10px;border:1px solid #b8934f;background:#fffaf0}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🎙️ Cronómetro del debate<span class="sub">I-13 · El debate · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="tema" id="tema" contenteditable="true" spellcheck="false" title="Toca para cambiar el tema">Si los científicos pudieran devolver a la vida al mamut, ¿deberían hacerlo?</div>
+    <div class="config">
+      <button class="mini" id="bSortear" type="button">🎲 Sortear equipos y papeles</button>
+      <label>Turno de <select id="dur"><option value="45">45 s</option><option value="60" selected>1 min</option><option value="90">1 min 30 s</option><option value="120">2 min</option></select></label>
+      <button class="mini" id="bExportar" type="button">📥 Exportar intervenciones</button>
+      <button class="mini" id="bReiniciar" type="button">↺ Reiniciar marcador</button>
+    </div>
+    <div class="papeles" id="papeles"></div>
+    <div class="fases" id="fases"></div>
+    <div class="equipos">
+      <div class="equipo" id="eqA" style="--col:#2f9a5a"><h2>👍 A favor</h2><div class="tot" id="totA"></div><div class="miembros" id="mA"></div></div>
+      <div class="reloj">
+        <div class="turno" id="turno"></div>
+        <div class="tiempo" id="tiempo">1:00</div>
+        <div class="botones">
+          <button class="gran verde" id="bPlay" type="button">▶ Empezar</button>
+          <button class="gran sec" id="bSig" type="button">⏭ Siguiente turno</button>
+        </div>
+        <button class="mini" id="bModerador" type="button">🔔 Moderador: ¡silencio!</button>
+      </div>
+      <div class="equipo" id="eqB" style="--col:#d0473f"><h2>👎 En contra</h2><div class="tot" id="totB"></div><div class="miembros" id="mB"></div></div>
+    </div>
+    <p class="detalle">Toca el nombre de quien habla para sumar una intervención (sirve para la rúbrica del debate).</p>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* FASES del debate (sesión 10) y su duración por defecto en segundos (0 = usa la duración del turno) */
+var FASES = [
+  { n:'1. Presentación', s:120, quien:'mod' },
+  { n:'2. Primera ronda: argumentos', s:0, quien:'turnos' },
+  { n:'3. Segunda ronda: réplicas', s:0, quien:'turnos' },
+  { n:'4. Conclusión del secretario', s:120, quien:'sec' },
+  { n:'5. Valoración de los observadores', s:300, quien:'obs' }
+];
+var CLAVE = 'debate-tema2', $ = ACT.$;
+var est = { A:[], B:[], papeles:{}, cuenta:{}, fase:0, turno:'A' };
+try{ var g = JSON.parse(localStorage.getItem(CLAVE)||'null'); if(g) est = g; }catch(e){}
+function guardar(){ try{ localStorage.setItem(CLAVE, JSON.stringify(est)); }catch(e){} }
+var restante = 60, corriendo = false, tic = 0;
+
+function nombres(){ var r = window.JAVI && JAVI.grupo('4ºA'); return r ? r.nombres : []; }
+function sortear(){
+  if(est.A.length && !confirm('¿Volver a sortear equipos y papeles? Se borrará el marcador.')) return;
+  var l = ACT.mezclar(nombres()); if(!l.length){ alert('No se ha podido leer la lista de 4ºA.'); return; }
+  est.papeles = { moderador:l.shift(), secretario:l.shift(), observadores:l.splice(0, 3) };
+  est.A = []; est.B = []; l.forEach(function(n, i){ (i%2 ? est.B : est.A).push(n); });
+  est.cuenta = {}; est.fase = 0; est.turno = 'A'; guardar(); pintar(); ACT.SON.magia();
+}
+function duracion(){ var f = FASES[est.fase]; return f.s || +$('dur').value; }
+function pintar(){
+  var p = est.papeles;
+  $('papeles').innerHTML = p.moderador ? '<span>🎤 Moderador: <b>'+ACT.esc(p.moderador)+'</b></span><span>📝 Secretario: <b>'+ACT.esc(p.secretario)+'</b></span><span>👀 Observadores: <b>'+p.observadores.map(ACT.esc).join(', ')+'</b></span>'
+                                    : '<span>Pulsa «Sortear equipos y papeles» para formar los equipos con la lista de 4ºA.</span>';
+  ['A','B'].forEach(function(e){
+    var box = $('m'+e); box.innerHTML = '';
+    est[e].forEach(function(n){
+      var b = document.createElement('button'); b.type = 'button'; b.innerHTML = ACT.esc(n)+'<b>'+(est.cuenta[n]||0)+'</b>';
+      b.addEventListener('click', function(){ est.cuenta[n] = (est.cuenta[n]||0)+1; guardar(); pintar(); ACT.SON.tic(); });
+      box.appendChild(b);
+    });
+    var tot = est[e].reduce(function(a, n){ return a + (est.cuenta[n]||0); }, 0);
+    $('tot'+e).textContent = est[e].length+' alumnos · '+tot+(tot===1 ? ' intervención' : ' intervenciones');
+  });
+  $('fases').innerHTML = '';
+  FASES.forEach(function(f, i){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = f.n; b.setAttribute('aria-pressed', i===est.fase ? 'true' : 'false');
+    b.addEventListener('click', function(){ est.fase = i; est.turno = 'A'; parar(); restante = duracion(); guardar(); pintar(); });
+    $('fases').appendChild(b);
+  });
+  var f = FASES[est.fase], turnos = f.quien==='turnos';
+  $('eqA').classList.toggle('activo', turnos && est.turno==='A'); $('eqB').classList.toggle('activo', turnos && est.turno==='B');
+  $('turno').textContent = turnos ? 'Turno: '+(est.turno==='A' ? 'A favor' : 'En contra') : f.quien==='mod' ? 'Habla el moderador' : f.quien==='sec' ? 'Habla el secretario' : 'Valoran los observadores';
+  $('bSig').hidden = !turnos;
+  pintarTiempo();
+}
+function pintarTiempo(){ var t = $('tiempo'); t.textContent = Math.floor(restante/60)+':'+String(Math.max(0,restante)%60).padStart(2,'0'); t.classList.toggle('poco', corriendo && restante<=10); }
+function empezar(){
+  if(corriendo){ parar(); return; }
+  if(restante<=0) restante = duracion();
+  corriendo = true; $('bPlay').textContent = '⏸ Pausa';
+  tic = setInterval(function(){
+    restante--; pintarTiempo();
+    if(restante===10) ACT.SON.tono(660, 0, 0.2, 'triangle', 0.1);
+    if(restante<=0){ parar(); ACT.SON.fanfarria(); $('turno').textContent += ' · ¡Tiempo!'; }
+  }, 1000);
+}
+function parar(){ corriendo = false; clearInterval(tic); $('bPlay').textContent = '▶ Empezar'; pintarTiempo(); }
+$('bPlay').addEventListener('click', empezar);
+$('bSig').addEventListener('click', function(){ parar(); est.turno = est.turno==='A' ? 'B' : 'A'; restante = duracion(); guardar(); pintar(); });
+$('bModerador').addEventListener('click', function(){ ACT.SON.tono(1318, 0, 0.6, 'sine', 0.2); ACT.SON.tono(1760, 0.15, 0.6, 'sine', 0.15); });
+$('bSortear').addEventListener('click', sortear);
+$('bReiniciar').addEventListener('click', function(){ if(!confirm('¿Poner el marcador de intervenciones a cero?')) return; est.cuenta = {}; guardar(); pintar(); });
+$('dur').addEventListener('change', function(){ if(!corriendo){ restante = duracion(); pintarTiempo(); } });
+$('tema').addEventListener('blur', function(){ try{ localStorage.setItem(CLAVE+'-tema', $('tema').textContent); }catch(e){} });
+try{ var tm = localStorage.getItem(CLAVE+'-tema'); if(tm) $('tema').textContent = tm; }catch(e){}
+$('bExportar').addEventListener('click', function(){
+  var filas = [['Tema', $('tema').textContent], [], ['Equipo','Alumno/a','Intervenciones']];
+  ['A','B'].forEach(function(e){ est[e].forEach(function(n){ filas.push([e==='A' ? 'A favor' : 'En contra', n, est.cuenta[n]||0]); }); });
+  var p = est.papeles; if(p.moderador){ filas.push([]); filas.push(['Moderador', p.moderador]); filas.push(['Secretario', p.secretario]); filas.push(['Observadores', p.observadores.join(', ')]); }
+  JAVI.exportarCSV('debate-tema2-'+JAVI.util.clave(new Date()), filas);
+});
+restante = duracion(); pintar();
+ACT.iniciar('tema2-lengua-4a');
+if(window.JAVI) JAVI.listo(pintar);
+})();
+</script>
+</body>
+</html>
