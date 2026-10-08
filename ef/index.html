@@ -85,6 +85,10 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
   background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.25));font:700 14px var(--cuerpo);text-align:center}
 .motivo:hover{background:linear-gradient(180deg,rgba(232,200,114,.2),rgba(0,0,0,.2))}
 .motivo .ic{width:52px;height:52px}
+.tituloFicha{grid-column:1/-1;font:800 15px var(--tit);letter-spacing:.08em;margin:8px 0 0}
+.tituloFicha.pos{color:var(--verdeT)}.tituloFicha.neg{color:var(--rojoT)}
+.motivo.neg{border-color:rgba(238,74,104,.45)}
+.motivo:disabled{opacity:.4;cursor:default}
 .motivo .ic svg{width:100%;height:100%}
 .motivo.neg .ic circle:first-child{fill:var(--rojo)}
 .perfilHead{display:flex;gap:16px;align-items:flex-end;margin-bottom:10px}
@@ -384,9 +388,12 @@ var EF = {
     entradas: { alumno:'entry.1643177071', accion:'entry.1324105340', cartaId:'entry.2081350872', tipo:'entry.1036866207', carta:'entry.704758731' },
     csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTfXYmi9evsMT7EtFrDVG3xALHoudOA2v299Yhgm4vEffLMs5KtcLnBO-jckirvRU7ogMaHCOZe_PNQ/pub?gid=326777813&single=true&output=csv'
   },
-  /* coevaluación: cada alumno da 1 ficha por sesión; nadie recibe más de «tope» */
-  fichaValor: 1, tope: 3, compiDia: 2,
+  /* coevaluación: cada alumno da 1 ficha por sesión, que puede SUMAR (+1) o QUITAR (−1).
+     Nadie recibe más de «tope» fichas positivas ni más de «topeNeg» negativas al día.
+     Las cartas ×2/×3 solo multiplican lo que se gana, nunca lo que se quita. */
+  fichaValor: 1, tope: 3, topeNeg: 3, compiDia: 2,
   motivosCoev: ['Juego limpio','Ayuda a compañeros','Esfuerzo','Anima al equipo','Buen compañero'],
+  motivosCoevNeg: ['No respeta las normas','Juego sucio','No coopera','Falta de respeto','No escucha'],
   motivosProfe: [
     { n:'Reto superado', g:1 }, { n:'Esfuerzo extra', g:1 },   /* ser responsable o capitán NO da puntos (Javi, 8/10) */
     { n:'No respeta las normas', g:-1 }, { n:'No realiza el calentamiento', g:-1 }, { n:'Falta de juego limpio', g:-2 }
@@ -860,10 +867,10 @@ function coev(){
     if(m.dia===HOY) hoy.push(r);
     else if(!antes[r.de] || antes[r.de].dia < r.dia) antes[r.de] = r;
   });
-  var dado = {}, recibido = {};
-  hoy.forEach(function(r){ dado[r.de] = r; recibido[r.para] = (recibido[r.para]||0) + 1; });
+  var dado = {}, recibido = {}, recibidoNeg = {};
+  hoy.forEach(function(r){ dado[r.de] = r; if(r.n<0) recibidoNeg[r.para] = (recibidoNeg[r.para]||0) + 1; else recibido[r.para] = (recibido[r.para]||0) + 1; });
   var compi = ms.filter(function(m){ return m.dia===HOY && normal(m.motivo).indexOf('compi del día')===0 && m.n>0 && !an[m.id]; })[0];
-  return { hoy:hoy, ultimo:antes, dado:dado, recibido:recibido, compi:compi };
+  return { hoy:hoy, ultimo:antes, dado:dado, recibido:recibido, recibidoNeg:recibidoNeg, compi:compi };
 }
 function multiplicadorHoy(nombre){
   var mult = 1;
@@ -890,13 +897,14 @@ function pintarCoev(){
   var hechos = Object.keys(co.dado).length, tot = CONFIG.alumnos.length;
   $('cCont').textContent = hechos+' / '+tot;
   $('cProg').style.width = (tot ? hechos/tot*100 : 0)+'%';
-  $('cAviso').textContent = co.compi ? 'Sesión cerrada: '+nombreDe(co.compi)+' es el Compi del día.' : (hechos<tot ? 'Cada alumno toca su nombre y da su ficha a un compañero.' : '¡Todos han dado su ficha! Ya puedes cerrar la sesión.');
+  $('cAviso').textContent = co.compi ? 'Sesión cerrada: '+nombreDe(co.compi)+' es el Compi del día.' : (hechos<tot ? 'Cada alumno toca su nombre y da su ficha a un compañero: +1 o −1.' : '¡Todos han dado su ficha! Ya puedes cerrar la sesión.');
   $('cCerrar').disabled = !!co.compi || !co.hoy.length;
   $('cCerrar').textContent = co.compi ? 'Sesión cerrada' : 'Cerrar sesión · Compi del día';
   CONFIG.alumnos.forEach(function(n){
     var dio = co.dado[n];
-    var b = tarjeta(n, cs, '<span class="marca2">'+(dio ? '✓ dio' : (co.recibido[n] ? '+'+co.recibido[n] : ''))+'</span>');
-    if(!dio && !co.recibido[n]) b.querySelector('.marca2').remove();
+    var rec = (co.recibido[n] ? '+'+co.recibido[n] : '')+(co.recibidoNeg[n] ? (co.recibido[n] ? ' ' : '')+'−'+co.recibidoNeg[n] : '');
+    var b = tarjeta(n, cs, '<span class="marca2">'+(dio ? '✓ dio' : rec)+'</span>');
+    if(!dio && !rec) b.querySelector('.marca2').remove();
     if(dio) b.classList.add('hecho');
     b.setAttribute('aria-label', n+(dio ? ', ya ha dado su ficha' : ', dar ficha'));
     b.addEventListener('click', function(){ if(dio) aviso(n+' ya ha dado su ficha hoy a '+dio.para+'.'); else abrirFicha(n); });
@@ -906,7 +914,7 @@ function pintarCoev(){
   if(!co.hoy.length){ ul.innerHTML = '<li class="vacio">Todavía no se ha dado ninguna ficha hoy.</li>'; }
   co.hoy.slice().reverse().forEach(function(r){
     var li = document.createElement('li'), sp = document.createElement('span');
-    sp.innerHTML = '<b></b> → <b></b> <span class="mas">+'+r.n+'</span> · <i></i>';
+    sp.innerHTML = '<b></b> → <b></b> <span class="'+(r.n<0 ? 'menos">−'+(-r.n) : 'mas">+'+r.n)+'</span> · <i></i>';
     sp.querySelectorAll('b')[0].textContent = r.de; sp.querySelectorAll('b')[1].textContent = r.para; sp.querySelector('i').textContent = r.motivo;
     var u = document.createElement('button'); u.type = 'button'; u.className = 'ghost'; u.textContent = 'Anular';
     u.addEventListener('click', function(){ anular(r); });
@@ -1101,13 +1109,13 @@ var dador = '', receptor = '';
 function abrirFicha(n){
   dador = n; receptor = '';
   var co = coev(), cs = cuentas(), box = $('fAlumnos'); box.innerHTML = '';
-  $('fTit').textContent = n+', ¿a quién das tu ficha?';
+  $('fTit').textContent = n+', ¿a quién das tu ficha (+1 o −1)?';
   $('fPaso1').hidden = false; $('fPaso2').hidden = true;
   CONFIG.alumnos.forEach(function(x){
     if(x===n) return;
     var motivo = '', ult = co.ultimo[n];
     if(ult && ult.para===x) motivo = 'Se la diste la sesión pasada';
-    else if((co.recibido[x]||0) >= EF.tope) motivo = 'Ya tiene '+EF.tope+' fichas hoy';
+    else if((co.recibido[x]||0) >= EF.tope && (co.recibidoNeg[x]||0) >= EF.topeNeg) motivo = 'Ya no puede recibir más fichas hoy';
     var b = tarjeta(x, cs, motivo ? '' : '');
     if(motivo){ b.disabled = true; var e = document.createElement('span'); e.className = 'etiq'; e.textContent = motivo; b.appendChild(e); }
     b.addEventListener('click', function(){ elegirReceptor(x); });
@@ -1118,16 +1126,30 @@ function abrirFicha(n){
 function elegirReceptor(x){
   receptor = x;
   $('fPaso1').hidden = true; $('fPaso2').hidden = false;
-  $('fQuien').textContent = '¿Por qué le das tu ficha a '+x+'?';
+  var co = coev(), llenoPos = (co.recibido[x]||0) >= EF.tope, llenoNeg = (co.recibidoNeg[x]||0) >= EF.topeNeg;
+  $('fQuien').textContent = '¿Qué ficha le das a '+x+' y por qué?';
   var box = $('fMotivos'); box.innerHTML = '';
-  EF.motivosCoev.forEach(function(mo){
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo';
-    b.innerHTML = '<span class="ic">'+iconoCoev(mo)+'</span><span></span>'; b.lastChild.textContent = mo;
-    b.addEventListener('click', function(){ darFicha(mo, b); });
-    box.appendChild(b);
-  });
+  function grupoMotivos(titulo, lista, signo, lleno){
+    var h = document.createElement('h4'); h.className = 'tituloFicha '+(signo>0 ? 'pos' : 'neg'); h.textContent = titulo+(lleno ? ' · ya tiene '+(signo>0 ? EF.tope : EF.topeNeg)+' hoy' : '');
+    box.appendChild(h);
+    lista.forEach(function(mo){
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo'+(signo<0 ? ' neg' : '');
+      b.innerHTML = '<span class="ic">'+iconoCoev(mo, signo)+'</span><span></span>'; b.lastChild.textContent = mo;
+      b.disabled = lleno;
+      b.addEventListener('click', function(){ darFicha(mo, b, signo); });
+      box.appendChild(b);
+    });
+  }
+  grupoMotivos('👍 Sumar +'+EF.fichaValor, EF.motivosCoev, 1, llenoPos);
+  grupoMotivos('👎 Quitar −'+EF.fichaValor, EF.motivosCoevNeg, -1, llenoNeg);
 }
-function darFicha(mo, el){
+function darFicha(mo, el, signo){
+  if(signo<0){
+    registrar(clv(receptor), 'Galeones', -EF.fichaValor, mo, 'Coevaluación · de '+dador);
+    flotar('−'+EF.fichaValor, true, el);
+    aviso(dador+' le quita '+EF.fichaValor+' a '+receptor+': '+mo.toLowerCase()+'.');
+    $('mFicha').hidden = true; pintarTodo(); return;
+  }
   var cs0 = cuentas(), mult = multiplicadorHoy(receptor), n = EF.fichaValor*mult;
   registrar(clv(receptor), 'Galeones', n, mo+(mult>1 ? ' (×'+mult+')' : ''), 'Coevaluación · de '+dador);
   flotar('+'+n, false, el);
@@ -1140,7 +1162,8 @@ function anular(r){
   aviso('Ficha anulada. '+r.de+' puede volver a darla.');
   pintarTodo();
 }
-function iconoCoev(mo){
+function iconoCoev(mo, signo){
+  if(signo<0) return '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#c23b4a"/><rect x="13" y="21" width="22" height="6" rx="3" fill="#fff"/></svg>';
   var p = {
     'Juego limpio': '<path d="M24 10 L36 15 V24 C36 31 30 36 24 38 C18 36 12 31 12 24 V15Z" fill="#fff"/><path d="M18 24 l4 4 l8 -9" fill="none" stroke="#3f9a6a" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>',
     'Ayuda a compañeros': '<path d="M24 36 C14 29 10 24 10 18.5 C10 14 13.5 11 17.5 11 C20.5 11 22.6 12.8 24 15 C25.4 12.8 27.5 11 30.5 11 C34.5 11 38 14 38 18.5 C38 24 34 29 24 36Z" fill="#fff"/>',
@@ -1155,8 +1178,10 @@ function iconoCoev(mo){
 /* ---------- compi del día: lo elige quien más fichas ha recibido ---------- */
 function cerrarSesion(){
   var co = coev(); if(co.compi || !co.hoy.length) return;
-  var max = 0; Object.keys(co.recibido).forEach(function(k){ max = Math.max(max, co.recibido[k]); });
-  var top = Object.keys(co.recibido).filter(function(k){ return co.recibido[k]===max; });
+  var neto = {}; Object.keys(co.recibido).forEach(function(k){ neto[k] = co.recibido[k] - (co.recibidoNeg[k]||0); });
+  var max = -99; Object.keys(neto).forEach(function(k){ max = Math.max(max, neto[k]); });
+  if(!Object.keys(neto).length || max<=0){ aviso('Nadie tiene fichas positivas de sobra hoy: no hay Compi del día.'); return; }
+  var top = Object.keys(neto).filter(function(k){ return neto[k]===max; });
   var elige = top[Math.floor(rnd()*top.length)], cs = cuentas();
   $('kElige').innerHTML = '<div class="av">'+avatar(elige, cs)+'</div><p><b></b> ha recibido más fichas hoy ('+max+')'+(top.length>1 ? ', empatada con '+(top.length-1)+' más; ha salido en el sorteo' : '')+'.</p><p class="aviso">Elige al Compi del día: recibirá +'+EF.compiDia+'.</p>';
   $('kElige').querySelector('b').textContent = elige;

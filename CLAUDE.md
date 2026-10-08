@@ -69,7 +69,7 @@ No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST 
 - Herramientas: al azar (sin repetir), temporizador y cronómetro con vueltas.
 
 **EF · 3ºA, 3ºB, 4ºB (`ef.html`)**
-- **Coevaluación:** cada alumno da **1 ficha** (+1) por sesión a un compañero, con un motivo. No puede dársela a sí mismo ni **al mismo compañero que la sesión anterior**. Nadie recibe más de 3 al día. El profe puede anular.
+- **Coevaluación:** cada alumno da **1 ficha** por sesión a un compañero, con un motivo: **+1 (sumar) o −1 (quitar)** (`EF.motivosCoev` y `EF.motivosCoevNeg`). Máximo 3 positivas y 3 negativas recibidas al día; las cartas ×2/×3 no multiplican las negativas. El Compi del día lo elige quien tenga más fichas netas (positivas − negativas). No puede dársela a sí mismo ni **al mismo compañero que la sesión anterior**. Nadie recibe más de 3 al día. El profe puede anular.
 - **Compi del día (+2):** al cerrar la sesión, quien más fichas ha recibido elige al compañero (si hay empate, sorteo).
 - Puntos del profe en el perfil (`EF.motivosProfe`).
 - **Mercader de EF:** 13 cartas individuales (`EF.cartas`) con precios difíciles (comunes 5–6, especiales 8–9, legendarias 14–22) y existencias por grupo y trimestre (`EF.existencias`). Efectos automáticos: Aurum Quintus +5; Duplex y Triplex ×2 y ×3 en los puntos de ese día.
