@@ -132,7 +132,17 @@
     "I-3": "tema2-lengua-4a/i03-variables.html",
     "I-4": "tema2-lengua-4a/i04-clasificador.html",
     "I-5": "tema2-lengua-4a/i05-fabrica.html"
-   }
+   },
+   "recursos": [
+    {
+     "n": "Ficha para familias · Las sílabas",
+     "ic": "🖨️",
+     "url": "tema2-lengua-4a/ficha-silabas.html",
+     "sesiones": [
+      4
+     ]
+    }
+   ]
   }
  ]
 }

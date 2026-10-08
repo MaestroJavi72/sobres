@@ -75,6 +75,7 @@ body{background:var(--fondo-img),var(--fondo)}
 .ses h4{font-family:'Cinzel',serif;color:var(--granate);font-size:17px;line-height:1.2}
 .ses p{font-size:16px;line-height:1.35;margin:0}
 .ses .ints{display:flex;flex-wrap:wrap;gap:4px}
+.ses .recurso{align-self:flex-start;font:700 14px 'Cinzel',serif;color:#fff;background:#7a2030;text-decoration:none;padding:4px 10px;border-radius:9px}
 .ses .ir{margin-top:auto;align-self:flex-start;font:700 14px 'Cinzel',serif;color:#14403a;text-decoration:none;border-bottom:2px solid var(--oro)}
 
 .cargando{color:#d9cfae;font-size:18px;padding:30px;text-align:center}
@@ -173,6 +174,7 @@ function tarjetasSesiones(doc){
       d.innerHTML = '<div class="cab"><span class="num">'+(i+1)+'</span><span class="fch">'+fechaBonita(s.fecha)+'</span><span class="dur'+(parseInt(s.duracion)>60 ? ' largo' : '')+'">'+esc(s.duracion)+'</span></div>'+
         '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
         (s.interactivas ? '<div class="ints">'+s.interactivas.split(/,\s*(?=I-)/).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('')+'</div>' : '')+
+        recursosDe(i+1).map(function(r){ return '<a class="recurso" href="'+r.url+'">'+r.ic+' '+esc(r.n)+'</a>'; }).join('')+
         '<a class="ir" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'">📋 Planificar esta sesión</a>';
       box.appendChild(d);
     });
@@ -180,6 +182,9 @@ function tarjetasSesiones(doc){
     envoltorio.parentNode.replaceChild(box, envoltorio);
   });
 }
+
+/* recursos imprimibles (fichas, plantillas…) de una sesión */
+function recursosDe(n){ return ((SDA && SDA.recursos) || []).filter(function(r){ return (r.sesiones||[]).indexOf(n)>=0; }); }
 
 /* ---------- pintar ---------- */
 function pintar(md){
@@ -194,7 +199,8 @@ function pintar(md){
   if(SDA){
     var fs = SDA.sesiones.map(function(s){ return s.fecha; });
     $('hChips').innerHTML = ['🏰 '+SDA.grupo+' · Lengua', '📖 '+SDA.unidad, '🗓️ '+SDA.sesiones.length+' sesiones · '+fechaBonita(fs[0])+' – '+fechaBonita(fs[fs.length-1]),
-      '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('');
+      '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('')+
+      (SDA.recursos||[]).map(function(r){ return '<span><a href="'+r.url+(JAVI.ES_PROFE ? '?profe' : '')+'">'+r.ic+' '+esc(r.n)+'</a></span>'; }).join('');
   }
   var doc = $('doc');
   doc.innerHTML = marked.parse(cuerpo);
