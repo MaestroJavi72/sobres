@@ -29,7 +29,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
 .filaBotones{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 
 .fase{border-left:6px solid var(--panel-borde)}
-.fase.ruleta{border-left-color:var(--acento)}
+.fase.esRuleta{border-left-color:var(--acento)}
 .faseCab{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
 .faseCab .num{font-family:var(--f-titulo);color:var(--titulo-color);font-size:26px;min-width:30px}
 .faseCab select{font-size:16px;padding:6px 8px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.22);color:var(--tinta)}
@@ -86,12 +86,53 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
 .fin h3{font-family:var(--f-titulo);color:var(--titulo-color);font-size:clamp(34px,6vw,70px);text-shadow:var(--titulo-sombra)}
 .podio{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:22px}
 .podio span{padding:10px 16px;border-radius:14px;background:var(--panel);border:2px solid var(--acento)}
+.ruleta.sinMarcador .rCuerpo{grid-template-columns:1fr}
+.ruleta.sinMarcador .marcador{display:none}
+
+/* ================= pestañas (como la SA y la planificación) ================= */
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:10px 18px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.pestanas button[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.vista[hidden]{display:none!important}
+.navDia{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flecha{width:44px;height:44px;border-radius:12px;border:2px solid var(--acento);background:transparent;color:var(--acento-2);font-size:24px;cursor:pointer}
+.flecha:disabled{opacity:.3;cursor:default}
+
+/* ================= En clase ================= */
+.clase{display:flex;flex-direction:column;gap:12px}
+.pergamino{background:linear-gradient(180deg,#f6ead0,#ead7a8);color:#3a2a16;border:3px solid #b8934f;border-radius:20px;padding:clamp(14px,2.6vw,24px)}
+.pergamino .dia{font-family:'Cinzel',Georgia,serif;font-weight:700;color:#7a2030;font-size:15px}
+.pergamino h2{font-family:'Cinzel',Georgia,serif;font-weight:800;color:#3a2a16;font-size:clamp(24px,3.6vw,38px);line-height:1.1;margin:2px 0 6px}
+.pergamino h2.vacio{font-style:italic;font-weight:700;color:#8a7650}
+.pergamino .obj{font-family:'EB Garamond',Georgia,serif;font-size:19px;line-height:1.35}
+.pergamino .sdaT{margin-top:8px;font-size:14px;color:#6b5732}
+.pergamino .sdaT a{color:#14403a}
+.botones{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:8px;margin-top:10px}
+.btn{display:flex;align-items:center;gap:9px;text-decoration:none;border-radius:12px;padding:9px 12px;font-family:var(--f-sub);font-weight:700;font-size:16px;line-height:1.2;cursor:pointer}
+.btn .ic{font-size:23px;flex:none}
+.btn.juego{background:#14403a;color:#f6e3a1;border:2px solid #2d6b47}
+.btn.ficha{background:#fff;color:#7a2030;border:2px solid #d9c08a}
+.etq{margin-left:auto;font-size:11px;font-family:'Cinzel',serif;padding:3px 7px;border-radius:999px;background:#f3d27a;color:#3a2a16;white-space:nowrap}
+.fasesClase{display:flex;flex-direction:column;gap:10px}
+.faseC{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:start;background:#fffaf0;color:#3a2a16;border:2px solid #d9c08a;border-radius:16px;padding:12px 14px}
+.faseC.conRuleta{border-color:#c9a34a;box-shadow:0 0 0 3px rgba(201,163,74,.25)}
+.faseC .n{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#0e2a28;color:#f3d27a;font:800 20px 'Cinzel',serif}
+.faseC h3{font-family:'Cinzel',Georgia,serif;font-size:20px;line-height:1.15;display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.faseC h3 small{font-family:var(--f-texto);font-weight:700;font-size:14px;color:#6b5732;background:#f3e3b8;border-radius:999px;padding:2px 9px}
+.faseC p{font-family:'EB Garamond',Georgia,serif;font-size:18px;line-height:1.35;margin-top:4px;white-space:pre-line}
+.faseC .mat{font-size:15px;color:#6b5732;margin-top:4px}
+.faseC .ir{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.faseC .ir .estado{color:#6b5732}
+.vacioClase{text-align:center;padding:18px}
+.vacioClase p{margin-bottom:10px;color:var(--tinta-suave);font-size:18px}
+.cuentaFaltan[hidden]{display:none}
+.cuentaFaltan{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:#b6493f;color:#fff;font-size:13px;padding:0 6px;margin-left:4px}
 </style>
 </head>
 <body>
 <div class="j-envoltorio">
   <header class="cab">
-    <h1 class="j-titulo">📋 Sesión y Ruleta</h1>
+    <h1 class="j-titulo">📋 Sesión</h1>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
     <a class="j-icono" id="bSorteos" href="../sorteos/?profe" title="Responsable y capitanes" style="text-decoration:none">👑</a>
     <a class="j-icono" id="bSemana" href="../planificacion/?profe" title="Planificación semanal" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">📅 Semana</a>
@@ -101,10 +142,25 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
   <div class="barraSup">
     <nav class="grupos" id="grupos" aria-label="Clase"></nav>
     <nav class="grupos" id="asigs" aria-label="Asignatura"></nav>
-    <input class="fecha" id="fecha" type="date" aria-label="Fecha de la sesión">
+    <div class="navDia">
+      <button class="flecha" id="dAnt" type="button" aria-label="Clase anterior" title="Clase anterior">‹</button>
+      <input class="fecha" id="fecha" type="date" aria-label="Fecha de la sesión">
+      <button class="flecha" id="dSig" type="button" aria-label="Clase siguiente" title="Clase siguiente">›</button>
+    </div>
     <span class="estado" id="hueco"></span>
   </div>
 
+  <nav class="pestanas" role="tablist">
+    <button type="button" role="tab" data-v="clase" aria-selected="true">🎬 En clase</button>
+    <button type="button" role="tab" data-v="preparar" aria-selected="false">✏️ Preparar</button>
+    <button type="button" role="tab" data-v="faltan" aria-selected="false">🙋 Quién falta<span class="cuentaFaltan" id="nFaltan" hidden></span></button>
+  </nav>
+
+  <!-- EN CLASE -->
+  <section class="vista clase" id="v-clase"></section>
+
+  <!-- PREPARAR -->
+  <section class="vista" id="v-preparar" hidden>
   <section class="j-panel sdaInfo" id="sdaInfo" hidden></section>
 
   <section class="j-panel">
@@ -124,11 +180,15 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
     <button class="j-boton sec" id="bFase" type="button">+ Fase</button>
     <button class="j-boton" id="bFaseRuleta" type="button">+ 🎯 Ruleta de preguntas</button>
   </div>
+  </section>
 
-  <section class="j-panel" style="margin-top:14px">
+  <!-- QUIÉN FALTA -->
+  <section class="vista" id="v-faltan" hidden>
+  <section class="j-panel">
     <h2 class="j-sub" style="margin-bottom:6px">¿Quién falta hoy?</h2>
     <p class="estado" style="margin-bottom:8px">Toca a quien no esté: la ruleta no le sacará.</p>
     <div class="faltan" id="faltan"></div>
+  </section>
   </section>
 </div>
 
@@ -137,6 +197,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
   <div class="rTop">
     <h2 id="rTit">Ruleta</h2>
     <span class="cuenta" id="rCuenta"></span>
+    <button class="j-icono" id="rMarcador" type="button" aria-label="Mostrar u ocultar el marcador" title="Marcador">🏆</button>
     <button class="j-icono" id="rSonido" type="button" aria-label="Sonido">🔊</button>
     <button class="j-icono" id="rPantalla" type="button" aria-label="Pantalla completa">⛶</button>
     <button class="j-icono" id="rCerrar" type="button" aria-label="Cerrar la ruleta" title="Cerrar (se guarda por dónde ibais)">✕</button>
@@ -268,7 +329,7 @@ $('pTitulo').addEventListener('input', function(){ plan.titulo = this.value; mar
 $('pObjetivo').addEventListener('input', function(){ plan.objetivo = this.value; marcarSucio(); });
 
 function tarjetaFase(f, i){
-  var d = document.createElement('section'); d.className = 'j-panel fase'+(f.tipo==='ruleta' ? ' ruleta' : '');
+  var d = document.createElement('section'); d.className = 'j-panel fase'+(f.tipo==='ruleta' ? ' esRuleta' : '');
   var html =
     '<div class="faseCab"><span class="num">'+(i+1)+'</span>'+
       '<select data-k="tipo" aria-label="Tipo de fase"><option value="normal">Fase normal</option><option value="ruleta">🎯 Ruleta de preguntas</option></select>'+
@@ -344,6 +405,7 @@ function claveFaltan(){ return 'faltan|'+grupo+'|'+fecha; }
 function faltan(){ return leer(claveFaltan(), []); }
 function pintarFaltan(){
   var box = $('faltan'), fs = faltan(); box.innerHTML = '';
+  $('nFaltan').hidden = !fs.length; $('nFaltan').textContent = fs.length;
   var r = JAVI.grupo(grupo); if(!r) return;
   r.nombres.forEach(function(n){
     var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
@@ -385,7 +447,7 @@ function abrirRuleta(f){
   $('ruleta').hidden = false; document.body.style.overflow = 'hidden';
   pintarRuleta();
 }
-$('rCerrar').addEventListener('click', function(){ $('ruleta').hidden = true; document.body.style.overflow = ''; pintarPlan(); });
+$('rCerrar').addEventListener('click', function(){ $('ruleta').hidden = true; document.body.style.overflow = ''; pintarPlan(); pintarClase(); });
 
 function siguienteDeCola(excluir){
   var pres = presentes();
@@ -600,6 +662,89 @@ function confeti(){
 }
 
 /* ============================================================
+   PESTAÑAS · EN CLASE (vista para la pizarra)
+   ============================================================ */
+var VISTA = 'clase';
+function verVista(v){
+  if(['clase','preparar','faltan'].indexOf(v)<0) v = 'clase';
+  VISTA = v;
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['clase','preparar','faltan'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  if(v==='clase') pintarClase();
+  history.replaceState(null, '', location.search+'#'+v);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
+
+var DIAS_LARGOS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+var MESES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var ICONOS = { 'I-1':'📖','I-2':'👏','I-3':'🔀','I-4':'🗂️','I-5':'🏭','I-6':'⚙️','I-7':'🔍','I-8':'🎡','I-9':'🃏','I-10':'🔮','I-11':'⚖️','I-12':'💡','I-13':'🎙️','I-14':'📚','I-15':'🎲','I-16':'⚔️' };
+function botonesSda(sd){
+  var P = JAVI.ES_PROFE ? '?profe' : '', h = '';
+  (sd.sesion.interactivas || '').split(/,\s*(?=I-)/).forEach(function(x){
+    var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
+    if(!u) return;
+    var etq = /^puntúa$/i.test(m[3]||'') ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(m[3]||'') ? '<span class="etq">➕ ampliación</span>' : '';
+    h += '<a class="btn juego" href="../sda/'+u+P+'"><span class="ic">'+(ICONOS[m[1]]||'🎮')+'</span><span>'+esc_(m[2])+'</span>'+etq+'</a>';
+  });
+  (sd.sda.recursos || []).forEach(function(r){
+    if((r.sesiones||[]).indexOf(sd.i+1)<0) return;
+    h += '<a class="btn ficha" href="../sda/'+r.url+P+'"><span class="ic">'+r.ic+'</span><span>'+esc_(r.n.replace(/^Ficha para familias · /, 'Ficha: '))+'</span></a>';
+  });
+  return h ? '<div class="botones">'+h+'</div>' : '';
+}
+function mayus(t){ return t.charAt(0).toUpperCase()+t.slice(1); }
+function pintarClase(){
+  var box = $('v-clase'); if(!plan) return;
+  var sd = JAVI.sdaDeSesion(grupo, fecha, asig), p = fecha.split('-');
+  var hr = JAVI.sesionesDelDia(fecha).filter(function(x){ return x.grupo===grupo && x.asig===asig; })[0];
+  var h = '<div class="pergamino"><div class="dia">'+mayus(DIAS_LARGOS[JAVI.diaSemana(fecha)])+' '+(+p[2])+' de '+MESES_L[+p[1]-1]+' · '+esc_(grupo)+' · '+(NOMBRE_ASIG[asig]||asig)+(hr ? ' · '+hr.ini+'–'+hr.fin : '')+'</div>'+
+    (plan.titulo ? '<h2>'+esc_(plan.titulo)+'</h2>' : '<h2 class="vacio">Sesión sin título</h2>')+
+    (plan.objetivo ? '<div class="obj">🎯 '+esc_(plan.objetivo)+'</div>' : '')+
+    (sd ? '<div class="sdaT">📚 '+(sd.sda.pagina ? '<a href="'+sd.sda.pagina+'&profe#semana">'+esc_(sd.sda.titulo)+'</a>' : esc_(sd.sda.titulo))+' · sesión '+(sd.i+1)+' de '+sd.sda.sesiones.length+'</div>'+botonesSda(sd) : '')+
+    '</div>';
+  if(!plan.fases.length){
+    h += '<div class="j-panel vacioClase"><p>Esta sesión todavía no tiene fases.</p><button class="j-boton" type="button" data-ir="preparar">✏️ Prepararla</button> '+
+         '<button class="j-boton sec" type="button" data-ruleta-rapida="1">🎯 Ruleta rápida (preguntas en voz alta)</button></div>';
+  } else {
+    h += '<div class="fasesClase">'+plan.fases.map(function(f, i){
+      var r = f.tipo==='ruleta', est = '';
+      if(r){ var s = leer(claveRuleta(f), null); if(s) est = s.fin ? '✓ Terminada' : 'Vais por la pregunta '+(s.n||0)+(s.preguntas && s.preguntas.length ? ' de '+s.preguntas.length : ''); }
+      var np = r ? leerPreguntas(f.preguntas).length : 0;
+      return '<article class="faseC'+(r ? ' conRuleta' : '')+'"><span class="n">'+(i+1)+'</span><div>'+
+        '<h3>'+(r ? '🎯 ' : '')+esc_(f.nombre || (r ? 'Ruleta de preguntas' : 'Fase '+(i+1)))+(f.duracion ? '<small>⏱ '+f.duracion+' min</small>' : '')+'</h3>'+
+        (f.descripcion ? '<p>'+esc_(f.descripcion)+'</p>' : '')+
+        (f.materiales ? '<div class="mat">🧰 '+esc_(f.materiales)+'</div>' : '')+
+        (r ? '<div class="ir"><button class="j-boton empezar" type="button" data-empezar="'+i+'">▶ '+(est && !/Terminada/.test(est) ? 'Seguir' : 'Empezar')+' la ruleta</button><span class="estado">'+(np ? np+' preguntas · ' : 'Preguntas en voz alta · ')+'+'+(f.puntos||1)+' por acierto'+(est ? ' · '+est : '')+'</span></div>' : '')+
+        '</div></article>';
+    }).join('')+'</div>';
+  }
+  box.innerHTML = h;
+}
+$('v-clase').addEventListener('click', function(e){
+  var t = e.target.closest('[data-ir],[data-empezar],[data-ruleta-rapida]'); if(!t) return;
+  if(t.dataset.ir) verVista(t.dataset.ir);
+  if(t.dataset.empezar) abrirRuleta(plan.fases[+t.dataset.empezar]);
+  if(t.dataset.ruletaRapida){ nuevaFase('ruleta'); abrirRuleta(plan.fases[plan.fases.length-1]); }
+});
+
+/* ‹ › : clase anterior / siguiente de esta clase y asignatura según el horario */
+function otraClase(paso){
+  var fes = JAVI.festivos(), f = fecha;
+  for(var i=0;i<70;i++){
+    f = JAVI.sumarDias(f, paso);
+    if(fes.indexOf(f)<0 && JAVI.sesionesDelDia(f).some(function(x){ return x.grupo===grupo && x.asig===asig; })) return f;
+  }
+  return null;
+}
+$('dAnt').addEventListener('click', function(){ var f = otraClase(-1); if(f){ fecha = f; todo(); } });
+$('dSig').addEventListener('click', function(){ var f = otraClase(1); if(f){ fecha = f; todo(); } });
+
+/* marcador de la ruleta: se puede ocultar para dejar la pregunta sola */
+function pintarMarcadorVisible(){ $('ruleta').classList.toggle('sinMarcador', !leer('sesion-marcador', true)); }
+$('rMarcador').addEventListener('click', function(){ escribirL('sesion-marcador', !leer('sesion-marcador', true)); pintarMarcadorVisible(); });
+pintarMarcadorVisible();
+
+/* ============================================================
    ARRANQUE
    ============================================================ */
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
@@ -610,9 +755,9 @@ function todo(){
   $('bInicio').setAttribute('data-volver', JAVI.destinoVolver());
   $('fecha').value = fecha;
   elegirAsig();
-  ponerTema(); pintarGrupos(); pintarAsigs(); cargarPlan(); pintarSda(); pintarPlan(); pintarFaltan();
+  ponerTema(); pintarGrupos(); pintarAsigs(); cargarPlan(); pintarSda(); pintarPlan(); pintarFaltan(); pintarClase();
 }
-JAVI.listo(function(){ todo(); JAVI.avisoPrueba(); });
+JAVI.listo(function(){ todo(); verVista((location.hash||'').replace('#','')); JAVI.avisoPrueba(); });
 })();
 </script>
 </body>

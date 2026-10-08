@@ -266,7 +266,7 @@ function pintarDias(){
         (tit ? '<h4>'+esc(tit)+(ruleta ? ' 🎯' : '')+'</h4>' : '<h4 class="vacio">'+(sinClase ? 'Sin clase' : 'Sin planificar')+'</h4>')+
         (sd && sd.sesion.objetivo ? '<p>'+esc(sd.sesion.objetivo)+'</p>' : '')+
         (sd ? '<div class="sdaT">📚 '+(sd.sda.pagina ? '<a href="'+sd.sda.pagina+(JAVI.ES_PROFE ? '&profe' : '')+'#semana">'+esc(sd.sda.titulo)+'</a>' : esc(sd.sda.titulo))+' · sesión '+(sd.i+1)+' de '+sd.sda.sesiones.length+'</div>'+botonesSda(sd) : '')+
-        (sinClase ? '' : '<a class="btn plan'+(nf ? ' hecho' : '')+'" href="../sesion/?profe&grupo='+encodeURIComponent(s.grupo).replace('%C2%BA','o')+'&fecha='+f+'&asig='+s.asig+'">📋 '+(nf ? 'Sesión planificada · '+nf+' fases' : 'Planificar esta sesión')+'</a>')+
+        (sinClase ? '' : '<a class="btn plan'+(nf ? ' hecho' : '')+'" href="../sesion/?profe&grupo='+encodeURIComponent(s.grupo).replace('%C2%BA','o')+'&fecha='+f+'&asig='+s.asig+(nf ? '#clase' : '#preparar')+'">📋 '+(nf ? 'Sesión planificada · '+nf+' fases' : 'Planificar esta sesión')+'</a>')+
         '</div>';
     });
     html += '</article>';

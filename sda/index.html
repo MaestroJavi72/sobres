@@ -263,7 +263,7 @@ function pintarSemana(){
       '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
       '<div class="botones">'+actividades(s).map(function(a){ return btnJuego(a); }).join('')+
         recursosDe(k+1).map(function(r){ return btnFicha(r); }).join('')+
-        (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'">📋 Planificar esta sesión</a>' : '')+
+        (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'#preparar">📋 Planificar esta sesión</a>' : '')+
       '</div></article>';
   }).join('') || '<p class="vacio">No hay sesiones esta semana.</p>';
 }
