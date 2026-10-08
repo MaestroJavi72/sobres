@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Palmadas silábicas</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<style>
+:root{ --perg:#f6ead0; --perg2:#ead7a8; --oro:#c9a34a; --granate:#7a2030;
+  --c1:#e8b923; --c2:#3cae5f; --c3:#3a8fe0; --c4:#9a5bd6; }
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 280px;min-width:0;font-size:clamp(26px,4.6vw,50px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:clamp(14px,1.6vw,18px);color:var(--acento-2);letter-spacing:.06em;margin-top:4px;text-shadow:none}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+@media (max-width:900px){ .cols{grid-template-columns:minmax(0,1fr)} }
+
+/* ---------- escenario de la palabra ---------- */
+.escena{background:linear-gradient(180deg,var(--perg),var(--perg2));color:#3a2a16;border:3px solid #b8934f;border-radius:24px;padding:clamp(16px,3vw,30px);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:440px}
+.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+.nav .num{font-family:'Cinzel',serif;font-weight:700;color:#6b5732;min-width:70px}
+.mini{font-family:var(--f-sub);font-weight:700;font-size:16px;padding:8px 14px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16}
+.palabra{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(4px,1vw,12px);min-height:1.3em;font-family:'Cinzel',Georgia,serif;font-weight:800;
+  font-size:clamp(44px,9vw,120px);line-height:1.1;color:#7a2030}
+.palabra .s{padding:0 .08em;border-radius:.18em;transition:transform .2s, background .2s, color .2s}
+.palabra.entera .s{padding:0}
+.palabra.entera{gap:0}
+.palabra .s.oculta{color:#7a2030}
+.palabra .s.ya{color:#fff;background:var(--col);box-shadow:0 6px 0 rgba(0,0,0,.18);animation:sale .35s}
+@keyframes sale{0%{transform:scale(1.35) rotate(-4deg)}100%{transform:none}}
+.guion{color:#b8934f;align-self:center;font-size:.6em}
+.manos{display:flex;gap:6px;justify-content:center;min-height:48px;flex-wrap:wrap}
+.manos span{font-size:40px;animation:palma .35s}
+@keyframes palma{0%{transform:scale(1.6) rotate(-20deg)}100%{transform:none}}
+.contador{font-family:'Cinzel',serif;font-weight:800;font-size:22px;color:#6b5732}
+.contador b{font-size:42px;color:#7a2030;vertical-align:middle}
+.palmada{font-family:var(--f-sub);font-weight:800;font-size:clamp(22px,3.2vw,34px);padding:16px 36px;border-radius:20px;border:none;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;box-shadow:0 6px 0 #7a5a14}
+.palmada:active{transform:translateY(3px);box-shadow:0 3px 0 #7a5a14}
+.resultado{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(26px,4vw,44px);color:#fff;padding:10px 26px;border-radius:18px;background:var(--col);
+  box-shadow:0 8px 0 rgba(0,0,0,.2);animation:sale .5s}
+.resultado small{display:block;font-size:.45em;font-weight:700;opacity:.95;letter-spacing:.04em}
+.resultado[hidden]{display:none}
+.escribir{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:auto}
+.escribir input{font-size:18px;padding:8px 10px;border-radius:10px;border:1px solid #b8934f;background:#fffaf0;color:#3a2a16;width:220px}
+.ayuda{font-size:15px;color:#6b5732}
+
+/* ---------- los cuatro calderos ---------- */
+.calderos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:900px){ .calderos{grid-template-columns:repeat(4,1fr)} }
+@media (max-width:560px){ .calderos{grid-template-columns:1fr 1fr} }
+.caldero{background:rgba(10,31,34,.9);border:2px solid var(--col);border-radius:18px;padding:10px;text-align:center;color:#f6ead0}
+.caldero .ic{font-size:34px;line-height:1}
+.caldero h3{font-family:'Cinzel',serif;color:var(--col);font-size:16px;margin:2px 0}
+.caldero .n{font-size:13px;color:#cfc4a3}
+.caldero ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px}
+.caldero li{font-size:14px;padding:2px 7px;border-radius:7px;background:var(--col);color:#fff}
+.caldero.brilla{animation:brilla .8s}
+@keyframes brilla{0%{box-shadow:0 0 0 0 var(--col)}50%{box-shadow:0 0 0 8px var(--col)}100%{box-shadow:0 0 0 0 transparent}}
+.recuerda{margin-top:12px;background:rgba(10,31,34,.9);border:2px solid #2f5a54;border-radius:18px;padding:12px;color:#d9cfae;font-size:15.5px;line-height:1.4}
+.recuerda b{color:#f3d27a}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">👏 Palmadas silábicas<span class="sub">I-2 · Las palabras y las sílabas · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+
+  <div class="cols">
+    <section class="escena" aria-live="polite">
+      <div class="nav">
+        <button class="mini" id="bAnt" type="button" aria-label="Palabra anterior">◀</button>
+        <span class="num" id="num"></span>
+        <button class="mini" id="bSig" type="button" aria-label="Palabra siguiente">▶</button>
+        <button class="mini" id="bAzar" type="button">🎲 Al azar</button>
+      </div>
+      <div class="palabra entera" id="palabra"></div>
+      <div class="manos" id="manos" aria-hidden="true"></div>
+      <div class="contador" id="contador">Golpes de voz: <b>0</b></div>
+      <button class="palmada" id="bPalmada" type="button">👏 ¡Palmada!</button>
+      <div class="resultado" id="resultado" hidden></div>
+      <p class="ayuda">Decid la palabra despacio dando una palmada en cada golpe de voz. Luego pulsad <b>¡Palmada!</b> (o la barra espaciadora) para comprobarlo.</p>
+      <div class="escribir">
+        <input id="iPal" type="text" maxlength="30" placeholder="Escribe otra palabra…" aria-label="Escribe otra palabra">
+        <button class="mini" id="bProbar" type="button">Probar</button>
+      </div>
+    </section>
+
+    <aside>
+      <div class="calderos" id="calderos"></div>
+      <div class="recuerda">
+        <b>Recuerda.</b> Las <b>sílabas</b> son los golpes de voz. Según cuántas tenga, una palabra es <b>monosílaba</b> (1), <b>bisílaba</b> (2), <b>trisílaba</b> (3) o <b>polisílaba</b> (4 o más).
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   PALABRAS DEL TEMA (banco «Sílabas» de la situación de aprendizaje)
+   Se pueden cambiar o añadir aquí; las sílabas las separa la función silabas().
+   ============================================================ */
+var PALABRAS = ['sol','mar','pez','mamut','hueso','fósil','cueva','piedra','cantera','molusco','tiburón','carretera',
+  'yacimiento','paleontóloga','dinosaurio','Triásico'];
+var TIPOS = [
+  null,
+  { n:'Monosílaba', ic:'✨', col:'var(--c1)', d:'1 sílaba' },
+  { n:'Bisílaba',   ic:'🔮', col:'var(--c2)', d:'2 sílabas' },
+  { n:'Trisílaba',  ic:'🧪', col:'var(--c3)', d:'3 sílabas' },
+  { n:'Polisílaba', ic:'🐉', col:'var(--c4)', d:'4 o más sílabas' }
+];
+function tipo(n){ return TIPOS[Math.min(4, Math.max(1, n))]; }
+
+/* ---------- separador de sílabas del español (reglas escolares) ---------- */
+function silabas(palabra){
+  var w = String(palabra).trim(), lw = w.toLowerCase();
+  if(!lw) return [];
+  var V = 'aeiouáéíóúü', FUERTE = 'aeoáéíóú';
+  var GRUPOS = ['pr','br','tr','dr','cr','gr','fr','pl','bl','cl','gl','fl','kr','kl','tl'];
+  var u = [], i = 0;
+  while(i < lw.length){
+    var dos = lw.substr(i, 2), c = lw[i];
+    if(dos==='ch' || dos==='ll' || dos==='rr'){ u.push({ t:'C', s:w.substr(i,2) }); i += 2; continue; }
+    if((dos==='qu' || dos==='gu') && 'eiéí'.indexOf(lw[i+2]||'')>=0){ u.push({ t:'C', s:w.substr(i,2) }); i += 2; continue; }
+    var esV = V.indexOf(c)>=0;
+    if(c==='y'){ var sig = lw[i+1]; esV = !sig || V.indexOf(sig)<0; }
+    u.push({ t: esV ? 'V' : 'C', s:w[i], f: FUERTE.indexOf(c)>=0 });
+    i++;
+  }
+  var g = [];
+  u.forEach(function(x){
+    var ult = g[g.length-1];
+    if(x.t==='V' && ult && ult.t==='V'){
+      var prev = ult.u[ult.u.length-1];
+      if(prev.f && x.f){ g.push({ t:'V', u:[x] }); return; }
+      ult.u.push(x); return;
+    }
+    if(ult && ult.t===x.t && x.t==='C'){ ult.u.push(x); return; }
+    g.push({ t:x.t, u:[x] });
+  });
+  var sil = [], actual = '';
+  for(var k=0;k<g.length;k++){
+    var gr = g[k], txt = gr.u.map(function(x){ return x.s; }).join('');
+    if(gr.t==='V'){ if(actual && k>0 && g[k-1].t==='V'){ sil.push(actual); actual = ''; } actual += txt; continue; }
+    if(k===0){ actual = txt; continue; }
+    if(k===g.length-1){ actual += txt; continue; }
+    var cs = gr.u.map(function(x){ return x.s; }), n = cs.length, corte;
+    var par = function(a, b){ return GRUPOS.indexOf((a+b).toLowerCase())>=0; };
+    if(n===1) corte = 0; else if(n===2) corte = par(cs[0], cs[1]) ? 0 : 1; else if(n===3) corte = par(cs[1], cs[2]) ? 1 : 2; else corte = 2;
+    actual += cs.slice(0, corte).join(''); sil.push(actual); actual = cs.slice(corte).join('');
+  }
+  if(actual) sil.push(actual);
+  return sil;
+}
+
+function $(id){ return document.getElementById(id); }
+var idx = 0, palabra = '', sil = [], dadas = 0, hechas = {};
+
+function pintarCalderos(brilla){
+  var box = $('calderos'); box.innerHTML = '';
+  [1,2,3,4].forEach(function(n){
+    var t = TIPOS[n], lista = Object.keys(hechas).filter(function(p){ return Math.min(4, hechas[p])===n; });
+    var d = document.createElement('div'); d.className = 'caldero'+(brilla===n ? ' brilla' : ''); d.style.setProperty('--col', t.col);
+    d.innerHTML = '<div class="ic" aria-hidden="true">'+t.ic+'</div><h3>'+t.n+'s</h3><div class="n">'+t.d+'</div><ul></ul>';
+    lista.forEach(function(p){ var li = document.createElement('li'); li.textContent = p; d.querySelector('ul').appendChild(li); });
+    box.appendChild(d);
+  });
+}
+function cargar(p){
+  palabra = p; sil = silabas(p); dadas = 0;
+  var box = $('palabra'); box.innerHTML = ''; box.classList.add('entera');
+  sil.forEach(function(s, i){
+    if(i){ var g = document.createElement('span'); g.className = 'guion'; g.textContent = '-'; g.hidden = true; box.appendChild(g); }
+    var e = document.createElement('span'); e.className = 's oculta'; e.textContent = s; box.appendChild(e);
+  });
+  $('manos').innerHTML = ''; $('contador').innerHTML = 'Golpes de voz: <b>0</b>';
+  $('resultado').hidden = true; $('bPalmada').textContent = '👏 ¡Palmada!';
+  $('num').textContent = PALABRAS.indexOf(p)>=0 ? (PALABRAS.indexOf(p)+1)+' / '+PALABRAS.length : 'Tu palabra';
+}
+function palmada(){
+  if(dadas >= sil.length){ siguiente(1); return; }
+  var box = $('palabra'), partes = box.querySelectorAll('.s'), guiones = box.querySelectorAll('.guion');
+  box.classList.remove('entera');
+  Array.prototype.forEach.call(guiones, function(g){ g.hidden = false; });
+  var t = tipo(sil.length);
+  var e = partes[dadas]; e.classList.remove('oculta'); e.classList.add('ya'); e.style.setProperty('--col', t.col);
+  dadas++;
+  var m = document.createElement('span'); m.textContent = '👏'; $('manos').appendChild(m);
+  $('contador').innerHTML = 'Golpes de voz: <b>'+dadas+'</b>';
+  sonidoPalmada();
+  if(dadas === sil.length){
+    var r = $('resultado'); r.style.setProperty('--col', t.col);
+    r.innerHTML = '¡'+t.n+'!<small>'+sil.length+(sil.length===1 ? ' sílaba' : ' sílabas')+': '+sil.join(' - ')+'</small>';
+    r.hidden = false;
+    hechas[palabra.toLowerCase()] = sil.length; pintarCalderos(Math.min(4, sil.length));
+    $('bPalmada').textContent = '➡ Siguiente palabra';
+    setTimeout(fanfarria, 250);
+  }
+}
+function siguiente(d){
+  var i = PALABRAS.indexOf(palabra); if(i<0) i = idx;
+  idx = (i + d + PALABRAS.length) % PALABRAS.length; cargar(PALABRAS[idx]);
+}
+
+/* ---------- sonido: palmada sintetizada ---------- */
+var sonido = (function(){ try{ return localStorage.getItem('palmadas-sonido')!=='no'; }catch(e){ return true; } })(), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function sonidoPalmada(){
+  var c = ctx(); if(!c) return;
+  var len = Math.floor(c.sampleRate*0.12), buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0), i;
+  for(i=0;i<len;i++) d[i] = (Math.random()*2-1) * Math.pow(1-i/len, 4);
+  var s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = buf; f.type = 'bandpass'; f.frequency.value = 1400; f.Q.value = 0.8; g.gain.value = 0.9;
+  s.connect(f); f.connect(g); g.connect(c.destination); s.start();
+}
+function tono(f, t0, d, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+t0;
+  o.type = tipo; o.frequency.value = f; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+0.02); }
+function fanfarria(){ [523,659,784].forEach(function(f, i){ tono(f, i*0.1, 0.25, 'triangle', 0.1); }); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; try{ localStorage.setItem('palmadas-sonido', sonido ? 'si' : 'no'); }catch(e){} pintarSonido(); });
+pintarSonido();
+
+/* ---------- controles ---------- */
+$('bPalmada').addEventListener('click', palmada);
+$('bAnt').addEventListener('click', function(){ siguiente(-1); });
+$('bSig').addEventListener('click', function(){ siguiente(1); });
+$('bAzar').addEventListener('click', function(){
+  var resto = PALABRAS.filter(function(p){ return !hechas[p.toLowerCase()] && p!==palabra; });
+  var l = resto.length ? resto : PALABRAS.filter(function(p){ return p!==palabra; });
+  cargar(l[Math.floor(JAVI.util.rnd()*l.length)]);
+});
+function probar(){ var p = $('iPal').value.trim().replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g,''); if(!p) return; cargar(p); $('iPal').value = ''; $('bPalmada').focus(); }
+$('bProbar').addEventListener('click', probar);
+$('iPal').addEventListener('keydown', function(e){ if(e.key==='Enter') probar(); });
+document.addEventListener('keydown', function(e){
+  if(e.target.tagName==='INPUT') return;
+  if(e.key===' ' || e.key==='Enter'){ e.preventDefault(); palmada(); }
+  if(e.key==='ArrowRight') siguiente(1);
+  if(e.key==='ArrowLeft') siguiente(-1);
+});
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+
+cargar(PALABRAS[0]); pintarCalderos();
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  document.querySelector('.volver').setAttribute('data-volver', '../?id=tema2-lengua-4a'+(JAVI.ES_PROFE ? '&profe' : ''));
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>
