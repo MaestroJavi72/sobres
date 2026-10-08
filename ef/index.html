@@ -388,7 +388,7 @@ var EF = {
   fichaValor: 1, tope: 3, compiDia: 2,
   motivosCoev: ['Juego limpio','Ayuda a compañeros','Esfuerzo','Anima al equipo','Buen compañero'],
   motivosProfe: [
-    { n:'Reto superado', g:1 }, { n:'Responsable del día', g:1 }, { n:'Esfuerzo extra', g:1 },
+    { n:'Reto superado', g:1 }, { n:'Esfuerzo extra', g:1 },   /* ser responsable o capitán NO da puntos (Javi, 8/10) */
     { n:'No respeta las normas', g:-1 }, { n:'No realiza el calentamiento', g:-1 }, { n:'Falta de juego limpio', g:-2 }
   ],
   /* niveles: puntos acumulados (las compras no bajan el nivel) */
@@ -965,7 +965,7 @@ function pintarTodo(){
 var BOV = {
   grupos: ['3ºA','3ºB','4ºA','4ºB'],
   /* galeones que tiene cada clase al empezar (ponlos aquí o usa «Ajustar» en la Bóveda) */
-  inicial: { '3ºA':0, '3ºB':0, '4ºA':0, '4ºB':0 },
+  inicial: { '3ºA':70, '3ºB':49, '4ºA':0, '4ºB':42 },   /* (la Bóveda ahora está en boveda/) */
   aspectos: [
     { n:'Esfuerzo', ic:'⚡' }, { n:'Cooperación', ic:'🤝' }, { n:'Habilidades sociales', ic:'💬' },
     { n:'Respeto de normas', ic:'📜' }, { n:'Organización y desplazamientos', ic:'🧭' }

@@ -137,10 +137,10 @@
    - El responsable de hoy no puede ser capitán en esa misma sesión.
    DATOS
    - Histórico inicial (nota sin fechas): data/historial.json
+   - Ser responsable o capitán NO da puntos.
    - Sorteos nuevos: en la Hoja. Alumno «SORTEO · 3ºA», Acción «Responsable» o «Capitán»,
      CartaId = fecha (o «sin fecha»), Tipo = nombre. Deshacer = misma fila con «anula #id».
    ============================================================ */
-var PUNTOS_RESPONSABLE = 1;
 var ACCION = { responsable:'Responsable', capitan:'Capitán' };
 
 function $(id){ return document.getElementById(id); }
@@ -230,12 +230,7 @@ function pintarResp(){
     $('rOtro').addEventListener('click', function(){ marcarFalta(rPropuesto); rPropuesto = null; sortearResp(true); });
   } else if(hoy){
     nom.textContent = hoy.alumno; nom.classList.remove('vacio');
-    var dado = leer('resp-punto|'+grupo+'|'+fecha, null)===hoy.alumno;
-    box.innerHTML = '<button class="gran ok" id="rPunto" type="button"'+(dado ? ' disabled' : '')+'>'+(dado ? '✓ +'+PUNTOS_RESPONSABLE+' dado' : '+'+PUNTOS_RESPONSABLE+' '+moneda()+' para '+esc(hoy.alumno))+'</button>';
-    if(!dado) $('rPunto').addEventListener('click', function(){
-      JAVI.darPuntos(grupo, hoy.alumno, PUNTOS_RESPONSABLE, 'Responsable del día', 'Sorteo');
-      escribirL('resp-punto|'+grupo+'|'+fecha, hoy.alumno); moneda_(); aviso('+'+PUNTOS_RESPONSABLE+' para '+hoy.alumno+'.'); pintarResp();
-    });
+    box.innerHTML = '<span class="estado">Responsable de hoy</span>';
   } else {
     nom.textContent = '?'; nom.classList.add('vacio');
     box.innerHTML = '<button class="gran girar" id="rSortear" type="button">🎲 Sortear responsable</button>';

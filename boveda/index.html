@@ -277,7 +277,7 @@ var CONF = {
   grupos: ['4ºB','4ºA','3ºA','3ºB'],
   fiestaDesde: 9,          /* con esta media (redondeada) o más, ¡fiesta! */
   /* galeones con los que empezó cada clase (los mismos que en ef.html) */
-  inicial: { '3ºA':0, '3ºB':0, '4ºA':0, '4ºB':0 },
+  inicial: { '3ºA':70, '3ºB':49, '4ºA':0, '4ºB':42 },   /* lo que tenía cada clase el 8/10/2026 */
   /* recompensas de clase: [nombre, galeones]. Añade, quita o cambia precios aquí. */
   recompensas: [
     { sec:{ hp:'Juegos mágicos', vengadores:'Juegos de héroes', pokemon:'Juegos de entrenadores' }, items:[['Gavilán',50],['Poli-ladrón',50],['Pañuelito',60],['Balón-tiro',60],['Pinfuvote',60],['Baile libre',60],['Escape Room EF',70],['Juego sorpresa del profe',70],['Pichi',50]] },
@@ -554,7 +554,7 @@ function pintarProx(s){
   var ya = rs.filter(function(r){ return r[1] <= s; });
   var t = '';
   if(ya.length) t = '¡Ya podéis canjear '+ya.length+(ya.length===1 ? ' recompensa' : ' recompensas')+'! ';
-  if(sig) t += 'Os faltan '+(sig[1]-s)+' para «'+sig[0]+'» ('+sig[1]+').';
+  if(sig) t += (sig[1]-s===1 ? 'Os falta 1' : 'Os faltan '+(sig[1]-s))+' para «'+sig[0]+'» ('+sig[1]+').';
   $('prox').textContent = t;
   var tope = sig ? sig[1] : s || 1;
   $('barra').style.width = Math.max(3, Math.min(100, s/tope*100))+'%';
