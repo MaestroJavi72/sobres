@@ -29,9 +29,15 @@ header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:4px 0 
 .grupos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
 .grupo{cursor:pointer;padding:.55em 1.1em;border-radius:99px;border:1px solid rgba(232,200,114,.45);background:rgba(0,0,0,.35);font:800 15px var(--tit);letter-spacing:.06em;color:#e8d7a4}
 .grupo[aria-selected="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
-nav.tabs{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap}
-.tab{cursor:pointer;flex:1;min-width:120px;padding:.75em 1em;border-radius:14px;border:1px solid rgba(232,200,114,.4);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.3));
-  font:800 13px var(--tit);letter-spacing:.12em;text-transform:uppercase;color:#e8d7a4}
+nav.tabs{display:flex;gap:8px;margin:0 0 10px;flex-wrap:wrap}
+.tab{cursor:pointer;flex:1;min-width:150px;padding:.7em 1em;border-radius:14px;border:2px solid rgba(232,200,114,.4);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.3));
+  font:800 17px var(--tit);letter-spacing:.03em;color:#e8d7a4}
+nav.atajos{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 14px;font:13px var(--cuerpo);color:var(--texto2)}
+.atajo{cursor:pointer;padding:.45em .9em;border-radius:99px;border:1px dashed rgba(232,200,114,.5);background:rgba(0,0,0,.25);font:700 14px var(--tit);color:#e8d7a4}
+.atajo:hover{background:rgba(232,200,114,.15)}
+.atajo[hidden]{display:none}
+[data-tema="pokemon"] .atajo{background:rgba(18,58,107,.82);border-color:rgba(255,203,5,.55);color:#fff}
+[data-tema="vengadores"] .atajo{border-color:rgba(255,74,74,.55);color:#dfe4f3}
 .tab[aria-selected="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
 h2.sec{font:800 clamp(13px,1.8vw,15px) var(--tit);letter-spacing:.22em;text-transform:uppercase;color:var(--oro);margin:18px 0 12px;display:flex;align-items:center;gap:12px}
 h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(232,200,114,.55),transparent)}
@@ -208,12 +214,15 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <div class="grupos" id="grupos" role="tablist" aria-label="Grupo"></div>
   </header>
   <nav class="tabs" role="tablist">
-    <button class="tab" id="t_coev" role="tab" type="button">Coevaluación</button>
-    <button class="tab" id="t_clase" role="tab" type="button">La clase</button>
-    <button class="tab" id="t_merc" role="tab" type="button">El Mercader</button>
-    <button class="tab" id="t_bov" role="tab" type="button">Bóveda ↗</button>
-    <button class="tab" id="t_ses" role="tab" type="button">Sesión y Ruleta ↗</button>
-    <button class="tab" id="t_sor" role="tab" type="button">Responsable y capitanes ↗</button>
+    <button class="tab" id="t_coev" role="tab" type="button">🤝 Coevaluación</button>
+    <button class="tab" id="t_clase" role="tab" type="button">👥 La clase</button>
+    <button class="tab" id="t_merc" role="tab" type="button">🛒 El Mercader</button>
+  </nav>
+  <nav class="atajos" aria-label="Otras herramientas de EF">
+    <span>Abrir:</span>
+    <button class="atajo" id="t_bov" type="button">🏦 Bóveda</button>
+    <button class="atajo" id="t_ses" type="button">📋 Sesión y Ruleta</button>
+    <button class="atajo" id="t_sor" type="button">👑 Responsable y capitanes</button>
   </nav>
 
   <!-- COEVALUACIÓN -->
@@ -884,7 +893,7 @@ function multiplicadorHoy(nombre){
 }
 
 /* ---------- pintar ---------- */
-var vista = 'coev';
+var vista = (/^#(coev|clase|merc)$/.exec(location.hash)||[])[1] || 'coev';   /* pestaña directa con #coev, #clase o #merc */
 function tarjeta(n, cs, extra){
   var c = cs[n], nv = nivelDe(c.acum), huevo = c.acum<0;
   var b = document.createElement('button'); b.type = 'button'; b.className = 'cam'; b.style.setProperty('--c', nv.c);
@@ -961,6 +970,7 @@ function pintarTodo(){
   if(soloBoveda) vista = 'bov';
   Array.prototype.forEach.call($('grupos').children, function(b){ b.setAttribute('aria-selected', b.dataset.g===grupo ? 'true' : 'false'); });
   ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = soloBoveda && k!=='bov'; });
+  if(!soloBoveda && /^(coev|clase|merc)$/.test(vista)) history.replaceState(null, '', location.search+'#'+vista);
   if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); }
   pintarBoveda();
   if(perfilDe && !$('mPerfil').hidden) pintarPerfil();
