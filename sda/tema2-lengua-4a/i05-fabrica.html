@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fábrica de palabras</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<style>
+:root{ --perg:#f6ead0; --perg2:#ead7a8; --granate:#7a2030; }
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 280px;min-width:0;font-size:clamp(26px,4.6vw,50px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:clamp(14px,1.6vw,18px);color:var(--acento-2);letter-spacing:.06em;margin-top:4px;text-shadow:none}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.escena{background:linear-gradient(180deg,var(--perg),var(--perg2));color:#3a2a16;border:3px solid #b8934f;border-radius:24px;padding:clamp(14px,2.6vw,28px);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;min-height:480px;user-select:none;-webkit-user-select:none}
+.barraSup{display:flex;gap:14px;align-items:center;flex-wrap:wrap;width:100%;font-family:'Cinzel',serif;font-weight:700;color:#6b5732;font-size:20px}
+.barraSup .esp{flex:1}
+.reloj{font-size:28px;color:#7a2030;min-width:90px}
+.reloj.poco{color:#d0473f;animation:latido .5s infinite alternate}
+@keyframes latido{to{transform:scale(1.12)}}
+.pista{display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;max-width:780px}
+.pista .ic{font-size:clamp(54px,8vw,84px);line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.pista p{font-size:clamp(18px,2.2vw,24px);font-style:italic;color:#5a3d12;max-width:560px;text-align:left}
+.huecos{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:76px}
+.hueco{min-width:clamp(70px,9vw,110px);height:clamp(60px,7.5vw,84px);border-radius:16px;border:3px dashed #b8934f;background:rgba(255,255,255,.45);display:grid;place-items:center}
+.silaba{font-family:'Cinzel',Georgia,serif;font-weight:800;font-size:clamp(24px,3.4vw,40px);padding:8px 16px;border-radius:14px;border:3px solid #7a2030;background:#fffaf0;color:#7a2030;
+  box-shadow:0 5px 0 rgba(122,32,48,.35);min-width:clamp(64px,8vw,100px);transition:transform .12s}
+.silaba:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(122,32,48,.35)}
+.hueco .silaba{box-shadow:none;border-color:#c9972e;background:#fff6dc}
+.bandeja{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;min-height:76px}
+.bandeja .silaba.usada{visibility:hidden}
+.huecos.bien .hueco{border-style:solid;border-color:#2f9a5a;background:#d8f3df}
+.huecos.mal{animation:temblor .45s}
+@keyframes temblor{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+.mensaje{font-size:20px;font-weight:700;min-height:28px}
+.mensaje.bien{color:#1e6b3c} .mensaje.mal{color:#a3392f}
+.botones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.gran{font-family:var(--f-sub);font-weight:800;font-size:clamp(18px,2.6vw,26px);padding:12px 26px;border-radius:16px;border:none;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;box-shadow:0 5px 0 #7a5a14}
+.gran.sec{background:#fffaf0;color:#3a2a16;border:2px solid #b8934f;box-shadow:none}
+.modos{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.modo{width:min(100%,300px);padding:18px;border-radius:20px;border:3px solid #b8934f;background:#fffaf0;color:#3a2a16;text-align:center}
+.modo .ic{font-size:54px;display:block}
+.modo b{font-family:'Cinzel',serif;font-size:22px;color:#7a2030;display:block;margin:6px 0}
+.final h2,.inicio h2{font-family:'Cinzel Decorative','Cinzel',serif;color:#7a2030;font-size:clamp(28px,5vw,50px)}
+.cifra{font-family:'Cinzel',serif;font-size:clamp(44px,8vw,80px);font-weight:800}
+.detalle{font-size:18px;color:#6b5732}
+.lista{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:780px}
+.lista span{font-size:16px;padding:3px 9px;border-radius:8px;background:#d8f3df;border:1px solid #2f9a5a}
+.lista.saltadas span{background:#fbe1dd;border-color:#d0473f}
+.record{font-family:'Cinzel',serif;color:#7a2030;font-size:20px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🏭 Fábrica de palabras<span class="sub">I-5 · Ampliación · Las palabras y las sílabas · Tema 2</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   PALABRAS DE LA PREHISTORIA con su pista (dibujo y definición)
+   SEGUNDOS: duración del modo contra reloj.
+   ============================================================ */
+var SEGUNDOS = 90;
+var PALABRAS = [
+  { p:'fósiles', ic:'🦴', d:'Restos de seres vivos de hace millones de años convertidos en piedra.' },
+  { p:'yacimiento', ic:'⛏️', d:'Lugar donde se encuentran enterrados restos antiguos.' },
+  { p:'mamut', ic:'🐘', d:'Animal parecido al elefante, peludo y con colmillos enormes.' },
+  { p:'dinosaurio', ic:'🦕', d:'Reptil gigante que vivió hace millones de años.' },
+  { p:'cantera', ic:'🏗️', d:'Lugar del que se sacan piedras para construir.' },
+  { p:'cavernícola', ic:'🔥', d:'Persona de la prehistoria que vivía en cuevas.' },
+  { p:'Paleolítico', ic:'🗿', d:'La época más antigua de la prehistoria, la de la piedra tallada.' },
+  { p:'hoguera', ic:'🔥', d:'Fuego que se enciende con leña para calentarse o cocinar.' },
+  { p:'flecha', ic:'🏹', d:'Palo con punta que se lanza con un arco.' },
+  { p:'pintura', ic:'🎨', d:'Dibujo con colores; en las cuevas pintaban animales.' },
+  { p:'tribu', ic:'👪', d:'Grupo de familias que vivían y cazaban juntas.' },
+  { p:'cazador', ic:'🏹', d:'Persona que persigue animales para conseguir comida.' },
+  { p:'dólmenes', ic:'🗿', d:'Construcciones de piedras enormes que servían de tumba.' },
+  { p:'vasija', ic:'🏺', d:'Recipiente de barro para guardar agua o alimentos.' },
+  { p:'choza', ic:'🏚️', d:'Casa pequeña y sencilla hecha con ramas, barro o pieles.' },
+  { p:'Pangea', ic:'🌍', d:'El gran continente que formaban todas las tierras juntas.' },
+  { p:'tiburón', ic:'🦈', d:'Pez grande y con muchos dientes; en Algeciras se halló uno gigante.' },
+  { p:'molusco', ic:'🐌', d:'Animal de cuerpo blando, muchas veces con concha.' },
+  { p:'paleontóloga', ic:'🔍', d:'Mujer que estudia los fósiles.' },
+  { p:'prehistoria', ic:'📜', d:'Época de la humanidad anterior a la escritura.' },
+  { p:'herramienta', ic:'🔨', d:'Objeto que sirve para hacer un trabajo, como un hacha.' },
+  { p:'bisonte', ic:'🐂', d:'Animal grande y peludo, parecido a un toro, que pintaban en las cuevas.' }
+];
+
+/* ---------- separador de sílabas del español (el mismo que «Palmadas silábicas») ---------- */
+function silabas(palabra){
+  var w = String(palabra).trim(), lw = w.toLowerCase();
+  if(!lw) return [];
+  var V = 'aeiouáéíóúü', FUERTE = 'aeoáéíóú';
+  var GRUPOS = ['pr','br','tr','dr','cr','gr','fr','pl','bl','cl','gl','fl','kr','kl','tl'];
+  var u = [], i = 0;
+  while(i < lw.length){
+    var dos = lw.substr(i, 2), c = lw[i];
+    if(dos==='ch' || dos==='ll' || dos==='rr'){ u.push({ t:'C', s:w.substr(i,2) }); i += 2; continue; }
+    if((dos==='qu' || dos==='gu') && 'eiéí'.indexOf(lw[i+2]||'')>=0){ u.push({ t:'C', s:w.substr(i,2) }); i += 2; continue; }
+    var esV = V.indexOf(c)>=0;
+    if(c==='y'){ var sig = lw[i+1]; esV = !sig || V.indexOf(sig)<0; }
+    u.push({ t: esV ? 'V' : 'C', s:w[i], f: FUERTE.indexOf(c)>=0 });
+    i++;
+  }
+  var g = [];
+  u.forEach(function(x){
+    var ult = g[g.length-1];
+    if(x.t==='V' && ult && ult.t==='V'){ var prev = ult.u[ult.u.length-1]; if(prev.f && x.f){ g.push({ t:'V', u:[x] }); return; } ult.u.push(x); return; }
+    if(ult && ult.t===x.t && x.t==='C'){ ult.u.push(x); return; }
+    g.push({ t:x.t, u:[x] });
+  });
+  var sil = [], actual = '';
+  for(var k=0;k<g.length;k++){
+    var gr = g[k], txt = gr.u.map(function(x){ return x.s; }).join('');
+    if(gr.t==='V'){ if(actual && k>0 && g[k-1].t==='V'){ sil.push(actual); actual = ''; } actual += txt; continue; }
+    if(k===0){ actual = txt; continue; }
+    if(k===g.length-1){ actual += txt; continue; }
+    var cs = gr.u.map(function(x){ return x.s; }), n = cs.length, corte;
+    var par = function(a, b){ return GRUPOS.indexOf((a+b).toLowerCase())>=0; };
+    if(n===1) corte = 0; else if(n===2) corte = par(cs[0], cs[1]) ? 0 : 1; else if(n===3) corte = par(cs[1], cs[2]) ? 1 : 2; else corte = 2;
+    actual += cs.slice(0, corte).join(''); sil.push(actual); actual = cs.slice(corte).join('');
+  }
+  if(actual) sil.push(actual);
+  return sil;
+}
+
+function $(id){ return document.getElementById(id); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function mezclar(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.floor(JAVI.util.rnd()*(i+1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+function leerRecord(){ try{ return +localStorage.getItem('fabrica-record')||0; }catch(e){ return 0; } }
+
+var modo = null, cola = [], actual = null, sil = [], piezas = [], puestas = [], hechas = [], saltadas = [], fin = 0, reloj = 0, bloqueado = false;
+
+function inicio(){
+  clearInterval(reloj);
+  var r = leerRecord();
+  $('escena').innerHTML =
+    '<div class="inicio"><h2>¿Cómo jugamos?</h2></div>'+
+    '<p class="detalle">Las sílabas de las palabras de la prehistoria se han desordenado en la fábrica. ¡Ordénalas tocándolas en orden!</p>'+
+    '<div class="modos">'+
+      '<button class="modo" id="mReloj" type="button"><span class="ic">⏱️</span><b>Contra reloj</b>'+SEGUNDOS+' segundos para formar todas las palabras que podáis.'+(r ? '<br><span class="record">🏆 Récord: '+r+'</span>' : '')+'</button>'+
+      '<button class="modo" id="mLibre" type="button"><span class="ic">🧘</span><b>Sin reloj</b>Para practicar con calma, palabra a palabra.</button>'+
+    '</div>';
+  $('mReloj').addEventListener('click', function(){ empezar('reloj'); });
+  $('mLibre').addEventListener('click', function(){ empezar('libre'); });
+}
+function empezar(m){
+  modo = m; cola = mezclar(PALABRAS); hechas = []; saltadas = [];
+  $('escena').innerHTML =
+    '<div class="barraSup"><span id="cuenta"></span><span class="esp"></span><span>⭐ <span id="pts">0</span></span>'+(modo==='reloj' ? '<span class="reloj" id="reloj"></span>' : '')+'</div>'+
+    '<div class="pista" id="pista"></div>'+
+    '<div class="huecos" id="huecos"></div>'+
+    '<div class="bandeja" id="bandeja"></div>'+
+    '<div class="mensaje" id="mensaje"></div>'+
+    '<div class="botones"><button class="gran sec" id="bBorrar" type="button">↩ Quitar la última</button><button class="gran sec" id="bPasar" type="button">⏭ Pasar</button>'+(modo==='libre' ? '<button class="gran sec" id="bTerminar" type="button">🏁 Terminar</button>' : '')+'</div>';
+  $('bBorrar').addEventListener('click', quitarUltima);
+  $('bPasar').addEventListener('click', function(){ if(bloqueado) return; saltadas.push(actual.p); siguiente(); });
+  if($('bTerminar')) $('bTerminar').addEventListener('click', terminar);
+  if(modo==='reloj'){ fin = Date.now() + SEGUNDOS*1000; reloj = setInterval(pintarReloj, 200); pintarReloj(); }
+  siguiente();
+}
+function pintarReloj(){
+  var s = Math.max(0, Math.ceil((fin - Date.now())/1000)), r = $('reloj'); if(!r) return;
+  r.textContent = '⏱️ '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); r.classList.toggle('poco', s<=10);
+  if(s<=0) terminar();
+}
+function siguiente(){
+  if(!cola.length){ if(modo==='reloj'){ cola = mezclar(PALABRAS.filter(function(w){ return hechas.indexOf(w.p)<0; })); } if(!cola.length){ terminar(); return; } }
+  actual = cola.shift(); sil = silabas(actual.p); puestas = [];
+  do { piezas = mezclar(sil.map(function(s, i){ return { s:s, i:i }; })); } while(sil.length>1 && piezas.every(function(x, k){ return x.i===k; }));
+  $('pista').innerHTML = '<span class="ic" aria-hidden="true">'+actual.ic+'</span><p>'+esc(actual.d)+'</p>';
+  $('mensaje').textContent = ''; $('mensaje').className = 'mensaje';
+  $('cuenta').textContent = sil.length+' sílabas';
+  $('pts').textContent = hechas.length;
+  pintar();
+}
+function pintar(){
+  var hu = $('huecos'); hu.className = 'huecos'; hu.innerHTML = '';
+  sil.forEach(function(_, k){
+    var h = document.createElement('div'); h.className = 'hueco';
+    if(puestas[k]!=null){ var b = document.createElement('button'); b.type = 'button'; b.className = 'silaba'; b.textContent = piezas[puestas[k]].s;
+      b.addEventListener('click', function(){ if(bloqueado) return; puestas.splice(k); pintar(); tic(); }); h.appendChild(b); }
+    hu.appendChild(h);
+  });
+  var ba = $('bandeja'); ba.innerHTML = '';
+  piezas.forEach(function(x, j){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'silaba'+(puestas.indexOf(j)>=0 ? ' usada' : ''); b.textContent = x.s;
+    b.addEventListener('click', function(){ if(bloqueado || puestas.indexOf(j)>=0) return; puestas.push(j); tic(); pintar(); if(puestas.length===sil.length) comprobar(); });
+    ba.appendChild(b);
+  });
+}
+function quitarUltima(){ if(bloqueado || !puestas.length) return; puestas.pop(); pintar(); }
+function comprobar(){
+  var palabra = puestas.map(function(j){ return piezas[j].s; }).join(''), m = $('mensaje');
+  if(palabra.toLowerCase()===actual.p.toLowerCase()){
+    hechas.push(actual.p); bloqueado = true;
+    $('huecos').classList.add('bien'); m.className = 'mensaje bien'; m.textContent = '¡'+actual.p.charAt(0).toUpperCase()+actual.p.slice(1)+'! ✨'; acierto();
+    $('pts').textContent = hechas.length;
+    setTimeout(function(){ bloqueado = false; siguiente(); }, 900);
+  } else {
+    $('huecos').classList.add('mal'); m.className = 'mensaje mal'; m.textContent = '«'+palabra+'» no existe… ¡prueba otro orden!'; fallo();
+    bloqueado = true; setTimeout(function(){ bloqueado = false; puestas = []; pintar(); }, 700);
+  }
+}
+function terminar(){
+  clearInterval(reloj); bloqueado = false;
+  var n = hechas.length, r = leerRecord(), nuevo = modo==='reloj' && n > r;
+  if(nuevo){ try{ localStorage.setItem('fabrica-record', n); }catch(e){} }
+  $('escena').innerHTML =
+    '<div class="final"><h2>'+(modo==='reloj' ? '⏰ ¡Se acabó el tiempo!' : '🏁 ¡Fábrica cerrada!')+'</h2></div>'+
+    '<div class="cifra">'+n+'</div><div class="detalle">'+(n===1 ? 'palabra fabricada' : 'palabras fabricadas')+'</div>'+
+    (nuevo ? '<p class="record">🏆 ¡Nuevo récord!</p>' : (modo==='reloj' && r ? '<p class="detalle">Récord: '+r+'</p>' : ''))+
+    (n ? '<div class="lista">'+hechas.map(function(p){ return '<span>'+esc(silabas(p).join('-'))+'</span>'; }).join('')+'</div>' : '')+
+    (saltadas.length ? '<p class="detalle">Para repasar:</p><div class="lista saltadas">'+saltadas.map(function(p){ return '<span>'+esc(silabas(p).join('-'))+'</span>'; }).join('')+'</div>' : '')+
+    '<div class="botones"><button class="gran" id="bOtra" type="button">🔁 Jugar otra vez</button></div>';
+  $('bOtra').addEventListener('click', inicio);
+  if(n) fanfarria();
+}
+
+/* ---------- sonido ---------- */
+var sonido = (function(){ try{ return localStorage.getItem('fabrica-sonido')!=='no'; }catch(e){ return true; } })(), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function tono(f, t0, d, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+t0;
+  o.type = tipo; o.frequency.value = f; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+0.02); }
+function tic(){ tono(700, 0, 0.05, 'square', 0.04); }
+function acierto(){ [784,988,1318].forEach(function(f, i){ tono(f, i*0.08, 0.2, 'triangle', 0.1); }); }
+function fanfarria(){ [523,659,784,1046].forEach(function(f, i){ tono(f, i*0.1, 0.25, 'triangle', 0.1); }); }
+function fallo(){ tono(220, 0, 0.25, 'sawtooth', 0.05); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; try{ localStorage.setItem('fabrica-sonido', sonido ? 'si' : 'no'); }catch(e){} pintarSonido(); });
+pintarSonido();
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+
+inicio();
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  document.querySelector('.volver').setAttribute('data-volver', '../?id=tema2-lengua-4a'+(JAVI.ES_PROFE ? '&profe' : ''));
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

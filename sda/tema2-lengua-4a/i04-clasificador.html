@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clasificador de sílabas</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<style>
+:root{ --perg:#f6ead0; --perg2:#ead7a8; --c1:#e8b923; --c2:#3cae5f; --c3:#3a8fe0; --c4:#9a5bd6; }
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 280px;min-width:0;font-size:clamp(26px,4.6vw,50px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:clamp(14px,1.6vw,18px);color:var(--acento-2);letter-spacing:.06em;margin-top:4px;text-shadow:none}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.escena{background:linear-gradient(180deg,var(--perg),var(--perg2));color:#3a2a16;border:3px solid #b8934f;border-radius:24px;padding:clamp(14px,2.6vw,26px);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;gap:14px;min-height:520px;user-select:none;-webkit-user-select:none}
+.barraSup{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-family:'Cinzel',serif;font-weight:700;color:#6b5732;font-size:18px}
+.barraSup .esp{flex:1}
+.instr{font-size:18px;color:#5a3d12;text-align:center}
+.mesa{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;min-height:70px;padding:10px;border-radius:16px;background:rgba(122,32,48,.06);border:2px dashed #b8934f}
+.ficha{font-family:'Cinzel',Georgia,serif;font-weight:800;font-size:clamp(20px,2.6vw,30px);padding:8px 16px;border-radius:14px;background:#fffaf0;color:#7a2030;
+  border:3px solid #b8934f;box-shadow:0 4px 0 rgba(0,0,0,.15);cursor:grab;touch-action:none}
+.ficha.elegida{outline:4px solid #f3d27a;outline-offset:2px;transform:scale(1.06)}
+.ficha.vuela{position:fixed;z-index:50;pointer-events:none;transform:scale(1.1) rotate(-3deg);box-shadow:0 14px 26px rgba(0,0,0,.35)}
+.ficha.fantasma{opacity:.3}
+.ficha.temblor{animation:temblor .45s}
+@keyframes temblor{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.calderos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){ .calderos{grid-template-columns:1fr 1fr} }
+.caldero{position:relative;border-radius:22px 22px 40px 40px;padding:12px 10px 14px;text-align:center;background:linear-gradient(180deg,#1d2b2a,#0e1716);color:#f6ead0;
+  border:3px solid var(--col);min-height:190px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .15s, box-shadow .15s}
+.caldero.encima{transform:scale(1.04);box-shadow:0 0 0 6px var(--col),0 0 30px var(--col)}
+.caldero .ic{font-size:36px;line-height:1}
+.caldero h3{font-family:'Cinzel',serif;color:var(--col);font-size:clamp(15px,1.8vw,20px)}
+.caldero .n{font-size:13px;color:#cfc4a3}
+.caldero ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.caldero li{font-size:15px;padding:2px 8px;border-radius:8px;background:var(--col);color:#fff;animation:cae .35s}
+@keyframes cae{0%{transform:translateY(-20px) scale(1.3);opacity:0}100%{transform:none;opacity:1}}
+.burbujas{position:absolute;left:0;right:0;top:-6px;height:12px;background:radial-gradient(circle at 20% 50%,var(--col) 0 4px,transparent 5px),radial-gradient(circle at 55% 50%,var(--col) 0 3px,transparent 4px),radial-gradient(circle at 80% 50%,var(--col) 0 5px,transparent 6px);opacity:.7}
+.mensaje{text-align:center;font-size:19px;font-weight:700;min-height:26px}
+.mensaje.bien{color:#1e6b3c} .mensaje.mal{color:#a3392f}
+.final{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.final h2{font-family:'Cinzel Decorative','Cinzel',serif;color:#7a2030;font-size:clamp(30px,5vw,52px)}
+.estrellas{font-size:clamp(44px,8vw,80px);letter-spacing:6px}
+.cifra{font-family:'Cinzel',serif;font-size:clamp(40px,7vw,72px);font-weight:800}
+.detalle{font-size:18px;color:#6b5732}
+.gran{font-family:var(--f-sub);font-weight:800;font-size:clamp(18px,2.6vw,26px);padding:12px 26px;border-radius:16px;border:none;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;box-shadow:0 5px 0 #7a5a14}
+.repaso{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:760px}
+.repaso span{font-size:16px;padding:3px 9px;border-radius:8px;background:#fffaf0;border:1px solid #b8934f}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🧪 Clasificador de sílabas<span class="sub">I-4 · Las palabras y las sílabas · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   PALABRAS: el banco del tema y otras de la prehistoria.
+   En cada ronda salen POR_RONDA, con al menos 3 de cada caldero.
+   ============================================================ */
+var POR_RONDA = 16;
+var BANCO = ['sol','mar','pez','luz','tren','mamut','hueso','fósil','cueva','piedra','roca','concha','diente','huella','clima',
+  'cantera','molusco','tiburón','Triásico','estrato','bivalvo','hallazgo','museo',
+  'carretera','yacimiento','paleontóloga','dinosaurio','mamífero','continente','excavación'];
+var TIPOS = [null,
+  { n:'Monosílabas', ic:'✨', col:'var(--c1)', d:'1 sílaba' },
+  { n:'Bisílabas',   ic:'🔮', col:'var(--c2)', d:'2 sílabas' },
+  { n:'Trisílabas',  ic:'🧪', col:'var(--c3)', d:'3 sílabas' },
+  { n:'Polisílabas', ic:'🐉', col:'var(--c4)', d:'4 o más' }];
+
+/* ---------- separador de sílabas del español (el mismo que «Palmadas silábicas») ---------- */
+function silabas(palabra){
+  var w = String(palabra).trim(), lw = w.toLowerCase();
+  if(!lw) return [];
+  var V = 'aeiouáéíóúü', FUERTE = 'aeoáéíóú';
+  var GRUPOS = ['pr','br','tr','dr','cr','gr','fr','pl','bl','cl','gl','fl','kr','kl','tl'];
+  var u = [], i = 0;
+  while(i < lw.length){
+    var dos = lw.substr(i, 2), c = lw[i];
+    if(dos==='ch' || dos==='ll' || dos==='rr'){ u.push({ t:'C', s:w.substr(i,2) }); i += 2; continue; }
+    if((dos==='qu' || dos==='gu') && 'eiéí'.indexOf(lw[i+2]||'')>=0){ u.push({ t:'C', s:w.substr(i,2) }); i += 2; continue; }
+    var esV = V.indexOf(c)>=0;
+    if(c==='y'){ var sig = lw[i+1]; esV = !sig || V.indexOf(sig)<0; }
+    u.push({ t: esV ? 'V' : 'C', s:w[i], f: FUERTE.indexOf(c)>=0 });
+    i++;
+  }
+  var g = [];
+  u.forEach(function(x){
+    var ult = g[g.length-1];
+    if(x.t==='V' && ult && ult.t==='V'){ var prev = ult.u[ult.u.length-1]; if(prev.f && x.f){ g.push({ t:'V', u:[x] }); return; } ult.u.push(x); return; }
+    if(ult && ult.t===x.t && x.t==='C'){ ult.u.push(x); return; }
+    g.push({ t:x.t, u:[x] });
+  });
+  var sil = [], actual = '';
+  for(var k=0;k<g.length;k++){
+    var gr = g[k], txt = gr.u.map(function(x){ return x.s; }).join('');
+    if(gr.t==='V'){ if(actual && k>0 && g[k-1].t==='V'){ sil.push(actual); actual = ''; } actual += txt; continue; }
+    if(k===0){ actual = txt; continue; }
+    if(k===g.length-1){ actual += txt; continue; }
+    var cs = gr.u.map(function(x){ return x.s; }), n = cs.length, corte;
+    var par = function(a, b){ return GRUPOS.indexOf((a+b).toLowerCase())>=0; };
+    if(n===1) corte = 0; else if(n===2) corte = par(cs[0], cs[1]) ? 0 : 1; else if(n===3) corte = par(cs[1], cs[2]) ? 1 : 2; else corte = 2;
+    actual += cs.slice(0, corte).join(''); sil.push(actual); actual = cs.slice(corte).join('');
+  }
+  if(actual) sil.push(actual);
+  return sil;
+}
+function grupoDe(p){ return Math.min(4, silabas(p).length); }
+
+function $(id){ return document.getElementById(id); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function mezclar(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.floor(JAVI.util.rnd()*(i+1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+
+var quedan = [], dentro = {1:[],2:[],3:[],4:[]}, primeraBien = 0, fallos = {}, inicio = 0, reloj = 0;
+
+function elegirRonda(){
+  var por = {1:[],2:[],3:[],4:[]};
+  mezclar(BANCO).forEach(function(p){ por[grupoDe(p)].push(p); });
+  var r = [];
+  [1,2,3,4].forEach(function(g){ r = r.concat(por[g].splice(0, 3)); });          /* 3 de cada caldero */
+  var resto = mezclar([].concat(por[1], por[2], por[3], por[4]));
+  return mezclar(r.concat(resto.slice(0, POR_RONDA - r.length)));
+}
+function empezar(){
+  quedan = elegirRonda(); dentro = {1:[],2:[],3:[],4:[]}; primeraBien = 0; fallos = {}; inicio = Date.now();
+  $('escena').innerHTML =
+    '<div class="barraSup"><span id="cuenta"></span><span class="esp"></span><span>⭐ <span id="pts">0</span></span><span>⏱️ <span id="tiempo">0:00</span></span></div>'+
+    '<p class="instr">Arrastra cada palabra a su caldero. También puedes <b>tocar la palabra</b> y después <b>tocar el caldero</b>.</p>'+
+    '<div class="mesa" id="mesa"></div>'+
+    '<div class="mensaje" id="mensaje"></div>'+
+    '<div class="calderos" id="calderos"></div>';
+  var cal = $('calderos');
+  [1,2,3,4].forEach(function(g){
+    var t = TIPOS[g], d = document.createElement('div'); d.className = 'caldero'; d.dataset.g = g; d.style.setProperty('--col', t.col);
+    d.innerHTML = '<span class="burbujas"></span><div class="ic" aria-hidden="true">'+t.ic+'</div><h3>'+t.n+'</h3><div class="n">'+t.d+'</div><ul></ul>';
+    d.setAttribute('role','button'); d.setAttribute('aria-label', 'Caldero de '+t.n);
+    d.addEventListener('click', function(){ if(elegida) soltarEn(elegida, g); });
+    cal.appendChild(d);
+  });
+  pintarMesa();
+  clearInterval(reloj); reloj = setInterval(pintarTiempo, 500);
+}
+function pintarTiempo(){ var s = Math.floor((Date.now()-inicio)/1000); var t = $('tiempo'); if(t) t.textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function pintarMesa(){
+  var mesa = $('mesa'); mesa.innerHTML = '';
+  quedan.forEach(function(p){
+    var f = document.createElement('div'); f.className = 'ficha'; f.textContent = p; f.dataset.p = p; f.tabIndex = 0;
+    f.setAttribute('role','button'); f.setAttribute('aria-label', p+'. Elige su caldero');
+    f.addEventListener('pointerdown', agarrar);
+    f.addEventListener('keydown', function(e){ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); elegir(f); } if(/^[1-4]$/.test(e.key) && elegida===f) soltarEn(f, +e.key); });
+    mesa.appendChild(f);
+  });
+  $('cuenta').textContent = 'Quedan '+quedan.length+' de '+POR_RONDA;
+  $('pts').textContent = primeraBien;
+}
+
+/* ---------- tocar y elegir ---------- */
+var elegida = null;
+function elegir(f){ if(elegida) elegida.classList.remove('elegida'); elegida = f; f.classList.add('elegida'); tic(); }
+
+/* ---------- arrastrar con el dedo o el ratón (funciona en la pizarra táctil) ---------- */
+var arrastre = null;
+function agarrar(e){
+  var f = e.currentTarget, r = f.getBoundingClientRect();
+  arrastre = { f:f, x0:e.clientX, y0:e.clientY, dx:e.clientX-r.left, dy:e.clientY-r.top, movido:false, copia:null };
+  try{ f.setPointerCapture(e.pointerId); }catch(err){}
+  document.addEventListener('pointermove', mover); document.addEventListener('pointerup', soltar); document.addEventListener('pointercancel', soltar);
+}
+function mover(e){
+  var a = arrastre; if(!a) return;
+  if(!a.movido && Math.hypot(e.clientX-a.x0, e.clientY-a.y0) < 8) return;
+  if(!a.movido){
+    a.movido = true; a.copia = a.f.cloneNode(true); a.copia.classList.add('vuela'); a.copia.classList.remove('elegida');
+    document.body.appendChild(a.copia); a.f.classList.add('fantasma');
+  }
+  a.copia.style.left = (e.clientX - a.dx)+'px'; a.copia.style.top = (e.clientY - a.dy)+'px';
+  var c = calderoEn(e.clientX, e.clientY);
+  Array.prototype.forEach.call(document.querySelectorAll('.caldero'), function(x){ x.classList.toggle('encima', x===c); });
+}
+function soltar(e){
+  var a = arrastre; arrastre = null; if(!a) return;
+  document.removeEventListener('pointermove', mover); document.removeEventListener('pointerup', soltar); document.removeEventListener('pointercancel', soltar);
+  if(a.copia) a.copia.remove(); a.f.classList.remove('fantasma');
+  Array.prototype.forEach.call(document.querySelectorAll('.caldero'), function(x){ x.classList.remove('encima'); });
+  if(!a.movido){ elegir(a.f); return; }                         /* fue un toque: queda elegida */
+  var c = calderoEn(e.clientX, e.clientY);
+  if(c) soltarEn(a.f, +c.dataset.g);
+}
+function calderoEn(x, y){
+  var r = null;
+  Array.prototype.forEach.call(document.querySelectorAll('.caldero'), function(c){ var b = c.getBoundingClientRect(); if(x>=b.left && x<=b.right && y>=b.top && y<=b.bottom) r = c; });
+  return r;
+}
+
+/* ---------- comprobar ---------- */
+function soltarEn(f, g){
+  var p = f.dataset.p, bien = grupoDe(p)===g, m = $('mensaje');
+  if(elegida){ elegida.classList.remove('elegida'); elegida = null; }
+  if(bien){
+    if(!fallos[p]) primeraBien++;
+    quedan.splice(quedan.indexOf(p), 1); dentro[g].push(p);
+    var li = document.createElement('li'); li.textContent = silabas(p).join('-');
+    document.querySelector('.caldero[data-g="'+g+'"] ul').appendChild(li);
+    m.className = 'mensaje bien'; m.textContent = '¡Bien! '+silabas(p).join(' - ')+' → '+silabas(p).length+(silabas(p).length===1 ? ' sílaba' : ' sílabas');
+    burbujeo(); pintarMesa();
+    if(!quedan.length) setTimeout(final, 700);
+  } else {
+    fallos[p] = (fallos[p]||0)+1;
+    m.className = 'mensaje mal'; m.textContent = '¡Ups! «'+p+'» no va en ese caldero. Da palmadas y vuelve a contar.';
+    f.classList.remove('temblor'); void f.offsetWidth; f.classList.add('temblor'); fallo();
+  }
+}
+function final(){
+  clearInterval(reloj);
+  var s = Math.floor((Date.now()-inicio)/1000), pct = primeraBien/POR_RONDA, est = pct>=0.9 ? 3 : pct>=0.7 ? 2 : pct>=0.5 ? 1 : 0;
+  var dificiles = Object.keys(fallos);
+  $('escena').innerHTML =
+    '<div class="final"><h2>🏁 ¡Calderos llenos!</h2>'+
+    '<div class="estrellas" aria-label="'+est+' estrellas de 3">'+'★★★'.slice(0, est)+'<span style="opacity:.25">'+'★★★'.slice(0, 3-est)+'</span></div>'+
+    '<div class="cifra">'+primeraBien+' / '+POR_RONDA+'</div>'+
+    '<div class="detalle">bien a la primera · tiempo '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+'</div>'+
+    (dificiles.length ? '<div class="detalle">Para repasar:</div><div class="repaso">'+dificiles.map(function(p){ return '<span>'+esc(silabas(p).join('-'))+' ('+silabas(p).length+')</span>'; }).join('')+'</div>' : '<p class="mensaje bien">¡Sin un solo fallo! 🎉</p>')+
+    '<button class="gran" id="bRepetir" type="button">🔁 Repetir con otras palabras</button></div>';
+  $('bRepetir').addEventListener('click', empezar);
+  if(est>=2) fanfarria();
+}
+
+/* ---------- sonido ---------- */
+var sonido = (function(){ try{ return localStorage.getItem('clasificador-sonido')!=='no'; }catch(e){ return true; } })(), actx = null;
+function ctx(){ if(!sonido) return null; try{ if(!actx) actx = new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ return null; } return actx; }
+function tono(f, t0, d, tipo, vol){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime+t0;
+  o.type = tipo; o.frequency.value = f; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+0.02); }
+function tic(){ tono(880, 0, 0.05, 'triangle', 0.05); }
+function burbujeo(){ [600,800,1000,1300].forEach(function(f, i){ tono(f, i*0.06, 0.12, 'sine', 0.08); }); }
+function fanfarria(){ [523,659,784,1046].forEach(function(f, i){ tono(f, i*0.1, 0.25, 'triangle', 0.1); }); }
+function fallo(){ tono(330, 0, 0.2, 'sawtooth', 0.05); tono(262, 0.15, 0.3, 'sawtooth', 0.05); }
+function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
+$('bSonido').addEventListener('click', function(){ sonido = !sonido; try{ localStorage.setItem('clasificador-sonido', sonido ? 'si' : 'no'); }catch(e){} pintarSonido(); });
+pintarSonido();
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+
+empezar();
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  document.querySelector('.volver').setAttribute('data-volver', '../?id=tema2-lengua-4a'+(JAVI.ES_PROFE ? '&profe' : ''));
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

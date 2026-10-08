@@ -105,7 +105,7 @@ Cada alumno abre una página «Mi glosario de paleontólogo». Por cada palabra:
   - El niño encontró ayer un fósil.
   - Los dinosaurios vivieron hace mucho tiempo.
   - ¡Oh! Hay un hueso bajo la piedra.
-- **C. Ordena las sílabas.** si-les-fó (fósiles), ce-to-mien-mi-ya (yacimiento), mut-ma (mamut), ta-can-re (cantera), sa-di-no-rio-u (dinosaurio), ra-ca-te-rre (carretera).
+- **C. Ordena las sílabas.** si-les-fó (fósiles), ci-to-mien-ya (yacimiento), mut-ma (mamut), ra-can-te (cantera), rio-di-sau-no (dinosaurio), ra-ca-te-rre (carretera).
 - **D. Palabras encadenadas.** Cada palabra empieza por la última sílaba de la anterior: ca-SA → SA-po → PO-llo… Escribe una cadena de 8 palabras y di cuántas sílabas tiene cada una.
 - **E. Busca en tu mochila.** Escribe 2 objetos de clase de cada tipo: monosílabos, bisílabos, trisílabos y polisílabos.
 
@@ -282,7 +282,7 @@ Una hoja A4 imprimible para enviar a casa a quien no termine en clase o necesite
 2. **Separa en sílabas y escribe cuántas tiene:** caracol, luz, pantalón, mariposa, tren, helado, bicicleta, mesa.
 3. **Clasifica en la tabla** las palabras del ejercicio 2.
 4. **Rodea las palabras invariables:** «Mañana iremos con mi abuela al museo y veremos fósiles muy antiguos.»
-5. **Ordena las sílabas:** ta-pe-lo (pelota), na-ven-ta (ventana), pa-ma-ri-po-sa (mariposa), bro-li (libro).
+5. **Ordena las sílabas:** ta-pe-lo (pelota), na-ven-ta (ventana), po-ma-sa-ri (mariposa), bro-li (libro).
 6. **Reto:** escribe una oración con una palabra monosílaba, una bisílaba y una polisílaba.
 
 Mismo modelo para los demás bloques: nombres (género y número), sinónimos y antónimos, tónica y átona.
