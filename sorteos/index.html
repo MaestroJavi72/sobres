@@ -70,6 +70,15 @@
 .faltan button{font-size:15px;padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:transparent;color:inherit}
 .faltan button[aria-pressed="true"]{background:#7a2a22;border-color:#b6493f;color:#fff;text-decoration:line-through}
 .copia{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* pestañas de sección (como la SA, la planificación, la sesión y la Bóveda) */
+.vistas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;padding-top:12px;border-top:1px solid rgba(232,207,138,.25)}
+.vistas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:9px 16px;border-radius:12px;border:2px solid rgba(232,207,138,.4);background:rgba(0,0,0,.25);color:var(--acento-2);cursor:pointer}
+.vistas button[aria-selected="true"]{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border-color:#fff1b8}
+.vista[hidden]{display:none!important}
+#v-resp .carrete{font-size:clamp(44px,8vw,96px)}
+#v-cap .parCap .carrete{font-size:clamp(32px,5.6vw,66px)}
+.cuentaFaltan{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:#b6493f;color:#fff;font-size:13px;padding:0 6px;margin-left:6px}
+.cuentaFaltan[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -85,8 +94,15 @@
   <nav class="pestanas" id="grupos" role="tablist" aria-label="Clase"></nav>
   <div class="aviso-ef" id="avisoEF" role="note" hidden></div>
 
-  <div class="dos">
-    <section class="papel" aria-labelledby="tResp">
+  <nav class="vistas" role="tablist" aria-label="Sección">
+    <button type="button" role="tab" data-v="resp" aria-selected="true">🏅 Responsable</button>
+    <button type="button" role="tab" data-v="cap" aria-selected="false">⚔️ Capitanes</button>
+    <button type="button" role="tab" data-v="faltan" aria-selected="false">🙋 Quién falta<span class="cuentaFaltan" id="nFaltan" hidden></span></button>
+    <button type="button" role="tab" data-v="copia" aria-selected="false">💾 Copia</button>
+  </nav>
+
+  <div>
+    <section class="papel vista" id="v-resp" aria-labelledby="tResp">
       <h2 id="tResp">🏅 Responsable del día</h2>
       <div class="carrete vacio" id="rNombre">?</div>
       <div class="botonera" id="rBotones"></div>
@@ -96,7 +112,7 @@
       <button class="mini" id="rDeshacer" type="button">↶ Deshacer el último sorteo</button>
     </section>
 
-    <section class="papel" aria-labelledby="tCap">
+    <section class="papel vista" id="v-cap" aria-labelledby="tCap" hidden>
       <h2 id="tCap">⚔️ Capitanes de pichi</h2>
       <div class="parCap"><div class="carrete vacio" id="c1">?</div><span class="vs">y</span><div class="carrete vacio" id="c2">?</div></div>
       <div class="botonera" id="cBotones"></div>
@@ -107,13 +123,13 @@
     </section>
   </div>
 
-  <section class="papel" style="margin-top:14px;align-items:stretch;text-align:left">
+  <section class="papel vista" id="v-faltan" style="align-items:stretch;text-align:left" hidden>
     <h2 style="font-size:22px">¿Quién falta hoy?</h2>
     <p class="estado">Toca a quien no esté: no saldrá en el sorteo y conserva su turno para otro día.</p>
     <div class="faltan" id="faltan"></div>
   </section>
 
-  <section class="papel" style="margin-top:14px;align-items:stretch;text-align:left">
+  <section class="papel vista" id="v-copia" style="align-items:stretch;text-align:left" hidden>
     <h2 style="font-size:22px">Copia de seguridad</h2>
     <p class="estado">El historial se guarda solo en tu Hoja de Google y se ve igual en todos tus aparatos. Además puedes descargar una copia (JSON) o recuperar una.</p>
     <div class="copia">
@@ -353,6 +369,7 @@ function pintarGrupos(){
 }
 function pintarFaltan(){
   var box = $('faltan'), fs = faltan(); box.innerHTML = '';
+  $('nFaltan').hidden = !fs.length; $('nFaltan').textContent = fs.length;
   ((JAVI.grupo(grupo)||{}).nombres||[]).forEach(function(n){
     var b = document.createElement('button'); b.type = 'button'; b.textContent = n;
     b.setAttribute('aria-pressed', fs.indexOf(n)>=0 ? 'true' : 'false');
@@ -413,6 +430,16 @@ function pintarSonido(){ $('bSonido').textContent = sonido ? '🔊' : '🔇'; }
 $('bSonido').addEventListener('click', function(){ sonido = !sonido; escribirL('sorteos-sonido', sonido); pintarSonido(); });
 pintarSonido();
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+
+/* pestañas de sección: #resp, #cap, #faltan, #copia */
+function verVista(v){
+  if(['resp','cap','faltan','copia'].indexOf(v)<0) v = 'resp';
+  Array.prototype.forEach.call(document.querySelectorAll('.vistas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['resp','cap','faltan','copia'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  history.replaceState(null, '', location.search+'#'+v);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.vistas button'), function(b){ b.addEventListener('click', function(){ if(!girando) verVista(b.dataset.v); }); });
+verVista((location.hash||'').replace('#',''));
 
 function todo(){
   if(JAVI.gruposVisibles().indexOf(grupo)<0) grupo = JAVI.gruposVisibles()[0];
