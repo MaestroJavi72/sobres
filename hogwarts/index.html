@@ -150,6 +150,7 @@ button{font-family:inherit;color:inherit}
 .tab[aria-selected="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
 .tab:disabled{opacity:.5;cursor:default;transform:none}
 .tab[hidden]{display:none}
+.tab.inicio{text-decoration:none;display:inline-flex;align-items:center;background:rgba(232,200,114,.18);border-color:#e8c872;color:#ffe9a6}
 @media (max-width:520px){.tabs{flex-wrap:wrap;gap:6px;padding-left:48px;padding-right:48px}.tab{padding:.55em .9em;letter-spacing:.06em;font-size:11px}}
 .app[data-vista="compra"] .tabs{display:none}
 .app[data-vista="compra"] .packs{display:none}
@@ -469,6 +470,7 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
     <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   </button>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Sección">
+    <a class="tab inicio" id="tabInicio" href="../" title="Volver a la portada de Javificación">⌂ Inicio</a>
     <button class="tab" id="tabTienda" role="tab" aria-selected="true" type="button">El Mercader</button>
     <button class="tab" id="tabSobres" role="tab" aria-selected="false" type="button">Sobres</button>
     <button class="tab" id="tabMis" role="tab" aria-selected="false" type="button">Mis cartas</button>
@@ -2630,7 +2632,9 @@ if(typeof IMG_HERO!=='undefined'){ $('hero').src = IMG_HERO; }
 iniciarGaleones();
 pintarTienda();
 setVista(vistaInicial());
-if(window.JAVI){ JAVI.botonInicio({ abajo:true }); JAVI.avisoPrueba(); }
+if(window.JAVI){ JAVI.avisoPrueba(); }
+$('tabInicio').href = '../'+(esProfe ? '?profe' : '');
+if(/[?&]solo/.test(location.search)) $('tabInicio').hidden = true;
 });
 
 </script>

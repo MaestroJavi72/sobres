@@ -165,6 +165,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     <h1>🏦 <span id="tBoveda">Bóveda de la clase</span></h1>
     <button class="icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
     <button class="icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+    <a class="icono" id="bInicio" href="../" title="Volver a la portada de Javificación" style="text-decoration:none;color:var(--oro2);font-weight:700">⌂ Inicio</a>
   </header>
 
   <nav class="grupos" id="grupos" aria-label="Clase"></nav>
@@ -257,7 +258,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 <script>
 (function(){
 'use strict';
-if(window.JAVI) JAVI.listo(function(){ JAVI.botonInicio({ abajo:true }); if(typeof pintar==='function') pintar(); });
+if(window.JAVI) JAVI.listo(function(){ if(JAVI.ES_PROFE) document.getElementById('bInicio').href = '../?profe'; if(/[?&]solo/.test(location.search)) document.getElementById('bInicio').hidden = true; if(typeof pintar==='function') pintar(); });
 /* ============================================================
    CONFIGURACIÓN  (puedes tocar estos valores)
    ============================================================ */

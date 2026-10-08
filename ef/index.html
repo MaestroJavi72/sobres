@@ -39,6 +39,7 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
 .fila{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .fila .aviso{flex:1;min-width:200px}
 .ghost{cursor:pointer;background:rgba(0,0,0,.35);border:1px solid rgba(232,200,114,.45);color:#e8d7a4;padding:.65em 1.3em;border-radius:99px;font:700 12px var(--tit);letter-spacing:.1em;text-transform:uppercase}
+.ghost.inicio{text-decoration:none;display:inline-flex;align-items:center;font-size:14px}
 .ghost:hover{background:rgba(232,200,114,.15)}
 .go{cursor:pointer;border:1px solid #f6dc95;border-radius:99px;padding:.7em 1.6em;font:800 13px var(--tit);letter-spacing:.12em;text-transform:uppercase;color:#2a1d05;
   background:linear-gradient(180deg,#ffe9a6,#d9a94a);box-shadow:0 4px 14px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.6)}
@@ -198,6 +199,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
 <body>
 <div class="app" id="app">
   <header class="top">
+    <a class="ghost inicio" id="bInicio" href="../?profe" title="Volver a la portada de Javificación">⌂ Inicio</a>
     <div class="marca">Javificación<small>EF</small></div>
     <div class="grupos" id="grupos" role="tablist" aria-label="Grupo"></div>
   </header>
@@ -1295,7 +1297,7 @@ $('bAlumno').addEventListener('change', revisar);
 $('bSi').addEventListener('click', comprar);
 pintarTodo();
 cargar();
-if(window.JAVI){ JAVI.botonInicio({ abajo:true }); JAVI.avisoPrueba(); }
+if(window.JAVI){ JAVI.avisoPrueba(); }
 /* solo en modo prueba: galería de personajes para revisar los dibujos (?galeria) */
 if(window.JAVI && JAVI.PRUEBA && /[?&]galeria/.test(location.search)){
   var gal = document.createElement('div'); gal.style.cssText = 'position:fixed;inset:0;z-index:999;overflow:auto;background:#fff;padding:10px';

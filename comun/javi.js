@@ -348,11 +348,11 @@ function botonInicio(opc){
   if(/[?&]solo/.test(location.search)) return;   /* ?solo = sin botón (para incrustar un módulo suelto) */
   var a = document.createElement('a');
   a.href = BASE + (ES_PROFE ? '?profe' : '');
-  a.textContent = '⌂';
+  a.textContent = '⌂ Inicio';
   a.title = 'Volver a Javificación'; a.setAttribute('aria-label', 'Volver a Javificación');
   a.style.cssText = 'position:fixed;z-index:9999;'+(opc.abajo ? 'bottom:10px;' : 'top:10px;')+(opc.derecha ? 'right:10px;' : 'left:10px;')+
-    'width:40px;height:40px;border-radius:50%;display:grid;place-items:center;text-decoration:none;font-size:22px;line-height:1;'+
-    'background:rgba(10,18,30,.75);color:#f6e3a1;border:2px solid rgba(232,200,114,.6);box-shadow:0 2px 8px rgba(0,0,0,.4);font-family:sans-serif';
+    'padding:9px 16px;border-radius:999px;display:inline-flex;align-items:center;text-decoration:none;font:700 16px/1 sans-serif;'+
+    'background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.45)';
   document.body.appendChild(a);
 }
 function avisoPrueba(){
