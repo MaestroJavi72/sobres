@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Sinónimo o antónimo?</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.par{display:flex;gap:clamp(10px,2vw,24px);align-items:center;justify-content:center;flex-wrap:wrap;min-height:120px}
+.par .w{font-family:'Cinzel',Georgia,serif;font-weight:800;color:#7a2030;font-size:clamp(34px,6vw,72px);padding:6px 18px;border-radius:18px;background:#fffaf0;border:3px solid #b8934f}
+.par .y{font-size:clamp(26px,4vw,44px);color:#6b5732}
+.tiempo{width:min(100%,600px);height:14px;border-radius:8px;background:rgba(0,0,0,.12);overflow:hidden}
+.tiempo i{display:block;height:100%;background:linear-gradient(90deg,#d0473f,#f3d27a);width:100%}
+.respuestas{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.resp{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(22px,3.4vw,38px);padding:16px 30px;border-radius:20px;border:none;color:#fff;cursor:pointer;min-width:220px}
+.resp.s{background:#3cae5f;box-shadow:0 6px 0 #1e6b3c} .resp.a{background:#3a6fd0;box-shadow:0 6px 0 #23478f}
+.resp small{display:block;font-size:.45em;opacity:.9}
+.resp:disabled{opacity:.45}
+.cuenta{font-family:'Cinzel Decorative','Cinzel',serif;font-size:clamp(60px,10vw,120px);color:#7a2030}
+.modo{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⚖️ ¿Sinónimo o antónimo?<span class="sub">I-11 · Sinónimos y antónimos · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* PAREJAS: s = sinónimos · a = antónimos (bancos de la SA). PARES por ronda y SEGUNDOS por pareja. */
+var PARES = 12, SEGUNDOS = 7;
+var BANCO = [
+  ['cara','rostro','s'],['pelo','cabello','s'],['fácil','sencillo','s'],['camino','sendero','s'],['alumbrar','iluminar','s'],['comer','ingerir','s'],['dibujar','trazar','s'],
+  ['luchar','combatir','s'],['hablar','conversar','s'],['contento','alegre','s'],['empezar','comenzar','s'],['miedo','temor','s'],
+  ['frío','calor','a'],['subir','bajar','a'],['útil','inútil','a'],['posible','imposible','a'],['hacer','deshacer','a'],['ordenado','desordenado','a'],['antiguo','moderno','a'],
+  ['encontrar','perder','a'],['alto','bajo','a'],['abrir','cerrar','a'],['lleno','vacío','a'],['día','noche','a']
+];
+var $ = ACT.$, modo = 'reloj', ronda = [], k = 0, puntos = 0, fallos = [], t0 = 0, raf = 0, respondida = false;
+
+function inicio(){
+  $('escena').innerHTML =
+    '<p class="instr">Aparecen dos palabras. ¿Significan <b style="color:#1e6b3c">lo mismo (sinónimos)</b> o <b style="color:#23478f">lo contrario (antónimos)</b>?</p>'+
+    '<div class="modo"><button class="gran" id="mReloj" type="button">⏱️ Rápido ('+SEGUNDOS+' s por pareja)</button><button class="gran sec" id="mClase" type="button">🙋 Modo clase (todos levantan la mano)</button></div>'+
+    '<p class="detalle">Con teclado: <b>S</b> = sinónimo · <b>A</b> = antónimo.</p>';
+  $('mReloj').addEventListener('click', function(){ modo = 'reloj'; empezar(); });
+  $('mClase').addEventListener('click', function(){ modo = 'clase'; empezar(); });
+}
+function empezar(){ ronda = ACT.mezclar(BANCO).slice(0, PARES).map(function(p){ return ACT.rnd()<0.5 ? p : [p[1], p[0], p[2]]; }); k = 0; puntos = 0; fallos = []; pintar(); }
+function pintar(){
+  var p = ronda[k]; respondida = false; cancelAnimationFrame(raf);
+  $('escena').innerHTML =
+    '<div class="barraSup"><span>Pareja '+(k+1)+' de '+ronda.length+'</span><div class="progreso"><i style="width:'+(k/ronda.length*100)+'%"></i></div><span>⭐ '+puntos+'</span></div>'+
+    '<div class="par aparece"><span class="w">'+ACT.esc(p[0])+'</span><span class="y">y</span><span class="w">'+ACT.esc(p[1])+'</span></div>'+
+    (modo==='reloj' ? '<div class="tiempo"><i id="barra"></i></div>' : '<div class="cuenta" id="cuenta">3</div>')+
+    '<div class="respuestas"><button class="resp s" id="rS" type="button">S<small>Sinónimos</small></button><button class="resp a" id="rA" type="button">A<small>Antónimos</small></button></div>'+
+    '<div class="mensaje" id="msg"></div><div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  $('rS').addEventListener('click', function(){ responder('s'); });
+  $('rA').addEventListener('click', function(){ responder('a'); });
+  $('bSig').addEventListener('click', siguiente);
+  if(modo==='reloj'){ t0 = performance.now(); (function paso(){ var f = 1 - (performance.now()-t0)/(SEGUNDOS*1000); if($('barra')) $('barra').style.width = Math.max(0, f*100)+'%'; if(f<=0){ if(!respondida) responder(null); return; } raf = requestAnimationFrame(paso); })(); }
+  else { /* modo clase: 3, 2, 1 y la clase responde con la mano; el profe pulsa la respuesta de la mayoría */
+    var c = 3; (function cuenta(){ var el = $('cuenta'); if(!el) return; el.textContent = c>0 ? c : '🙋'; if(c>0){ ACT.SON.tic(); c--; setTimeout(cuenta, 900); } })(); }
+}
+function responder(r){
+  if(respondida) return; respondida = true; cancelAnimationFrame(raf);
+  var p = ronda[k], m = $('msg'), nombre = p[2]==='s' ? 'sinónimos' : 'antónimos';
+  $('rS').disabled = true; $('rA').disabled = true;
+  if(r===p[2]){ puntos++; m.className = 'mensaje bien'; m.textContent = '¡Sí! «'+p[0]+'» y «'+p[1]+'» son '+nombre+'.'; ACT.SON.acierto(); }
+  else { fallos.push(p[0]+' / '+p[1]+' ('+nombre+')'); m.className = 'mensaje mal'; m.textContent = (r ? '¡No! ' : '¡Se acabó el tiempo! ')+'Son '+nombre+'.'; ACT.SON.fallo(); }
+  if(modo==='reloj') setTimeout(siguiente, 1500); else $('bSig').hidden = false;
+}
+function siguiente(){ k++; if(k < ronda.length) pintar(); else fin(); }
+function fin(){
+  ACT.final($('escena'), { titulo:'🏁 ¡Ronda terminada!', puntos:puntos, total:ronda.length, detalle:'parejas acertadas',
+    extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">'+fallos.map(function(f){ return '<span>'+ACT.esc(f)+'</span>'; }).join('')+'</div>' : '',
+    textoRepetir:'Otra ronda', repetir:inicio });
+}
+document.addEventListener('keydown', function(e){ var l = e.key.toLowerCase(); if(l==='s' && $('rS') && !$('rS').disabled) responder('s'); if(l==='a' && $('rA') && !$('rA').disabled) responder('a'); });
+inicio();
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

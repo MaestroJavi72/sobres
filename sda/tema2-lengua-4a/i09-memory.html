@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memory de sinónimos</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.tablero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(6px,1.2vw,14px);width:100%;max-width:900px}
+.carta{position:relative;aspect-ratio:4/3;perspective:900px;cursor:pointer;border:none;background:none;padding:0}
+.carta .gira{position:absolute;inset:0;transition:transform .5s;transform-style:preserve-3d}
+.carta.vuelta .gira,.carta.pareja .gira{transform:rotateY(180deg)}
+.cara{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;box-shadow:0 6px 14px rgba(0,0,0,.3)}
+.dorso{background:radial-gradient(circle,#2f5a54,#0e2a28);border:3px solid #c9a34a;color:#f3d27a;font-size:clamp(26px,4vw,44px)}
+.frente{transform:rotateY(180deg);background:#fffaf0;border:3px solid #b8934f;font-family:'Cinzel',serif;font-weight:800;color:#7a2030;font-size:clamp(15px,2.2vw,26px);padding:4px;overflow-wrap:anywhere}
+.carta.pareja .frente{background:#d8f3df;border-color:#2f9a5a;color:#1e6b3c}
+.carta.pareja{cursor:default}
+.carta.mal .frente{background:#fbe1dd;border-color:#d0473f}
+.parejas{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:30px}
+.parejas span{font-size:16px;padding:3px 10px;border-radius:999px;background:#d8f3df;border:1px solid #2f9a5a;color:#1e6b3c;font-weight:700}
+@media (max-width:520px){ .tablero{grid-template-columns:repeat(4,1fr)} .frente{font-size:13px} }
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🃏 Memory de sinónimos<span class="sub">I-9 · Los sinónimos · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* PAREJAS DE SINÓNIMOS (banco de la SA). Se juegan 8 por partida. */
+var PAREJAS = [['cara','rostro'],['pelo','cabello'],['fácil','sencillo'],['camino','sendero'],['alumbrar','iluminar'],['comer','ingerir'],['dibujar','trazar'],['luchar','combatir'],
+  ['contento','alegre'],['empezar','comenzar'],['rápido','veloz'],['casa','hogar'],['miedo','temor'],['bonito','precioso'],['maestro','profesor']];
+var POR_PARTIDA = 8;
+var $ = ACT.$, cartas = [], abiertas = [], intentos = 0, hechas = 0, inicio = 0, reloj = 0, bloqueo = false, jugadas = [];
+
+function empezar(){
+  jugadas = ACT.mezclar(PAREJAS).slice(0, POR_PARTIDA);           /* 8 parejas al azar: cada partida cambia */
+  cartas = []; jugadas.forEach(function(p, i){ cartas.push({ t:p[0], k:i }); cartas.push({ t:p[1], k:i }); });
+  cartas = ACT.mezclar(cartas); abiertas = []; intentos = 0; hechas = 0; inicio = Date.now(); bloqueo = false;
+  $('escena').innerHTML =
+    '<div class="barraSup"><span>Parejas: <span id="hechas">0</span> / '+jugadas.length+'</span><span class="esp"></span><span>Intentos: <span id="intentos">0</span></span><span>⏱️ <span id="tiempo">0:00</span></span></div>'+
+    '<p class="instr">Da la vuelta a dos cartas. Si son <b>sinónimos</b> (significan lo mismo o casi lo mismo), ¡son pareja!</p>'+
+    '<div class="tablero" id="tablero"></div><div class="mensaje" id="msg"></div><div class="parejas" id="parejas"></div>';
+  cartas.forEach(function(c, i){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'carta'; b.setAttribute('aria-label', 'Carta '+(i+1)+' tapada');
+    b.innerHTML = '<div class="gira"><div class="cara dorso" aria-hidden="true">✨</div><div class="cara frente">'+ACT.esc(c.t)+'</div></div>';
+    b.addEventListener('click', function(){ voltear(b, c); });
+    c.el = b; $('tablero').appendChild(b);
+  });
+  clearInterval(reloj); reloj = setInterval(function(){ var s = Math.floor((Date.now()-inicio)/1000), t = $('tiempo'); if(t) t.textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }, 500);
+}
+function voltear(b, c){
+  if(bloqueo || b.classList.contains('vuelta') || b.classList.contains('pareja')) return;
+  b.classList.add('vuelta'); b.setAttribute('aria-label', c.t); abiertas.push(c); ACT.SON.tic();
+  if(abiertas.length < 2) return;
+  intentos++; $('intentos').textContent = intentos;
+  var a = abiertas[0], d = abiertas[1]; abiertas = [];
+  if(a.k===d.k){
+    a.el.classList.add('pareja'); d.el.classList.add('pareja'); hechas++; $('hechas').textContent = hechas; ACT.SON.acierto();
+    $('msg').className = 'mensaje bien'; $('msg').textContent = '¡'+a.t+' y '+d.t+' son sinónimos!';
+    var s = document.createElement('span'); s.textContent = a.t+' = '+d.t; $('parejas').appendChild(s);
+    if(hechas===jugadas.length) setTimeout(fin, 900);
+  } else {
+    bloqueo = true; a.el.classList.add('mal'); d.el.classList.add('mal'); ACT.SON.fallo();
+    $('msg').className = 'mensaje mal'; $('msg').textContent = '«'+a.t+'» y «'+d.t+'» no significan lo mismo.';
+    setTimeout(function(){ [a, d].forEach(function(x){ x.el.classList.remove('vuelta','mal'); x.el.setAttribute('aria-label','Carta tapada'); }); bloqueo = false; }, 1100);
+  }
+}
+function fin(){
+  clearInterval(reloj);
+  var s = Math.floor((Date.now()-inicio)/1000), est = intentos<=12 ? 3 : intentos<=16 ? 2 : intentos<=22 ? 1 : 0;
+  ACT.final($('escena'), { titulo:'🏁 ¡Todas las parejas!', puntos:intentos, estrellas:est, detalle:'intentos para '+jugadas.length+' parejas · tiempo '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0')+' (menos intentos = mejor memoria)',
+    mensajes:['¡Otra partida para entrenar la memoria!','¡Bien! Buena memoria.','¡Muy bien! Gran memoria.','¡Memoria de mago!'], textoRepetir:'Otra partida', repetir:empezar });
+}
+empezar();
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

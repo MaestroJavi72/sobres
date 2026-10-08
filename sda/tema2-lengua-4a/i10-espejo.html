@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Espejo de antónimos</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.sala{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:clamp(10px,2vw,24px);align-items:center;width:100%;max-width:1000px}
+@media (max-width:760px){ .sala{grid-template-columns:1fr} }
+.palabra{font-family:'Cinzel',Georgia,serif;font-weight:800;color:#7a2030;font-size:clamp(34px,5.4vw,66px);text-align:center;overflow-wrap:anywhere}
+.espejo{position:relative;width:clamp(220px,30vw,320px);aspect-ratio:3/4;border-radius:50% 50% 46% 46% / 40% 40% 60% 60%;margin:0 auto;
+  background:radial-gradient(ellipse at 35% 25%,rgba(255,255,255,.75),rgba(180,210,230,.35) 40%,rgba(90,120,150,.55) 100%);
+  border:14px solid #b8862a;box-shadow:inset 0 0 30px rgba(0,0,0,.35),0 0 0 4px #7a5a14,0 14px 30px rgba(0,0,0,.4);display:grid;place-items:center;overflow:hidden}
+.espejo::before{content:'';position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.65) 50%,transparent 60%);transform:translateX(-100%)}
+.espejo.brilla::before{animation:brillo 1s}
+@keyframes brillo{to{transform:translateX(100%)}}
+.reflejo{font-family:'Cinzel',Georgia,serif;font-weight:800;color:#1f3a5a;font-size:clamp(26px,4vw,48px);text-align:center;padding:10px;overflow-wrap:anywhere;opacity:0;transform:scaleX(-1)}
+.reflejo.ve{animation:refleja 1.2s forwards}
+@keyframes refleja{0%{opacity:0;transform:scaleX(-1)}45%{opacity:.6;transform:scaleX(-1)}70%{transform:scaleX(0)}100%{opacity:1;transform:scaleX(1)}}
+.reflejo .pre{color:#d0473f;background:rgba(255,255,255,.6);border-radius:6px;padding:0 3px}
+.pie{font-size:30px;text-align:center}
+.tipo{min-height:44px}
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🔮 Espejo de antónimos<span class="sub">I-10 · Los antónimos · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="pestanas">
+      <button class="mini" data-t="todos" aria-pressed="true" type="button">Todos</button>
+      <button class="mini" data-t="distinta" aria-pressed="false" type="button">Palabra distinta</button>
+      <button class="mini" data-t="prefijo" aria-pressed="false" type="button">Con prefijo in- im- des-</button>
+    </div>
+    <p class="instr">En el espejo mágico todo se ve <b>al revés</b>. Decid el contrario antes de reflejarlo.</p>
+    <div class="sala">
+      <div><div class="detalle">La palabra</div><div class="palabra" id="pal"></div></div>
+      <div class="espejo" id="espejo"><div class="reflejo" id="refl" aria-live="polite"></div></div>
+      <div class="caja" id="regla">
+        <b>Los antónimos</b> son palabras de significado contrario. Se forman de dos maneras:
+        <ul style="margin:6px 0 0 20px"><li>Con una <b>palabra distinta</b>: frío / calor.</li><li>Añadiendo un <b>prefijo</b>: <b>in-</b> (útil / inútil), <b>im-</b> delante de p y b (posible / imposible) o <b>des-</b> (hacer / deshacer).</li></ul>
+      </div>
+    </div>
+    <div class="tipo" id="tipo"></div>
+    <div class="botones">
+      <button class="mini" id="bAnt" type="button" aria-label="Anterior">◀</button>
+      <button class="gran" id="bReflejar" type="button">🔮 ¡Reflejar!</button>
+      <button class="mini" id="bSig" type="button" aria-label="Siguiente">▶</button>
+      <button class="mini" id="bAzar" type="button">🎲 Al azar</button>
+    </div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* ANTÓNIMOS del tema. pre: prefijo (in, im, des) si el contrario se forma con prefijo */
+var ANTONIMOS = [
+  ['frío','calor'],['subir','bajar'],['antiguo','moderno'],['encontrar','perder'],['grande','pequeño'],['rápido','lento'],['encender','apagar'],
+  ['entrar','salir'],['mucho','poco'],['día','noche'],['ganar','perder'],['cerca','lejos'],['primero','último'],['alto','bajo'],['lleno','vacío'],['alegre','triste'],
+  ['útil','inútil','in'],['posible','imposible','im'],['hacer','deshacer','des'],['ordenado','desordenado','des'],['feliz','infeliz','in'],['cómodo','incómodo','in'],
+  ['paciente','impaciente','im'],['atar','desatar','des'],['perfecto','imperfecto','im'],['cubrir','descubrir','des'],['necesario','innecesario','in'],
+  ['conocido','desconocido','des'],['prudente','imprudente','im'],['peinado','despeinado','des']
+];
+var $ = ACT.$, lista = ANTONIMOS.slice(), i = 0, reflejado = false;
+function cargar(k){
+  i = (k + lista.length) % lista.length; reflejado = false;
+  $('pal').textContent = lista[i][0]; $('refl').className = 'reflejo'; $('refl').innerHTML = ''; $('tipo').innerHTML = '';
+}
+function reflejar(){
+  if(reflejado){ cargar(i+1); return; }
+  var w = lista[i], e = $('espejo'), r = $('refl');
+  r.innerHTML = w[2] ? '<span class="pre">'+w[2]+'</span>'+ACT.esc(w[1].slice(w[2].length)) : ACT.esc(w[1]);
+  e.classList.remove('brilla'); void e.offsetWidth; e.classList.add('brilla');
+  r.classList.remove('ve'); void r.offsetWidth; r.classList.add('ve');
+  ACT.SON.magia(); reflejado = true;
+  setTimeout(function(){
+    $('tipo').innerHTML = w[2] ? '<span class="etiqueta">Prefijo '+w[2]+'-</span>'+(w[2]==='im' ? ' <span class="detalle">(im- porque va delante de '+w[0][0]+')</span>' : '')
+                                : '<span class="etiqueta" style="background:#2f5a54">Palabra distinta</span>';
+    ACT.voz(w[0]+'. Su contrario: '+w[1]);
+  }, 900);
+  $('bReflejar').textContent = '➡ Otra palabra';
+  setTimeout(function(){ $('bReflejar').textContent = reflejado ? '➡ Otra palabra' : '🔮 ¡Reflejar!'; }, 50);
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function(b){
+  b.addEventListener('click', function(){
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    lista = ANTONIMOS.filter(function(w){ return b.dataset.t==='todos' || (b.dataset.t==='prefijo')===!!w[2]; });
+    cargar(0); $('bReflejar').textContent = '🔮 ¡Reflejar!';
+  });
+});
+$('bReflejar').addEventListener('click', function(){ var era = reflejado; reflejar(); if(era) $('bReflejar').textContent = '🔮 ¡Reflejar!'; });
+$('bAnt').addEventListener('click', function(){ cargar(i-1); $('bReflejar').textContent = '🔮 ¡Reflejar!'; });
+$('bSig').addEventListener('click', function(){ cargar(i+1); $('bReflejar').textContent = '🔮 ¡Reflejar!'; });
+$('bAzar').addEventListener('click', function(){ cargar(Math.floor(ACT.rnd()*lista.length)); $('bReflejar').textContent = '🔮 ¡Reflejar!'; });
+document.addEventListener('keydown', function(e){ if(e.key===' '){ e.preventDefault(); $('bReflejar').click(); } });
+cargar(0);
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>
