@@ -153,6 +153,14 @@ button{font-family:inherit;color:inherit}
 .tab.inicio{text-decoration:none;display:inline-flex;align-items:center;background:rgba(232,200,114,.18);border-color:#e8c872;color:#ffe9a6}
 @media (max-width:520px){.tabs{flex-wrap:wrap;gap:6px;padding-left:48px;padding-right:48px}.tab{padding:.55em .9em;letter-spacing:.06em;font-size:11px}}
 .app[data-vista="compra"] .tabs{display:none}
+/* sub-pestañas del panel Hogwarts (como la SA, la planificación, la sesión…) */
+.subTabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.subTabs button{cursor:pointer;flex:1;min-width:150px;padding:.7em 1em;border-radius:14px;border:2px solid rgba(232,200,114,.4);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.3));font-weight:800;font-size:16px;color:#e8d7a4}
+.subTabs button[aria-selected="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
+.atajos{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 14px;font-size:13px;color:#cdb987}
+.atajo{padding:.45em .9em;border-radius:99px;border:1px dashed rgba(232,200,114,.5);background:rgba(0,0,0,.25);font-weight:700;font-size:14px;color:#e8d7a4;text-decoration:none}
+.atajo:hover{background:rgba(232,200,114,.15)}
+.subV[hidden]{display:none!important}
 .app[data-vista="compra"] .packs{display:none}
 .app[data-vista="tienda"] .stage,.app[data-vista="tienda"] .bar,.app[data-vista="mis"] .stage,.app[data-vista="mis"] .bar{display:none}
 .app:not([data-vista="tienda"]) .shop{display:none}
@@ -471,10 +479,10 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
   </button>
   <nav class="tabs" id="tabs" role="tablist" aria-label="Sección">
     <a class="tab inicio" id="tabInicio" href="../#tutoria" data-volver="../#tutoria" title="Volver a la pantalla anterior">← Volver</a>
-    <button class="tab" id="tabTienda" role="tab" aria-selected="true" type="button">El Mercader</button>
-    <button class="tab" id="tabSobres" role="tab" aria-selected="false" type="button">Sobres</button>
-    <button class="tab" id="tabMis" role="tab" aria-selected="false" type="button">Mis cartas</button>
-    <button class="tab" id="tabBanco" role="tab" aria-selected="false" type="button" hidden>Hogwarts</button>
+    <button class="tab" id="tabTienda" role="tab" aria-selected="true" type="button">🛒 El Mercader</button>
+    <button class="tab" id="tabSobres" role="tab" aria-selected="false" type="button">✉️ Sobres</button>
+    <button class="tab" id="tabMis" role="tab" aria-selected="false" type="button">🃏 Mis cartas</button>
+    <button class="tab" id="tabBanco" role="tab" aria-selected="false" type="button" hidden>🏰 Hogwarts</button>
   </nav>
   <section class="misShop" id="misShop" aria-label="Mis cartas">
     <div class="shop-in">
@@ -491,14 +499,25 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
   <section class="banco" id="banco" aria-label="Hogwarts · Panel del profe">
     <div class="shop-in">
       <h2 class="sec">Hogwarts · Panel del profe</h2>
+      <nav class="subTabs" id="subTabs" role="tablist" aria-label="Panel del profe">
+        <button type="button" role="tab" data-s="alumnos" aria-selected="true">🧙 Alumnos</button>
+        <button type="button" role="tab" data-s="campeones" aria-selected="false">🏆 Campeones del mes</button>
+        <button type="button" role="tab" data-s="informe" aria-selected="false">📊 Informe</button>
+        <button type="button" role="tab" data-s="ajustes" aria-selected="false">⚙️ Partida y movimientos</button>
+      </nav>
+      <nav class="atajos" aria-label="Otras herramientas de 4ºA">
+        <span>Abrir:</span>
+        <a class="atajo" href="../sesion/?grupo=4oA&amp;profe&amp;ambito=tutoria">📋 Sesión de hoy</a>
+        <a class="atajo" href="../sorteos/?grupo=4oA&amp;profe&amp;ambito=tutoria">👑 Responsable</a>
+        <a class="atajo" href="../planificacion/?profe">📅 Planificación</a>
+      </nav>
+      <div class="subV" id="s_alumnos">
       <div class="bTop">
         <p class="aviso" id="bEstado">Cargando alumnos…</p>
         <div class="bAcc">
           <button class="ghost" id="bClase" type="button">Toda la clase</button>
           <button class="ghost" id="bVarios" type="button" aria-pressed="false">Seleccionar varios</button>
           <button class="ghost" id="bVista" type="button" aria-pressed="false">Vista ampliada</button>
-          <a class="ghost" href="../sesion/?grupo=4oA&amp;profe&amp;ambito=tutoria" style="text-decoration:none;display:inline-flex;align-items:center">📋 Sesión de hoy</a>
-          <a class="ghost" href="../sorteos/?grupo=4oA&amp;profe&amp;ambito=tutoria" style="text-decoration:none;display:inline-flex;align-items:center">👑 Responsable y capitanes</a>
           <button class="ghost" id="bActualizar" type="button">Actualizar</button>
         </div>
       </div>
@@ -513,6 +532,8 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
         <button class="go" id="bSelDar" type="button">Dar o quitar puntos</button>
       </div>
       <div class="alumnos" id="bAlumnos"></div>
+      </div>
+      <div class="subV" id="s_campeones" hidden>
       <h2 class="sec">Campeones del mes</h2>
       <div class="podTop">
         <span class="pLbl">Puntos netos del mes (positivos menos negativos). No cuentan las compras.</span>
@@ -525,6 +546,8 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
         <button class="go" id="podDar" type="button">Entregar premios</button>
         <span class="podConfirma" id="podConfirma" hidden>¿Entregar ahora? <button class="ghost" id="podNo" type="button">No</button> <button class="go" id="podSi" type="button">Sí, entregar</button></span>
       </div>
+      </div>
+      <div class="subV" id="s_informe" hidden>
       <h2 class="sec">Informe por categorías</h2>
       <div id="iInforme">
         <div class="iTop">
@@ -533,12 +556,15 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
         </div>
         <div class="tablaWrap"><table class="tabla informe" id="iTabla"></table></div>
       </div>
+      </div>
+      <div class="subV" id="s_ajustes" hidden>
       <h2 class="sec">Punto de partida</h2>
       <p class="nota">Puntos de ClassDojo al empezar + lo gastado en cartas antes del <span id="bDesde"></span> = galeones acumulados (el nivel). El saldo es lo de ClassDojo. Revisa el gasto: se calcula con el precio normal de cada carta registrada.</p>
       <div class="tablaWrap"><table class="tabla" id="bInicio"></table></div>
       <h2 class="sec">Movimientos de esta sesión</h2>
       <ul class="lista" id="bLog"></ul>
       <p class="nota">Los cambios se ven al momento aquí. La Hoja de Google tarda unos minutos en reflejarlos; si cambias de ordenador, espera un poco y pulsa «Actualizar».</p>
+      </div>
     </div>
   </section>
   <div class="modal" id="mPerfil" role="dialog" aria-modal="true" aria-labelledby="pNom" hidden>
@@ -1607,6 +1633,16 @@ tabTienda.addEventListener('click', function(){ if(estado!=='busy') setVista('ti
 tabSobres.addEventListener('click', function(){ if(estado!=='busy') setVista('sobres'); });
 tabMis.addEventListener('click', function(){ if(estado!=='busy') setVista('mis'); });
 tabBanco.addEventListener('click', function(){ if(estado!=='busy') setVista('banco'); });
+/* sub-pestañas del panel Hogwarts; se recuerda la última en este navegador */
+function verSub(s){
+  if(['alumnos','campeones','informe','ajustes'].indexOf(s)<0) s = 'alumnos';
+  Array.prototype.forEach.call(document.querySelectorAll('#subTabs button'), function(b){ b.setAttribute('aria-selected', b.dataset.s===s ? 'true' : 'false'); });
+  ['alumnos','campeones','informe','ajustes'].forEach(function(k){ $('s_'+k).hidden = k!==s; });
+  try{ localStorage.setItem('hogwarts-sub', s); }catch(e){}
+  bancoEl.scrollTop = 0;
+}
+Array.prototype.forEach.call(document.querySelectorAll('#subTabs button'), function(b){ b.addEventListener('click', function(){ verSub(b.dataset.s); }); });
+(function(){ var s = 'alumnos'; try{ s = localStorage.getItem('hogwarts-sub') || 'alumnos'; }catch(e){} verSub(s); })();
 if(!CONFIG.sobresLibres){ tabSobres.hidden = true; }
 
 /* ---------- registro: desplegables y "Mis cartas" ---------- */
