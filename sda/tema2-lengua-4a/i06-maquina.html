@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Máquina de género y número</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.maquina{display:grid;grid-template-columns:1fr minmax(0,2.2fr) 1fr;gap:14px;align-items:center;width:100%;max-width:1000px}
+@media (max-width:760px){ .maquina{grid-template-columns:1fr 1fr} .maquina .centro{grid-column:1 / -1;order:-1} }
+.palancas{display:flex;flex-direction:column;gap:10px}
+.palancas h3{font-family:'Cinzel',serif;color:#6b5732;font-size:16px}
+.palanca{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;border:3px solid #b8934f;background:#fffaf0;cursor:pointer;font-family:'Cinzel',serif;font-weight:800;font-size:clamp(16px,1.8vw,20px);color:#3a2a16;text-align:left}
+.palanca .eje{flex:none;width:18px;height:46px;border-radius:9px;background:#d9c08a;position:relative}
+.palanca .eje::after{content:'';position:absolute;left:-7px;width:32px;height:20px;border-radius:50%;background:#8a8f99;top:24px;transition:top .25s, background .25s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.palanca[aria-pressed="true"]{border-color:#7a2030;background:#fde7e7}
+.palanca[aria-pressed="true"] .eje::after{top:2px;background:#7a2030}
+.centro{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px;border-radius:24px;background:linear-gradient(180deg,#2a2f3a,#14171f);border:4px solid #8a8f99;color:#f6ead0;position:relative;min-height:260px;justify-content:center}
+.centro .engranajes{position:absolute;top:8px;left:12px;right:12px;display:flex;justify-content:space-between;font-size:30px;opacity:.85}
+.centro .engranajes span{display:inline-block}
+.centro.gira .engranajes span{animation:gira .6s linear}
+.centro.gira .engranajes span:last-child{animation-direction:reverse}
+@keyframes gira{to{transform:rotate(360deg)}}
+.pantalla{font-family:'Cinzel',Georgia,serif;font-weight:800;font-size:clamp(36px,6.4vw,78px);line-height:1.1;color:#f6ead0;text-shadow:0 0 18px rgba(243,210,122,.35)}
+.pantalla .art{color:#e8cf8a;font-size:.6em;margin-right:.25em}
+.pantalla .cambio{color:#f3d27a;background:rgba(243,210,122,.18);border-radius:.15em;padding:0 .05em}
+.regla{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(18px,2.4vw,26px);padding:6px 16px;border-radius:12px;background:#f3d27a;color:#2b1c05}
+.regla.no{background:#d0473f;color:#fff}
+.explica{font-size:17px;color:#d9cfae;max-width:520px}
+.vapor{position:absolute;bottom:-14px;font-size:26px;opacity:0}
+.centro.gira .vapor{animation:vapor .8s}
+@keyframes vapor{0%{opacity:.9;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+.selector{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.tablaReglas{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:1000px}
+@media (max-width:760px){ .tablaReglas{grid-template-columns:1fr} }
+.tablaReglas .caja li{margin:3px 0 3px 20px}
+.tablaReglas .caja li.activa{background:#f3d27a;border-radius:6px;font-weight:700;list-style-position:inside;margin-left:0;padding:0 6px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⚙️ Máquina de género y número<span class="sub">I-6 · El nombre · Tema 2 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="selector">
+      <button class="mini" id="bAnt" type="button" aria-label="Nombre anterior">◀</button>
+      <span class="detalle" id="num"></span>
+      <button class="mini" id="bSig" type="button" aria-label="Nombre siguiente">▶</button>
+      <button class="mini" id="bAzar" type="button">🎲 Al azar</button>
+      <button class="mini" data-f="todos" aria-pressed="true" type="button">Todos</button>
+      <button class="mini" data-f="genero" aria-pressed="false" type="button">Cambian de género</button>
+      <button class="mini" data-f="uno" aria-pressed="false" type="button">Un solo género</button>
+    </div>
+    <div class="maquina">
+      <div class="palancas" aria-label="Género">
+        <h3>GÉNERO</h3>
+        <button class="palanca" data-g="m" type="button"><span class="eje"></span>Masculino</button>
+        <button class="palanca" data-g="f" type="button"><span class="eje"></span>Femenino</button>
+      </div>
+      <div class="centro" id="centro" aria-live="polite">
+        <div class="engranajes" aria-hidden="true"><span>⚙️</span><span>⚙️</span></div>
+        <div class="pantalla" id="pantalla"></div>
+        <div class="regla" id="regla" hidden></div>
+        <div class="explica" id="explica"></div>
+        <span class="vapor" aria-hidden="true">💨</span>
+      </div>
+      <div class="palancas" aria-label="Número">
+        <h3>NÚMERO</h3>
+        <button class="palanca" data-n="s" type="button"><span class="eje"></span>Singular</button>
+        <button class="palanca" data-n="p" type="button"><span class="eje"></span>Plural</button>
+      </div>
+    </div>
+    <div class="tablaReglas">
+      <div class="caja"><b>Género</b> · masculino (el) o femenino (la)
+        <ul id="rG">
+          <li data-r="o→a">Cambia la -o por -a: niño → niña</li>
+          <li data-r="+a">Se añade -a: león → leona</li>
+          <li data-r="term">Otra terminación: -esa, -isa, -triz, -ina</li>
+          <li data-r="distinta">Palabra distinta: caballo → yegua</li>
+          <li data-r="art">Solo cambia el, la: el / la estudiante</li>
+          <li data-r="uno">Un solo género: la piedra, el fósil</li>
+        </ul></div>
+      <div class="caja"><b>Número</b> · singular (uno) o plural (varios)
+        <ul id="rN">
+          <li data-r="+ s">Acaba en vocal: + s → hueso → huesos</li>
+          <li data-r="+ es">Acaba en consonante: + es → collar → collares</li>
+          <li data-r="z → c + es">Acaba en z: cambia a c + es → luz → luces</li>
+        </ul></div>
+    </div>
+  </section>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   NOMBRES DEL TEMA. f: femenino (si cambia) · r: regla del femenino
+     o→a · +a · term (otra terminación) · distinta · art (solo cambia el artículo)
+   uno: 'm' o 'f' = el nombre solo tiene ese género. El plural lo calcula la máquina.
+   ============================================================ */
+var NOMBRES = [
+  { m:'niño', f:'niña', r:'o→a' }, { m:'alumno', f:'alumna', r:'o→a' }, { m:'paleontólogo', f:'paleontóloga', r:'o→a' },
+  { m:'león', f:'leona', r:'+a' }, { m:'cazador', f:'cazadora', r:'+a' },
+  { m:'duque', f:'duquesa', r:'term', t:'-esa' }, { m:'príncipe', f:'princesa', r:'term', t:'-esa' }, { m:'poeta', f:'poetisa', r:'term', t:'-isa' },
+  { m:'actor', f:'actriz', r:'term', t:'-triz' }, { m:'emperador', f:'emperatriz', r:'term', t:'-triz' }, { m:'héroe', f:'heroína', r:'term', t:'-ína' },
+  { m:'gallo', f:'gallina', r:'term', t:'-ina' }, { m:'rey', f:'reina', r:'term', t:'-ina' },
+  { m:'caballo', f:'yegua', r:'distinta' }, { m:'toro', f:'vaca', r:'distinta' }, { m:'padre', f:'madre', r:'distinta' }, { m:'hombre', f:'mujer', r:'distinta' },
+  { m:'estudiante', f:'estudiante', r:'art' }, { m:'artista', f:'artista', r:'art' }, { m:'dentista', f:'dentista', r:'art' },
+  { p:'fósil', uno:'m' }, { p:'hueso', uno:'m' }, { p:'pez', uno:'m' }, { p:'mamífero', uno:'m' }, { p:'fuego', uno:'m' }, { p:'collar', uno:'m' }, { p:'árbol', uno:'m' }, { p:'tiburón', uno:'m' }, { p:'clan', uno:'m' }, { p:'metal', uno:'m' },
+  { p:'piedra', uno:'f' }, { p:'cueva', uno:'f' }, { p:'roca', uno:'f' }, { p:'luz', uno:'f' }, { p:'nariz', uno:'f' }, { p:'extinción', uno:'f' }, { p:'edad', uno:'f' }, { p:'choza', uno:'f' }, { p:'vasija', uno:'f' }, { p:'rueda', uno:'f' }
+];
+var EXPLICA_G = { 'o→a':'Cambia la -o del final por -a.', '+a':'Se añade una -a al final (y si tenía tilde, la pierde: león → leona).', 'term':'El femenino tiene otra terminación.', 'distinta':'¡El femenino es una palabra distinta!', 'art':'La palabra no cambia: solo cambia el artículo (el / la).' };
+var $ = ACT.$, filtro = 'todos', lista = NOMBRES.slice(), idx = 0, g = 'm', n = 's', anterior = '';
+
+function articulo(gen, num){ return gen==='m' ? (num==='s' ? 'el' : 'los') : (num==='s' ? 'la' : 'las'); }
+function forma(w, gen, num){
+  var base = w.uno ? w.p : (gen==='m' ? w.m : w.f);
+  return num==='s' ? { t:base } : { t:ACT.plural(base).f, r:ACT.plural(base).r, tilde:ACT.plural(base).tilde };
+}
+function pintar(rGen, rNum, noPuede){
+  var w = lista[idx], gen = w.uno || g, f = forma(w, gen, n);
+  /* marca lo que ha cambiado respecto a la forma anterior */
+  var pref = 0; while(pref < f.t.length && pref < anterior.length && ACT.sinTildes(f.t[pref]).toLowerCase()===ACT.sinTildes(anterior[pref]).toLowerCase()) pref++;
+  var html = anterior && anterior!==f.t ? ACT.esc(f.t.slice(0, pref))+'<span class="cambio">'+ACT.esc(f.t.slice(pref))+'</span>' : ACT.esc(f.t);
+  if(rGen==='distinta') html = '<span class="cambio">'+ACT.esc(f.t)+'</span>';
+  $('pantalla').innerHTML = '<span class="art">'+articulo(gen, n)+'</span>'+html;
+  anterior = f.t;
+  var regla = $('regla'), ex = $('explica');
+  if(noPuede){ regla.hidden = false; regla.className = 'regla no'; regla.textContent = '¡No cambia de género!'; ex.textContent = '«'+w.p+'» es siempre '+(w.uno==='m' ? 'masculino: el '+w.p : 'femenino: la '+w.p)+'. No tiene '+(w.uno==='m' ? 'femenino.' : 'masculino.'); }
+  else if(rGen){ regla.hidden = false; regla.className = 'regla'; regla.textContent = rGen==='term' ? 'Terminación '+w.t : { 'o→a':'o → a', '+a':'+ a', 'distinta':'Palabra distinta', 'art':'Solo cambia el artículo' }[rGen]; ex.textContent = EXPLICA_G[rGen]; }
+  else if(rNum){ regla.hidden = false; regla.className = 'regla'; regla.textContent = rNum; ex.textContent = rNum==='+ s' ? 'Acaba en vocal: se añade -s.' : rNum==='+ es' ? 'Acaba en consonante: se añade -es.'+(f.tilde ? ' ¡Y pierde la tilde!' : '') : 'Acaba en z: la z cambia a c y se añade -es.'; }
+  else { regla.hidden = true; ex.textContent = w.uno ? 'Mueve las palancas para cambiarlo.' : 'Mueve las palancas: ¿cómo será en femenino o en plural?'; }
+  /* palancas y reglas resaltadas */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function(b){ b.setAttribute('aria-pressed', b.dataset.g===gen ? 'true' : 'false'); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-n]'), function(b){ b.setAttribute('aria-pressed', b.dataset.n===n ? 'true' : 'false'); });
+  Array.prototype.forEach.call(document.querySelectorAll('#rG li'), function(li){ li.classList.toggle('activa', li.dataset.r===(noPuede ? 'uno' : rGen) || (!rGen && !noPuede && w.uno && li.dataset.r==='uno')); });
+  Array.prototype.forEach.call(document.querySelectorAll('#rN li'), function(li){ li.classList.toggle('activa', !!rNum && li.dataset.r===rNum); });
+  $('num').textContent = (idx+1)+' / '+lista.length;
+}
+function girar(){ var c = $('centro'); c.classList.remove('gira'); void c.offsetWidth; c.classList.add('gira'); ACT.SON.engranaje(); }
+function cargar(i){ idx = (i + lista.length) % lista.length; g = 'm'; n = 's'; var w = lista[idx]; if(w.uno) g = w.uno; anterior = ''; pintar(); }
+
+Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function(b){
+  b.addEventListener('click', function(){
+    var w = lista[idx];
+    if(w.uno){ if(b.dataset.g!==w.uno){ $('centro').classList.remove('temblor'); void $('centro').offsetWidth; $('centro').classList.add('temblor'); ACT.SON.fallo(); pintar(null, null, true); } return; }
+    if(g===b.dataset.g) return;
+    g = b.dataset.g; girar(); pintar(w.r, null); ACT.SON.magia();
+  });
+});
+Array.prototype.forEach.call(document.querySelectorAll('[data-n]'), function(b){
+  b.addEventListener('click', function(){
+    if(n===b.dataset.n) return;
+    n = b.dataset.n; var w = lista[idx], gen = w.uno || g, base = w.uno ? w.p : (gen==='m' ? w.m : w.f);
+    girar(); pintar(null, ACT.plural(base).r); ACT.SON.magia();
+  });
+});
+Array.prototype.forEach.call(document.querySelectorAll('[data-f]'), function(b){
+  b.addEventListener('click', function(){
+    filtro = b.dataset.f;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-f]'), function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    lista = NOMBRES.filter(function(w){ return filtro==='todos' || (filtro==='genero' && !w.uno) || (filtro==='uno' && w.uno); });
+    cargar(0);
+  });
+});
+$('bAnt').addEventListener('click', function(){ cargar(idx-1); });
+$('bSig').addEventListener('click', function(){ cargar(idx+1); });
+$('bAzar').addEventListener('click', function(){ cargar(Math.floor(ACT.rnd()*lista.length)); });
+document.addEventListener('keydown', function(e){ if(e.key==='ArrowRight') cargar(idx+1); if(e.key==='ArrowLeft') cargar(idx-1); });
+
+cargar(0);
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

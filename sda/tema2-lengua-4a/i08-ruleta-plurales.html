@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruleta de plurales</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.zona{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center;width:100%;max-width:1000px}
+@media (max-width:760px){ .zona{grid-template-columns:1fr} }
+.rueda{position:relative;width:min(100%,400px);aspect-ratio:1;margin:0 auto}
+.rueda svg{width:100%;height:100%;transition:transform 3.6s cubic-bezier(.17,.67,.12,1)}
+.puntero{position:absolute;left:50%;top:-8px;transform:translateX(-50%);font-size:42px;z-index:2;filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
+.centroR{position:absolute;inset:38%;border-radius:50%;background:radial-gradient(circle,#f3d27a,#c9972e);border:4px solid #7a2030;display:grid;place-items:center;font-size:32px;z-index:2}
+.panel{display:flex;flex-direction:column;align-items:center;gap:12px}
+.regla{font-family:'Cinzel',serif;font-weight:800;font-size:22px;padding:6px 16px;border-radius:12px;background:#f3d27a;color:#2b1c05}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🎡 Ruleta de plurales<span class="sub">I-8 · Ampliación · El nombre: género y número · Tema 2</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* PALABRAS de la ruleta (banco «Plurales» de la SA) y tiradas por ronda */
+var PALABRAS = ['pez','luz','hueso','clan','metal','choza','vasija','rueda','collar','nariz','árbol','cazador'];
+var TIRADAS = 10;
+var COLORES = ['#7a2030','#c9972e','#2f5a54','#3a6fd0','#9a5bd6','#2f9a5a'];
+var $ = ACT.$, giro = 0, quedan = [], tirada = 0, puntos = 0, actual = null, intentos = 0, fallos = [];
+
+function svgRueda(){
+  var n = PALABRAS.length, s = '<svg viewBox="-100 -100 200 200" id="svgR" aria-hidden="true">';
+  PALABRAS.forEach(function(p, i){
+    var a0 = (i/n)*2*Math.PI - Math.PI/2, a1 = ((i+1)/n)*2*Math.PI - Math.PI/2, am = (a0+a1)/2;
+    var x0 = 96*Math.cos(a0), y0 = 96*Math.sin(a0), x1 = 96*Math.cos(a1), y1 = 96*Math.sin(a1);
+    s += '<path d="M0 0 L'+x0.toFixed(2)+' '+y0.toFixed(2)+' A96 96 0 0 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+'Z" fill="'+COLORES[i%COLORES.length]+'" stroke="#f6ead0" stroke-width="1.5"/>';
+    var tx = 62*Math.cos(am), ty = 62*Math.sin(am), rot = am*180/Math.PI;
+    s += '<text x="'+tx.toFixed(2)+'" y="'+ty.toFixed(2)+'" transform="rotate('+rot.toFixed(1)+' '+tx.toFixed(2)+' '+ty.toFixed(2)+')" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Cinzel,serif" font-weight="800" font-size="11">'+p+'</text>';
+  });
+  return s+'<circle r="97" fill="none" stroke="#3a2a16" stroke-width="3"/></svg>';
+}
+function empezar(){
+  quedan = PALABRAS.slice(); tirada = 0; puntos = 0; fallos = [];
+  $('escena').innerHTML =
+    '<div class="barraSup"><span id="tir"></span><div class="progreso"><i id="prog"></i></div><span>⭐ <span id="pts">0</span></span></div>'+
+    '<div class="zona"><div class="rueda"><span class="puntero" aria-hidden="true">🔻</span>'+svgRueda()+'<div class="centroR" aria-hidden="true">✨</div></div>'+
+    '<div class="panel" aria-live="polite"><button class="gran" id="bGirar" type="button">🎡 ¡Girar!</button><div id="juego"></div></div></div>';
+  $('bGirar').addEventListener('click', girar);
+  pintarBarra();
+}
+function pintarBarra(){ $('tir').textContent = 'Tirada '+Math.min(tirada+1, TIRADAS)+' de '+TIRADAS; $('prog').style.width = (tirada/TIRADAS*100)+'%'; $('pts').textContent = puntos; }
+function girar(){
+  if(!quedan.length) quedan = PALABRAS.slice();
+  var p = ACT.azar(quedan), i = PALABRAS.indexOf(p), n = PALABRAS.length;
+  quedan.splice(quedan.indexOf(p), 1);
+  var centroSector = (i + 0.5) * 360 / n;
+  giro += 360*5 + ((360 - centroSector) - (giro % 360) + 360) % 360;
+  $('svgR').style.transform = 'rotate('+giro+'deg)';
+  $('bGirar').disabled = true; $('juego').innerHTML = '';
+  var k = 0, t = setInterval(function(){ ACT.SON.tic(); if(++k > 20) clearInterval(t); }, 160);
+  setTimeout(function(){ preguntar(p); }, 3700);
+}
+function preguntar(p){
+  actual = p; intentos = 0;
+  $('juego').innerHTML =
+    '<div class="detalle">Ha salido:</div><div class="grande aparece" style="font-size:clamp(40px,6vw,72px)">'+ACT.esc(p)+'</div>'+
+    '<label class="detalle" for="resp">Escribe su plural:</label><input class="texto" id="resp" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">'+
+    '<button class="gran verde" id="bComp" type="button">✔ Comprobar</button><div class="mensaje" id="msg"></div>';
+  $('resp').focus();
+  $('resp').addEventListener('keydown', function(e){ if(e.key==='Enter') comprobar(); });
+  $('bComp').addEventListener('click', comprobar);
+}
+function comprobar(){
+  var r = $('resp').value.trim().toLowerCase(), pl = ACT.plural(actual), bien = pl.f.toLowerCase(), m = $('msg');
+  if(!r) return;
+  intentos++;
+  if(r===bien){
+    if(intentos===1) puntos++;
+    m.className = 'mensaje bien'; m.innerHTML = '¡Correcto! <span class="regla">'+pl.r+'</span>'+(pl.tilde ? ' y pierde la tilde' : ''); ACT.SON.acierto(); siguiente();
+  } else if(ACT.sinTildes(r)===ACT.sinTildes(bien)){
+    m.className = 'mensaje mal'; m.textContent = '¡Casi! Fíjate en la tilde.'; ACT.SON.fallo(); if(intentos>=2) solucion();
+  } else {
+    m.className = 'mensaje mal'; m.textContent = intentos>=2 ? '' : 'No es así. Piensa: ¿acaba en vocal, en consonante o en z?'; ACT.SON.fallo(); if(intentos>=2) solucion();
+  }
+}
+function solucion(){
+  var pl = ACT.plural(actual); fallos.push(actual+' → '+pl.f);
+  $('msg').className = 'mensaje mal'; $('msg').innerHTML = 'El plural es <b>'+pl.f+'</b> <span class="regla">'+pl.r+'</span>';
+  siguiente();
+}
+function siguiente(){
+  $('resp').disabled = true; $('bComp').disabled = true; tirada++; pintarBarra();
+  setTimeout(function(){
+    if(tirada >= TIRADAS){ fin(); return; }
+    $('bGirar').disabled = false; $('bGirar').focus();
+  }, 1200);
+}
+function fin(){
+  ACT.final($('escena'), { titulo:'🏁 ¡Ruleta terminada!', puntos:puntos, total:TIRADAS, detalle:'plurales bien a la primera',
+    extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">'+fallos.map(function(f){ return '<span>'+ACT.esc(f)+'</span>'; }).join('')+'</div>' : '',
+    textoRepetir:'Otra ronda', repetir:empezar });
+}
+empezar();
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Detective de errores</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.texto{font-family:'EB Garamond',Georgia,serif;font-size:clamp(24px,3.4vw,40px);line-height:1.8;max-width:900px;text-align:left}
+.texto .w{cursor:pointer;border-radius:8px;padding:0 3px;transition:background .15s}
+.texto .w:hover{background:rgba(201,151,46,.25)}
+.texto .w.encontrada{background:#d8f3df;color:#1e6b3c;font-weight:700;cursor:default}
+.texto .w.nobueno{animation:temblor .45s;background:#fbe1dd}
+.lupa{font-size:52px;line-height:1}
+.opciones{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.opciones[hidden]{display:none}
+.quedan{font-family:'Cinzel',serif;font-weight:800;color:#7a2030;font-size:20px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🔍 Detective de errores<span class="sub">I-7 · El nombre: género y número · Tema 2</span></h1>
+    <a class="volver" href="../?id=tema2-lengua-4a" data-volver="../?id=tema2-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   TEXTOS CON ERRORES DE GÉNERO Y NÚMERO (escritos para la actividad)
+   [mal|bien|otra] = palabra con error · se muestra «mal»; la buena es la 2.ª; la 3.ª es otra opción falsa
+   ============================================================ */
+var TEXTOS = [
+  'Los paleontólogos encontraron un hueso [enormes|enorme|enorma] en la cantera. Las [científica|científicas|científicos] limpiaron el fósil con mucho cuidado.',
+  'En el yacimiento había muchas conchas [pequeño|pequeñas|pequeños]. Un bivalvo gigante estaba junto a [los|las|la] rocas.',
+  'El mamut era un animal [peluda|peludo|peludos]. Vivía en una cueva [oscuro|oscura|oscuras] con sus crías.',
+  'Los niños de 4ºA visitaron el museo. Vieron unos dientes [afilado|afilados|afiladas] y un [collares|collar|collara] de piedras.',
+  'La paleontóloga estaba muy [contento|contenta|contentos]. Había encontrado tres [fósil|fósiles|fósils] del Mioceno.',
+  'En el Paleolítico, las tribus vivían en chozas [pequeños|pequeñas|pequeña]. Los cazadores usaban [lanza|lanzas|lanzos] de piedra.'
+];
+var $ = ACT.$, ronda = [], t = 0, puntos = 0, total = 0, despistes = 0, errores = [], elegido = null, pistaFallos = 0;
+
+function trocear(txt){
+  var out = [], re = /\[([^\]]+)\]|([^\s\[\]]+)|(\s+)/g, m;
+  while((m = re.exec(txt))){
+    if(m[1]){ var p = m[1].split('|'); out.push({ mal:p[0], bien:p[1], otra:p[2] }); }
+    else if(m[2]) out.push({ t:m[2] }); else out.push({ esp:true });
+  }
+  return out;
+}
+function empezar(){ ronda = ACT.mezclar(TEXTOS).slice(0, 4); t = 0; puntos = 0; total = 0; despistes = 0; pintar(); }
+function pintar(){
+  errores = trocear(ronda[t]); elegido = null; pistaFallos = 0;
+  var n = errores.filter(function(x){ return x.mal; }).length; total += n;
+  $('escena').innerHTML =
+    '<div class="barraSup"><span>Caso '+(t+1)+' de '+ronda.length+'</span><div class="progreso"><i style="width:'+(t/ronda.length*100)+'%"></i></div><span>⭐ '+puntos+'</span></div>'+
+    '<div class="lupa" aria-hidden="true">🕵️</div>'+
+    '<p class="instr">En este texto hay <b>'+n+' errores</b> de género o de número. Toca la palabra que está mal.</p>'+
+    '<div class="quedan" id="quedan">Quedan '+n+'</div>'+
+    '<div class="texto" id="texto"></div>'+
+    '<div class="opciones" id="opciones" hidden></div>'+
+    '<div class="mensaje" id="mensaje"></div>'+
+    '<div class="botones"><button class="gran sec" id="bPista" type="button">💡 Pista</button><button class="gran" id="bSig" type="button" hidden>➡ Siguiente caso</button></div>';
+  var box = $('texto');
+  errores.forEach(function(x, i){
+    if(x.esp){ box.appendChild(document.createTextNode(' ')); return; }
+    var s = document.createElement('span'); s.className = 'w'; s.textContent = x.mal || x.t; s.dataset.i = i;
+    s.addEventListener('click', function(){ tocar(s, x); });
+    box.appendChild(s);
+  });
+  $('bPista').addEventListener('click', function(){ $('mensaje').className = 'mensaje'; $('mensaje').textContent = 'Fíjate en si el nombre y las palabras que lo acompañan dicen lo mismo: masculino o femenino, uno o varios.'; });
+  $('bSig').addEventListener('click', function(){ t++; if(t < ronda.length) pintar(); else fin(); });
+}
+function tocar(s, x){
+  if(s.classList.contains('encontrada')) return;
+  var m = $('mensaje');
+  if(!x.mal){
+    despistes++; s.classList.remove('nobueno'); void s.offsetWidth; s.classList.add('nobueno'); ACT.SON.fallo();
+    m.className = 'mensaje mal'; m.textContent = '«'+x.t+'» está bien escrita. ¡Sigue buscando!'; return;
+  }
+  elegido = { s:s, x:x };
+  var op = $('opciones'); op.hidden = false; op.innerHTML = '<span class="detalle" style="width:100%">¿Cómo debería ser «'+ACT.esc(x.mal)+'»?</span>';
+  ACT.mezclar([x.bien, x.mal, x.otra]).forEach(function(o){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'gran sec'; b.textContent = o;
+    b.addEventListener('click', function(){ corregir(o, b); });
+    op.appendChild(b);
+  });
+  ACT.SON.tic();
+}
+function corregir(o, b){
+  var e = elegido, m = $('mensaje'); if(!e) return;
+  if(o===e.x.bien){
+    if(!e.x.fallada) puntos++;
+    e.s.textContent = e.x.bien; e.s.classList.add('encontrada'); $('opciones').hidden = true; elegido = null;
+    m.className = 'mensaje bien'; m.textContent = '¡Bien visto! «'+e.x.mal+'» → «'+e.x.bien+'».'; ACT.SON.acierto();
+    var quedan = Array.prototype.filter.call(document.querySelectorAll('#texto .w'), function(w){ var x = errores[+w.dataset.i]; return x.mal && !w.classList.contains('encontrada'); }).length;
+    $('quedan').textContent = quedan ? 'Quedan '+quedan : '¡Caso resuelto! 🎉';
+    document.querySelector('.barraSup span:last-child').textContent = '⭐ '+puntos;
+    if(!quedan){ $('bSig').hidden = false; $('bPista').hidden = true; if(t+1===ronda.length) $('bSig').textContent = '🏁 Ver resultado'; }
+  } else {
+    e.x.fallada = true; b.disabled = true; ACT.SON.fallo();
+    m.className = 'mensaje mal'; m.textContent = 'Esa no concuerda. Prueba otra.';
+  }
+}
+function fin(){
+  ACT.final($('escena'), { titulo:'🏁 ¡Casos resueltos!', puntos:puntos, total:total, detalle:'errores corregidos a la primera'+(despistes ? ' · '+despistes+(despistes===1 ? ' palabra buena tocada' : ' palabras buenas tocadas') : ''),
+    mensajes:['¡A repasar la concordancia y a por otra ronda!','¡Bien, detective!','¡Muy buen ojo, detective!','¡Detective de primera clase!'], textoRepetir:'Otros casos', repetir:empezar });
+}
+empezar();
+ACT.iniciar('tema2-lengua-4a');
+})();
+</script>
+</body>
+</html>
