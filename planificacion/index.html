@@ -224,7 +224,7 @@ function pintarListaSda(){
     var d = document.createElement('article'); d.className = 'j-panel sda';
     d.innerHTML = '<h3></h3><div class="meta"></div><div class="meta"></div>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><button class="mini" data-a="editar" type="button">✏️ Editar</button>'+
-      (fs.length ? '<button class="mini" data-a="ver" type="button">📅 Ver en la semana</button>' : '')+'</div>';
+      (fs.length ? '<button class="mini" data-a="ver" type="button">📅 Ver en la semana</button>' : '')+(s.pagina ? '<a class="mini" href="'+s.pagina+(JAVI.ES_PROFE ? '&profe' : '')+'" style="text-decoration:none">📖 Abrir la situación</a>' : '')+'</div>';
     d.querySelector('h3').textContent = s.titulo || '(sin título)';
     d.querySelectorAll('.meta')[0].textContent = s.grupo+' · '+(s.asig==='LCL' ? 'Lengua' : 'Educación Física')+(s.unidad ? ' · '+s.unidad : '');
     d.querySelectorAll('.meta')[1].textContent = (s.sesiones||[]).length+' sesiones'+(fs.length ? ' · del '+fechaCorta(fs[0])+' al '+fechaCorta(fs[fs.length-1]) : '')+' · '+(s.criterios||[]).length+' criterios';

@@ -1,0 +1,131 @@
+{
+ "_nota": "Situaciones de aprendizaje escritas por Javi (.md en esta carpeta). La planificación las muestra; si se editan en la web, manda la versión de la Hoja.",
+ "sdas": [
+  {
+   "id": "tema2-lengua-4a",
+   "md": "tema2-lengua-4a.md",
+   "titulo": "Paleontólogos de Hogwarts: el gran hallazgo",
+   "grupo": "4ºA",
+   "asig": "LCL",
+   "inicio": "2026-10-09",
+   "unidad": "Vicens Vives, Tema 2 (págs. 22-33)",
+   "reto": "Hogwarts ha recibido la noticia de un hallazgo de fósiles en Algeciras y necesita «paleontólogos aprendices». Para conseguir la acreditación, cada alumno debe superar las pruebas del tema: descifrar palabras raras (glosario), dominar sílabas y nombres, debatir como un científico y escribir la historia de su propio hallazgo. Encaja en la gamificación de Javificación: cada prueba superada puede dar galeones o una carta.",
+   "producto": "Un cuento original (planteamiento, nudo y desenlace) creado con los dados de cuentos, leído en voz alta a la clase",
+   "evaluacion": "Rúbrica del debate, rúbrica del cuento, cuaderno, observación y control del Tema 2",
+   "criterios": [
+    "2.1",
+    "3.1",
+    "3.2",
+    "4.1",
+    "4.2",
+    "5.1",
+    "6.1",
+    "8.1",
+    "8.2",
+    "9.1",
+    "9.2",
+    "10.2"
+   ],
+   "sesiones": [
+    {
+     "titulo": "Lectura y vocabulario",
+     "objetivo": "Presentación del reto. Lectura en voz alta de «Extraordinario hallazgo en Algeciras» (págs. 22-23). Inicio del glosario con diccionario",
+     "fecha": "2026-10-09",
+     "duracion": "60'",
+     "interactivas": "I-1 Glosario mágico (no puntúa)"
+    },
+    {
+     "titulo": "Comprensión lectora",
+     "objetivo": "Pág. 24 ej. 1, 2 y 3 en individual. Terminar el glosario (mínimo 8 palabras)",
+     "fecha": "2026-10-13",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Las palabras y las sílabas",
+     "objetivo": "Explicación con palmadas. Actividades A y B para copiar",
+     "fecha": "2026-10-14",
+     "duracion": "60'",
+     "interactivas": "I-2 Palmadas silábicas (no puntúa), I-3 Variables o invariables"
+    },
+    {
+     "titulo": "Las palabras y las sílabas",
+     "objetivo": "Pág. 26 ej. 5 en individual (30'). Actividades C, D y E para copiar (30'). Interactivas por turnos en la pizarra (30'). Ficha para familias a quien no termine",
+     "fecha": "2026-10-15",
+     "duracion": "90'",
+     "interactivas": "I-4 Clasificador de sílabas (puntúa), I-5 Fábrica de palabras (ampliación)"
+    },
+    {
+     "titulo": "El nombre: género y número",
+     "objetivo": "Explicación. Pág. 27 ej. 6 y 7",
+     "fecha": "2026-10-16",
+     "duracion": "60'",
+     "interactivas": "I-6 Máquina de género y número (no puntúa)"
+    },
+    {
+     "titulo": "El nombre: género y número",
+     "objetivo": "Pág. 28 ej. 8 y 9 en individual; ej. 10 en parejas (si sobra tiempo)",
+     "fecha": "2026-10-19",
+     "duracion": "60'",
+     "interactivas": "I-7 Detective de errores (puntúa), I-8 Ruleta de plurales (ampliación)"
+    },
+    {
+     "titulo": "Los sinónimos",
+     "objetivo": "Explicación. Pág. 29 ej. 11 y 12. Ej. 13 en grupos de 4 (cadena oral). Actividades extra de sinónimos",
+     "fecha": "2026-10-20",
+     "duracion": "60'",
+     "interactivas": "I-9 Memory de sinónimos (puntúa)"
+    },
+    {
+     "titulo": "Los antónimos",
+     "objetivo": "Explicación (palabras distintas y prefijos in-, im-, des-). Actividades de antónimos",
+     "fecha": "2026-10-21",
+     "duracion": "60'",
+     "interactivas": "I-10 Espejo de antónimos (no puntúa), I-11 ¿Sinónimo o antónimo? (puntúa)"
+    },
+    {
+     "titulo": "Sílaba tónica y átona + preparar el debate",
+     "objetivo": "Explicación «Lumos» y pág. 30 ej. 14 y 15 (55'). Preparación del debate: tema, equipos, roles y argumentos, pág. 31 (35')",
+     "fecha": "2026-10-22",
+     "duracion": "90'",
+     "interactivas": "I-12 Lumos: ilumina la tónica (explicación y práctica)"
+    },
+    {
+     "titulo": "Tónica y átona + el debate",
+     "objetivo": "Pág. 30 ej. 16 en clase (15'). Debate con moderador y observadores (45')",
+     "fecha": "2026-10-23",
+     "duracion": "60'",
+     "interactivas": "I-13 Cronómetro del debate (no puntúa)"
+    },
+    {
+     "titulo": "Los cuentos",
+     "objetivo": "Pág. 32: las tres partes. Lectura de «El mamut». Pág. 33 ej. 17",
+     "fecha": "2026-10-26",
+     "duracion": "60'",
+     "interactivas": "I-14 Ordena el cuento (puntúa)"
+    },
+    {
+     "titulo": "Expresión escrita",
+     "objetivo": "Tirada de dados, plan del cuento en tres cajas y borrador",
+     "fecha": "2026-10-27",
+     "duracion": "60'",
+     "interactivas": "I-15 Dados de cuentos (no puntúa)"
+    },
+    {
+     "titulo": "Expresión escrita",
+     "objetivo": "Revisión por parejas, versión final con dibujo y silla del autor",
+     "fecha": "2026-10-28",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Cierre",
+     "objetivo": "Duelo de repaso del Tema 2 (30'). Control del Tema 2 (60')",
+     "fecha": "2026-10-29",
+     "duracion": "90'",
+     "interactivas": "I-16 Duelo de repaso del Tema 2 (puntúa)"
+    }
+   ]
+  }
+ ]
+}

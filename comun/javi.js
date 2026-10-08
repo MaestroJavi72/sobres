@@ -278,11 +278,18 @@ function fechasConPlan(g, asig){
   filas().forEach(function(f){ if(normal(f.alumno)===k && normal(f.accion)==='plan'){ var p = f.cartaId.split(' · '); if((p[1]||'EF')===(asig||'EF')) fs[p[0]] = 1; } });
   return Object.keys(fs).sort();
 }
+/* SdA escritas por Javi como documento (data/sda/indice.json): se ven en la planificación y tienen su página */
+var SDA_FIJAS = [];
+function cargarSdaFijas(){
+  return fetch(BASE+'data/sda/indice.json', { cache:'no-store' }).then(function(r){ return r.ok ? r.json() : { sdas:[] }; })
+    .then(function(j){ SDA_FIJAS = (j.sdas||[]).map(function(x){ x.pagina = BASE+'sda/?id='+encodeURIComponent(x.id); return x; }); });
+}
 function sdas(){
   var por = {};
+  SDA_FIJAS.forEach(function(x){ por[x.id] = JSON.parse(JSON.stringify(x)); });
   filas().forEach(function(f){
     if(normal(f.accion)!=='sda' || normal(f.alumno).indexOf('sda · ')!==0) return;
-    var j = jsonDeFila(f); if(j && j.id) por[j.id] = j;
+    var j = jsonDeFila(f); if(j && j.id){ if(por[j.id] && por[j.id].pagina && !j.pagina) j.pagina = por[j.id].pagina; por[j.id] = j; }   /* la versión editada en la web manda */
   });
   return Object.keys(por).map(function(k){ return por[k]; }).filter(function(s){ return !s.borrada; })
     .sort(function(a,b){ return (a.inicio||'').localeCompare(b.inicio||''); });
@@ -399,7 +406,8 @@ function terminar(){
 var pBase = cargarBase().catch(function(e){ console.warn('Javificación: sin data/alumnos.json', e); });
 var pHoja = leerHoja().catch(function(e){ console.warn('Javificación: sin Hoja', e); });
 var pHorario = cargarHorario().catch(function(e){ console.warn('Javificación: sin horario', e); });
-Promise.all([pBase, pHorario, Promise.race([pHoja, new Promise(function(r){ setTimeout(r, 4000); })])]).then(terminar);
+var pSda = cargarSdaFijas().catch(function(){});
+Promise.all([pBase, pHorario, pSda, Promise.race([pHoja, new Promise(function(r){ setTimeout(r, 4000); })])]).then(terminar);
 function listo(fn){
   var run = function(){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', fn); else fn(); };
   if(preparado) run(); else esperando.push(run);

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Situación de aprendizaje</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+:root{ --perg:#f6ead0; --perg2:#ead7a8; --tinta-p:#3a2a16; --tinta-p2:#6b5732; --oro:#c9a34a; --granate:#7a2030; --noche:#0e2a28; }
+body{background:var(--fondo-img),var(--fondo)}
+.barra{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.barra .esp{flex:1}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;
+  background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+
+/* ---------- portada de la SA ---------- */
+.heroe{position:relative;border-radius:26px;padding:clamp(20px,4vw,40px);margin-bottom:18px;overflow:hidden;
+  background:radial-gradient(ellipse at 85% 0%,rgba(232,200,114,.25),transparent 60%),linear-gradient(160deg,#14403a,#0a1f22);border:3px solid var(--oro);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+.heroe .tema{font-family:var(--f-sub);font-weight:700;color:#e8cf8a;letter-spacing:.08em;text-transform:uppercase;font-size:14px}
+.heroe h1{font-family:var(--f-titulo);color:#f3d27a;text-shadow:0 2px 14px rgba(232,200,114,.45);font-size:clamp(30px,5.4vw,58px);line-height:1.05;margin:6px 0 10px}
+.heroe .sub{color:#d9cfae;font-size:18px;line-height:1.4;max-width:820px}
+.heroe .fosil{position:absolute;right:-10px;bottom:-20px;font-size:150px;opacity:.12;transform:rotate(-14deg);pointer-events:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chips span{font-family:var(--f-sub);font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;background:rgba(232,200,114,.15);border:1px solid rgba(232,200,114,.5);color:#f6e3a1}
+.chips a{color:inherit}
+
+/* ---------- índice + documento ---------- */
+.cuerpo{display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){ .cuerpo{grid-template-columns:minmax(0,1fr)} }
+.doc,.indice{min-width:0}
+.heroe{overflow:hidden}
+.indice{position:sticky;top:12px;background:rgba(10,31,34,.88);border:2px solid #2f5a54;border-radius:18px;padding:14px}
+.indice h2{font-family:var(--f-sub);color:#e8cf8a;font-size:15px;letter-spacing:.08em;margin-bottom:8px}
+.indice a{display:block;color:#d9cfae;text-decoration:none;padding:6px 8px;border-radius:8px;font-size:16px;line-height:1.25}
+.indice a:hover,.indice a.activo{background:rgba(232,200,114,.15);color:#ffe9a6}
+@media (max-width:900px){ .indice{position:static;display:flex;flex-wrap:wrap;gap:4px} .indice h2{width:100%} .indice a{font-size:14px;padding:5px 9px;border:1px solid #2f5a54;border-radius:999px} }
+
+.doc{background:linear-gradient(180deg,var(--perg),var(--perg2));color:var(--tinta-p);border:3px solid #b8934f;border-radius:22px;padding:clamp(16px,3.4vw,40px);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);font-family:'EB Garamond',Georgia,serif;font-size:19px;line-height:1.5}
+.doc h2{font-family:'Cinzel',Georgia,serif;font-weight:800;color:var(--granate);font-size:clamp(22px,2.8vw,30px);margin:34px 0 12px;padding-bottom:6px;border-bottom:2px solid rgba(122,32,48,.25);scroll-margin-top:16px}
+.doc h2:first-child{margin-top:0}
+.doc h3{font-family:'Cinzel',Georgia,serif;color:#5a3d12;font-size:clamp(18px,2.2vw,22px);margin:22px 0 8px}
+.doc p{margin:8px 0}
+.doc ul,.doc ol{margin:8px 0 8px 24px}
+.doc li{margin:4px 0}
+.doc strong{color:#4a2a10}
+.doc blockquote{margin:14px 0;padding:14px 18px;border-left:5px solid var(--oro);background:rgba(255,255,255,.45);border-radius:0 14px 14px 0;font-style:italic}
+.doc table{width:100%;border-collapse:separate;border-spacing:0;margin:12px 0;font-size:16.5px;background:rgba(255,255,255,.4);border-radius:14px;overflow:hidden;border:1px solid #c4a466}
+.doc th{background:var(--noche);color:#f3d27a;font-family:'Cinzel',Georgia,serif;font-size:14.5px;text-align:left;padding:9px 10px}
+.doc td{padding:8px 10px;border-top:1px solid #d9c08a;vertical-align:top}
+.doc tr:nth-child(even) td{background:rgba(201,163,74,.08)}
+.tablaScroll{overflow-x:auto}
+
+/* chips de criterios e interactivas */
+.crit{display:inline-block;font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:.82em;padding:1px 8px;border-radius:999px;background:var(--noche);color:#f3d27a;cursor:pointer;white-space:nowrap;border:none}
+.crit:hover{background:#1d5c54}
+.inter{display:inline-block;font-weight:700;font-size:.85em;padding:1px 7px;border-radius:7px;background:#e2d2ff;color:#3d2a7a;white-space:nowrap}
+.globo{position:fixed;z-index:80;max-width:min(92vw,420px);background:#0e2a28;color:#f6ead0;border:2px solid var(--oro);border-radius:14px;padding:12px 14px;font-size:16px;line-height:1.4;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.globo b{color:#f3d27a;font-family:'Cinzel',Georgia,serif}
+
+/* ---------- sesiones ---------- */
+.sesiones{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:14px 0}
+.ses{position:relative;display:flex;flex-direction:column;gap:6px;background:#fffaf0;border:2px solid #d9c08a;border-radius:16px;padding:14px 14px 12px}
+.ses.hoy{border-color:var(--granate);box-shadow:0 0 0 4px rgba(122,32,48,.18)}
+.ses.hoy::after{content:'HOY';position:absolute;top:-10px;right:12px;background:var(--granate);color:#fff;font:700 11px/1 'Cinzel',serif;padding:4px 8px;border-radius:8px;letter-spacing:.1em}
+.ses.pasada{opacity:.62}
+.ses .cab{display:flex;align-items:center;gap:10px}
+.ses .num{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--noche);color:#f3d27a;font:800 17px 'Cinzel',serif}
+.ses .fch{font-family:'Cinzel',serif;font-weight:700;color:#5a3d12;font-size:15px;line-height:1.2}
+.ses .dur{margin-left:auto;font:700 13px 'Cinzel',serif;padding:3px 9px;border-radius:999px;background:#f3d27a;color:#3a2a16}
+.ses .dur.largo{background:var(--granate);color:#fff}
+.ses h4{font-family:'Cinzel',serif;color:var(--granate);font-size:17px;line-height:1.2}
+.ses p{font-size:16px;line-height:1.35;margin:0}
+.ses .ints{display:flex;flex-wrap:wrap;gap:4px}
+.ses .ir{margin-top:auto;align-self:flex-start;font:700 14px 'Cinzel',serif;color:#14403a;text-decoration:none;border-bottom:2px solid var(--oro)}
+
+.cargando{color:#d9cfae;font-size:18px;padding:30px;text-align:center}
+@media print{
+  body{background:#fff!important}
+  .barra,.indice,.ir,.heroe .fosil{display:none!important}
+  .cuerpo{display:block}
+  .heroe{background:#fff!important;border:2px solid #999;box-shadow:none;color:#000}
+  .heroe h1{color:#000;text-shadow:none} .heroe .sub,.heroe .tema{color:#333} .chips span{color:#000;background:#fff;border-color:#999}
+  .doc{background:#fff;box-shadow:none;border:none;padding:0;font-size:12pt}
+  .doc th{background:#eee;color:#000}
+  .ses{break-inside:avoid;background:#fff} .crit{background:#fff;color:#000;border:1px solid #999}
+  .doc h2{break-after:avoid}
+}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <div class="barra">
+    <a class="volver" href="../?profe#planificacion" data-volver="../?profe#planificacion">← Volver</a>
+    <span class="esp"></span>
+    <a class="j-icono" id="bPlan" href="../planificacion/?profe#sda" title="Ver en la planificación" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:15px">📅 Planificación</a>
+    <button class="j-icono" id="bImprimir" type="button" aria-label="Imprimir" title="Imprimir">🖨️</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
+  </div>
+
+  <header class="heroe" id="heroe">
+    <span class="fosil" aria-hidden="true">🦴</span>
+    <div class="tema" id="hTema">Situación de aprendizaje</div>
+    <h1 id="hTit">Cargando…</h1>
+    <div class="sub" id="hSub"></div>
+    <div class="chips" id="hChips"></div>
+  </header>
+
+  <div class="cuerpo">
+    <nav class="indice" id="indice" aria-label="Índice"><h2>ÍNDICE</h2></nav>
+    <article class="doc" id="doc"><p class="cargando">Abriendo el pergamino…</p></article>
+  </div>
+</div>
+<div class="globo" id="globo" role="tooltip" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util;
+var id = new URLSearchParams(location.search).get('id') || 'tema2-lengua-4a';
+var CRIT = null, SDA = null;
+var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
+var MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+function fechaBonita(f){ var p = f.split('-'); return DIAS[JAVI.diaSemana(f)]+' '+(+p[2])+' '+MESES[+p[1]-1]; }
+
+/* ---------- criterios: el texto completo sale al tocar el código ---------- */
+function textoCriterio(cod){
+  var m = cod.match(/LCL\.2\.(\d+\.\d+)/); if(!m || !CRIT) return null;
+  var c = CRIT.areas.LCL.criterios.filter(function(x){ return x.id===m[1]; })[0];
+  return c ? c['4'] : null;
+}
+function marcarCodigos(root){
+  var andar = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodos = [], n;
+  while((n = andar.nextNode())) if(/LCL\.2\.\d+\.\d+|\bI-\d{1,2}\b/.test(n.nodeValue) && !n.parentNode.closest('.crit,.inter')) nodos.push(n);
+  nodos.forEach(function(t){
+    var frag = document.createElement('span');
+    frag.innerHTML = esc(t.nodeValue).replace(/LCL\.2\.\d+\.\d+/g, function(c){ return '<button type="button" class="crit" data-c="'+c+'">'+c+'</button>'; })
+                                      .replace(/\b(I-\d{1,2})\b/g, '<span class="inter">$1</span>');
+    while(frag.firstChild) t.parentNode.insertBefore(frag.firstChild, t);
+    t.remove();
+  });
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('.crit'), g = $('globo');
+  if(!b){ g.hidden = true; return; }
+  var tx = textoCriterio(b.dataset.c);
+  g.innerHTML = '<b>'+esc(b.dataset.c)+'</b><br>'+(tx ? esc(tx) : 'Texto no encontrado en los criterios del 2º ciclo.')+'<br><small style="opacity:.75">Orden de 30 de mayo de 2023 · 4º</small>';
+  g.hidden = false;
+  var r = b.getBoundingClientRect(), w = Math.min(innerWidth*0.92, 420);
+  g.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left))+'px';
+  g.style.top = (r.bottom + 8 + g.offsetHeight > innerHeight ? Math.max(8, r.top - g.offsetHeight - 8) : r.bottom + 8)+'px';
+});
+
+/* ---------- la tabla de temporalización se convierte en tarjetas ---------- */
+function tarjetasSesiones(doc){
+  var tablas = doc.querySelectorAll('table'), hoy = U.clave(new Date());
+  Array.prototype.forEach.call(tablas, function(t){
+    var cab = Array.prototype.map.call(t.querySelectorAll('th'), function(th){ return th.textContent.trim(); });
+    if(cab[0]!=='S' || cab[1]!=='Fecha') return;
+    var box = document.createElement('div'); box.className = 'sesiones';
+    (SDA && SDA.sesiones || []).forEach(function(s, i){
+      var d = document.createElement('div');
+      d.className = 'ses'+(s.fecha===hoy ? ' hoy' : s.fecha < hoy ? ' pasada' : '');
+      d.innerHTML = '<div class="cab"><span class="num">'+(i+1)+'</span><span class="fch">'+fechaBonita(s.fecha)+'</span><span class="dur'+(parseInt(s.duracion)>60 ? ' largo' : '')+'">'+esc(s.duracion)+'</span></div>'+
+        '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
+        (s.interactivas ? '<div class="ints">'+s.interactivas.split(/,\s*(?=I-)/).map(function(x){ return '<span>'+esc(x)+'</span>'; }).join('')+'</div>' : '')+
+        '<a class="ir" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'">📋 Planificar esta sesión</a>';
+      box.appendChild(d);
+    });
+    var envoltorio = t.closest('.tablaScroll') || t;
+    envoltorio.parentNode.replaceChild(box, envoltorio);
+  });
+}
+
+/* ---------- pintar ---------- */
+function pintar(md){
+  /* título y fecha del documento van a la portada */
+  var lineas = md.split('\n'), h1 = (lineas[0]||'').replace(/^#\s*/,'');
+  var cuerpo = lineas.slice(1).join('\n').replace(/^\s*\n?[^\n#|]*\d{4}[^\n]*\n/, '');
+  $('hTit').textContent = SDA ? SDA.titulo : h1;
+  $('hTema').textContent = h1.split('·')[0].trim() || 'Situación de aprendizaje';
+  document.title = SDA ? SDA.titulo : h1;
+  var resumen = (md.match(/## Datos generales\s+([^\n]+)/)||[])[1];
+  $('hSub').textContent = resumen || '';
+  if(SDA){
+    var fs = SDA.sesiones.map(function(s){ return s.fecha; });
+    $('hChips').innerHTML = ['🏰 '+SDA.grupo+' · Lengua', '📖 '+SDA.unidad, '🗓️ '+SDA.sesiones.length+' sesiones · '+fechaBonita(fs[0])+' – '+fechaBonita(fs[fs.length-1]),
+      '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('');
+  }
+  var doc = $('doc');
+  doc.innerHTML = marked.parse(cuerpo);
+  /* tablas anchas con desplazamiento en el móvil */
+  Array.prototype.forEach.call(doc.querySelectorAll('table'), function(t){ var w = document.createElement('div'); w.className = 'tablaScroll'; t.parentNode.insertBefore(w, t); w.appendChild(t); });
+  tarjetasSesiones(doc);
+  marcarCodigos(doc);
+  /* índice */
+  var ind = $('indice'), n = 0;
+  Array.prototype.forEach.call(doc.querySelectorAll('h2'), function(h){
+    h.id = 'sec'+(++n);
+    var a = document.createElement('a'); a.href = '#'+h.id; a.textContent = h.textContent; ind.appendChild(a);
+  });
+}
+
+$('bImprimir').addEventListener('click', function(){ window.print(); });
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  SDA = JAVI.sdas().filter(function(s){ return s.id===id; })[0] || null;
+  Promise.all([
+    fetch('../data/sda/'+encodeURIComponent(id)+'.md', { cache:'no-store' }).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); }),
+    fetch('../data/criterios.json').then(function(r){ return r.json(); }).catch(function(){ return null; })
+  ]).then(function(res){ CRIT = res[1]; pintar(res[0]); })
+    .catch(function(){ $('doc').innerHTML = '<p class="cargando" style="color:#7a2030">No se ha encontrado esta situación de aprendizaje.</p>'; });
+});
+})();
+</script>
+</body>
+</html>

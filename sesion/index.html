@@ -253,6 +253,8 @@ function pintarSda(){
   if(!sd){ box.hidden = true; return; }
   var s = sd.sda, h = '<h2>📚 '+esc_(s.titulo)+' · sesión '+(sd.i+1)+' de '+s.sesiones.length+'</h2>';
   if(sd.sesion.objetivo) h += '<div>'+esc_(sd.sesion.objetivo)+'</div>';
+  if(sd.sesion.interactivas) h += '<div class="estado" style="margin-top:4px">Interactivas: '+esc_(sd.sesion.interactivas)+'</div>';
+  if(s.pagina) h += '<div style="margin-top:8px"><a class="j-boton sec" href="'+s.pagina+'&profe" style="text-decoration:none;display:inline-block;padding:6px 12px;font-size:15px">📖 Ver la situación de aprendizaje</a></div>';
   if(s.criterios && s.criterios.length) h += '<div class="estado" style="margin-top:4px">Criterios: '+s.criterios.map(function(c){ return s.asig+' '+c; }).join(' · ')+'</div>';
   box.innerHTML = h; box.hidden = false;
 }

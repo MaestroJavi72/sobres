@@ -8,8 +8,8 @@
 <style>
 /* ---------- cabecera ---------- */
 .cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
-.cab .marca{flex:1;min-width:0}
-.cab h1{font-size:clamp(30px,7vw,80px);line-height:1;overflow-wrap:anywhere}
+.cab .marca{flex:1 1 230px;min-width:0}
+.cab h1{font-size:clamp(30px,7vw,80px);line-height:1}
 .cab .lema{font-family:var(--f-sub);color:var(--tinta-suave);font-size:clamp(15px,1.8vw,20px);margin-top:6px;letter-spacing:.06em}
 .botones{display:flex;gap:8px;align-items:center}
 .volver{font-family:var(--f-sub);font-weight:700;font-size:17px;text-decoration:none;padding:9px 16px;border-radius:999px;
@@ -211,7 +211,20 @@ if(!profe) $('puertaPlan').hidden = true;   /* los alumnos no ven la planificaci
 Object.keys(SECCIONES).forEach(pintarSeccion);
 mostrar();
 $('pie').innerHTML = profe ? 'Modo profe. Los alumnos ven esta portada sin <b>?profe</b> (solo El Mercader, Mis cartas y las Bóvedas).' : '';
-JAVI.listo(function(){ pintarMundos(); mostrar(); JAVI.avisoPrueba(); });
+/* Tutoría: acceso directo a la situación de aprendizaje en curso (o la próxima) de 4ºA */
+function sdaEnCurso(){
+  if(!profe) return;
+  var hoy = JAVI.util.clave(new Date());
+  var ls = JAVI.sdas().filter(function(x){ return x.pagina && x.grupo==='4ºA' && (x.sesiones||[]).length; });
+  var act = ls.filter(function(x){ var f = x.sesiones.map(function(y){ return y.fecha; }).filter(Boolean).sort(); return f[f.length-1] >= hoy; })[0];
+  if(!act) return;
+  var a = document.createElement('a'); a.className = 'mod profe'; a.href = act.pagina+'&profe';
+  a.innerHTML = '<span class="ic" aria-hidden="true">📖</span><h3></h3><p></p>';
+  a.querySelector('h3').textContent = act.titulo;
+  a.querySelector('p').textContent = 'Situación de aprendizaje de '+(act.asig==='LCL' ? 'Lengua' : 'EF')+' en curso: sesiones, actividades, rúbricas y criterios.';
+  var g = document.querySelector('#v-tutoria .mods'); g.insertBefore(a, g.firstChild);
+}
+JAVI.listo(function(){ pintarMundos(); sdaEnCurso(); mostrar(); JAVI.avisoPrueba(); });
 })();
 </script>
 </body>
