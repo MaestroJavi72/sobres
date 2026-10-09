@@ -326,6 +326,11 @@ function pintarEnlaces(){
    CÓDIGO
    ============================================================ */
 function pintarCodigo(){
+  if(!JAVI.horaHoja() && !JAVI.hayCodigo()){   /* sin la Hoja no se sabe si ya hay código: no se ofrece crearlo */
+    $('cEstado').innerHTML = '⏳ Leyendo la Hoja para saber si ya hay código…'; $('cForm').style.display = 'none';
+    JAVI.leerHoja().then(pintarCodigo, function(){ $('cEstado').innerHTML = '📶 No se ha podido leer la Hoja. Revisa la conexión y vuelve a cargar la página.'; });
+    return;
+  }
   var hay = JAVI.hayCodigo(), puede = !hay || !JAVI.DEMO;
   $('cEstado').innerHTML = !hay ? '⚠️ <b>Todavía no hay código.</b> Créalo ahora: mientras no exista, cualquiera puede entrar a guardar.'
     : JAVI.DEMO ? '✅ El código está creado. Para cambiarlo, entra primero con el código actual (🔓 Código, abajo a la derecha).'

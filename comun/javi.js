@@ -450,6 +450,15 @@ var modalAbierto = false;
 function pedirCodigo(o){
   o = o || {};
   if(!preparado){ listo(function(){ pedirCodigo(o); }); return; }   /* espera a la Hoja para saber si hay código */
+  /* Si la Hoja aún no ha llegado (conexión lenta, iPad…), NO se puede saber si hay código:
+     se vuelve a leer y, si no llega, se avisa. Nunca se deja entrar sin comprobarlo. */
+  if(!horaCSV && !leerLocal('javi-codigo')){
+    if(o.reintentado){ avisoSinHoja(o); return; }
+    o.reintentado = true;
+    Promise.race([leerHoja(), new Promise(function(r, x){ setTimeout(function(){ x(new Error('tarde')); }, 15000); })])
+      .then(function(){ pedirCodigo(o); }, function(){ avisoSinHoja(o); });
+    return;
+  }
   if(modalAbierto) return; modalAbierto = true;
   var hay = hayCodigo(), velo = document.createElement('div'); velo.className = 'jv-velo';
   velo.innerHTML = '<div class="jv-caja" role="dialog" aria-modal="true" aria-labelledby="jvT"><h2 id="jvT"></h2><p></p>'+
@@ -463,7 +472,10 @@ function pedirCodigo(o){
   velo.querySelector('.no').textContent = o.textoCancelar || 'Solo mirar';
   function cerrar(){ velo.remove(); modalAbierto = false; }
   function probar(){
-    if(!hay){ abrirLlave(); cerrar(); (o.alAcertar || function(){ location.reload(); })(); return; }
+    if(!hay){
+      if(!horaCSV){ cerrar(); avisoSinHoja(o); return; }   /* sin Hoja leída no se sabe si hay código */
+      abrirLlave(); cerrar(); (o.alAcertar || function(){ location.reload(); })(); return;
+    }
     var v = inp.value.trim(); if(!v){ inp.focus(); return; }
     huella(v).then(function(h){
       if(h===codigoGuardado()){ abrirLlave(); cerrar(); (o.alAcertar || function(){ location.reload(); })(); }
@@ -476,8 +488,20 @@ function pedirCodigo(o){
   document.body.appendChild(velo);
   if(inp) setTimeout(function(){ inp.focus(); }, 50);
 }
+/* aviso cuando no se ha podido leer la Hoja para comprobar el código */
+function avisoSinHoja(o){
+  if(modalAbierto) return; modalAbierto = true;
+  var velo = document.createElement('div'); velo.className = 'jv-velo';
+  velo.innerHTML = '<div class="jv-caja" role="dialog" aria-modal="true"><h2>📶 Sin conexión con la Hoja</h2>'+
+    '<p>No se ha podido leer la Hoja de Google para comprobar el código. Revisa la conexión a internet y vuelve a intentarlo.</p>'+
+    '<div class="bts"><button type="button" class="no">Solo mirar</button><button type="button" class="si">🔄 Reintentar</button></div></div>';
+  velo.querySelector('.no').addEventListener('click', function(){ velo.remove(); modalAbierto = false; if(o && o.alCancelar) o.alCancelar(); });
+  velo.querySelector('.si').addEventListener('click', function(){ velo.remove(); modalAbierto = false; var n = {}; for(var k in (o||{})) if(k!=='reintentado') n[k] = o[k]; pedirCodigo(n); });
+  document.body.appendChild(velo);
+}
 /* crea o cambia el código (desde el Panel del profe). Solo con la llave abierta o si aún no hay código. */
 function fijarCodigo(nuevo){
+  if(!horaCSV && !leerLocal('javi-codigo')) return Promise.reject(new Error('Todavía no se ha leído la Hoja. Espera unos segundos y vuelve a intentarlo.'));
   if(hayCodigo() && DEMO) return Promise.reject(new Error('Primero entra con el código actual.'));
   return huella(nuevo).then(function(h){
     var p = { id:idMov(), alumno:'AJUSTES', accion:'Ajuste', cartaId:'codigo', tipo:h, carta:'', t:Date.now() };
