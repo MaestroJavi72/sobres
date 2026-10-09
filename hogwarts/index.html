@@ -164,7 +164,25 @@ button{font-family:inherit;color:inherit}
 .app[data-vista="compra"] .packs{display:none}
 .app[data-vista="tienda"] .stage,.app[data-vista="tienda"] .bar,.app[data-vista="mis"] .stage,.app[data-vista="mis"] .bar{display:none}
 .app:not([data-vista="tienda"]) .shop{display:none}
-.app:not([data-vista="mis"]) .misShop{display:none}
+.app:not([data-vista="mis"]) .misShop:not(.premioShop){display:none}
+.app:not([data-vista="premio"]) .premioShop{display:none}
+.app[data-vista="premio"] .stage,.app[data-vista="premio"] .bar,.app[data-vista="premio"] .shop{display:none}
+.pSub{font-weight:800;letter-spacing:.06em;color:#e8c872;margin:16px 0 8px;font-size:16px}
+.pNombres{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.pNombres button,.pChips button{cursor:pointer;font-weight:700;font-size:16px;padding:10px 8px;border-radius:12px;border:2px solid rgba(232,200,114,.4);background:rgba(0,0,0,.3);color:#e8d7a4}
+.pNombres button[aria-pressed="true"],.pChips button[aria-pressed="true"]{background:linear-gradient(180deg,#ffe9a6,#d9a94a);color:#2a1d05;border-color:#f6dc95}
+.pChips{display:flex;flex-wrap:wrap;gap:8px}
+.pDar{margin-top:18px;width:100%;font-size:20px;padding:16px}
+.pFiesta{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at 50% 40%,rgba(232,200,114,.35),rgba(5,10,16,.92) 70%)}
+.pFiesta[hidden]{display:none}
+.pfCaja{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;max-width:640px}
+.pfTit{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;color:#ffe9a6;font-size:clamp(34px,7vw,72px);text-shadow:0 0 24px rgba(232,200,114,.7);animation:pfLatido .8s infinite alternate}
+@keyframes pfLatido{to{transform:scale(1.06)}}
+.pfAv{width:clamp(160px,30vw,260px);height:clamp(210px,40vw,340px)}
+.pfAv svg{width:100%;height:100%}
+.pfNom{font-family:'Cinzel',serif;font-weight:800;color:#fff;font-size:clamp(32px,6vw,60px)}
+.pfMot{color:#e8d7a4;font-size:clamp(18px,3vw,28px)}
+.pfCaja .go{font-size:22px;padding:14px 30px}
 
 /* ---------- registro de alumnos ---------- */
 select{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,114,.5);background:rgba(0,0,0,.4);color:#f3e6bf;font:15px Georgia,serif}
@@ -484,8 +502,32 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
     <button class="tab" id="tabTienda" role="tab" aria-selected="true" type="button">🛒 El Mercader</button>
     <button class="tab" id="tabSobres" role="tab" aria-selected="false" type="button">✉️ Sobres</button>
     <button class="tab" id="tabMis" role="tab" aria-selected="false" type="button">🃏 Mis cartas</button>
+    <button class="tab" id="tabPremio" role="tab" aria-selected="false" type="button">🏆 Premio</button>
     <button class="tab" id="tabBanco" role="tab" aria-selected="false" type="button" hidden>🏰 Hogwarts</button>
   </nav>
+  <section class="misShop premioShop" id="premioShop" aria-label="Premio">
+    <div class="shop-in">
+      <h2 class="sec">🏆 Premio por buen trabajo</h2>
+      <p class="aviso">Para quien saca una buena nota o hace un buen examen: elige a quién y por qué, y se proyecta su premio con un sobre gratis.</p>
+      <h3 class="pSub">1 · ¿Quién?</h3>
+      <div class="pNombres" id="pNombres"></div>
+      <h3 class="pSub">2 · ¿Por qué?</h3>
+      <div class="pChips" id="pMotivos"></div>
+      <h3 class="pSub">3 · ¿Qué sobre?</h3>
+      <div class="pChips" id="pSobres"></div>
+      <button class="go pDar" id="pDar" type="button" disabled>🎉 ¡Entregar el premio!</button>
+    </div>
+  </section>
+  <div class="pFiesta" id="pFiesta" hidden role="dialog" aria-modal="true" aria-labelledby="pfNom">
+    <div class="pfCaja">
+      <div class="pfTit">🏆 ¡Enhorabuena!</div>
+      <div class="pfAv" id="pfAv"></div>
+      <div class="pfNom" id="pfNom"></div>
+      <div class="pfMot" id="pfMot"></div>
+      <button class="go" id="pfAbrir" type="button">✉️ Abrir su sobre</button>
+      <button class="ghost" id="pfNo" type="button">Cancelar</button>
+    </div>
+  </div>
   <section class="misShop" id="misShop" aria-label="Mis cartas">
     <div class="shop-in">
       <h2 class="sec">Mis cartas</h2>
@@ -973,7 +1015,7 @@ var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)')
 var stage=$('stage'), arena=$('arena'), env=$('env'), eslot=$('eslot'), rslot=$('rslot'), rcard=$('rcard'), tilt=$('tilt'),
     frontImg=$('frontImg'), backImg=$('backImg'), peekImg=$('peekImg'), burstEl=$('burst'), hint=$('hint'),
     goBtn=$('go'), packsEl=$('packs'), histEl=$('hist'), live=$('live'), elabel=$('elabel'), shine=$('shine'),
-    appEl=$('app'), shopEl=$('shop'), misShopEl=$('misShop'), tabTienda=$('tabTienda'), tabSobres=$('tabSobres'), tabMis=$('tabMis'), tabBanco=$('tabBanco'), bancoEl=$('banco'), stageTitle=$('stageTitle'), histLabel=$('histLabel');
+    appEl=$('app'), shopEl=$('shop'), misShopEl=$('misShop'), tabTienda=$('tabTienda'), tabSobres=$('tabSobres'), tabMis=$('tabMis'), tabPremio=$('tabPremio'), tabBanco=$('tabBanco'), bancoEl=$('banco'), stageTitle=$('stageTitle'), histLabel=$('histLabel');
 
 /* ---------- datos ---------- */
 var cartas = CARTAS.map(function(c){ return { id:c[0], tipo:c[1], src:c[2] }; })
@@ -1128,13 +1170,13 @@ function setGlow(t){ document.documentElement.style.setProperty('--glow', TIPOS[
 function setBoton(){
   var fin = !!cola && cola.hechos>=cola.total;
   if(estado==='shown'){
-    goBtn.textContent = cola ? (fin ? 'Volver al mercader' : 'Siguiente sobre ('+(cola.hechos+1)+'/'+cola.total+')') : 'Otro sobre';
+    goBtn.textContent = cola ? (fin ? (volverPremio ? 'Volver a Premio' : 'Volver al mercader') : 'Siguiente sobre ('+(cola.hechos+1)+'/'+cola.total+')') : 'Otro sobre';
   } else {
     goBtn.textContent = 'Abrir sobre';
   }
   goBtn.disabled = estado==='busy';
   Array.prototype.forEach.call(packsEl.children, function(b){ b.disabled = estado==='busy'; });
-  tabTienda.disabled = tabSobres.disabled = tabMis.disabled = tabBanco.disabled = estado==='busy';
+  tabTienda.disabled = tabSobres.disabled = tabMis.disabled = tabPremio.disabled = tabBanco.disabled = estado==='busy';
   hint.textContent = cola ? 'Toca el sobre para abrirlo · '+Math.min(cola.hechos+1,cola.total)+' de '+cola.total : 'Toca el sobre para abrirlo';
   hint.classList.toggle('off', estado!=='idle');
 }
@@ -1305,7 +1347,7 @@ function aplicarLibre(){
 }
 function vistaInicial(){
   var h = (location.hash||'').replace('#','').toLowerCase();
-  if(h==='sobres' || h==='mis') return h;
+  if(h==='sobres' || h==='mis' || h==='premio') return h;
   if((h==='hogwarts' || h==='banco') && esProfe) return 'banco';
   return 'tienda';
 }
@@ -1314,6 +1356,8 @@ function setVista(v){
   tabTienda.setAttribute('aria-selected', v==='tienda' ? 'true' : 'false');
   tabSobres.setAttribute('aria-selected', v==='sobres' ? 'true' : 'false');
   tabMis.setAttribute('aria-selected', v==='mis' ? 'true' : 'false');
+  tabPremio.setAttribute('aria-selected', v==='premio' ? 'true' : 'false');
+  if(v==='premio'){ $('premioShop').scrollTop=0; pintarPremio(); }
   tabBanco.setAttribute('aria-selected', v==='banco' ? 'true' : 'false');
   if(v==='sobres'){ aplicarLibre(); $('sAlumno').value = alumnoActual; }
   if(v==='tienda') shopEl.scrollTop=0;
@@ -1340,13 +1384,70 @@ function iniciarCompra(p, qty){
   histLabel.textContent = 'Tus cartas';
   setVista('compra');
 }
+/* ============================================================
+   PREMIO por buen trabajo (buena nota, buen examen…): se elige alumno, motivo y sobre;
+   se proyecta su personaje y abre un sobre GRATIS (fila «Premio», como la carta de premio del Mercader).
+   ============================================================ */
+var premioSel = { quien:'', motivo:'Buen examen', sobre:'aleatorio' }, volverPremio = false;
+var MOTIVOS_PREMIO = ['Buen examen','Buena nota','Gran esfuerzo','Tarea excelente','Otro premio'];
+var ICONO_PREMIO = { 'Buen examen':'📝 ', 'Buena nota':'⭐ ', 'Gran esfuerzo':'💪 ', 'Tarea excelente':'✍️ ', 'Otro premio':'🎁 ' };
+function pintarPremio(){
+  var box = $('pNombres'); box.innerHTML = '';
+  CONFIG.alumnos.forEach(function(n){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.setAttribute('aria-pressed', premioSel.quien===n ? 'true' : 'false');
+    b.addEventListener('click', function(){ premioSel.quien = n; pintarPremio(); }); box.appendChild(b);
+  });
+  var mb = $('pMotivos'); mb.innerHTML = '';
+  MOTIVOS_PREMIO.forEach(function(m){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = ICONO_PREMIO[m]+m;
+    b.setAttribute('aria-pressed', premioSel.motivo===m ? 'true' : 'false');
+    b.addEventListener('click', function(){ premioSel.motivo = m; pintarPremio(); }); mb.appendChild(b);
+  });
+  var sb = $('pSobres'); sb.innerHTML = '';
+  PRODUCTOS.filter(function(p){ return p.id==='aleatorio' || TIPOS[p.id]; }).forEach(function(p){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = p.id==='aleatorio' ? '✦ Pack sorpresa' : 'Sobre · '+TIPOS[p.id].plural;
+    b.setAttribute('aria-pressed', premioSel.sobre===p.id ? 'true' : 'false');
+    b.addEventListener('click', function(){ premioSel.sobre = p.id; pintarPremio(); }); sb.appendChild(b);
+  });
+  $('pDar').disabled = !premioSel.quien;
+  $('pDar').textContent = premioSel.quien ? '🎉 ¡Entregar el premio a '+premioSel.quien+'!' : '🎉 Elige primero a quién';
+}
+$('pDar').addEventListener('click', function(){
+  if(!premioSel.quien) return;
+  var cs = cuentas(), c = cs[premioSel.quien] || { acum:0 }, nv = nivelDe(c.acum);
+  $('pfAv').innerHTML = personajeSVG(aspectoDe(premioSel.quien), nv.i, c.acum<0);
+  $('pfNom').textContent = premioSel.quien;
+  $('pfMot').textContent = ICONO_PREMIO[premioSel.motivo]+'Premio por: '+premioSel.motivo.toLowerCase()+' · un sobre gratis';
+  $('pFiesta').hidden = false;
+  confetiPremio();
+});
+$('pfNo').addEventListener('click', function(){ $('pFiesta').hidden = true; });
+$('pfAbrir').addEventListener('click', function(){
+  var p = PROD[premioSel.sobre] || PROD['aleatorio']; if(!p) return;
+  alumnoActual = premioSel.quien;
+  enviarForm({ alumno:alumnoActual, accion:'Premio', cartaId:'0', tipo:premioSel.motivo, carta:'1 × '+p.nombre });
+  ventas.push({ t:new Date(), quien:alumnoActual, nombre:p.nombre, q:1, pagas:0, of:'premio: '+premioSel.motivo });
+  $('pFiesta').hidden = true; volverPremio = true;
+  iniciarCompra(p, 1);
+});
+function confetiPremio(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var cs = ['#e8c872','#ee4a68','#4cc46a','#45c4e8','#b07aff','#ff8f2e'];
+  for(var i=0;i<90;i++){
+    var p = document.createElement('i');
+    p.style.cssText = 'position:fixed;z-index:70;top:-12px;left:'+(Math.random()*100)+'vw;width:9px;height:14px;background:'+cs[i%cs.length]+';pointer-events:none;border-radius:2px';
+    document.body.appendChild(p);
+    p.animate([{ transform:'translateY(0) rotate(0)' }, { transform:'translateY('+(innerHeight+40)+'px) rotate('+(360+Math.random()*720)+'deg)' }], { duration:1800+Math.random()*1800, delay:Math.random()*600, easing:'ease-in' })
+      .onfinish = (function(p){ return function(){ p.remove(); }; })(p);
+  }
+}
 function salirCompra(){
   cola = null;
   resetSobre();
   historial = histLibre;
   gracias = true;
   pintarBurbuja();
-  setVista('tienda');
+  setVista(volverPremio ? 'premio' : 'tienda'); volverPremio = false;
 }
 
 /* ============================================================
@@ -1635,6 +1736,7 @@ $('cVaciar').addEventListener('click', function(){ ventas=[]; pintarCaja(); actu
 tabTienda.addEventListener('click', function(){ if(estado!=='busy') setVista('tienda'); });
 tabSobres.addEventListener('click', function(){ if(estado!=='busy') setVista('sobres'); });
 tabMis.addEventListener('click', function(){ if(estado!=='busy') setVista('mis'); });
+tabPremio.addEventListener('click', function(){ if(estado!=='busy') setVista('premio'); });
 tabBanco.addEventListener('click', function(){ if(estado!=='busy') setVista('banco'); });
 /* sub-pestañas del panel Hogwarts; se recuerda la última en este navegador */
 function verSub(s){
