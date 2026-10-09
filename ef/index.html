@@ -641,7 +641,8 @@ function personajeSVG(a, lv, huevo){
     return ini+defs+g+'</svg>';
   }
   var tot = Math.max(1, (G.niveles||[]).length-1), idx = Math.max(0, Math.min(tot, lv));
-  lv = Math.round(idx*6/tot);                 /* complementos: uno nuevo cada dos niveles */
+  /* complementos: uno nuevo en cada nivel (decisión de Javi): Nv2 bufanda · Nv3 varita · Nv4 sombrero · Nv5 insignia · Nv6 capa · Nv7 libro · Nv8+ aura y estrellas */
+  var cmp = Math.min(7, idx); lv = cmp<=3 ? cmp : cmp-1;
   var s = 0.64 + 0.38*idx/tot;                 /* y crece un poco en cada nivel */
   var HP = ESTILO==='hp' || !ESTILO, HE = ESTILO==='vengadores', PK = ESTILO==='pokemon';
   var TRAJE = mezcla(R,'#000000',.15), TRAJEOSC = mezcla(R,'#000000',.45), CHAQ = '#2a75bb';
@@ -747,7 +748,7 @@ function personajeSVG(a, lv, huevo){
                    '<path d="M57.5 51 Q60 49 62.5 51 M40.5 50 L33 48 M79.5 50 L87 48" fill="none" stroke="#2b2230" stroke-width="2"/>';
   /* complementos de cada mundo */
   if(HE){
-    if(lv>=3) g += estrella(60, 91, 6.5, '#f5c518', st);                                         /* insignia */
+    if(lv>=3 && cmp>=4) g += estrella(60, 91, 6.5, '#f5c518', st);                                         /* insignia */
     if(lv>=5) g += '<circle cx="24" cy="104" r="14" fill="#8e97ad"'+st+'/><circle cx="24" cy="104" r="10.5" fill="#5a6380"/>'+
                    estrella(24, 104, 7, '#f5c518', st)+'<circle cx="33" cy="106" r="5" fill="'+P+'"'+st+'/>';   /* escudo redondo */
     if(lv>=6) g += '<path d="M14 30 L20 40 L16 40 L22 52" fill="none" stroke="#5fd0ff" stroke-width="2.4" stroke-linejoin="round"/>'+
@@ -776,7 +777,7 @@ function personajeSVG(a, lv, huevo){
                  '<path d="M90 100.5 L94 94" stroke="#a8763f" stroke-width="3.6" stroke-linecap="round"/>'+
                  '<circle cx="109" cy="70" r="'+(lv>=6?9:6)+'" fill="#ffe9a6" opacity=".35"/>'+estrella(109, 70, lv>=6 ? 7 : 5, '#fff3c4', st)+
                  '<circle cx="87" cy="106" r="5" fill="'+P+'"'+st+'/>';
-  if(lv>=3) g += '<path d="M53 92 h9 v5 q0 5 -4.5 7 q-4.5 -2 -4.5 -7z" fill="#e8c872"'+st+'/><path d="M57.5 95 v6" stroke="#8a6a1e" stroke-width="1.4"/>'+
+  if(lv>=3) g += (cmp>=4 ? '<path d="M53 92 h9 v5 q0 5 -4.5 7 q-4.5 -2 -4.5 -7z" fill="#e8c872"'+st+'/><path d="M57.5 95 v6" stroke="#8a6a1e" stroke-width="1.4"/>' : '')+   /* insignia en Nv5; el sombrero ya en Nv4 */
                  '<g transform="translate(0 -6)"><path d="M36 34 Q48 6 62 -12 Q70 -18 78 -10 Q72 -10 70 -4 Q74 16 84 34Z" fill="url(#'+u+'h)"'+st+'/>'+
                  '<path d="M38 30 Q60 36 82 30 L83 35 Q60 41 37 35Z" fill="#c9a34a"'+st+'/><rect x="56" y="31" width="8" height="7" rx="1.2" fill="none" stroke="#7a5a1a" stroke-width="1.6"/>'+
                  '<path d="M26 36 Q60 46 94 36 Q96 41 90 43 Q60 51 30 43 Q24 41 26 36Z" fill="#2b2250"'+st+'/>'+

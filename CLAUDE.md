@@ -67,7 +67,8 @@ No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST 
 - **Temas:** 4ºA vive **siempre en Harry Potter** (`"tema": "hp"` en `data/alumnos.json`). El multiverso por trimestre (Harry Potter → Vengadores → Pokémon) es solo para las clases de EF (3ºA, 3ºB, 4ºB). En los módulos, usa `JAVI.temaDe(grupo)`.
 - **Acumulados** = todo lo ganado; marcan el **nivel** y nunca bajan al comprar. **Saldo** = acumulados − compras.
 - Con acumulados negativos el personaje está **en un huevo** (nivel 0). Gastar no puede mandar a nadie al huevo.
-- Personajes: chicos y chicas magos dibujados en SVG (`personajeSVG`). Crecen con el nivel y ganan complementos (bufanda, varita, sombrero e insignia, capa, libro, aura). El aspecto de cada alumno de 4ºA (pelo, peinado, piel, gafas, mecha) está en `G.personajes`. Los niveles tienen forma masculina y femenina según `chicas`.
+- Personajes: chicos y chicas magos dibujados en SVG (`personajeSVG`). Crecen con el nivel y ganan **un complemento en cada nivel** (decisión de Javi, 9/10/2026): Nv2 bufanda · Nv3 varita · Nv4 sombrero · Nv5 insignia · Nv6 capa · Nv7 libro · Nv8+ aura y estrellas (en EF, lo equivalente de cada mundo). Peinados: coletas, cola (una sola), melena, moño, trenzas, corto, rizado, pincho, tupe.
+- **Maestro Javi** (`MAESTRO` en hogwarts): tarjeta fija al principio de 4ºA con 600 galeones (nivel máximo), dibujado como su caricatura (tupé, barba corta, chaqueta roja de chándal con mangas negras, silbato, varita y snitch; sin sombrero, bufanda ni capa). No recibe puntos ni entra en sorteos, campeones ni informes. El aspecto de cada alumno de 4ºA (pelo, peinado, piel, gafas, mecha) está en `G.personajes`. Los niveles tienen forma masculina y femenina según `chicas`.
 - Las cartas de Harry Potter son de Javi; las de EF son originales. No usar personajes, logotipos ni escudos con derechos.
 
 **4ºA · Hogwarts (`index.html`)**
