@@ -183,6 +183,10 @@ button{font-family:inherit;color:inherit}
 .pfNom{font-family:'Cinzel',serif;font-weight:800;color:#fff;font-size:clamp(32px,6vw,60px)}
 .pfMot{color:#e8d7a4;font-size:clamp(18px,3vw,28px)}
 .pfCaja .go{font-size:22px;padding:14px 30px}
+.pfDato{font-family:'Cinzel',serif;font-weight:800;color:#8be29a;font-size:clamp(26px,5vw,48px);text-shadow:0 0 16px rgba(139,226,154,.5)}
+.pfDato:empty{display:none}
+.pfCola{color:#cdb987;font-size:15px}
+.pNombres button small{display:block;font-weight:600;font-size:12px;opacity:.85;margin-top:2px}
 
 /* ---------- registro de alumnos ---------- */
 select{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,114,.5);background:rgba(0,0,0,.4);color:#f3e6bf;font:15px Georgia,serif}
@@ -508,12 +512,12 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
   <section class="misShop premioShop" id="premioShop" aria-label="Premio">
     <div class="shop-in">
       <h2 class="sec">🏆 Premio por buen trabajo</h2>
-      <p class="aviso">Para quien saca una buena nota o hace un buen examen: elige a quién y por qué, y se proyecta su premio con un sobre gratis.</p>
-      <h3 class="pSub">1 · ¿Quién?</h3>
+      <p class="aviso">Marca a los premiados (buena nota, buen examen…). Quien está en positivo se lleva un sobre gratis; quien está en negativo no se lleva carta, sino que se le reduce lo que debe: la mitad, y como mínimo +5.</p>
+      <h3 class="pSub">1 · ¿Quiénes? <span id="pCuenta"></span></h3>
       <div class="pNombres" id="pNombres"></div>
       <h3 class="pSub">2 · ¿Por qué?</h3>
       <div class="pChips" id="pMotivos"></div>
-      <h3 class="pSub">3 · ¿Qué sobre?</h3>
+      <h3 class="pSub">3 · ¿Qué sobre? (para los que están en positivo)</h3>
       <div class="pChips" id="pSobres"></div>
       <button class="go pDar" id="pDar" type="button" disabled>🎉 ¡Entregar el premio!</button>
     </div>
@@ -524,8 +528,10 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
       <div class="pfAv" id="pfAv"></div>
       <div class="pfNom" id="pfNom"></div>
       <div class="pfMot" id="pfMot"></div>
+      <div class="pfDato" id="pfDato"></div>
       <button class="go" id="pfAbrir" type="button">✉️ Abrir su sobre</button>
-      <button class="ghost" id="pfNo" type="button">Cancelar</button>
+      <button class="ghost" id="pfNo" type="button">Saltar</button>
+      <div class="pfCola" id="pfCola"></div>
     </div>
   </div>
   <section class="misShop" id="misShop" aria-label="Mis cartas">
@@ -1388,15 +1394,27 @@ function iniciarCompra(p, qty){
    PREMIO por buen trabajo (buena nota, buen examen…): se elige alumno, motivo y sobre;
    se proyecta su personaje y abre un sobre GRATIS (fila «Premio», como la carta de premio del Mercader).
    ============================================================ */
-var premioSel = { quien:'', motivo:'Buen examen', sobre:'aleatorio' }, volverPremio = false;
+/* Regla de Javi: en positivo (saldo 0 o más) → sobre gratis con carta.
+   En negativo → sin carta; se le reduce lo que debe a la mitad, con un mínimo de +5 (−10 → +5, −4 → +5, −15 → +8). */
+var premioSel = { lista:[], motivo:'Buen examen', sobre:'aleatorio' }, volverPremio = false, premioCola = [], premioAhora = null;
 var MOTIVOS_PREMIO = ['Buen examen','Buena nota','Gran esfuerzo','Tarea excelente','Otro premio'];
 var ICONO_PREMIO = { 'Buen examen':'📝 ', 'Buena nota':'⭐ ', 'Gran esfuerzo':'💪 ', 'Tarea excelente':'✍️ ', 'Otro premio':'🎁 ' };
+function premioDe(n, cs){
+  var c = (cs || cuentas())[n] || { saldo:0, acum:0 };
+  if(c.saldo >= 0) return { carta:true, saldo:c.saldo };
+  return { carta:false, saldo:c.saldo, puntos:Math.max(5, Math.ceil(-c.saldo/2)) };
+}
 function pintarPremio(){
-  var box = $('pNombres'); box.innerHTML = '';
+  var cs = cuentas(), box = $('pNombres'); box.innerHTML = '';
   CONFIG.alumnos.forEach(function(n){
-    var b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.setAttribute('aria-pressed', premioSel.quien===n ? 'true' : 'false');
-    b.addEventListener('click', function(){ premioSel.quien = n; pintarPremio(); }); box.appendChild(b);
+    var pr = premioDe(n, cs), b = document.createElement('button'); b.type = 'button';
+    b.innerHTML = '<span></span><small>'+(pr.carta ? '🃏 carta' : '🪙 +'+pr.puntos+' (está en '+pr.saldo+')')+'</small>';
+    b.firstChild.textContent = n;
+    b.setAttribute('aria-pressed', premioSel.lista.indexOf(n)>=0 ? 'true' : 'false');
+    b.addEventListener('click', function(){ var i = premioSel.lista.indexOf(n); if(i>=0) premioSel.lista.splice(i,1); else premioSel.lista.push(n); pintarPremio(); });
+    box.appendChild(b);
   });
+  $('pCuenta').textContent = premioSel.lista.length ? '· '+premioSel.lista.length+' marcado'+(premioSel.lista.length>1 ? 's' : '') : '';
   var mb = $('pMotivos'); mb.innerHTML = '';
   MOTIVOS_PREMIO.forEach(function(m){
     var b = document.createElement('button'); b.type = 'button'; b.textContent = ICONO_PREMIO[m]+m;
@@ -1409,22 +1427,39 @@ function pintarPremio(){
     b.setAttribute('aria-pressed', premioSel.sobre===p.id ? 'true' : 'false');
     b.addEventListener('click', function(){ premioSel.sobre = p.id; pintarPremio(); }); sb.appendChild(b);
   });
-  $('pDar').disabled = !premioSel.quien;
-  $('pDar').textContent = premioSel.quien ? '🎉 ¡Entregar el premio a '+premioSel.quien+'!' : '🎉 Elige primero a quién';
+  var nc = premioSel.lista.filter(function(n){ return premioDe(n, cs).carta; }).length, np = premioSel.lista.length - nc;
+  $('pDar').disabled = !premioSel.lista.length;
+  $('pDar').textContent = premioSel.lista.length ? '🎉 ¡Entregar los premios! ('+(nc ? nc+' con carta' : '')+(nc && np ? ' · ' : '')+(np ? np+' con galeones' : '')+')' : '🎉 Marca primero a los premiados';
 }
+/* se entregan de uno en uno, proyectados */
 $('pDar').addEventListener('click', function(){
-  if(!premioSel.quien) return;
-  var cs = cuentas(), c = cs[premioSel.quien] || { acum:0 }, nv = nivelDe(c.acum);
-  $('pfAv').innerHTML = personajeSVG(aspectoDe(premioSel.quien), nv.i, c.acum<0);
-  $('pfNom').textContent = premioSel.quien;
-  $('pfMot').textContent = ICONO_PREMIO[premioSel.motivo]+'Premio por: '+premioSel.motivo.toLowerCase()+' · un sobre gratis';
+  if(!premioSel.lista.length) return;
+  premioCola = premioSel.lista.slice().sort(function(a, b){ return a.localeCompare(b, 'es'); });
+  premioSel.lista = [];
+  siguientePremio();
+});
+function siguientePremio(){
+  if(!premioCola.length){ premioAhora = null; $('pFiesta').hidden = true; pintarPremio(); return; }
+  var n = premioCola.shift(), cs = cuentas(), c = cs[n] || { acum:0 }, nv = nivelDe(c.acum), pr = premioDe(n, cs);
+  premioAhora = { n:n, pr:pr };
+  $('pfAv').innerHTML = personajeSVG(aspectoDe(n), nv.i, c.acum<0);
+  $('pfNom').textContent = n;
+  $('pfMot').textContent = ICONO_PREMIO[premioSel.motivo]+'Premio por: '+premioSel.motivo.toLowerCase();
+  $('pfDato').textContent = pr.carta ? '' : '🪙 +'+pr.puntos+' '+MONEDA+' · de '+pr.saldo+' a '+(pr.saldo+pr.puntos);
+  $('pfAbrir').textContent = pr.carta ? '✉️ Abrir su sobre' : '✅ Dar +'+pr.puntos+(premioCola.length ? ' y seguir' : '');
+  $('pfCola').textContent = premioCola.length ? 'Después: '+premioCola.join(', ') : '';
   $('pFiesta').hidden = false;
   confetiPremio();
-});
-$('pfNo').addEventListener('click', function(){ $('pFiesta').hidden = true; });
+}
+$('pfNo').addEventListener('click', function(){ siguientePremio(); });
 $('pfAbrir').addEventListener('click', function(){
+  var a = premioAhora; if(!a) return;
+  if(!a.pr.carta){
+    enviarMovimiento(a.n, 'Galeones', a.pr.puntos, 'Premio: '+premioSel.motivo, 'Premio (estaba en '+a.pr.saldo+')');
+    siguientePremio(); return;
+  }
   var p = PROD[premioSel.sobre] || PROD['aleatorio']; if(!p) return;
-  alumnoActual = premioSel.quien;
+  alumnoActual = a.n;
   enviarForm({ alumno:alumnoActual, accion:'Premio', cartaId:'0', tipo:premioSel.motivo, carta:'1 × '+p.nombre });
   ventas.push({ t:new Date(), quien:alumnoActual, nombre:p.nombre, q:1, pagas:0, of:'premio: '+premioSel.motivo });
   $('pFiesta').hidden = true; volverPremio = true;
@@ -1447,7 +1482,9 @@ function salirCompra(){
   historial = histLibre;
   gracias = true;
   pintarBurbuja();
+  var eraPremio = volverPremio;
   setVista(volverPremio ? 'premio' : 'tienda'); volverPremio = false;
+  if(eraPremio) setTimeout(siguientePremio, 300);
 }
 
 /* ============================================================
