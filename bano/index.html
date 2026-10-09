@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El farol del baño</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cab h1{flex:1 1 240px;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.cab .sub{display:block;font-family:var(--f-sub);font-size:15px;color:var(--acento-2);text-shadow:none;margin-top:4px}
+.volver{font-family:var(--f-sub);font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8}
+.pestanas{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pestanas button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:9px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.pestanas button[aria-selected="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.vista[hidden]{display:none!important}
+.estado{font-size:15px;color:var(--tinta-suave)}
+
+/* interruptor del profe */
+.interruptor{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:14px}
+.interruptor button{flex:1;min-width:220px;font-family:var(--f-sub);font-weight:800;font-size:clamp(17px,2.4vw,22px);padding:14px 16px;border-radius:16px;border:3px solid transparent;cursor:pointer;opacity:.5}
+.interruptor .si{background:#1c4d31;color:#d9f5e1}
+.interruptor .no{background:#6d1b1f;color:#ffd9d9}
+.interruptor button[aria-pressed="true"]{opacity:1;border-color:#fff1b8;box-shadow:0 0 0 4px rgba(243,210,122,.35)}
+.aviso{text-align:center;font-family:var(--f-sub);font-weight:700;font-size:18px;padding:10px;border-radius:12px;margin-bottom:12px;background:rgba(0,0,0,.25);color:var(--acento-2)}
+
+/* los dos faroles */
+.faroles{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){ .faroles{grid-template-columns:1fr} }
+.farol{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.farol h2{font-family:var(--f-titulo);color:var(--titulo-color);text-shadow:var(--titulo-sombra);font-size:clamp(26px,3.4vw,38px)}
+.luces{display:flex;gap:16px;padding:14px 22px;border-radius:999px;background:#151515;border:4px solid #3a3a3a;box-shadow:inset 0 0 18px rgba(0,0,0,.8)}
+.luz{width:clamp(64px,10vw,96px);height:clamp(64px,10vw,96px);border-radius:50%;background:#2a2a2a;transition:all .3s}
+.luz.roja.on{background:radial-gradient(circle at 35% 30%,#ff9a9a,#e3262b 55%,#7a0d10);box-shadow:0 0 30px 8px rgba(227,38,43,.7)}
+.luz.verde.on{background:radial-gradient(circle at 35% 30%,#b6ffc4,#2fbf55 55%,#0d5a22);box-shadow:0 0 30px 8px rgba(47,191,85,.7)}
+.fuera{font-family:var(--f-sub);font-weight:800;font-size:clamp(22px,3.2vw,34px);color:var(--tinta)}
+.fuera small{display:block;font-size:16px;font-weight:600;color:var(--tinta-suave)}
+.vuelvo{font-family:var(--f-sub);font-weight:800;font-size:clamp(20px,2.8vw,28px);padding:14px 30px;border-radius:18px;border:none;background:#2fbf55;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.35);cursor:pointer}
+.nombres{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;width:100%}
+.nombres button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:12px 8px;border-radius:12px;border:2px solid var(--panel-borde);background:rgba(0,0,0,.2);color:var(--tinta);cursor:pointer;line-height:1.15}
+.nombres button small{display:block;font-weight:400;font-size:13px;color:var(--tinta-suave)}
+.nombres button:disabled{opacity:.35;cursor:default}
+.nombres button:not(:disabled):hover{border-color:var(--acento)}
+
+/* registro */
+.fila{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.fila input{font-size:17px;padding:8px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.2);color:var(--tinta)}
+.mini{font-size:15px;padding:8px 12px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.15);color:var(--tinta);cursor:pointer}
+table.reg{width:100%;border-collapse:collapse;font-size:17px}
+table.reg th{text-align:left;font-family:var(--f-sub);color:var(--acento-2);padding:8px;border-bottom:2px solid var(--panel-borde)}
+table.reg td{padding:8px;border-bottom:1px solid var(--panel-borde)}
+.largo{color:#ff9a8f;font-weight:700}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🚦 El farol del baño<span class="sub">4ºA · de 9:00 a 14:00 · máximo 2 salidas por mañana</span></h1>
+    <a class="volver" href="../" data-volver="../">← Volver</a>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+
+  <nav class="pestanas" role="tablist">
+    <button type="button" role="tab" data-v="farol" aria-selected="true">🚦 Farol</button>
+    <button type="button" role="tab" data-v="registro" aria-selected="false">📜 Registro</button>
+  </nav>
+
+  <!-- FAROL -->
+  <section class="vista" id="v-farol">
+    <div class="interruptor" aria-label="¿Se puede ir al baño?">
+      <button type="button" class="si" data-p="si" aria-pressed="true">✅ Se puede ir · trabajo</button>
+      <button type="button" class="no" data-p="no" aria-pressed="false">⛔ Ahora no · explicación o corrección</button>
+    </div>
+    <div class="aviso" id="aviso" hidden></div>
+    <div class="faroles">
+      <div class="j-panel farol" id="f-chico"></div>
+      <div class="j-panel farol" id="f-chica"></div>
+    </div>
+    <p class="estado" style="margin-top:10px;text-align:center">Toca tu nombre al salir (se pone en rojo) y «He vuelto» al volver (verde). Las salidas se guardan aunque no se haya escrito el código del profe.</p>
+  </section>
+
+  <!-- REGISTRO -->
+  <section class="vista" id="v-registro" hidden>
+    <div class="j-panel">
+      <div class="fila"><label class="estado">Día <input type="date" id="rDia"></label><button class="mini" id="rHoy" type="button">Hoy</button><span class="estado" id="rResumen"></span><span style="flex:1"></span><button class="mini" id="rExportar" type="button">📥 Exportar a Excel</button></div>
+      <div style="overflow-x:auto"><table class="reg" id="rTabla"></table></div>
+    </div>
+  </section>
+</div>
+<div class="j-aviso" id="avisoT" role="status" hidden></div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* ============================================================
+   EL FAROL DEL BAÑO (4ºA)
+   Filas en la Hoja: Alumno «BAÑO · 4ºA», Acción «Baño», CartaId = sale | vuelve, Tipo = nombre,
+   Carta = #id · {"h":"10:32","lado":"chico"}. Se guardan SIN el código (JAVI.escribirLibre).
+   Interruptor: ajuste «bano-permitido» = si/no (para cambiarlo hace falta el código).
+   ============================================================ */
+var GRUPO = '4ºA', MAX = 2, INI = 9*60, FIN = 14*60;
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util;
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+var avisoT = 0;
+function aviso(t){ var a = $('avisoT'); a.textContent = t; a.hidden = false; clearTimeout(avisoT); avisoT = setTimeout(function(){ a.hidden = true; }, 3500); }
+function hhmm(d){ return U.pad(d.getHours())+':'+U.pad(d.getMinutes()); }
+function minutos(h){ var p = String(h).split(':'); return +p[0]*60 + +p[1]; }
+function jsonDe(c){ var i = String(c||'').indexOf('{'); if(i<0) return {}; try{ return JSON.parse(String(c).slice(i)); }catch(e){ return {}; } }
+
+/* ---------- datos ---------- */
+function movimientos(dia){
+  var k = U.normal('BAÑO · '+GRUPO), an = {};
+  var fs = JAVI.filas().filter(function(f){ return U.normal(f.alumno)===k && U.normal(f.accion)==='baño'; });
+  fs.forEach(function(f){ var m = f.carta.match(/anula (#g[a-z0-9]+)/); if(m) an[m[1]] = 1; });
+  return fs.filter(function(f){ return f.dia===dia && !an[f.id] && !/anula/.test(f.carta); }).map(function(f){
+    var j = jsonDe(f.carta); return { id:f.id, quien:f.tipo, op:U.normal(f.cartaId), h:j.h || '', lado:j.lado || '' };
+  }).sort(function(a, b){ return a.h.localeCompare(b.h); });
+}
+function lado(n){ var r = JAVI.grupo(GRUPO); return r && r.chicas.indexOf(n)>=0 ? 'chica' : 'chico'; }
+/* quién está fuera en cada lado y cuántas salidas lleva cada uno hoy */
+function estado(){
+  var hoy = U.clave(new Date()), ms = movimientos(hoy), fuera = { chico:null, chica:null }, salidas = {};
+  ms.forEach(function(m){
+    var l = m.lado || lado(m.quien);
+    if(m.op==='sale'){ fuera[l] = { quien:m.quien, h:m.h }; salidas[m.quien] = (salidas[m.quien]||0)+1; }
+    if(m.op==='vuelve' && fuera[l] && fuera[l].quien===m.quien) fuera[l] = null;
+  });
+  return { fuera:fuera, salidas:salidas };
+}
+function permitido(){ return (JAVI.ajuste('bano-permitido') || 'si')==='si'; }
+function enHorario(){ var d = new Date(), m = d.getHours()*60+d.getMinutes(), w = d.getDay(); return w>=1 && w<=5 && m>=INI && m<FIN; }
+
+/* ---------- pintar el farol ---------- */
+function pintarFarol(){
+  var e = estado(), per = permitido(), hor = enHorario(), r = JAVI.grupo(GRUPO);
+  Array.prototype.forEach.call(document.querySelectorAll('[data-p]'), function(b){ b.setAttribute('aria-pressed', (b.dataset.p==='si')===per ? 'true' : 'false'); });
+  var av = !hor ? '🌙 El farol está apagado: funciona de lunes a viernes de 9:00 a 14:00.' : !per ? '⛔ Ahora no se puede ir: estamos en explicación o corrección.' : '';
+  $('aviso').textContent = av; $('aviso').hidden = !av;
+  ['chico','chica'].forEach(function(l){
+    var f = e.fuera[l], box = $('f-'+l), h = '<h2>'+(l==='chico' ? '👦 Niños' : '👧 Niñas')+'</h2>'+
+      '<div class="luces"><span class="luz roja'+(f ? ' on' : '')+'"></span><span class="luz verde'+(!f && per && hor ? ' on' : '')+'"></span></div>';
+    if(f){
+      var min = Math.max(0, Math.round((Date.now() - hoyA(f.h))/60000));
+      h += '<div class="fuera">🚶 '+esc(f.quien)+'<small>Salió a las '+esc(f.h)+' · hace '+min+' min</small></div>'+
+        '<button class="vuelvo" type="button" data-vuelve="'+esc(f.quien)+'">✅ '+esc(f.quien)+' ha vuelto</button>';
+    } else {
+      var ns = r ? r.nombres.filter(function(n){ return lado(n)===l; }) : [];
+      h += '<div class="nombres">'+ns.map(function(n){
+        var s = e.salidas[n]||0, no = !per || !hor || s>=MAX;
+        return '<button type="button" data-sale="'+esc(n)+'"'+(no ? ' disabled' : '')+'>'+esc(n)+'<small>'+s+' de '+MAX+'</small></button>';
+      }).join('')+'</div>';
+    }
+    box.innerHTML = h;
+  });
+}
+function hoyA(h){ var d = new Date(), p = String(h).split(':'); d.setHours(+p[0], +p[1], 0, 0); return d.getTime(); }
+$('v-farol').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.sale){
+    var n = b.dataset.sale, es = estado();
+    if(!permitido() || !enHorario()){ aviso('Ahora no se puede ir.'); return; }
+    if((es.salidas[n]||0) >= MAX){ aviso(n+' ya ha salido '+MAX+' veces esta mañana.'); return; }
+    if(es.fuera[lado(n)]){ aviso('Espera a que vuelva '+es.fuera[lado(n)].quien+'.'); return; }
+    if(!confirm('¿'+n+' sale al baño?')) return;
+    JAVI.escribirLibre({ alumno:'BAÑO · '+GRUPO, accion:'Baño', cartaId:'sale', tipo:n, carta:JSON.stringify({ h:hhmm(new Date()), lado:lado(n) }) });
+    pintarFarol(); pintarRegistro();
+  }
+  if(b.dataset.vuelve){
+    var q = b.dataset.vuelve;
+    JAVI.escribirLibre({ alumno:'BAÑO · '+GRUPO, accion:'Baño', cartaId:'vuelve', tipo:q, carta:JSON.stringify({ h:hhmm(new Date()), lado:lado(q) }) });
+    aviso('¡Bienvenido/a, '+q+'!'); pintarFarol(); pintarRegistro();
+  }
+});
+/* el interruptor es del profe: con la llave abierta se cambia; si no, pide el código */
+Array.prototype.forEach.call(document.querySelectorAll('[data-p]'), function(b){
+  b.addEventListener('click', function(){
+    var v = b.dataset.p; if((v==='si')===permitido()) return;
+    if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ texto:'El interruptor del baño es del profe. Escribe tu código para cambiarlo.' }); return; }
+    JAVI.guardarAjuste('bano-permitido', v); pintarFarol();
+  });
+});
+
+/* ---------- registro por días ---------- */
+function filasDia(dia){
+  var ms = movimientos(dia), out = [], abiertas = {};
+  ms.forEach(function(m){
+    if(m.op==='sale'){ var x = { quien:m.quien, sale:m.h, vuelve:'', dur:null }; out.push(x); abiertas[m.quien] = x; }
+    if(m.op==='vuelve' && abiertas[m.quien]){ var a = abiertas[m.quien]; a.vuelve = m.h; a.dur = minutos(m.h)-minutos(a.sale); delete abiertas[m.quien]; }
+  });
+  return out;
+}
+function pintarRegistro(){
+  var dia = $('rDia').value || U.clave(new Date()), fs = filasDia(dia);
+  $('rResumen').textContent = fs.length ? fs.length+' salida'+(fs.length>1 ? 's' : '') : 'Sin salidas';
+  $('rTabla').innerHTML = '<tr><th>Alumno/a</th><th>Sale</th><th>Vuelve</th><th>Minutos</th></tr>'+
+    (fs.length ? fs.map(function(f){ return '<tr><td>'+esc(f.quien)+'</td><td>'+esc(f.sale)+'</td><td>'+(esc(f.vuelve)||'—')+'</td><td'+(f.dur>10 ? ' class="largo"' : '')+'>'+(f.dur==null ? '—' : f.dur)+'</td></tr>'; }).join('')
+      : '<tr><td colspan="4" class="estado">No hay salidas ese día.</td></tr>');
+}
+$('rDia').addEventListener('change', pintarRegistro);
+$('rHoy').addEventListener('click', function(){ $('rDia').value = U.clave(new Date()); pintarRegistro(); });
+$('rExportar').addEventListener('click', function(){
+  var dia = $('rDia').value || U.clave(new Date()), t = [['Fecha','Alumno/a','Sale','Vuelve','Minutos']];
+  filasDia(dia).forEach(function(f){ t.push([dia.split('-').reverse().join('/'), f.quien, f.sale, f.vuelve, f.dur==null ? '' : f.dur]); });
+  JAVI.exportarCSV('bano-4A-'+dia, t);
+});
+
+/* ---------- pestañas y arranque ---------- */
+function verVista(v){
+  if(['farol','registro'].indexOf(v)<0) v = 'farol';
+  Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.setAttribute('aria-selected', b.dataset.v===v ? 'true' : 'false'); });
+  ['farol','registro'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  history.replaceState(null, '', location.search+'#'+v);
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pestanas button'), function(b){ b.addEventListener('click', function(){ verVista(b.dataset.v); }); });
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+JAVI.listo(function(){
+  document.documentElement.setAttribute('data-tema', 'hp');
+  $('rDia').value = U.clave(new Date());
+  pintarFarol(); pintarRegistro(); verVista((location.hash||'').replace('#',''));
+  JAVI.protegerClase(GRUPO);   /* código de clase (4A) para ver los nombres */
+  setInterval(pintarFarol, 30000);                                   /* los minutos fuera */
+  setInterval(function(){ JAVI.leerHoja().then(pintarFarol).catch(function(){}); }, 120000);   /* por si se usa desde otro aparato */
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

@@ -17,7 +17,9 @@
 .volver[hidden]{display:none}
 
 /* ---------- las tres puertas ---------- */
-.puertas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.puertas{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
+@media (max-width:1100px){ .puertas{grid-template-columns:repeat(2,1fr)} }
+.puerta.bano{background:linear-gradient(160deg,#3a1d1d,#1a1010);border-color:#c95a4a}
 @media (max-width:820px){ .puertas{grid-template-columns:1fr} }
 .puerta{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;min-height:clamp(200px,34vh,340px);padding:22px;border-radius:26px;
   text-decoration:none;color:var(--tinta);background:var(--panel);border:3px solid var(--panel-borde);box-shadow:0 14px 30px rgba(0,0,0,.35);overflow:hidden;
@@ -115,6 +117,7 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
     <a href="#tutoria" data-v="tutoria">🏰 Tutoría</a>
     <a href="#ef" data-v="ef">🤸 Educación Física</a>
     <a href="#planificacion" data-v="planificacion" id="pestPlan">📅 Planificación</a>
+    <a href="bano/" data-v="bano">🚦 Baño</a>
   </nav>
 
   <!-- PUERTAS -->
@@ -129,6 +132,11 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
         <span class="ic" aria-hidden="true">🤸</span>
         <h2>Educación Física</h2><span class="gr">4ºA · 4ºB · 3ºA · 3ºB</span>
         <p>Coevaluación, Mercader de EF, Bóveda y sorteos.</p>
+      </a>
+      <a class="puerta bano" href="bano/">
+        <span class="ic" aria-hidden="true">🚦</span>
+        <h2>El baño</h2><span class="gr">4ºA · El farol</span>
+        <p>Rojo al salir, verde al volver. Máximo 2 salidas por mañana.</p>
       </a>
       <a class="puerta plan" href="#planificacion" id="puertaPlan">
         <span class="ic" aria-hidden="true">📅</span>
@@ -169,7 +177,7 @@ var SECCIONES = {
     { ic:'🏦', n:'Bóveda de 4ºA', d:'Autoevaluación de la clase en EF, galeones de todos y recompensas.', url:'boveda/?grupo=4oA', alumnos:true },
     { ic:'🎲', n:'Responsable y capitanes', d:'En las clases de EF de 4ºA, sin repetir hasta que salga toda la clase.', url:'sorteos/?grupo=4oA', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/?grupo=4oA', profe:true },
-    { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario.', listo:false },
+    { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario. Se guarda sin código.', url:'bano/', alumnos:true },
     { ic:'✖️', n:'Duelo de tablas', d:'Para Matemáticas (compañero): multiplicaciones al azar, por alumno o por mesas, con galeones.', url:'tablas/?grupo=4oA', alumnos:true }
   ]},
   ef: { t:'Educación Física', gr:'4ºA · 4ºB · 3ºA · 3ºB', ambito:'ef', multiverso:true, mods:[
