@@ -855,12 +855,12 @@ var CONFIG = {
     /* chicas: quién se dibuja como chica (el resto, como chico).
        personajes: para cambiar el aspecto de alguien (si no, se elige solo). Ejemplo:
           personajes: { 'Leila': { pelo:'moño', colorPelo:'moreno', piel:'clara', gafas:true } }
-          pelo: 'coletas', 'melena', 'moño', 'trenzas', 'corto', 'rizado', 'pincho'
+          pelo: 'coletas', 'cola' (una sola), 'melena', 'moño', 'trenzas', 'corto', 'rizado', 'pincho'
           colorPelo: 'moreno', 'castaño', 'rubio', 'pelirrojo' · piel: 'clara', 'media', 'morena', 'oscura'
           gafas:true · mecha:true (mecha blanca en el flequillo) · ropa: número 0-5 */
     chicas: ['Ahinara','Ainhoa','Alexia','Amanda','Carla','Claudia','Leila','Manuela','María José','Martina','Sara','Sofía','Valeria','Yaiza'],
     personajes: {
-      'Ahinara':   { pelo:'coletas', colorPelo:'rubio',    piel:'clara' },
+      'Ahinara':   { pelo:'cola',    colorPelo:'castaño',  piel:'clara' },
       'Ainhoa':    { pelo:'coletas', colorPelo:'castaño',  piel:'media' },
       'Alejandro': { pelo:'corto',   colorPelo:'castaño',  piel:'media' },
       'Alexia':    { pelo:'melena',  colorPelo:'castaño',  piel:'clara' },
@@ -1939,6 +1939,7 @@ function personajeSVG(a, lv, huevo){
                  '<path d="M36 84 Q60 76 84 84 L86 90 Q60 82 34 90Z" fill="#c9a34a"/>';
   /* pelo largo por detrás */
   if(a.pelo==='melena') g += '<path d="M31 48 Q26 96 40 104 L80 104 Q94 96 89 48Z" fill="'+Hd+'"'+st+'/>';
+  if(a.pelo==='cola') g += '<path d="M84 40 Q108 46 104 74 Q101 92 92 90 Q99 72 86 54Z" fill="'+H+'"'+st+'/><circle cx="87" cy="46" r="4" fill="'+R+'"'+st+'/>';   /* una sola cola */
   if(a.pelo==='coletas') g += '<path d="M30 54 Q16 62 20 82 Q24 92 30 88 Q26 74 34 62Z" fill="'+H+'"'+st+'/><path d="M90 54 Q104 62 100 82 Q96 92 90 88 Q94 74 86 62Z" fill="'+H+'"'+st+'/>'+
                             '<circle cx="31" cy="56" r="4" fill="'+R+'"'+st+'/><circle cx="89" cy="56" r="4" fill="'+R+'"'+st+'/>';
   if(a.pelo==='moño') g += '<circle cx="60" cy="16" r="11" fill="'+H+'"'+st+'/><path d="M54 12 Q60 8 66 12" fill="none" stroke="'+Hl+'" stroke-width="2" stroke-linecap="round"/>';
