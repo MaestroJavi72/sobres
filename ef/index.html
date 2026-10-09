@@ -223,6 +223,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <button class="atajo" id="t_bov" type="button">🏦 Bóveda</button>
     <button class="atajo" id="t_ses" type="button">📋 Sesión y Ruleta</button>
     <button class="atajo" id="t_sor" type="button">👑 Responsable y capitanes</button>
+    <button class="atajo" id="t_copia" type="button" hidden>✍️ Copia del pichi</button>
   </nav>
 
   <!-- COEVALUACIÓN -->
@@ -987,7 +988,8 @@ function pintarTodo(){
   var soloBoveda = !EF.grupos[grupo];
   CONFIG.alumnos = EF.grupos[grupo] || [];
   if(soloBoveda) vista = 'bov';
-  if(esHog() && (vista==='clase' || vista==='merc')) vista = 'coev';   /* 4ºA: su clase y su Mercader están en Hogwarts */
+  if(esHog() && (vista==='clase' || vista==='merc')) vista = 'coev';
+  $('t_copia').hidden = grupo!=='3ºB';   /* la copia del pichi es de 3ºB */   /* 4ºA: su clase y su Mercader están en Hogwarts */
   Array.prototype.forEach.call($('grupos').children, function(b){ b.setAttribute('aria-selected', b.dataset.g===grupo ? 'true' : 'false'); });
   ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = (soloBoveda && k!=='bov') || (esHog() && (k==='clase' || k==='merc')); });
   if(!soloBoveda && /^(coev|clase|merc)$/.test(vista)) history.replaceState(null, '', location.search+'#'+vista);
@@ -1343,6 +1345,7 @@ Object.keys(EF.grupos).forEach(function(g){
   $('grupos').appendChild(b);
 });
 ['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+$('t_copia').addEventListener('click', function(){ location.href = 'copia-pichi-3b.html'; });   /* solo 3ºB */
 $('t_sor').addEventListener('click', function(){ location.href = '../sorteos/?ambito=ef&profe&grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 $('t_ses').addEventListener('click', function(){ location.href = '../sesion/?ambito=ef&profe&grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });
 $('t_bov').addEventListener('click', function(){ location.href = '../boveda/?ambito=ef&profe&grupo='+encodeURIComponent(grupo)+(/[?&]prueba/.test(location.search) ? '&prueba' : ''); });

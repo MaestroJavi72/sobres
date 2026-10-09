@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Copia · El pichi del buen compañero</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=EB+Garamond:wght@500;600;700&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../sda/comun/ficha.css">
+<style>
+.texto{font-family:'Andika',sans-serif;font-size:16pt;line-height:1.55;padding:4mm 6mm;border:2px solid var(--oro);border-radius:4mm;background:#fdf8ec}
+.texto h2{font-family:'Cinzel',serif;color:var(--granate);font-size:18pt;margin-bottom:2mm;text-align:center}
+.texto p{margin:0}
+.renglones{display:flex;flex-direction:column}
+.renglones span{height:11mm;border-bottom:1.5px solid var(--linea)}
+.valores{display:flex;flex-wrap:wrap;gap:3mm;justify-content:center;font-family:'Andika',sans-serif;font-size:14pt}
+.valores span{border:1.5px solid var(--linea);border-radius:999px;padding:1.5mm 5mm}
+/* modo pizarra: solo el texto, muy grande */
+body.grande .hoja{width:auto;min-height:0;max-width:1100px;padding:24px}
+body.grande .hoja > :not(.texto){display:none}
+body.grande .texto{font-size:clamp(26px,3.6vw,44px);line-height:1.5;border-width:4px}
+body.grande .texto h2{font-size:clamp(30px,4.2vw,52px)}
+@media print{ body.grande .hoja > :not(.texto){display:revert} body.grande .texto{font-size:16pt} }
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../ef/?grupo=3oB" id="bVolver">← Volver</a>
+  <button class="prim" type="button" id="bGrande">📺 Ver en grande</button>
+  <button type="button" id="bImprimir">🖨️ Imprimir</button>
+</nav>
+
+<section class="hoja">
+  <header class="cabecera"><span class="buho" aria-hidden="true">⚽</span><div><h1>El pichi del buen compañero</h1><div class="sub">Educación Física · 3ºB · Copia y aprende</div></div><span class="esp"></span><div class="sello">CEIP Arias Montano<br>3ºB</div></header>
+  <div class="datos"><span>Nombre:</span><span class="corto">Fecha:</span></div>
+
+  <div class="texto">
+    <h2>⚽ El pichi del buen compañero</h2>
+    <p>En el pichi juego limpio y respeto las normas.</p>
+    <p>Si me eliminan, salgo sin protestar.</p>
+    <p>Escucho al capitán y animo a mi equipo.</p>
+    <p>Si alguien se cae, le ayudo a levantarse.</p>
+    <p>Ganar es bonito, pero jugar juntos es mejor.</p>
+    <p>Al terminar, doy la mano al otro equipo.</p>
+  </div>
+
+  <div class="ej"><h2><span class="num">1</span>Copia el texto con buena letra.</h2>
+    <div class="renglones"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="ej"><h2><span class="num">2</span>Rodea el valor que más quieres cuidar en el pichi.</h2>
+    <div class="valores"><span>Respeto</span><span>Juego limpio</span><span>Compañerismo</span><span>Esfuerzo</span><span>Saber perder</span></div>
+  </div>
+
+  <footer class="pie"><span>Javificación · Educación Física</span><span>Valores en el juego</span></footer>
+</section>
+
+<script>
+(function(){
+function $(id){ return document.getElementById(id); }
+$('bGrande').addEventListener('click', function(){
+  var g = document.body.classList.toggle('grande');
+  $('bGrande').textContent = g ? '📄 Ver la hoja' : '📺 Ver en grande';
+});
+$('bImprimir').addEventListener('click', function(){ window.print(); });
+$('bVolver').addEventListener('click', function(e){ try{ if(document.referrer && new URL(document.referrer).origin===location.origin && history.length>1){ e.preventDefault(); history.back(); } }catch(err){} });
+/* 🏠 Inicio junto a «← Volver» */
+var v = $('bVolver'), a = v.cloneNode(false); a.removeAttribute('id'); a.href = '../'; a.textContent = '🏠 Inicio'; v.parentNode.insertBefore(a, v.nextSibling);
+if(/[?&]grande/.test(location.search)) $('bGrande').click();
+})();
+</script>
+</body>
+</html>
