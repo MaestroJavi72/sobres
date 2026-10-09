@@ -8,6 +8,15 @@ var ID = m[1], ARCHIVO = m[2], PROFE = /[?&]profe/.test(location.search) ? '?pro
 var ICONOS = { 'I-1':'📖','I-2':'👏','I-3':'🔀','I-4':'🗂️','I-5':'🏭','I-6':'⚙️','I-7':'🔍','I-8':'🎡','I-9':'🃏','I-10':'🔮','I-11':'⚖️','I-12':'💡','I-13':'🎙️','I-14':'📚','I-15':'🎲','I-16':'⚔️' };
 var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'], MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
+/* 🏠 Inicio junto a «← Volver» en las fichas (no cargan comun/javi.js, que lo pone en las demás páginas) */
+(function(){
+  if(document.querySelector('.jv-inicio') || window.JAVI) return;
+  var v = document.getElementById('bVolver') || document.querySelector('a.volver'); if(!v) return;
+  var a = v.cloneNode(false); a.removeAttribute('id'); a.removeAttribute('data-volver'); a.classList.add('jv-inicio');
+  a.href = '../../'; a.textContent = '🏠 Inicio'; a.title = 'Ir a la portada';
+  v.parentNode.insertBefore(a, v.nextSibling);
+})();
+
 var css = document.createElement('style');
 css.textContent =
   '.barraAct{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch;margin:0 0 14px}'+
@@ -47,7 +56,7 @@ fetch('../../data/sda/indice.json', { cache:'no-store' }).then(function(r){ retu
   var etq = /^puntúa$/i.test(d.etq) ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(d.etq) ? '<span class="etq">➕ ampliación</span>' : '';
   var nav = document.createElement('nav'); nav.className = 'barraAct'; nav.setAttribute('aria-label', 'Actividades del tema');
   nav.innerHTML = enl(ant, '‹')+
-    '<span class="info">'+esc(yo)+' de '+cods.length+(d.n ? ' · Sesión '+d.n+(dia ? ', '+dia : '') : '')+' '+etq+'</span>'+
+    '<span class="info">'+esc(yo)+' de '+cods.length+(d.n ? ' · Sesión '+d.n+(dia ? ', '+dia : '') : '')+'</span>'+
     enl(sig, '›')+
     '<a class="todos" href="../?id='+encodeURIComponent(ID)+(PROFE ? '&profe' : '')+'#juegos">🎮 Todos los juegos</a>';
   colocar(nav);
@@ -57,7 +66,7 @@ fetch('../../data/sda/indice.json', { cache:'no-store' }).then(function(r){ retu
 /* ============================================================
    ¿QUIÉN RESPONDE? (solo actividades)
    - Javi marca si la actividad da punto (ajuste «puntua:<sda>:<I-x>» = si/no;
-     si no lo ha marcado, da punto si en la SA pone «(puntúa)»).
+     si no lo ha marcado, NO da punto).
    - Al azar sin repetir hasta que salga toda la clase (cola del día, compartida por todas las actividades)
      o elegido a mano. Quien falta (lista de la Sesión) no sale.
    - ✅ = +1 con JAVI.darPuntos (solo se guarda con el código). Deshacer = movimiento contrario.
@@ -67,7 +76,7 @@ function montarTurno(s, cod, d, nav){
   var hoy = JAVI.util.clave(new Date()), kCola = 'turnos|'+g+'|'+hoy, kFaltan = 'faltan|'+g+'|'+hoy, kPunto = 'puntua:'+ID+':'+cod;
   function leer(k, def){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
   function guardar(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
-  function daPunto(){ var a = JAVI.ajuste(kPunto); return a ? a==='si' : /^puntúa$/i.test(d.etq||''); }
+  function daPunto(){ return JAVI.ajuste(kPunto)==='si'; }   /* por defecto NO: solo da punto si Javi lo marca */
   function presentes(){ var f = leer(kFaltan, []); return r.nombres.filter(function(n){ return f.indexOf(n)<0; }); }
   var quien = null, mov = null, moneda = (JAVI.TEMAS[JAVI.temaDe(g)]||{}).moneda1 || 'galeón';
 

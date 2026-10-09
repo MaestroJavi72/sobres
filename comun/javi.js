@@ -565,6 +565,18 @@ function pintarLlave(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', pintarLlave); else pintarLlave();
 
+/* 🏠 INICIO: al lado del primer «← Volver» de cada página, un botón igual que lleva a la portada */
+function ponerInicio(){
+  try{ if(new URL(BASE, location.href).pathname===location.pathname) return; }catch(e){}   /* en la portada no */
+  if(/[?&]solo/.test(location.search) || document.querySelector('.jv-inicio')) return;
+  var v = document.querySelector('a[data-volver]') || document.querySelector('a#bVolver, a.volver'); if(!v) return;
+  var a = v.cloneNode(false);
+  a.removeAttribute('data-volver'); a.removeAttribute('id'); a.classList.add('jv-inicio');
+  a.href = BASE; a.textContent = '🏠 Inicio'; a.title = 'Ir a la portada';
+  v.parentNode.insertBefore(a, v.nextSibling);
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', ponerInicio); else ponerInicio();
+
 /* ============================================================
    ARRANQUE: JAVI.listo(fn) espera a la lista de alumnos y a la Hoja
    (como mucho 4 s; si la Hoja tarda, arranca con lo que haya).
