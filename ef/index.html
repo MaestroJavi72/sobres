@@ -1208,23 +1208,27 @@ function iconoCoev(mo, signo){
 
 /* ---------- compi del día: lo elige quien más fichas ha recibido ---------- */
 function cerrarSesion(){
+  /* Compi del día (decisión de Javi): lo elige el profe. Quien más fichas netas ha recibido es el candidato nº 1
+     (sale el primero y destacado); los demás van detrás, ordenados por fichas. */
   var co = coev(); if(co.compi || !co.hoy.length) return;
-  var neto = {}; Object.keys(co.recibido).forEach(function(k){ neto[k] = co.recibido[k] - (co.recibidoNeg[k]||0); });
+  var neto = {}; CONFIG.alumnos.forEach(function(k){ neto[k] = (co.recibido[k]||0) - (co.recibidoNeg[k]||0); });
   var max = -99; Object.keys(neto).forEach(function(k){ max = Math.max(max, neto[k]); });
-  if(!Object.keys(neto).length || max<=0){ aviso('Nadie tiene fichas positivas de sobra hoy: no hay Compi del día.'); return; }
-  var top = Object.keys(neto).filter(function(k){ return neto[k]===max; });
-  var elige = top[Math.floor(rnd()*top.length)], cs = cuentas();
-  $('kElige').innerHTML = '<div class="av">'+avatar(elige, cs)+'</div><p><b></b> ha recibido más fichas hoy ('+max+')'+(top.length>1 ? ', empatada con '+(top.length-1)+' más; ha salido en el sorteo' : '')+'.</p><p class="aviso">Elige al Compi del día: recibirá +'+EF.compiDia+'.</p>';
-  $('kElige').querySelector('b').textContent = elige;
+  var orden = CONFIG.alumnos.slice().sort(function(a, b){ return neto[b]-neto[a] || a.localeCompare(b, 'es'); });
+  var top = max>0 ? orden.filter(function(k){ return neto[k]===max; }) : [], cs = cuentas();
+  $('kElige').innerHTML = (top.length ? '<p>⭐ <b></b> '+(top.length>1 ? 'son los candidatos' : 'es el candidato')+' nº 1: '+(top.length>1 ? 'han' : 'ha')+' recibido más fichas hoy ('+max+').</p>' : '<p>Hoy nadie tiene fichas positivas de sobra.</p>')+
+    '<p class="aviso">Toca al Compi del día: recibirá +'+EF.compiDia+'.</p>';
+  if(top.length) $('kElige').querySelector('b').textContent = top.join(', ');
   var box = $('kAlumnos'); box.innerHTML = '';
-  CONFIG.alumnos.forEach(function(x){
-    if(x===elige) return;
-    var b = tarjeta(x, cs);
+  orden.forEach(function(x){
+    var b = tarjeta(x, cs), e = document.createElement('span'); e.className = 'etiq';
+    e.textContent = (top.indexOf(x)>=0 ? '⭐ Candidato nº 1 · ' : '')+(neto[x]>0 ? '+' : '')+neto[x]+' ficha'+(Math.abs(neto[x])===1 ? '' : 's');
+    b.appendChild(e);
+    if(top.indexOf(x)>=0) b.setAttribute('aria-pressed', 'true');
     b.addEventListener('click', function(){
       var mult = multiplicadorHoy(x), n = EF.compiDia*mult;
-      registrar(clv(x), 'Galeones', n, 'Compi del día'+(mult>1 ? ' (×'+mult+')' : ''), 'Elegido por '+elige);
+      registrar(clv(x), 'Galeones', n, 'Compi del día'+(mult>1 ? ' (×'+mult+')' : ''), top.indexOf(x)>=0 ? 'Candidato nº 1 ('+neto[x]+' fichas)' : 'Elegido por el profe');
       $('mCompi').hidden = true; flotar('+'+n, false, b);
-      aviso('¡'+x+' es el Compi del día! Le ha elegido '+elige+'. +'+n+' '+MON+'.');
+      aviso('¡'+x+' es el Compi del día! +'+n+' '+MON+'.');
       pintarTodo();
     });
     box.appendChild(b);
