@@ -475,12 +475,14 @@ function conMoneda(txt){ return String(txt).replace(/galeones/g, MON); }
 /* Las listas de alumnos y quién es chica se editan ahora en el PANEL DEL PROFE (Javificación ?profe → Alumnos).
    Las de arriba solo se usan si no se puede leer data/alumnos.json. */
 EF.alias = {};
+EF.hogwarts = {};   /* clases cuyos puntos van a Hogwarts (4ºA): clave = nombre tal cual, sin «4ºA · » */
 (function(){
   if(!window.JAVI) return;
-  var gs = JAVI.grupos().filter(function(g){ var r = JAVI.grupo(g); return r && r.sistema==='ef'; });
+  /* las clases de EF de Javi: 3ºA, 3ºB, 4ºB y también 4ºA (que guarda sus puntos en Hogwarts) */
+  var gs = JAVI.grupos().filter(function(g){ var r = JAVI.grupo(g); return r && (r.sistema==='ef' || (r.asignaturas||[]).indexOf('EF')>=0); });
   if(!gs.length) return;
   var grupos = {}, chicas = [], pers = {};
-  gs.forEach(function(g){ var r = JAVI.grupo(g); grupos[g] = r.nombres; EF.alias[g] = r.alias || {};
+  gs.forEach(function(g){ var r = JAVI.grupo(g); grupos[g] = r.nombres; EF.alias[g] = r.alias || {}; if(r.sistema==='hogwarts') EF.hogwarts[g] = true;
     r.chicas.forEach(function(n){ if(chicas.indexOf(n)<0) chicas.push(n); });
     for(var k in r.personajes) pers[k] = r.personajes[k]; });
   EF.grupos = grupos; EF.chicas = chicas; EF.personajes = pers;
@@ -796,7 +798,8 @@ var CLAVE_PEND = (window.JAVI && JAVI.PRUEBA ? 'prueba-' : '')+'ef-pendientes', 
 try{ pendientes = JSON.parse(localStorage.getItem(CLAVE_PEND)||'[]') || []; }catch(e){ pendientes = []; }
 function guardarPend(){ try{ localStorage.setItem(CLAVE_PEND, JSON.stringify(pendientes)); }catch(e){} }
 function idMov(){ return '#g'+Date.now().toString(36)+Math.floor(rnd()*1e8).toString(36); }
-function clv(nombre){ return grupo+' · '+nombre; }
+function esHog(){ return !!EF.hogwarts[grupo]; }
+function clv(nombre){ return esHog() ? nombre : grupo+' · '+nombre; }
 function enviarForm(d){
   if(window.JAVI && JAVI.PRUEBA){ console.info('[modo prueba] no se envía', d); return; }
   var e = EF.registro.entradas, body = new URLSearchParams();
@@ -807,6 +810,11 @@ function enviarForm(d){
 function registrar(alumnoClave, accion, n, motivo, extra, cartaId){
   var p = { id:idMov(), alumno:alumnoClave, accion:accion, n:n, motivo:motivo||'', extra:extra||'', cartaId:cartaId||'', t:Date.now() };
   pendientes.push(p); guardarPend();
+  if(esHog()){   /* que se vea ya también en Hogwarts */
+    var kh = (window.JAVI && JAVI.PRUEBA ? 'prueba-' : '')+'gringotts-pendientes', lh = [];
+    try{ lh = JSON.parse(localStorage.getItem(kh)||'[]') || []; }catch(e){ lh = []; }
+    lh.push(p); try{ localStorage.setItem(kh, JSON.stringify(lh)); }catch(e){}
+  }
   enviarForm({ alumno:alumnoClave, accion:accion, cartaId: cartaId ? String(cartaId) : String(n), tipo:p.motivo, carta:p.id+(extra?' · '+extra:'') });
   return p;
 }
@@ -824,9 +832,15 @@ function movimientos(){
   });
   return out;
 }
-function delGrupo(){ var pre = normal(grupo+' · '); return movimientos().filter(function(m){ return normal(m.alumno).indexOf(pre)===0; }); }
+function delGrupo(){
+  if(esHog()){   /* 4ºA: filas con el nombre tal cual */
+    var set = {}; (EF.grupos[grupo]||[]).forEach(function(n){ set[normal(n)] = 1; }); for(var k in (EF.alias[grupo]||{})) set[k] = 1;
+    return movimientos().filter(function(m){ var a = normal(m.alumno); return a.indexOf(' · ')<0 && set[a]; });
+  }
+  var pre = normal(grupo+' · '); return movimientos().filter(function(m){ return normal(m.alumno).indexOf(pre)===0; });
+}
 function nombreDe(m){
-  var n = String(m.alumno).split(' · ').slice(1).join(' · ').trim(), al = EF.alias[grupo] || {};
+  var n = esHog() ? String(m.alumno).trim() : String(m.alumno).split(' · ').slice(1).join(' · ').trim(), al = EF.alias[grupo] || {};
   return al[normal(n)] || n;
 }
 function limpiarPend(){
@@ -897,6 +911,9 @@ var vista = (/^#(coev|clase|merc)$/.exec(location.hash)||[])[1] || 'coev';   /* 
 function tarjeta(n, cs, extra){
   var c = cs[n], nv = nivelDe(c.acum), huevo = c.acum<0;
   var b = document.createElement('button'); b.type = 'button'; b.className = 'cam'; b.style.setProperty('--c', nv.c);
+  if(esHog())   /* 4ºA: sus galeones y su nivel están en Hogwarts; aquí solo personaje y nombre */
+    b.innerHTML = (extra||'')+'<span class="avatar">'+personajeSVG(aspectoDe(n), 0, false)+'</span><span class="nom"></span><span class="sub">Hogwarts</span>';
+  else
   b.innerHTML = '<span class="puntos'+(c.saldo<0?' neg':'')+'">'+c.saldo+'</span>'+(extra||'')+'<span class="avatar">'+avatar(n, cs)+'</span><span class="nom"></span><span class="sub">'+(huevo ? 'Nv. 0' : 'Nv. '+(nv.i+1))+'</span>';
   b.querySelector('.nom').textContent = n;
   return b;
@@ -968,8 +985,9 @@ function pintarTodo(){
   var soloBoveda = !EF.grupos[grupo];
   CONFIG.alumnos = EF.grupos[grupo] || [];
   if(soloBoveda) vista = 'bov';
+  if(esHog() && (vista==='clase' || vista==='merc')) vista = 'coev';   /* 4ºA: su clase y su Mercader están en Hogwarts */
   Array.prototype.forEach.call($('grupos').children, function(b){ b.setAttribute('aria-selected', b.dataset.g===grupo ? 'true' : 'false'); });
-  ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = soloBoveda && k!=='bov'; });
+  ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = (soloBoveda && k!=='bov') || (esHog() && (k==='clase' || k==='merc')); });
   if(!soloBoveda && /^(coev|clase|merc)$/.test(vista)) history.replaceState(null, '', location.search+'#'+vista);
   if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); }
   pintarBoveda();

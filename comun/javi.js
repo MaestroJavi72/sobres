@@ -192,7 +192,7 @@ var AMBITO = (location.search.match(/[?&]ambito=(tutoria|ef)\b/)||[])[1] || null
 function gruposVisibles(){
   var gs = grupos();
   if(AMBITO==='tutoria') return gs.filter(function(g){ return BASE_ALUMNOS[g].tutoria; });
-  if(AMBITO==='ef') return gs.filter(function(g){ return BASE_ALUMNOS[g].sistema==='ef'; });
+  if(AMBITO==='ef') return gs.filter(function(g){ var b = BASE_ALUMNOS[g]; return b.sistema==='ef' || (b.asignaturas||[]).indexOf('EF')>=0; });   /* 4ºA también tiene EF con Javi */
   return gs;
 }
 function conAmbito(url){ if(!AMBITO) return url; var p = url.split('#'); return p[0]+(p[0].indexOf('?')>=0 ? '&' : '?')+'ambito='+AMBITO+(p[1] ? '#'+p[1] : ''); }
