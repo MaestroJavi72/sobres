@@ -446,6 +446,7 @@ function todo(){
   $('bInicio').setAttribute('data-volver', JAVI.destinoVolver());
   document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo));
   pintarGrupos(); pintarTodo(); pintarFaltan();
+  JAVI.protegerClase(grupo, { cambiar:function(g){ grupo = g; rPropuesto = null; cPropuestos = null; escribirL('sorteos-grupo', g); todo(); } });   /* código de clase */
 }
 JAVI.listo(function(){
   fetch('../data/historial.json', { cache:'no-store' }).then(function(r){ return r.json(); })

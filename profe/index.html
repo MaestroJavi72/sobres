@@ -342,7 +342,7 @@ $('cGuardar').addEventListener('click', function(){
   }, function(e){ aviso(e.message); });
 });
 
-function pintar(){ pintarGrupos(); pintarLista(); pintarTemas(); }
+function pintar(){ pintarGrupos(); pintarLista(); pintarTemas(); JAVI.protegerClase(grupo, { cambiar:function(g){ grupo = g; abierto = null; try{ localStorage.setItem('profe-grupo', g); }catch(e){} pintar(); } }); }
 JAVI.listo(function(){
   pintar(); pintarEnlaces(); pintarCodigo(); verVista(['alumnos','tema','enlaces','codigo'].indexOf(vista)>=0 ? vista : 'alumnos');
   JAVI.avisoPrueba();

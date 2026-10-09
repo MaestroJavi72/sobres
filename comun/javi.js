@@ -489,6 +489,56 @@ function fijarCodigo(nuevo){
     return h;
   });
 }
+/* ============================================================
+   CÓDIGO DE CLASE (privacidad): para VER a los alumnos de una clase hay que escribir
+   su código sencillo: el curso y la letra (4ºA → «4A», 3ºB → «3B»).
+   Vale en esa pestaña del navegador hasta que se cierra (sessionStorage).
+   Con la llave de guardar abierta, todas las clases están abiertas.
+   Uso: JAVI.protegerClase(grupo, { alAbrir:fn, cambiar:fn(otroGrupo), otras:[grupos que ofrecer] })
+   ============================================================ */
+function codigoClase(g){ return String(g).replace(/[º°ª\s]/g,'').toUpperCase(); }
+function claseAbierta(g){
+  if(PRUEBA_FIJA && !PROBAR_CANDADO) return true;
+  if(llave()) return true;
+  try{ return sessionStorage.getItem('javi-clase|'+codigoClase(g))==='1'; }catch(e){ return false; }
+}
+var veloClase = null;
+var CSS_CLASE =
+  'body.jv-cerrado > *:not(.jv-velo):not(.jv-pill):not(.jv-veloClase):not(script):not(style){filter:blur(18px);pointer-events:none;user-select:none}'+
+  '.jv-veloClase{position:fixed;inset:0;z-index:9990;display:grid;place-items:center;padding:16px;background:rgba(5,10,16,.35)}'+
+  '.jv-veloClase .jv-caja .clases{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px}'+
+  '.jv-veloClase .jv-caja .clases button{font:700 14px/1 system-ui,sans-serif;padding:8px 12px;border-radius:10px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}';
+function protegerClase(g, o){
+  o = o || {};
+  if(veloClase){ veloClase.remove(); veloClase = null; }
+  if(claseAbierta(g)){ document.body.classList.remove('jv-cerrado'); if(o.alAbrir) o.alAbrir(); return true; }
+  if(!document.getElementById('jvCssClase')){ var c = document.createElement('style'); c.id = 'jvCssClase'; c.textContent = CSS_LLAVE+CSS_CLASE; document.head.appendChild(c); }
+  document.body.classList.add('jv-cerrado');
+  var otras = o.cambiar ? (o.otras || gruposVisibles()).filter(function(x){ return x!==g; }) : [];
+  veloClase = document.createElement('div'); veloClase.className = 'jv-veloClase';
+  veloClase.innerHTML = '<div class="jv-caja" role="dialog" aria-modal="true" aria-labelledby="jvCT"><h2 id="jvCT"></h2>'+
+    '<p>Para ver a los alumnos, escribe el código de la clase.</p>'+
+    '<input type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" aria-label="Código de la clase"><div class="err" role="alert"></div>'+
+    '<div class="bts"><button type="button" class="no">← Volver</button><button type="button" class="si">🔓 Entrar</button></div>'+
+    (otras.length ? '<div class="clases">'+otras.map(function(x){ return '<button type="button" data-g="'+x+'">'+x+'</button>'; }).join('')+'</div>' : '')+'</div>';
+  veloClase.querySelector('h2').textContent = '🔒 '+g;
+  var inp = veloClase.querySelector('input'), err = veloClase.querySelector('.err'), caja = veloClase.querySelector('.jv-caja');
+  function probar(){
+    if(codigoClase(inp.value)===codigoClase(g)){
+      try{ sessionStorage.setItem('javi-clase|'+codigoClase(g), '1'); }catch(e){}
+      veloClase.remove(); veloClase = null; document.body.classList.remove('jv-cerrado');
+      if(o.alAbrir) o.alAbrir();
+    } else { err.textContent = 'Ese no es el código de '+g+'.'; inp.value = ''; caja.classList.remove('mal'); void caja.offsetWidth; caja.classList.add('mal'); inp.focus(); }
+  }
+  veloClase.querySelector('.si').addEventListener('click', probar);
+  veloClase.querySelector('.no').addEventListener('click', function(){ volver(); });
+  inp.addEventListener('keydown', function(e){ if(e.key==='Enter') probar(); });
+  Array.prototype.forEach.call(veloClase.querySelectorAll('[data-g]'), function(b){ b.addEventListener('click', function(){ o.cambiar(b.dataset.g); }); });
+  document.body.appendChild(veloClase);
+  setTimeout(function(){ inp.focus(); }, 50);
+  return false;
+}
+
 /* el candado de la esquina y el aviso cada 30 minutos */
 function pintarLlave(){
   if((PRUEBA_FIJA && !PROBAR_CANDADO) || /[?&]solo/.test(location.search)) return;
@@ -538,7 +588,7 @@ function listo(fn){
 
 window.JAVI = {
   BASE:BASE, PRUEBA:PRUEBA, PRUEBA_FIJA:PRUEBA_FIJA, DEMO:DEMO, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
-  pedirCodigo:pedirCodigo, fijarCodigo:fijarCodigo, hayCodigo:hayCodigo, bloquear:bloquear, minutosLlave:function(){ var t = llave(); return t ? Math.ceil((t + DURACION_LLAVE - Date.now())/60000) : 0; },
+  pedirCodigo:pedirCodigo, fijarCodigo:fijarCodigo, protegerClase:protegerClase, claseAbierta:claseAbierta, hayCodigo:hayCodigo, bloquear:bloquear, minutosLlave:function(){ var t = llave(); return t ? Math.ceil((t + DURACION_LLAVE - Date.now())/60000) : 0; },
   listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, horaHoja:function(){ return horaCSV; },
   grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,

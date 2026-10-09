@@ -974,6 +974,7 @@ function pintarTodo(){
   if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); }
   pintarBoveda();
   if(perfilDe && !$('mPerfil').hidden) pintarPerfil();
+  if(window.JAVI && !soloBoveda) JAVI.protegerClase(grupo, { otras:Object.keys(EF.grupos), cambiar:function(g){ grupo = g; try{ localStorage.setItem('ef-grupo', g); }catch(e){} pintarTodo(); } });   /* código de clase */
 }
 
 /* ============================================================

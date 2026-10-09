@@ -95,7 +95,14 @@ function registro(nombres){
   $('tReg').innerHTML = cab+filas;
 }
 registro([]);
-if(window.JAVI) JAVI.listo(function(){ var r = JAVI.grupo('4ºA'); if(r) registro(r.nombres); });
+/* los nombres solo con el código de clase (4A); sin él, el registro sale en blanco para escribirlos a mano */
+function ponerNombres(){ var r = JAVI.grupo('4ºA'); if(r) registro(r.nombres); var b = document.getElementById('bNombres'); if(b) b.remove(); }
+if(window.JAVI) JAVI.listo(function(){
+  if(JAVI.claseAbierta('4ºA')){ ponerNombres(); return; }
+  var b = document.createElement('button'); b.type = 'button'; b.id = 'bNombres'; b.textContent = '🔒 Poner los nombres de 4ºA';
+  b.addEventListener('click', function(){ JAVI.protegerClase('4ºA', { alAbrir:ponerNombres }); });
+  var nav = document.querySelector('nav.barra'); if(nav) nav.appendChild(b);
+});
 Array.prototype.forEach.call(document.querySelectorAll('[data-p]'), function(b){
   b.addEventListener('click', function(){
     var id = b.dataset.p; Array.prototype.forEach.call(document.querySelectorAll('.hoja'), function(h){ h.style.display = h.id===id ? '' : 'none'; });

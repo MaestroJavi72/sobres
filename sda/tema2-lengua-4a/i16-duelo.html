@@ -87,6 +87,7 @@ function config(){
     '<div class="miembros" id="miembros">Si no sorteáis, el duelo es entre dos equipos sin nombres de alumnos.</div>'+
     '<button class="gran" id="bEmpezar" type="button">⚔️ ¡Empezar el duelo! ('+PREGUNTAS+' preguntas)</button></div>';
   $('bSortear').addEventListener('click', function(){
+    if(window.JAVI && !JAVI.claseAbierta('4ºA')){ JAVI.protegerClase('4ºA', { alAbrir:function(){ $('bSortear').click(); } }); return; }   /* código de clase */
     var r = window.JAVI && JAVI.grupo('4ºA'); if(!r){ alert('No se ha podido leer la lista de 4ºA.'); return; }
     var l = A.mezclar(r.nombres); EQ.A.m = []; EQ.B.m = []; l.forEach(function(n, i){ (i%2 ? EQ.B.m : EQ.A.m).push(n); });
     $('miembros').innerHTML = '<b>'+A.esc($('nA').value)+':</b> '+EQ.A.m.map(A.esc).join(', ')+'<br><b>'+A.esc($('nB').value)+':</b> '+EQ.B.m.map(A.esc).join(', ');

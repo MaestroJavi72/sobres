@@ -424,6 +424,7 @@ function todo(){
   document.documentElement.setAttribute('data-tema', JAVI.temaDe(grupo));
   st = leer(claveEstado(), null);
   pintarGrupos(); pintarPreparar(); pintarFaltan(); pintarJuego();
+  JAVI.protegerClase(grupo, { cambiar:function(g){ grupo = g; guardar('tablas-grupo', g); todo(); } });   /* código de clase */
 }
 JAVI.listo(function(){ todo(); verVista((location.hash||'').replace('#','')); JAVI.avisoPrueba(); });
 })();

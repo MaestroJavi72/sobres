@@ -95,6 +95,11 @@ function montarTurno(s, cod, d, nav){
 
   function pintar(){
     var dp = daPunto(), pres = presentes();
+    if(!JAVI.claseAbierta(g)){   /* privacidad: sin el código de la clase no se ven nombres */
+      box.innerHTML = '<button type="button" class="dp" data-a="punto" aria-pressed="'+dp+'">'+(dp ? '⭐ Da punto' : '☆ No da punto')+'</button>'+
+        '<button type="button" data-a="abrir">🔒 ¿Quién responde? (código de '+esc(g)+')</button>';
+      return;
+    }
     var h = '<button type="button" class="dp" data-a="punto" aria-pressed="'+dp+'" title="Toca para cambiarlo">'+(dp ? '⭐ Da punto' : '☆ No da punto')+'</button>'+
       '<button type="button" data-a="azar">🎲 Al azar</button>'+
       '<select data-a="elegir" aria-label="Elegir alumno"><option value="">o elige…</option>'+pres.map(function(n){ return '<option>'+esc(n)+'</option>'; }).join('')+'</select>'+
@@ -130,6 +135,7 @@ function montarTurno(s, cod, d, nav){
       guardar(kFaltan, f); pintar(); return;
     }
     var a = b.dataset.a;
+    if(a==='abrir'){ JAVI.protegerClase(g, { alAbrir:pintar }); return; }
     if(a==='punto'){ JAVI.guardarAjuste(kPunto, daPunto() ? 'no' : 'si'); pintar(); }
     if(a==='azar') girar();
     if(a==='ok' && quien && !mov){ mov = JAVI.darPuntos(g, quien, 1, 'Acierto', s.titulo+' · '+cod+' '+(d.nombre||'')); pintar(); }

@@ -756,6 +756,7 @@ function todo(){
   $('fecha').value = fecha;
   elegirAsig();
   ponerTema(); pintarGrupos(); pintarAsigs(); cargarPlan(); pintarSda(); pintarPlan(); pintarFaltan(); pintarClase();
+  JAVI.protegerClase(grupo, { cambiar:function(g){ grupo = g; asig = null; escribirL('sesion-grupo', g); todo(); } });   /* código de clase para ver a los alumnos */
 }
 JAVI.listo(function(){ todo(); verVista((location.hash||'').replace('#','')); JAVI.avisoPrueba(); });
 })();

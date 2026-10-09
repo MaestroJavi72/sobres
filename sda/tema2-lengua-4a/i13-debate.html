@@ -147,6 +147,7 @@ $('bExportar').addEventListener('click', function(){
 });
 restante = duracion(); pintar();
 ACT.iniciar('tema2-lengua-4a');
+if(window.JAVI) JAVI.listo(function(){ JAVI.protegerClase('4ºA'); });   /* código de clase: el debate muestra nombres */
 if(window.JAVI) JAVI.listo(pintar);
 })();
 </script>
