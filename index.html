@@ -17,8 +17,13 @@
 .volver[hidden]{display:none}
 
 /* ---------- las tres puertas ---------- */
-.puertas{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
+.puertas{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:22px}
 @media (max-width:1100px){ .puertas{grid-template-columns:repeat(2,1fr)} }
+.puerta.lengua{background:linear-gradient(160deg,#4a1c24,#1f0d12);border-color:#c9a34a}
+.temaL{margin:18px 0 6px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.temaL h3{font-family:var(--f-titulo);color:var(--titulo-color);text-shadow:var(--titulo-sombra);font-size:clamp(22px,2.8vw,32px)}
+.temaL span{font-family:var(--f-sub);color:var(--tinta-suave);font-size:15px}
+.temaL .ahora{background:var(--acento);color:var(--acento-tinta);font-family:var(--f-sub);font-weight:700;font-size:12px;padding:3px 9px;border-radius:8px;letter-spacing:.08em}
 .puerta.bano{background:linear-gradient(160deg,#3a1d1d,#1a1010);border-color:#c95a4a}
 @media (max-width:820px){ .puertas{grid-template-columns:1fr} }
 .puerta{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;min-height:clamp(200px,34vh,340px);padding:22px;border-radius:26px;
@@ -115,6 +120,7 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
   <nav class="pestanas" id="pestanas" aria-label="Secciones">
     <a href="#" data-v="inicio">🏠 Inicio</a>
     <a href="#tutoria" data-v="tutoria">🏰 Tutoría</a>
+    <a href="#lengua" data-v="lengua">📖 Lengua</a>
     <a href="#ef" data-v="ef">🤸 Educación Física</a>
     <a href="#planificacion" data-v="planificacion" id="pestPlan">📅 Planificación</a>
     <a href="bano/" data-v="bano">🚦 Baño</a>
@@ -127,6 +133,11 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
         <span class="ic" aria-hidden="true">🏰</span>
         <h2>Tutoría</h2><span class="gr">4ºA · Hogwarts</span>
         <p>Galeones, cartas, Mercader, Bóveda y sorteos.</p>
+      </a>
+      <a class="puerta lengua" href="#lengua" data-tema="hp">
+        <span class="ic" aria-hidden="true">📖</span>
+        <h2>Lengua</h2><span class="gr">4ºA · por temas</span>
+        <p>Cada tema con su semana, sus juegos y sus fichas.</p>
       </a>
       <a class="puerta ef" href="#ef" id="puertaEF">
         <span class="ic" aria-hidden="true">🤸</span>
@@ -152,6 +163,7 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
 
   <!-- SECCIONES -->
   <section class="vista" id="v-tutoria" hidden></section>
+  <section class="vista" id="v-lengua" hidden></section>
   <section class="vista" id="v-ef" hidden></section>
   <section class="vista" id="v-planificacion" hidden></section>
 
@@ -179,6 +191,11 @@ var SECCIONES = {
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/?grupo=4oA', profe:true },
     { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario. Se guarda sin código.', url:'bano/', alumnos:true },
     { ic:'✖️', n:'Duelo de tablas', d:'Para Matemáticas (compañero): multiplicaciones al azar, por alumno o por mesas, con galeones.', url:'tablas/?grupo=4oA', alumnos:true }
+  ]},
+  lengua: { t:'Lengua', gr:'4ºA', ambito:'tutoria', titMods:'Para cualquier tema', mods:[
+    { ic:'📋', n:'Sesión de Lengua', d:'La sesión de hoy por fases y la Ruleta de preguntas.', url:'sesion/?grupo=4oA&asig=LCL', profe:true },
+    { ic:'🏆', n:'Premio', d:'Carta (o galeones) por una buena nota o un buen examen, proyectado.', url:'hogwarts/#premio', profe:true },
+    { ic:'📚', n:'Situaciones de aprendizaje', d:'Crear o editar las de Lengua y repartirlas en el horario.', url:'planificacion/#sda', profe:true }
   ]},
   ef: { t:'Educación Física', gr:'4ºA · 4ºB · 3ºA · 3ºB', ambito:'ef', multiverso:true, mods:[
     { ic:'🤸', n:'Gamificación EF', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', url:'ef/', profe:true },
@@ -216,7 +233,7 @@ function pintarSeccion(clave){
   var S = SECCIONES[clave], box = $('v-'+clave), h = '';
   h += '<div class="titSec"><h2>'+esc(S.t)+'</h2><span class="gr">'+esc(S.gr)+'</span></div>';
   if(S.multiverso) h += '<p class="lema" style="font-family:var(--f-sub);color:var(--tinta-suave)">El mundo cambia con el trimestre:</p><nav class="multi" id="multi" aria-label="Mundos del curso"></nav>';
-  h += '<div class="mods"></div>';
+  h += '<div class="temas"></div>'+(S.titMods ? '<div class="temaL"><h3>'+esc(S.titMods)+'</h3></div>' : '')+'<div class="mods"></div>';
   /* lo que aún no está hecho va en una sola línea, para no llenar la pantalla */
   var pronto = profe ? S.mods.filter(function(m){ return m.listo===false; }) : [];
   if(pronto.length) h += '<p class="pronto"><b>Próximamente:</b> '+pronto.map(function(m){ return m.ic+' '+esc(m.n); }).join(' · ')+'</p>';
@@ -249,12 +266,12 @@ var dentro = false;
 function mostrar(){
   var v = (location.hash||'').replace('#','');
   if(!SECCIONES[v]) v = 'inicio';
-  ['inicio','tutoria','ef','planificacion'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
+  ['inicio','tutoria','lengua','ef','planificacion'].forEach(function(k){ $('v-'+k).hidden = k!==v; });
   Array.prototype.forEach.call(document.querySelectorAll('#pestanas a'), function(a){ a.setAttribute('aria-selected', a.dataset.v===v ? 'true' : 'false'); });
   $('bVolver').hidden = v==='inicio';
   /* Tutoría: siempre Harry Potter. EF: el mundo del trimestre */
   var tEF = JAVI.temaActual();
-  document.documentElement.setAttribute('data-tema', v==='tutoria' || v==='inicio' || v==='planificacion' ? 'hp' : tEF);
+  document.documentElement.setAttribute('data-tema', v==='ef' ? tEF : 'hp');
   $('puertaEF').setAttribute('data-tema', tEF);
   var t = JAVI.TEMAS[tEF];
   $('lema').textContent = v==='ef' ? t.trimestre+'º trimestre · '+t.mundo+' · CEIP Arias Montano' : 'CEIP Arias Montano';
@@ -307,16 +324,20 @@ mostrar();
 $('pie').innerHTML = JAVI.DEMO ? '👀 Se puede ver y probar todo. Para que se guarde, toca <b>🔓 Código</b> (abajo a la derecha).' : '';
 /* Tutoría: acceso directo a la situación de aprendizaje en curso (o la próxima) de 4ºA */
 function sdaEnCurso(){
-  if(!profe) return;
-  var hoy = JAVI.util.clave(new Date());
-  var ls = JAVI.sdas().filter(function(x){ return x.pagina && x.grupo==='4ºA' && (x.sesiones||[]).length; });
-  var act = ls.filter(function(x){ var f = x.sesiones.map(function(y){ return y.fecha; }).filter(Boolean).sort(); return f[f.length-1] >= hoy; })[0];
-  if(!act) return;
-  var a = document.createElement('a'); a.className = 'mod profe'; a.href = act.pagina+'&profe';
-  a.innerHTML = '<span class="ic" aria-hidden="true">📖</span><h3></h3><p></p>';
-  a.querySelector('h3').textContent = act.titulo;
-  a.querySelector('p').textContent = 'Situación de aprendizaje de '+(act.asig==='LCL' ? 'Lengua' : 'EF')+' en curso: sesiones, actividades, rúbricas y criterios.';
-  var g = document.querySelector('#v-tutoria .mods'); g.insertBefore(a, g.firstChild);
+  var box = document.querySelector('#v-lengua .temas'); if(!box) return;
+  var hoy = JAVI.util.clave(new Date()), h = '';
+  JAVI.sdas().filter(function(x){ return x.pagina && x.asig==='LCL' && (x.sesiones||[]).length; }).forEach(function(x){
+    var fs = x.sesiones.map(function(y){ return y.fecha; }).filter(Boolean).sort(), enCurso = fs[0] <= hoy && fs[fs.length-1] >= hoy;
+    var tema = (String(x.unidad||'').match(/Tema\s*\d+/i) || [''])[0], p = x.pagina+'&profe';
+    function f(d){ var q = d.split('-'); return (+q[2])+'/'+(+q[1]); }
+    h += '<div class="temaL"><h3>'+esc((tema ? tema+' · ' : '')+x.titulo)+'</h3>'+(enCurso ? '<span class="ahora">AHORA</span>' : '')+
+         '<span>'+esc(x.grupo)+' · '+x.sesiones.length+' sesiones · del '+f(fs[0])+' al '+f(fs[fs.length-1])+'</span></div><div class="mods">'+
+      [['📅','Semana a semana','Cada día con lo que toca, sus juegos y sus fichas.','#semana'],
+       ['🎮','Juegos y fichas','Los '+Object.keys(x.enlaces||{}).length+' juegos para la pizarra y las '+(x.recursos||[]).length+' fichas e imprimibles.','#juegos'],
+       ['📜','Planificación completa','La situación de aprendizaje entera: reto, criterios, sesiones y evaluación.','#plan']
+      ].map(function(m){ return '<a class="mod profe" href="'+p+m[3]+'"><span class="ic" aria-hidden="true">'+m[0]+'</span><h3>'+m[1]+'</h3><p>'+esc(m[2])+'</p></a>'; }).join('')+'</div>';
+  });
+  box.innerHTML = h || '<p class="pronto">Todavía no hay temas de Lengua con página.</p>';
 }
 JAVI.listo(function(){ pintarMundos(); sdaEnCurso(); pintarHoy(); mostrar(); JAVI.avisoPrueba(); });
 })();
