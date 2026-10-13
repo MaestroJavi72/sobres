@@ -1,0 +1,29 @@
+{
+ "clase": "4ºA",
+ "nota": "Número de lista de cada alumno (lo que escriben para entrar en las misiones de La Copa de las Casas). Solo nombres de pila, como en alumnos.json.",
+ "numeros": {
+  "Valeria": 1,
+  "Ahinara": 2,
+  "Martina": 3,
+  "Imran": 4,
+  "Amanda": 5,
+  "José M": 6,
+  "José F": 7,
+  "Leila": 8,
+  "Sara": 9,
+  "Yaiza": 10,
+  "Jesús": 11,
+  "Alejandro": 12,
+  "Pedro": 13,
+  "Leonel": 14,
+  "Alexia": 15,
+  "Sofía": 16,
+  "Dylan": 17,
+  "Ainhoa": 18,
+  "Manuela": 19,
+  "Carla": 20,
+  "Claudia": 21,
+  "Lucas": 22,
+  "María José": 23
+ }
+}

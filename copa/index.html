@@ -482,7 +482,7 @@ function vHome(){const ss=S.session,live=ss&&!ss.ended;
   <div class="sub">✨ El gran torneo de Lengua de 4ºA ✨</div>${CASTLE}
   <div class="crests">${HK.map(h=>hb(h)).join('')}</div>
   <div class="row"><button class="gold big" data-a="go" data-s="topics">🏰 Entrar en Hogwarts</button>${live?`<button class="big" data-a="go" data-s="game">▶ Continuar la sesión</button>`:''}</div>
-  <div class="row"><button data-a="book">📖 Libro de Hechizos (profe)</button><button data-a="go" data-s="houses">🎩 Alumnos y casas</button></div></div>`}
+  <div class="row"><button data-a="book">📖 Libro de Hechizos (profe)</button><button data-a="go" data-s="houses">🎩 Alumnos y casas</button>${window.JAVI?'<button data-a="dev">📱 Misiones en mi dispositivo</button>':''}</div></div>`}
 function vTopics(){const gs=groups();if(!V.sel)V.sel=new Set(gs.map(g=>g.k));const c=S.cfg;
   const n=S.questions.filter(q=>V.sel.has(gkey(q))).length;
   const o=(v,t,cur)=>`<option value="${v}" ${String(cur)===String(v)?'selected':''}>${t}</option>`;
@@ -540,10 +540,10 @@ function party(){SFX.fanfare();const c=$('#conf');if(!c)return;const col=['#eeba
   for(let i=0;i<70;i++)h+=`<i style="left:${Math.random()*100}%;background:${pick(col)};animation-duration:${3+Math.random()*4}s;animation-delay:${Math.random()*4}s"></i>`;c.innerHTML=h}
 
 /* ============ LIBRO DE HECHIZOS ============ */
-function vBook(){const tabs=[['q','📜 Preguntas'],['imp','📥 Importar'],['cfg','⚙️ Ajustes y datos']];
+function vBook(){const tabs=[['q','📜 Preguntas'],['imp','📥 Importar'],['dev','📱 Dispositivos'],['cfg','⚙️ Ajustes y datos']];
   return `<div class="wrap"><div class="bar"><button data-a="go" data-s="home">⬅ Salir</button><h1>📖 Libro de Hechizos</h1></div>
   <div class="tabs">${tabs.map(t=>`<button class="${V.tab===t[0]?'on':''}" data-a="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>
-  <div class="parch pad">${V.tab==='imp'?bookImp():V.tab==='cfg'?bookCfg():bookQ()}</div></div>`}
+  <div class="parch pad">${V.tab==='imp'?bookImp():V.tab==='cfg'?bookCfg():V.tab==='dev'?bookDev():bookQ()}</div></div>`}
 function bookQ(){const gs=groups(),list=S.questions.filter(q=>!V.bg||gkey(q)===V.bg);
   return `<div class="row" style="justify-content:flex-start"><select data-c="bg"><option value="">Todos los grupos (${S.questions.length})</option>${gs.map(g=>`<option value="${esc(g.k)}" ${V.bg===g.k?'selected':''}>${esc(g.k)} (${g.n})</option>`).join('')}</select>
   <button class="gold" data-a="qnew">➕ Nueva pregunta</button>${V.bg?'<button class="bad" data-a="gdel">🗑️ Borrar este grupo</button>':''}</div>
@@ -633,6 +633,58 @@ function casasPorMesas(d){const p=d.planos[d.plano_vigente],mesas=p.mesas.map(m=
   mesas.forEach(m=>{const h=CASA_ID[String((d.casas||{})[m.mesa]||'').toLowerCase()]||ALLH[m.mesa-1];m.al.forEach(n=>{const o=viejos.find(s=>s.name===n);S.students.push({id:o?o.id:uid(),name:n,house:h})})});
   S.cfg.nHouses=mesas.length>4?5:4;setHK();V.editList=false;save();render();
   toast('🪑 Casas colocadas según las mesas de '+esc(p.periodo||d.plano_vigente)+'. Ahora, la Ceremonia del Sombrero.')}
+/* ============ DISPOSITIVOS: MISIONES ============
+   El profe envía una misión (un lote de preguntas) a la Hoja; cada alumno (nombre + número de lista) o cada casa
+   la responde a su ritmo en su aparato y, al terminar, se guarda UNA fila con sus aciertos.
+   Hoja: Alumno «COPA · 4ºA» · Acción «Mision» (CartaId = id, Tipo = título o «cerrada», Carta = JSON {qs})
+         y Acción «Respuesta» (CartaId = id de la misión, Tipo = «#7» o «Casa Gryffindor», Carta = JSON {r:[1,0…], s:segundos}).
+   Las respuestas se guardan sin el código de profe (escribirLibre), como el farol del baño. */
+const TAGC='COPA · 4ºA';let LISTA=null;
+function loadLista(){return LISTA?Promise.resolve(LISTA):fetch(JAVI.BASE+'data/lista-4A.json',{cache:'no-store'}).then(r=>r.json()).then(d=>LISTA=d.numeros)}
+function rowsC(acc){return JAVI.filas().filter(f=>plain(f.alumno)===plain(TAGC)&&plain(f.accion)===acc)}
+function jrow(f){const i=f.carta.indexOf('{');if(i<0)return null;try{return JSON.parse(f.carta.slice(i))}catch(e){return null}}
+function misiones(){const m=new Map();rowsC('mision').forEach(f=>{if(plain(f.tipo)==='cerrada'){const o=m.get(f.cartaId);if(o)o.cerrada=true;return}
+  const j=jrow(f);if(j&&j.qs&&j.qs.length)m.set(f.cartaId,{id:f.cartaId,titulo:f.tipo,dia:f.dia,qs:j.qs})});return[...m.values()].reverse()}
+function respuestas(id){const m=new Map();rowsC('respuesta').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r)m.set(f.tipo,j.r)});return m}
+const sum=a=>a.reduce((x,y)=>x+y,0);
+function devEnter(){V.screen='dev';V.dev=V.dev||{};document.body.classList.remove('en-home');
+  $('#app').innerHTML='<div class="wrap home"><h1 class="title" style="font-size:2.2rem">✨ Preparando la misión… ✨</h1></div>';
+  JAVI.listo(()=>JAVI.protegerClase('4ºA',{alAbrir(){loadLista().then(()=>{V.dev.open=true;render()}).catch(()=>toast('❌ No he podido leer la lista de clase'))}}))}
+function hecha(id,who){let l=null;try{l=JSON.parse(localStorage.getItem('copa-hecha|'+id+'|'+who)||'null')}catch(e){}return l||respuestas(id).get(who)||null}
+function vDev(){const d=V.dev;
+  if(!d.who){const g=JAVI.grupo('4ºA');return `<div class="wrap"><div class="bar"><h1>📱 ¿Quién juega?</h1></div>
+    <div class="parch pad"><h3>🧙 Yo solo: toca tu nombre</h3><div class="row">${g.nombres.map(n=>`<button class="stu" style="font-size:1.25rem;padding:.6rem 1.1rem" data-a="devname" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
+    <div class="parch pad" style="margin-top:.8rem"><h3>🏰 Jugamos toda la casa con un aparato</h3><div class="row">${HK.map(h=>`<button class="big" style="background:${HOUSES[h].c};border:3px solid ${HOUSES[h].c2}" data-a="devhouse" data-h="${h}">${HOUSES[h].e} ${HOUSES[h].n}</button>`).join('')}</div></div></div>`}
+  const top=`<div class="bar"><h1>📜 ${d.m?esc(d.m.titulo):'Misiones'}</h1><span class="hb" style="--c:#3b2a6b;--c2:var(--gold)">${esc(d.who.label)}</span></div>`;
+  if(d.m&&d.end){const n=d.m.qs.length,ok=sum(d.res),fa=d.m.qs.filter((q,i)=>!d.res[i]);
+    return `<div class="wrap final">${top}<div class="cup">${ok===n?'🏆':ok>=n/2?'🌟':'💪'}</div><h2>¡Misión cumplida!</h2><p class="sub">${ok} de ${n} hechizos conseguidos. ${ok===n?'¡Perfecto!':'¡Buen trabajo! Mira lo que puedes repasar.'}</p>
+    ${d.repaso?'<p>(Era un repaso: no se ha guardado de nuevo.)</p>':'<p>✅ Tu resultado se ha enviado al profe.</p>'}
+    ${fa.length?`<div class="parch pad"><h3>📚 Para repasar</h3><ol>${fa.map(q=>`<li><b>${esc(q.text)}</b><br>Respuesta: ${esc(correctText(q))}${q.explanation?`<br><i>💡 ${esc(q.explanation)}</i>`:''}</li>`).join('')}</ol></div>`:''}
+    <div class="row"><button class="gold big" data-a="devback">📜 Más misiones</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div>`}
+  if(d.m){const q=d.m.qs[d.i];return `<div class="wrap">${top}<div class="phead"><span class="gname">Pregunta ${d.i+1} de ${d.m.qs.length}</span><span>${'⭐'.repeat(sum(d.res))}</span></div>
+    <div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div></div>`}
+  const ms=misiones().filter(m=>!m.cerrada);
+  return `<div class="wrap">${top}<div class="parch pad">${ms.map(m=>{const h=hecha(m.id,d.who.id);return `<div class="qrow"><span class="ty">${h?'✅':'📜'}</span><div class="qt"><b>${esc(m.titulo)}</b><small>${m.qs.length} preguntas${h?' · hecha: '+sum(h)+' de '+h.length:''}</small></div><button class="${h?'':'gold big'}" data-a="devplay" data-id="${esc(m.id)}">${h?'🔁 Repasar':'✨ ¡Jugar!'}</button></div>`}).join('')||'<p style="font-size:1.2rem">Todavía no hay misiones. Cuando el profe envíe una, tarda unos minutos en llegar.</p>'}
+  <div class="row"><button data-a="devref">🔄 Buscar misiones nuevas</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div></div>`}
+function devAnswered(ok){const d=V.dev,q=d.m.qs[d.i];d.res.push(ok?1:0);ok?SFX.ok():SFX.ko();
+  modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2><div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}
+function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo funcionan dentro de la web de Javificación.</p>';
+  if(!LISTA)loadLista().then(()=>{if(V.screen==='book'&&V.tab==='dev')render()}).catch(()=>{});
+  const gs=groups(),ms=misiones(),url=location.origin+location.pathname+'?solo#mision',inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
+  const res=m=>{const rs=respuestas(m.id),n=m.qs.length,fallos=m.qs.map(()=>0);let filas=[...rs.entries()];
+    filas.forEach(([w,r])=>r.forEach((x,i)=>{if(!x&&i<n)fallos[i]++}));
+    filas.sort((a,b)=>(a[0][0]==='#'?+a[0].slice(1):99)-(b[0][0]==='#'?+b[0].slice(1):99));
+    const peores=fallos.map((f,i)=>({f,i})).filter(x=>x.f>0).sort((a,b)=>b.f-a.f).slice(0,5);
+    return `<div style="border:2px solid #b08a45;border-radius:.6rem;padding:.6rem;margin:.6rem 0;${m.cerrada?'opacity:.6':''}"><div class="row" style="justify-content:space-between"><b>${esc(m.titulo)}</b><small>${m.dia} · ${n} preguntas · ${rs.size} respuestas${m.cerrada?' · cerrada':''}</small>${m.cerrada?'':`<button data-a="devclose" data-id="${esc(m.id)}">🔒 Cerrar</button>`}</div>
+    ${rs.size?`<table class="stand"><tr><th>Quién</th><th>Aciertos</th><th>Falló las preguntas</th></tr>${filas.map(([w,r])=>`<tr><td>${w[0]==='#'?esc(w.slice(1)+' · '+(inv[w]||'?')):esc(w)}</td><td><b>${sum(r)}</b> de ${r.length}</td><td>${r.map((x,i)=>x?'':i+1).filter(Boolean).join(', ')||'—'}</td></tr>`).join('')}</table>
+    ${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
+  return `<h3>📤 Enviar una misión a los dispositivos</h3>
+  <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
+  <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="0">Todas</option></select></label>
+  <label>Título<input id="dv_t" placeholder="Repaso del tema"></label></div>
+  <div class="row"><button class="gold big" data-a="devsend">📤 Enviar misión</button></div>
+  <p>Los alumnos entran en <b style="-webkit-user-select:text;user-select:text">${esc(url)}</b>, escriben el código de clase (4A), tocan su nombre y ponen su número de lista (o eligen su casa). La misión tarda unos minutos en aparecer en sus aparatos, y sus respuestas tardan otros tantos en llegar aquí. Las preguntas de «respuesta abierta» no se envían.</p>
+  <h3>📊 Resultados <button data-a="devref">🔄 Actualizar</button></h3>${ms.map(res).join('')||'<p>Aún no has enviado ninguna misión.</p>'}`}
 /* ============ CEREMONIA ============ */
 function balanced(){const st=shuffle(S.students),hs=shuffle(HK);return st.map((s,i)=>({id:s.id,name:s.name,h:hs[i%hs.length]}))}
 function ceremony(keep){let plan;
@@ -858,9 +910,11 @@ const GAMEFN={
 
 /* ============ ACCIONES ============ */
 function render(){stopTimer();cancelAnimationFrame(V.raf);V.paused=false;
+  if(V.screen==='dev'&&!(V.dev&&V.dev.open))return devEnter();
   if((V.screen==='game'||V.screen==='final')&&!S.session)V.screen='home';
   if(V.screen==='game'&&S.session.ended)V.screen='final';
-  $('#app').innerHTML={home:vHome,topics:vTopics,houses:vHouses,game:vGame,final:vFinal,book:vBook}[V.screen]();
+  $('#app').innerHTML={home:vHome,topics:vTopics,houses:vHouses,game:vGame,final:vFinal,book:vBook,dev:vDev}[V.screen]();
+  if(V.screen==='dev'&&V.dev.m&&!V.dev.end)mountAnswer($('#ans'),V.dev.m.qs[V.dev.i],devAnswered);
   if(V.screen==='game'){updateScore();S.session.mode==='match'?matchNext():S.session.round?showIntro():nextRound()}
   if(V.screen==='final')party();document.body.classList.toggle('en-home',V.screen==='home');window.scrollTo(0,0)}
 function applyMute(){$('#mute').textContent=S.cfg.muted?'🔇':'🔊'}
@@ -921,6 +975,26 @@ const ACT={
         if(n>0){JAVI.darPuntos('4ºA',s.name,n,'Acierto','La Copa de las Casas · '+HOUSES[h].n);c++}});if(n>0)res.push(HOUSES[h].n+': +'+n+' a '+c+' alumnos')});
       ss.paid=res.join(' · ')+(nf?' · Sin galeones por faltar hoy: '+nf:'')+(fuera.length?' · No están en la lista de 4ºA: '+fuera.join(', '):'')+(JAVI.PRUEBA?' · (modo prueba: no se ha enviado nada)':'');
       save();render();SFX.fanfare()})})},
+  dev(){devEnter()},
+  devname(d){V.dev.try=d.n;modal(`<h2>${esc(d.n)}</h2><p>Escribe tu número de lista:</p><input id="dpin" type="number" inputmode="numeric" min="1" max="40" style="font-size:2rem;width:7rem;text-align:center"><div id="dpe" class="err"></div><div class="row"><button data-a="mno">No soy yo</button><button class="gold big" data-a="devpin">Entrar</button></div>`);
+    const i=$('#dpin');i.focus();i.onkeydown=e=>{if(e.key==='Enter')ACT.devpin()}},
+  devpin(){const n=V.dev.try,v=parseInt($('#dpin').value);if(v&&LISTA[n]===v){V.dev.who={id:'#'+v,label:n};closeModal();SFX.magic();render()}else{$('#dpe').textContent='Ese no es tu número. Prueba otra vez.';$('#dpin').value='';SFX.ko()}},
+  devhouse(d){V.dev.who={id:'Casa '+HOUSES[d.h].n,label:HOUSES[d.h].e+' '+HOUSES[d.h].n};SFX.magic();render()},
+  devout(){V.dev={open:true};render()},
+  devback(){const d=V.dev;d.m=null;d.end=false;render()},
+  devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
+  devplay(d){const v=V.dev,m=misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.repaso=!!hecha(m.id,v.who.id);render()},
+  devnext(){closeModal();const d=V.dev;d.i++;if(d.i>=d.m.qs.length){d.end=true;SFX.fanfare();
+      if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:'Respuesta',cartaId:d.m.id,tipo:d.who.id,carta:JSON.stringify({r:d.res,s:Math.round((Date.now()-d.t0)/1000)})});
+        try{localStorage.setItem('copa-hecha|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res))}catch(e){}}}
+    render()},
+  devsend(){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para enviar la misión',texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Enviar misión».'});
+    const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0;let qs=shuffle(S.questions.filter(q=>q.type!=='open'&&(!g||gkey(q)===g)));if(n>0)qs=qs.slice(0,n);
+    if(!qs.length)return toast('No hay preguntas para enviar en ese grupo');
+    const titulo=($('#dv_t').value.trim()||(g||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+    JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:'m'+Date.now().toString(36),tipo:titulo,carta:JSON.stringify({qs:qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;return o})})});
+    render();toast('📤 Misión enviada: '+qs.length+' preguntas. Tarda unos minutos en llegar a los aparatos.')})},
+  devclose(d){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo();ask('¿Cerrar esta misión? Dejará de salir en los aparatos (los resultados se conservan).',()=>{JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:d.id,tipo:'cerrada',carta:''});render()})})},
   /* libro */
   qnew(){editor(null)},qed(d){editor(qById(d.id))},
   qdup(d){const q=JSON.parse(JSON.stringify(qById(d.id)));q.id=uid();S.questions.splice(S.questions.findIndex(x=>x.id===d.id)+1,0,q);save();render()},
@@ -951,7 +1025,7 @@ const CH={
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t||t.disabled)return;const f=ACT[t.dataset.a];if(f){if(t.dataset.a!=='mute')SFX.click();f(t.dataset,t)}});
 document.addEventListener('change',e=>{const t=e.target.closest('[data-c]');if(t&&CH[t.dataset.c])CH[t.dataset.c](t)});
-S=load();setHK();applyMute();render();
+S=load();setHK();applyMute();if(window.JAVI&&/mision/.test(location.hash))V.screen='dev';render();
 </script>
 </body>
 </html>
