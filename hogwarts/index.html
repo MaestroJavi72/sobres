@@ -595,6 +595,9 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
       </div>
       <div class="podio" id="podio"></div>
       <ol class="podResto" id="podResto"></ol>
+      <h2 class="sec" id="podCasasT" hidden>Casa del mes</h2>
+      <p class="pLbl" id="podCasasN" hidden></p>
+      <ol class="podResto" id="podCasas"></ol>
       <div class="podAcc">
         <span class="pLbl" id="podNota"></span>
         <button class="go" id="podDar" type="button">Entregar premios</button>
@@ -2233,6 +2236,7 @@ function tarjetaMaestro(){
   return b;
 }
 function pintarBanco(){
+  try{ pintarGrupos(); }catch(e){}
   if(!galeonesActivos()) return;
   var est = $('bEstado');
   if(banco.error && !banco.cargado) est.textContent = 'No se ha podido leer la Hoja. Comprueba la conexión y pulsa «Actualizar».';
@@ -2445,28 +2449,72 @@ function deshacer(s){
 /* GRUPOS DE TRABAJO: las mesas de 4ºA (data/mesas-4A.json, plano vigente) con su nombre de casa.
    Tocar un grupo abre «dar o quitar puntos» para todos sus alumnos a la vez. */
 var COLOR_CASA = { 'gryffindor':['🦁','#8f0b0d','#eeba30'], 'hufflepuff':['🦡','#a67c00','#1d1a16'], 'ravenclaw':['🦅','#1a2b6b','#b08d57'], 'slytherin':['🐍','#1a5a34','#c0c0c0'], 'orden del fénix':['🔥','#5b2a86','#ff9a3c'] };
-var gruposTrabajo = [];
+var gruposTrabajo = [], mesasData = null;
+function gruposDePlano(d, p){
+  if(!p) return [];
+  var mesas = p.mesas.map(function(m){ return { mesa:m.mesa, al:m.alumnos.slice() }; });
+  if(p.pupitre_individual){
+    var t = mesas.filter(function(m){ return m.mesa===p.equipo_pupitre; })[0] || mesas.slice().sort(function(a,b){ return a.al.length-b.al.length || a.mesa-b.mesa; })[0];
+    t.al.push(p.pupitre_individual);
+  }
+  return mesas.map(function(m){ return { mesa:m.mesa, nombre:(d.casas||{})[m.mesa] || 'Mesa '+m.mesa, alumnos:m.al }; });
+}
 function cargarGrupos(){
   fetch((window.JAVI ? JAVI.BASE : '../')+'data/mesas-4A.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(d){
-    var p = d.planos[d.plano_vigente]; if(!p) return;
-    var mesas = p.mesas.map(function(m){ return { mesa:m.mesa, al:m.alumnos.slice() }; });
-    if(p.pupitre_individual){
-      var t = mesas.filter(function(m){ return m.mesa===p.equipo_pupitre; })[0] || mesas.slice().sort(function(a,b){ return a.al.length-b.al.length || a.mesa-b.mesa; })[0];
-      t.al.push(p.pupitre_individual);
-    }
-    gruposTrabajo = mesas.map(function(m){ return { mesa:m.mesa, nombre:(d.casas||{})[m.mesa] || 'Mesa '+m.mesa, alumnos:m.al }; });
-    pintarGrupos();
+    mesasData = d;
+    gruposTrabajo = gruposDePlano(d, d.planos[d.plano_vigente]);
+    pintarGrupos(); if($('podMes').value) pintarPodio();
   }).catch(function(){});
+}
+/* CASA DEL MES: puntos netos del mes de cada casa (las mesas del plano de ese mes; si no lo hay, el vigente).
+   Como hay casas de 4 y de 5, se ordena por la MEDIA por alumno; se enseña también el total.
+   Empate: menos negativos por alumno; si sigue, ganan todas las empatadas. */
+var PREMIO_CASA = 1;
+function gruposDeMes(mes){
+  if(!mesasData) return [];
+  var P = mesasData.planos, per = normal(nombreMes(mes));
+  var k = Object.keys(P).filter(function(x){ return normal(P[x].periodo)===per; })[0] || mesasData.plano_vigente;
+  return gruposDePlano(mesasData, P[k]);
+}
+function rankingCasas(mes){
+  var por = {}; rankingMes(mes).forEach(function(r){ por[r.nombre] = r; });
+  var arr = gruposDeMes(mes).map(function(g){
+    var al = g.alumnos.filter(function(n){ return por[n]; }), tot = 0, neg = 0;
+    al.forEach(function(n){ tot += por[n].neto; neg += por[n].neg; });
+    return { nombre:g.nombre, mesa:g.mesa, alumnos:al, total:tot, media:al.length ? tot/al.length : 0, neg:al.length ? neg/al.length : 0 };
+  });
+  arr.sort(function(a,b){ return b.media-a.media || a.neg-b.neg || a.mesa-b.mesa; });
+  var puesto = 0, prev = null;
+  arr.forEach(function(r){ if(!prev || r.media!==prev.media || r.neg!==prev.neg) puesto++; r.puesto = puesto; prev = r; });
+  return arr;
+}
+function unDecimal(x){ return (Math.round(x*10)/10).toString().replace('.', ','); }
+function pintarCasasMes(mes){
+  var rk = rankingCasas(mes), hay = rk.length>0;
+  $('podCasasT').hidden = !hay; $('podCasasN').hidden = !hay; $('podCasas').innerHTML = '';
+  if(!hay) return;
+  $('podCasasN').textContent = 'Suma de los puntos netos del mes de cada casa. Gana la mejor media por alumno (hay casas de 4 y de 5). Al entregar los premios, cada alumno de la casa ganadora recibe +'+PREMIO_CASA+'.';
+  rk.forEach(function(r){
+    var k = COLOR_CASA[r.nombre.toLowerCase()] || ['🪑'];
+    var li = document.createElement('li');
+    li.innerHTML = '<span></span><b></b>';
+    li.firstChild.textContent = r.puesto+'º · '+k[0]+' '+r.nombre+' ('+r.alumnos.length+')'+(r.puesto===1 && r.total>0 ? ' 🏆' : '');
+    li.lastChild.textContent = (r.total>0?'+':'')+r.total+' en total · media '+(r.media>0?'+':'')+unDecimal(r.media);
+    li.title = r.alumnos.join(', ');
+    $('podCasas').appendChild(li);
+  });
 }
 function pintarGrupos(){
   var caja = $('bGrupos'); if(!caja) return;
   caja.hidden = !gruposTrabajo.length; if(!gruposTrabajo.length) return;
   caja.innerHTML = '<span>Grupos de trabajo:</span>';
+  var totMes = {}; try{ rankingCasas(mesDe(clave(new Date()))).forEach(function(r){ totMes[r.nombre] = r.total; }); }catch(e){}
   gruposTrabajo.forEach(function(g){
     var k = COLOR_CASA[g.nombre.toLowerCase()] || ['🪑','#2a3a55','#e8c872'];
     var b = document.createElement('button'); b.type = 'button';
     b.style.setProperty('--c', k[1]); b.style.setProperty('--b', k[2]);
-    b.textContent = k[0]+' '+g.nombre+' ('+g.alumnos.length+')';
+    var tm = totMes[g.nombre];
+    b.textContent = k[0]+' '+g.nombre+' ('+g.alumnos.length+')'+(tm!=null ? ' · '+(tm>0?'+':'')+tm+' este mes' : '');
     b.title = 'Mesa '+g.mesa+': '+g.alumnos.join(', ');
     b.addEventListener('click', function(){
       var l = g.alumnos.filter(function(n){ return CONFIG.alumnos.indexOf(n)>=0; });
@@ -2787,6 +2835,7 @@ function pintarPodio(){
   nota.textContent = hecho ? 'Premios de '+nombreMes(mes)+' entregados.' :
     (terminado ? 'El mes ha terminado: ya puedes entregar los premios.' : 'El mes sigue en marcha. Se entregan cuando termine (o antes, si quieres).');
   $('podConfirma').hidden = true;
+  pintarCasasMes(mes);
 }
 function entregarPremios(){
   var mes = $('podMes').value, rk = rankingMes(mes), quienCarta = [], lineas = [];
@@ -2796,6 +2845,11 @@ function entregarPremios(){
       lineas.push(r.nombre+' +'+pr.g);
       if(pr.carta) quienCarta.push(r.nombre);
     });
+  });
+  /* casa del mes: +PREMIO_CASA a cada alumno de la casa (o casas) con mejor media, si es positiva */
+  rankingCasas(mes).filter(function(c){ return c.puesto===1 && c.total>0; }).forEach(function(c){
+    c.alumnos.forEach(function(n){ enviarMovimiento(n, 'Galeones', PREMIO_CASA, 'Casa del mes de '+nombreMes(mes)+' ('+c.nombre+')', TAG_PREMIO); });
+    lineas.push(c.nombre+' +'+PREMIO_CASA+' cada uno');
   });
   aviso('¡Campeones de '+MESES_N[+mes.split('-')[1]-1]+'! '+lineas.join(' · '));
   pintarBanco();

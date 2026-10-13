@@ -79,6 +79,7 @@ No hay servidor. Las dos páginas **escriben** en un Formulario de Google (POST 
 - Comportamientos en `G.motivos`, por categoría para los informes: `clase` (Trabajo de clase, Lengua), `actitud` (Actitudinal, EF y Lengua) y `ef`. La **Tarea** abre un selector de valor (+1…+5 / −1…−5).
 - 13 niveles (`G.niveles`, de 0 a 200 acumulados).
 - El Mercader cobra en galeones, aplica las ofertas del día y no deja comprar sin saldo. Existe la «carta de premio» gratis (solo con `?profe`).
+- **Casa del mes (13/10/2026):** en Campeones del mes, clasificación de las casas (mesas de `data/mesas-4A.json`; se usa el plano cuyo `periodo` es ese mes y, si no hay, el vigente) con los mismos puntos netos del mes. Se ordena por **media por alumno** (hay casas de 4 y de 5) y se enseña el total; empate: menos negativos por alumno. Al «Entregar premios», cada alumno de la casa ganadora recibe **+1** (`PREMIO_CASA`, decisión de Javi, motivo «Casa del mes de …», no cuenta para los rankings). Los botones de Grupos de trabajo enseñan el total del mes en curso.
 - **Campeones del mes:** puntos netos del mes, sin contar compras ni premios. 1º +3 y un pack sorpresa, 2º +3, 3º +2. Empate: gana quien tiene menos negativos; si persiste, todos.
 - Herramientas: al azar (sin repetir), temporizador y cronómetro con vueltas.
 
