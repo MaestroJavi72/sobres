@@ -174,6 +174,17 @@ small{opacity:.8}
 .pvm{margin-bottom:.5rem}
 .dhelp{text-align:center;font-size:1.15rem;margin:.4rem 0}
 .duel{height:11vh;min-height:4.5rem}
+.mscore{display:flex;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap;font-size:1.15rem;margin:.2rem 0 .4rem}
+.mscore b.sc{font-size:2.8rem;color:var(--gold);text-shadow:0 .15rem 0 #000;min-width:6rem;text-align:center}
+.mscore small{width:100%;text-align:center;font-size:1rem;opacity:.9}
+.pitch2{justify-content:space-between;padding:0 7%}
+.pitch2 .ball{left:50%;bottom:38%;margin-left:-1rem}
+.pitch2 .ball.goalR{left:88%;bottom:58%;transform:scale(.6)}
+.pitch2 .ball.goalL{left:12%;bottom:58%;transform:scale(.6)}
+.stand{width:100%;border-collapse:collapse;font-size:1rem;margin:.6rem 0}
+.stand th,.stand td{padding:.25rem .4rem;text-align:center;border-bottom:1px solid rgba(120,80,20,.35)}
+.stand td:first-child,.stand th:first-child{text-align:left}
+.msel{font-size:1.3rem;font-weight:bold}
 /* modal */
 .ov{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem;overflow:auto}
 .dlg{max-width:38rem;width:100%;padding:1.2rem;text-align:center;max-height:96vh;overflow:auto;animation:pop .35s}
@@ -385,7 +396,7 @@ const stu=id=>S.students.find(s=>s.id===id);
 /* ============ ESTADO ============ */
 let S,V={screen:'home',tab:'q',bg:'',sel:null,unlocked:false,paused:false};
 function defState(){return{v:1,cfg:{pass:'alohomora',muted:false,defTime:40,gameMode:'random',part:'mix',maxQ:0,jokers:1,
-  games:{duelo:true,snitch:true,pociones:true,quidditch:true,mapa:true,camara:true},nHouses:5},students:[],questions:parseText(SAMPLE).qs,session:null}}
+  games:{duelo:true,snitch:true,pociones:true,quidditch:true,mapa:true,camara:true},nHouses:5,mode:'mix',matchGame:'quidditch',matchN:5},students:[],questions:parseText(SAMPLE).qs,session:null}}
 function load(){let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   const def=defState();if(!d||!Array.isArray(d.questions))return def;
   d.cfg=Object.assign(def.cfg,d.cfg||{});d.cfg.games=Object.assign(defState().cfg.games,d.cfg.games||{});d.students=d.students||[];return d}
@@ -479,7 +490,10 @@ function vTopics(){const gs=groups();if(!V.sel)V.sel=new Set(gs.map(g=>g.k));con
   <div class="parch pad"><div class="row"><button data-a="selall" data-v="1">Marcar todos</button><button data-a="selall" data-v="0">Quitar todos</button></div>
   <div class="groups">${gs.map(g=>`<button class="grp ${V.sel.has(g.k)?'on':''}" data-a="selg" data-k="${esc(g.k)}"><b>${V.sel.has(g.k)?'✅':'⬜'} ${esc(g.k)}</b>${g.n} preguntas</button>`).join('')||'<p>No hay preguntas todavía. Créalas en el Libro de Hechizos.</p>'}</div>
   <div class="opts2"><label>Nº de preguntas<select data-c="cfg" data-k="maxQ">${o(0,'Todas ('+n+')',c.maxQ)}${[5,8,10,12,15,20,30].map(x=>o(x,x,c.maxQ)).join('')}</select></label>
-  <label>Minijuego<select data-c="cfg" data-k="gameMode">${o('random','🎲 Al azar',c.gameMode)}${Object.keys(GAMES).map(k=>o(k,GAMES[k].e+' '+GAMES[k].n,c.gameMode)).join('')}</select></label>
+  <label>Forma de jugar<select data-c="cfg" data-k="mode">${o('mix','🎲 Minijuegos variados',c.mode)}${o('match','🏆 Competición por partidos (dos casas)',c.mode)}</select></label>
+  ${c.mode==='match'?`<label>Partidos de<select data-c="cfg" data-k="matchGame">${o('quidditch','🏟️ Quidditch (goles)',c.matchGame)}${o('duelo','⚡ Duelo de varitas',c.matchGame)}</select></label>
+  <label>Cada partido<select data-c="cfg" data-k="matchN">${[3,5,7,10].map(x=>o(x,'Al mejor de '+x,c.matchN)).join('')}</select></label>`:''}
+  <label ${c.mode==='match'?'hidden':''}>Minijuego<select data-c="cfg" data-k="gameMode">${o('random','🎲 Al azar',c.gameMode)}${Object.keys(GAMES).map(k=>o(k,GAMES[k].e+' '+GAMES[k].n,c.gameMode)).join('')}</select></label>
   <label>¿Quién responde?<select data-c="cfg" data-k="part">${o('mix','Mezcla (representante y toda la casa)',c.part)}${o('rep','Siempre un representante',c.part)}${o('team','Siempre toda la casa',c.part)}</select></label></div>
   <div class="row"><button class="gold big" data-a="go" data-s="houses" ${n?'':'disabled'}>Siguiente: las casas ▶</button></div></div></div>`}
 function vHouses(){const un=S.students.filter(s=>!s.house),has=S.students.length>0,canPlay=V.sel&&S.questions.some(q=>V.sel.has(gkey(q)));
@@ -509,6 +523,7 @@ function vFinal(){const ss=S.session;if(!ss)return vHome();const rank=HK.slice()
   return `<div class="wrap final"><div id="conf"></div><div class="cup">🏆</div><h1 class="title">Copa de las Casas</h1>
   <h2>¡${win.map(h=>HOUSES[h].e+' '+HOUSES[h].n).join(' y ')} ${win.length>1?'comparten':'gana'} la Copa!</h2><p class="sub">Todas las casas habéis trabajado como grandes magos. ¡Enhorabuena!</p>
   <div class="podium">${rank.map(h=>`<div class="pcard ${win.includes(h)?'win':''}" style="--c:${HOUSES[h].c};--c2:${HOUSES[h].c2}"><div>${HOUSES[h].e} <b>${HOUSES[h].n}</b></div><div class="pp">${ss.pts[h]}</div><div>✔ ${ss.ok[h]} aciertos · ✘ ${ss.ko[h]} fallos</div>${ss.goals[h]?`<div>🏟️ ${ss.goals[h]} gol${ss.goals[h]>1?"es":""}</div>`:''}</div>`).join('')}</div>
+  ${ss.matches&&ss.matches.length?`<div class="parch pad" style="margin-bottom:.8rem"><h3>🏟️ Los partidos</h3>${standHTML()}</div>`:''}
   ${ss.qwin?`<p>🏟️ Copa de Quidditch (+20 puntos): ${ss.qwin.map(h=>HOUSES[h].n).join(' y ')}</p>`:''}
   ${galPanel(rank)}
   <div class="parch pad" style="margin-top:.8rem"><h3>📚 Preguntas para repasar (${fq.length})</h3>${fq.length?`<ol>${fq.map(q=>`<li><b>${esc(q.text)}</b><br>Respuesta: ${esc(correctText(q))}${q.explanation?`<br><i>💡 ${esc(q.explanation)}</i>`:''}</li>`).join('')}</ol>
@@ -646,10 +661,64 @@ function pickGame(q){const c=S.cfg;if(c.gameMode!=='random'&&compat(c.gameMode,q
   const l2=l.filter(k=>k!==S.session.lastGame);return pick(l2.length?l2:l)}
 function newSession(){const c=S.cfg;let qs=shuffle(S.questions.filter(q=>V.sel.has(gkey(q))));if(c.maxQ>0)qs=qs.slice(0,c.maxQ);
   const z=v=>({g:v,h:v,r:v,s:v,f:v}),j={};ALLH.forEach(h=>j[h]={help:c.jokers,fifty:c.jokers,time:c.jokers});
-  S.session={queue:qs.map(q=>q.id),i:0,pts:z(0),ok:z(0),ko:z(0),failed:[],bag:{},turn:0,jok:j,goals:z(0),map:{pos:z(0),skip:z(false)},locks:z(0),round:null,lastGame:'',ended:false};save()}
+  S.session={queue:qs.map(q=>q.id),i:0,pts:z(0),ok:z(0),ko:z(0),failed:[],bag:{},turn:0,jok:j,goals:z(0),map:{pos:z(0),skip:z(false)},locks:z(0),round:null,lastGame:'',ended:false,mode:c.mode==='match'?'match':'mix',mgame:c.matchGame==='duelo'?'duelo':'quidditch',matches:[],match:null};save()}
 function peek(h){const ss=S.session,ids=S.students.filter(s=>s.house===h).map(s=>s.id);if(!ids.length)return null;
   ss.bag[h]=(ss.bag[h]||[]).filter(id=>ids.includes(id));if(!ss.bag[h].length)ss.bag[h]=shuffle(ids);return ss.bag[h][ss.bag[h].length-1]}
+/* ============ COMPETICIÓN POR PARTIDOS ============
+   Un partido enfrenta a dos casas con el mismo minijuego. En cada pregunta responden las dos a la vez:
+   quien acierta primero, marca. «Al mejor de N»: se acaba cuando una ya no puede ser alcanzada;
+   si se llega al final empatadas, desempate (el primero que marque gana). Ganar el partido: +20 puntos. */
+const BONO_PARTIDO=20;
+function standings(){const ss=S.session,t={};playHouses().forEach(h=>t[h]={h,pj:0,g:0,e:0,p:0,gf:0,gc:0});
+  (ss.matches||[]).forEach(m=>{const A=t[m.a],B=t[m.b];if(!A||!B)return;A.pj++;B.pj++;A.gf+=m.ga;A.gc+=m.gb;B.gf+=m.gb;B.gc+=m.ga;if(!m.w){A.e++;B.e++}else{t[m.w].g++;t[m.w===m.a?m.b:m.a].p++}});
+  return Object.values(t).sort((x,y)=>y.g-x.g||(y.gf-y.gc)-(x.gf-x.gc)||y.gf-x.gf)}
+function standHTML(){const ss=S.session;if(!ss.matches||!ss.matches.length)return'';const un=ss.mgame==='duelo'?'Hechizos':'Goles';
+  return `<table class="stand"><tr><th>Casa</th><th>Jugados</th><th>Ganados</th><th>Perdidos</th><th>${un}</th></tr>${standings().map(r=>`<tr><td>${HOUSES[r.h].e} ${HOUSES[r.h].n}</td><td>${r.pj}</td><td><b>${r.g}</b></td><td>${r.p}</td><td>${r.gf} – ${r.gc}</td></tr>`).join('')}</table>
+  <p style="font-size:.95rem">${ss.matches.map(m=>`${HOUSES[m.a].e} ${m.ga} – ${m.gb} ${HOUSES[m.b].e}`).join(' &nbsp;·&nbsp; ')}</p>`}
+function matchSetup(){const ss=S.session,hs=playHouses(),left=ss.queue.length-ss.i,G=GAMES[ss.mgame];updateScore();
+  if(hs.length<2){$('#stage').innerHTML='<div class="intro parch"><h2>Hacen falta al menos dos casas con alumnos</h2><button class="gold big" data-a="exit">Volver</button></div>';return}
+  const st=standings(),pj={};st.forEach(r=>pj[r.h]=r.pj);
+  const faced=(x,y)=>ss.matches.filter(m=>(m.a===x&&m.b===y)||(m.a===y&&m.b===x)).length;
+  const a=hs.slice().sort((x,y)=>pj[x]-pj[y])[0],b=hs.filter(h=>h!==a).sort((x,y)=>pj[x]-pj[y]||faced(a,x)-faced(a,y))[0];
+  const sel=(id,v)=>`<select id="${id}" class="msel">${hs.map(h=>`<option value="${h}" ${h===v?'selected':''}>${HOUSES[h].e} ${HOUSES[h].n}</option>`).join('')}</select>`;
+  $('#stage').innerHTML=`<div class="intro parch"><div class="rn">Partido ${ss.matches.length+1} · quedan ${left} preguntas</div><div class="ge">${G.e}</div><h2>${ss.mgame==='duelo'?'Duelo de varitas':'Partido de Quidditch'}</h2>
+  <p>Las dos casas responden a la vez: quien acierta primero, ${ss.mgame==='duelo'?'lanza el hechizo':'marca gol'}. Ganar el partido vale +${BONO_PARTIDO} puntos.</p>
+  <div class="row">${sel('mA',a)}<b class="vs">VS</b>${sel('mB',b)}</div>
+  <div class="row"><label>Formato <select id="mN">${[3,5,7,10].map(x=>`<option value="${x}" ${x===(S.cfg.matchN||5)?'selected':''}>Al mejor de ${x}</option>`).join('')}</select></label></div>
+  <button class="gold big" data-a="mstart">✨ ¡Que empiece el partido!</button>${standHTML()}
+  <div class="row"><button data-a="finish">🏁 Terminar y entregar la Copa</button></div></div>`}
+function matchSkin(){const ss=S.session,m=ss.match,un=ss.mgame==='duelo';
+  const head=`<div class="mscore">${hb(m.a)}<b class="sc" id="msc">${m.ga} – ${m.gb}</b>${hb(m.b)}<small>${m.tb?'⚡ Desempate: la primera casa que acierte gana el partido':'Pregunta '+(m.q+1)+' de '+m.n+' · al mejor de '+m.n}</small></div>`;
+  const add=h=>{h===m.a?m.ga++:m.gb++;const e=$('#msc');if(e)e.textContent=m.ga+' – '+m.gb};
+  if(un){const pos=()=>Math.max(6,Math.min(94,50+(m.ga-m.gb)*(88/(m.n+1))));
+    return{scene:head+`<div class="scene duel"><div class="wiz" style="--c:${HOUSES[m.a].c2}">🧙</div><div class="beam" style="--ca:${HOUSES[m.a].c};--cb:${HOUSES[m.b].c}"><i id="spark" style="left:${pos()}%"></i></div><div class="wiz flip" style="--c:${HOUSES[m.b].c2}">🧙</div></div>`,
+      win(h){add(h);const sp=$('#spark');if(sp)sp.style.left=pos()+'%';return `✨ ¡Hechizo de ${HOUSES[h].n}! Van ${m.ga} – ${m.gb}.`}}}
+  const hoops='<div class="hoops"><div class="hoop"></div><div class="hoop"></div><div class="hoop"></div></div>';
+  return{scene:head+`<div class="scene pitch pitch2">${hoops}<div class="ball" id="ball"></div>${hoops}</div>`,
+    win(h){add(h);const bl=$('#ball');if(bl)bl.classList.add(h===m.a?'goalR':'goalL');return `🏟️ ¡GOOOL de ${HOUSES[h].n}! Van ${m.ga} – ${m.gb}.`}}}
+function matchNext(){const ss=S.session,m=ss.match;stopTimer();cancelAnimationFrame(V.raf);
+  if(!m){if(ss.i>=ss.queue.length)return endSession();return matchSetup()}
+  let q;while(ss.i<ss.queue.length&&!(q=qById(ss.queue[ss.i])))ss.i++;
+  const rem=m.n-m.q;let done=false;
+  if(m.tb)done=m.ga!==m.gb;
+  else if(Math.abs(m.ga-m.gb)>rem)done=true;
+  else if(rem<=0){if(m.ga!==m.gb)done=true;else{m.tb=true;toast('⚡ ¡Empate! Desempate: la primera casa que acierte gana')}}
+  if(done||!q)return matchEnd();
+  let team=S.cfg.part==='team';if([m.a,m.b].some(h=>!S.students.some(st=>st.house===h)))team=true;
+  const r=ss.round={game:ss.mgame,houses:[m.a,m.b],team,players:{}};
+  if(!team)r.houses.forEach(h=>{const id=peek(h);if(id){r.players[h]=id;ss.bag[h].pop()}});
+  V.mult=1;V.skin=matchSkin();save();updateScore();GAMEFN.duelo()}
+function matchEnd(){const ss=S.session,m=ss.match,w=m.ga>m.gb?m.a:m.gb>m.ga?m.b:null;
+  ss.matches.push({a:m.a,b:m.b,ga:m.ga,gb:m.gb,w});ss.match=null;ss.round=null;
+  if(w)ss.pts[w]+=BONO_PARTIDO;else{ss.pts[m.a]+=BONO_PARTIDO/2;ss.pts[m.b]+=BONO_PARTIDO/2}
+  save();updateScore(w);SFX.fanfare();const left=ss.queue.length-ss.i;
+  modal(`<div style="font-size:4rem">🏆</div><h2>${w?'¡'+HOUSES[w].e+' '+HOUSES[w].n+' gana el partido!':'¡Empate! Se acabaron las preguntas'}</h2>
+  <p style="font-size:2rem;margin:.3rem">${HOUSES[m.a].e} ${m.ga} – ${m.gb} ${HOUSES[m.b].e}</p>
+  <p style="font-size:1.2rem">${w?'+'+BONO_PARTIDO+' puntos para '+hb(w):'+'+BONO_PARTIDO/2+' puntos para cada casa'}</p><p>¡Gran partido de las dos casas! Un aplauso para el rival.</p>
+  <button class="gold big" data-a="mnext">${left>0?'Siguiente partido ▶':'🏆 Ver la Copa de las Casas'}</button>`,'fb-ok')}
+
 function nextRound(fg,ft){const ss=S.session;stopTimer();cancelAnimationFrame(V.raf);
+  if(ss.mode==='match')return matchNext();
   let q;while(ss.i<ss.queue.length&&!(q=qById(ss.queue[ss.i])))ss.i++;
   if(!q)return endSession();
   const hs=playHouses(),n=hs.length,game=fg&&compat(fg,q)?fg:pickGame(q);
@@ -769,11 +838,11 @@ const GAMEFN={
     solo({scene:`<div class="scene"><div class="door" id="door">🐍</div><div><div class="locks" id="locks">${locks(L[h0])}</div><div class="stext" style="max-width:none">Candados abiertos por ${HOUSES[h0].n}: ${L[h0]} de 4</div></div></div>`,
     after(ok,h){if(!ok)return{msg:'El candado sigue cerrado… ¡a la próxima se abre!'};L[h]++;const el=$('#locks');if(el)el.innerHTML=locks(L[h]);SFX.magic();
       if(L[h]>=4){L[h]=0;const d=$('#door');if(d)d.classList.add('open');return{msg:'🚪 ¡La puerta de la Cámara se abre!',bonus:{[h]:15}}}return{msg:`🔓 ¡Candado abierto! Quedan ${4-L[h]}.`}}})},
-  duelo(){const r=rd(),q=curQ(),a=r.houses[0],b=r.houses[1],out={};let over=false;
-    shell(`<div class="scene duel"><div class="wiz" style="--c:${HOUSES[a].c2}">🧙</div><div class="beam" style="--ca:${HOUSES[a].c};--cb:${HOUSES[b].c}"><i id="spark" style="left:50%"></i></div><div class="wiz flip" style="--c:${HOUSES[b].c2}">🧙</div></div>`);
-    const win=h=>{if(over)return;over=true;stopTimer();SFX.magic();const s=$('#spark');if(s)s.style.left=h===a?'96%':'4%';const res={[h]:true};[a,b].forEach(x=>{if(out[x])res[x]=false});
-      setTimeout(()=>finishRound(res,{msg:`✨ ¡${HOUSES[h].n} lanza el hechizo primero!`}),1100)};
-    const draw=()=>{if(over)return;over=true;stopTimer();setTimeout(()=>finishRound({[a]:false,[b]:false},{msg:'Los dos hechizos han chocado en el aire… ¡empate sin puntos!'}),700)};
+  duelo(){const r=rd(),q=curQ(),a=r.houses[0],b=r.houses[1],out={},sk=V.skin;let over=false;
+    shell(sk?sk.scene:`<div class="scene duel"><div class="wiz" style="--c:${HOUSES[a].c2}">🧙</div><div class="beam" style="--ca:${HOUSES[a].c};--cb:${HOUSES[b].c}"><i id="spark" style="left:50%"></i></div><div class="wiz flip" style="--c:${HOUSES[b].c2}">🧙</div></div>`);
+    const win=h=>{if(over)return;over=true;stopTimer();SFX.magic();const s=$('#spark');if(s&&!sk)s.style.left=h===a?'96%':'4%';const res={[h]:true};[a,b].forEach(x=>{if(out[x])res[x]=false});
+      const mm=sk?sk.win(h):`✨ ¡${HOUSES[h].n} lanza el hechizo primero!`;setTimeout(()=>finishRound(res,{msg:mm}),1100)};
+    const draw=()=>{if(over)return;over=true;stopTimer();setTimeout(()=>finishRound({[a]:false,[b]:false},{msg:sk?'Nadie ha marcado en esta jugada… ¡a por la siguiente!':'Los dos hechizos han chocado en el aire… ¡empate sin puntos!'}),700)};
     const col=(h,inner)=>`<div class="dcol" data-h="${h}" style="--c:${HOUSES[h].c};--c2:${HOUSES[h].c2}"><div>${HOUSES[h].e} ${HOUSES[h].n} · ${who(h)}</div>${inner}</div>`;
     if(choice(q)){const ops={[a]:choiceList(q),[b]:choiceList(q)};
       $('#ans').innerHTML=`<div class="duelcols">${[a,b].map(h=>col(h,ops[h].map((x,i)=>`<button data-i="${i}">${esc(x.t)}</button>`).join(''))).join('')}</div>`;
@@ -792,7 +861,7 @@ function render(){stopTimer();cancelAnimationFrame(V.raf);V.paused=false;
   if((V.screen==='game'||V.screen==='final')&&!S.session)V.screen='home';
   if(V.screen==='game'&&S.session.ended)V.screen='final';
   $('#app').innerHTML={home:vHome,topics:vTopics,houses:vHouses,game:vGame,final:vFinal,book:vBook}[V.screen]();
-  if(V.screen==='game'){updateScore();S.session.round?showIntro():nextRound()}
+  if(V.screen==='game'){updateScore();S.session.mode==='match'?matchNext():S.session.round?showIntro():nextRound()}
   if(V.screen==='final')party();document.body.classList.toggle('en-home',V.screen==='home');window.scrollTo(0,0)}
 function applyMute(){$('#mute').textContent=S.cfg.muted?'🔇':'🔊'}
 const ACT={
@@ -827,8 +896,11 @@ const ACT={
   sth(d){if(d.h==='del')S.students=S.students.filter(s=>s.id!==d.id);else stu(d.id).house=d.h;save();closeModal();render()},
   play(){const f=()=>{newSession();V.screen='game';render()};S.session&&!S.session.ended?ask('Hay una sesión a medias. ¿Empezar una nueva y borrar esa?',f):f()},
   /* juego */
-  start(){const ss=S.session,r=ss.round;if(!r.team)r.houses.forEach(h=>{const id=peek(h);if(id){r.players[h]=id;ss.bag[h].pop()}});V.mult=1;save();SFX.magic();GAMEFN[r.game]()},
-  cont(){closeModal();const ss=S.session;ss.lastGame=ss.round.game;ss.turn+=ss.round.houses.length;ss.i++;ss.round=null;save();nextRound()},
+  mstart(){const ss=S.session,a=$('#mA').value,b=$('#mB').value;if(a===b)return toast('Elige dos casas distintas');
+    S.cfg.matchN=parseInt($('#mN').value)||5;ss.match={a,b,n:S.cfg.matchN,ga:0,gb:0,q:0,tb:false};save();SFX.magic();matchNext()},
+  mnext(){closeModal();matchNext()},
+  start(){V.skin=null;const ss=S.session,r=ss.round;if(!r.team)r.houses.forEach(h=>{const id=peek(h);if(id){r.players[h]=id;ss.bag[h].pop()}});V.mult=1;save();SFX.magic();GAMEFN[r.game]()},
+  cont(){closeModal();const ss=S.session;if(ss.mode==='match'){if(ss.match)ss.match.q++;ss.i++;ss.round=null;save();return matchNext()}ss.lastGame=ss.round.game;ss.turn+=ss.round.houses.length;ss.i++;ss.round=null;save();nextRound()},
   jok(d){const h=V.jh,j=S.session.jok[h];if(!(j[d.k]>0))return;
     if(d.k==='help'){addTime(20);toast(`🤝 ¡Toda la casa ${HOUSES[h].n} puede ayudar! (+20 s)`)}else if(d.k==='fifty'){if(!V.fifty)return;V.fifty();toast('✂️ ¡Dos respuestas falsas desaparecen!')}else{if(!T.id)return;addTime(30);toast('⏳ +30 segundos')}
     j[d.k]--;save();SFX.magic();jokers(h)},
@@ -869,7 +941,7 @@ const ACT={
   wipe(){ask('⚠️ Se borrarán alumnos, preguntas y sesión. ¿Seguro?',()=>{try{localStorage.removeItem(KEY)}catch(e){}S=defState();setHK();V.sel=null;V.bg='';save();applyMute();render()})}
 };
 const CH={
-  cfg(el){const k=el.dataset.k;S.cfg[k]=el.type==='number'||k==='maxQ'||k==='nHouses'?Math.max(0,parseInt(el.value)||0):el.value;if(k==='pass'&&!el.value)S.cfg.pass='alohomora';if(k==='nHouses'){setHK();save();return render()}save()},
+  cfg(el){const k=el.dataset.k;S.cfg[k]=el.type==='number'||k==='maxQ'||k==='nHouses'||k==='matchN'?Math.max(0,parseInt(el.value)||0):el.value;if(k==='pass'&&!el.value)S.cfg.pass='alohomora';if(k==='mode'){save();return render()}if(k==='nHouses'){setHK();save();return render()}save()},
   cfgame(el){S.cfg.games[el.dataset.k]=el.checked;save()},
   bg(el){V.bg=el.value;render()},
   edty(el){$('#e_sp').innerHTML=edSpec(el.value,V.edq&&V.edq.type===el.value?V.edq:null)},
