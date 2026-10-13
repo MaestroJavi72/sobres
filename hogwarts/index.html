@@ -341,6 +341,9 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
 #bLog .menos{color:#ffb3c0;font-weight:700}
 [hidden]{display:none!important}
 .bAcc{display:flex;gap:8px;flex-wrap:wrap}
+.bGrupos{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font:14px Georgia,serif;color:#e8d7a4}
+.bGrupos button{cursor:pointer;font:700 15px Georgia,serif;color:#fff;padding:.6em 1.1em;border-radius:99px;border:2px solid var(--b);background:var(--c)}
+.bGrupos button:hover{filter:brightness(1.15)}
 .bSel{position:sticky;top:-8px;z-index:3;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin:0 0 12px;border-radius:14px;
   border:1px solid #e8c872;background:linear-gradient(180deg,#123a33,#0c2a25);box-shadow:0 10px 22px rgba(0,0,0,.55);font:14px Georgia,serif}
 .bSel span{flex:1;min-width:160px}
@@ -576,6 +579,7 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
         <button class="herrBtn" id="bTemp" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3c0 5 8 6 8 9s-8 4-8 9M16 3c0 5-8 6-8 9s8 4 8 9"/></svg>Temporizador</button>
         <button class="herrBtn" id="bCrono" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="8"/><path d="M12 13.5V9M10 2.5h4M18.5 6.5l1.5-1.5"/></svg>Cronómetro</button>
       </div>
+      <div class="bGrupos" id="bGrupos" hidden></div>
       <div class="bSel" id="bSel" hidden>
         <span id="bSelTxt"></span>
         <button class="ghost" id="bNinguno" type="button">Cancelar</button>
@@ -2325,8 +2329,8 @@ function pintarPerfil(){
     $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir del huevo' : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+(aspectoDe(ns[0]).chica ? (nv.sig.f||nv.sig.n) : nv.sig.n) : '¡Nivel máximo!');
   } else {
     av.innerHTML = '<div class="grupo">'+ns.slice(0,3).map(function(n){ var c = cs[n]; return '<span>'+personajeSVG(aspectoDe(n), nivelDe(c.acum).i, c.acum<0)+'</span>'; }).join('')+'</div>';
-    $('pNom').textContent = ns.length===CONFIG.alumnos.length ? 'Toda la clase' : ns.length+' alumnos';
-    $('pNiv').textContent = ns.length===CONFIG.alumnos.length ? ns.length+' alumnos' : ns.join(', ');
+    $('pNom').textContent = perfil.titulo || (ns.length===CONFIG.alumnos.length ? 'Toda la clase' : ns.length+' alumnos');
+    $('pNiv').textContent = ns.length===CONFIG.alumnos.length && !perfil.titulo ? ns.length+' alumnos' : ns.join(', ');
     $('pNiv').style.color = '';
     $('pBarra').style.width = '0%';
     $('pNum').innerHTML = ''; $('pSig').textContent = 'Lo que toques se aplica a todos.';
@@ -2438,7 +2442,42 @@ function deshacer(s){
   pintarBanco();
 }
 
+/* GRUPOS DE TRABAJO: las mesas de 4ºA (data/mesas-4A.json, plano vigente) con su nombre de casa.
+   Tocar un grupo abre «dar o quitar puntos» para todos sus alumnos a la vez. */
+var COLOR_CASA = { 'gryffindor':['🦁','#8f0b0d','#eeba30'], 'hufflepuff':['🦡','#a67c00','#1d1a16'], 'ravenclaw':['🦅','#1a2b6b','#b08d57'], 'slytherin':['🐍','#1a5a34','#c0c0c0'], 'orden del fénix':['🔥','#5b2a86','#ff9a3c'] };
+var gruposTrabajo = [];
+function cargarGrupos(){
+  fetch((window.JAVI ? JAVI.BASE : '../')+'data/mesas-4A.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(d){
+    var p = d.planos[d.plano_vigente]; if(!p) return;
+    var mesas = p.mesas.map(function(m){ return { mesa:m.mesa, al:m.alumnos.slice() }; });
+    if(p.pupitre_individual){
+      var t = mesas.filter(function(m){ return m.mesa===p.equipo_pupitre; })[0] || mesas.slice().sort(function(a,b){ return a.al.length-b.al.length || a.mesa-b.mesa; })[0];
+      t.al.push(p.pupitre_individual);
+    }
+    gruposTrabajo = mesas.map(function(m){ return { mesa:m.mesa, nombre:(d.casas||{})[m.mesa] || 'Mesa '+m.mesa, alumnos:m.al }; });
+    pintarGrupos();
+  }).catch(function(){});
+}
+function pintarGrupos(){
+  var caja = $('bGrupos'); if(!caja) return;
+  caja.hidden = !gruposTrabajo.length; if(!gruposTrabajo.length) return;
+  caja.innerHTML = '<span>Grupos de trabajo:</span>';
+  gruposTrabajo.forEach(function(g){
+    var k = COLOR_CASA[g.nombre.toLowerCase()] || ['🪑','#2a3a55','#e8c872'];
+    var b = document.createElement('button'); b.type = 'button';
+    b.style.setProperty('--c', k[1]); b.style.setProperty('--b', k[2]);
+    b.textContent = k[0]+' '+g.nombre+' ('+g.alumnos.length+')';
+    b.title = 'Mesa '+g.mesa+': '+g.alumnos.join(', ');
+    b.addEventListener('click', function(){
+      var l = g.alumnos.filter(function(n){ return CONFIG.alumnos.indexOf(n)>=0; });
+      if(l.length){ abrirPerfil(l); perfil.titulo = k[0]+' '+g.nombre+' · mesa '+g.mesa; pintarPerfil(); }
+    });
+    caja.appendChild(b);
+  });
+}
+
 function iniciarPanel(){
+  cargarGrupos();
   $('bClase').addEventListener('click', function(){ abrirPerfil(CONFIG.alumnos); });
   $('bVarios').addEventListener('click', function(){ modoVarios = !modoVarios; seleccion = {}; pintarBanco(); });
   $('bNinguno').addEventListener('click', function(){ modoVarios = false; seleccion = {}; pintarBanco(); });

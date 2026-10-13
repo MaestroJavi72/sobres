@@ -609,7 +609,15 @@ function restore(txt){let d;try{d=JSON.parse(txt)}catch(e){return toast('❌ El 
   ask('¿Sustituir TODOS los datos actuales por los de la copia?',()=>{try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}S=d;S=loadFrom(d);setHK();save();closeModal();applyMute();render();toast('✅ Copia restaurada')})}
 function loadFrom(d){const def=defState();d.cfg=Object.assign(def.cfg,d.cfg||{});d.students=d.students||[];return d}
 
-const B4A=window.JAVI?'<button data-a="lista4a">📥 Traer la lista de 4ºA</button>':'';
+const B4A=window.JAVI?'<button data-a="lista4a">📥 Traer la lista de 4ºA</button><button class="gold" data-a="mesas">🪑 Casas según las mesas de 4ºA</button>':'';
+const CASA_ID={'gryffindor':'g','hufflepuff':'h','ravenclaw':'r','slytherin':'s','orden del fénix':'f'};
+/* data/mesas-4A.json: cada mesa del plano vigente es una casa (el pupitre individual va a equipo_pupitre o a la mesa con menos alumnos) */
+function casasPorMesas(d){const p=d.planos[d.plano_vigente],mesas=p.mesas.map(m=>({mesa:m.mesa,al:m.alumnos.slice()}));
+  if(p.pupitre_individual){const t=mesas.find(m=>m.mesa===p.equipo_pupitre)||mesas.slice().sort((a,b)=>a.al.length-b.al.length||a.mesa-b.mesa)[0];t.al.push(p.pupitre_individual)}
+  const viejos=S.students;S.students=[];
+  mesas.forEach(m=>{const h=CASA_ID[String((d.casas||{})[m.mesa]||'').toLowerCase()]||ALLH[m.mesa-1];m.al.forEach(n=>{const o=viejos.find(s=>s.name===n);S.students.push({id:o?o.id:uid(),name:n,house:h})})});
+  S.cfg.nHouses=mesas.length>4?5:4;setHK();V.editList=false;save();render();
+  toast('🪑 Casas colocadas según las mesas de '+esc(p.periodo||d.plano_vigente)+'. Ahora, la Ceremonia del Sombrero.')}
 /* ============ CEREMONIA ============ */
 function balanced(){const st=shuffle(S.students),hs=shuffle(HK);return st.map((s,i)=>({id:s.id,name:s.name,h:hs[i%hs.length]}))}
 function ceremony(keep){let plan;
@@ -804,6 +812,8 @@ const ACT={
     S.students=names.map(n=>{const o=S.students.find(s=>s.name===n);return o||{id:uid(),name:n,house:null}});V.editList=false;save();render();toast(`✅ ${names.length} alumnos guardados`)},
   lista4a(){JAVI.listo(()=>JAVI.protegerClase('4ºA',{alAbrir(){const g=JAVI.grupo('4ºA');if(!g||!g.nombres.length)return toast('No he podido leer la lista de 4ºA');
     S.students=g.nombres.map(n=>S.students.find(s=>s.name===n)||{id:uid(),name:n,house:null});V.editList=false;save();render();toast('✅ '+g.nombres.length+' alumnos de 4ºA')}}))},
+  mesas(){JAVI.listo(()=>JAVI.protegerClase('4ºA',{alAbrir(){const go=()=>fetch(JAVI.BASE+'data/mesas-4A.json',{cache:'no-store'}).then(r=>r.json()).then(casasPorMesas).catch(()=>toast('❌ No he podido leer las mesas de 4ºA'));
+    S.students.some(s=>s.house)?ask('¿Colocar a todos en la casa de su mesa? Se cambian las casas que haya ahora.',go):go()}}))},
   cer(){if(!S.students.length)return;if(!S.students.some(s=>s.house))return ceremony();
     modal(`<h2>🎩 Ceremonia del Sombrero</h2><p>Ya has colocado alumnos en sus casas. ¿Qué hace el Sombrero?</p><div class="row"><button class="gold big" data-a="cermine">📜 Anunciar las casas que he puesto yo</button><button class="big" data-a="cerrand">🎲 Repartir al azar desde cero</button></div><button data-a="mno">Cancelar</button>`)},
   cermine(){closeModal();ceremony(true)},cerrand(){closeModal();ceremony()},
