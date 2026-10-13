@@ -1,0 +1,462 @@
+# Tema 2 | Sílabas
+TIPO: opcion
+P: ¿Cuántas sílabas tiene la palabra «dinosaurio»?
+- 3
+* 4
+- 5
+- 6
+CRIT: 9.1
+EXP: di-no-sau-rio: cuatro sílabas.
+
+TIPO: opcion
+P: La palabra «pez» es…
+* monosílaba
+- bisílaba
+- trisílaba
+- polisílaba
+CRIT: 9.1
+EXP: Tiene una sola sílaba: es monosílaba.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es bisílaba (tiene dos sílabas)?
+* libro
+- mariposa
+- sol
+- esqueleto
+CRIT: 9.1
+EXP: li-bro: dos sílabas.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es trisílaba (tiene tres sílabas)?
+* cabeza
+- tren
+- casa
+- elefante
+CRIT: 9.1
+EXP: ca-be-za: tres sílabas.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es polisílaba (tiene cuatro sílabas o más)?
+* excavadora
+- ventana
+- flor
+- mesa
+CRIT: 9.1
+EXP: ex-ca-va-do-ra: cinco sílabas.
+
+TIPO: ordenar
+P: Ordena las sílabas para formar una palabra.
+R: es | que | le | to
+CRIT: 9.1
+EXP: es-que-le-to.
+
+TIPO: ordenar
+P: Ordena las sílabas para formar el nombre de un animal.
+R: ma | ri | po | sa
+CRIT: 9.1
+EXP: ma-ri-po-sa.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «paleta»?
+* pa-le-ta
+- pal-e-ta
+- pa-let-a
+- pale-ta
+CRIT: 9.1
+EXP: pa-le-ta: tres golpes de voz.
+
+TIPO: vf
+P: La palabra «tren» tiene una sola sílaba.
+R: V
+CRIT: 9.1
+EXP: «Tren» se dice en un solo golpe de voz.
+
+TIPO: emparejar
+P: Une cada palabra con su número de sílabas.
+R: mar = 1 sílaba | hueso = 2 sílabas | museo = 3 sílabas | bicicleta = 4 sílabas
+DIF: 2
+CRIT: 9.1
+EXP: mar · hue-so · mu-se-o · bi-ci-cle-ta.
+
+TIPO: opcion
+P: ¿Cuántas sílabas tiene la palabra «huella»?
+- 1
+* 2
+- 3
+- 4
+CRIT: 9.1
+EXP: hue-lla: dos sílabas.
+
+# Tema 2 | El nombre
+TIPO: opcion
+P: ¿Cuál de estos nombres es femenino?
+* la cueva
+- el hueso
+- el mapa
+- el fósil
+CRIT: 9.1
+EXP: Decimos «la cueva»: es femenino.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es masculino?
+* el martillo
+- la piedra
+- la mano
+- la huella
+CRIT: 9.1
+EXP: Decimos «el martillo»: es masculino.
+
+TIPO: opcion
+P: ¿Cuál es el femenino de «el maestro»?
+* la maestra
+- la maestro
+- la maestresa
+- la maestriz
+CRIT: 9.1
+EXP: Muchos nombres cambian la -o por la -a: maestro, maestra.
+
+TIPO: opcion
+P: ¿Cuál es el femenino de «el rey»?
+* la reina
+- la reya
+- la rey
+- la reyesa
+CRIT: 9.1
+EXP: Algunos nombres cambian mucho: rey, reina.
+
+TIPO: opcion
+P: ¿Cuál es el femenino de «el actor»?
+* la actriz
+- la actora
+- la actoresa
+- la actor
+DIF: 2
+CRIT: 9.1
+EXP: Actor, actriz.
+
+TIPO: opcion
+P: ¿Cuál es el plural de «lápiz»?
+* lápices
+- lápizs
+- lápizes
+- lápises
+DIF: 2
+CRIT: 9.1
+EXP: Las palabras que acaban en -z hacen el plural en -ces.
+
+TIPO: opcion
+P: ¿Cuál es el plural de «fósil»?
+* fósiles
+- fósils
+- fósileses
+- fósil
+CRIT: 9.1
+EXP: Si acaba en consonante, añadimos -es: fósiles.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres está en plural?
+* huesos
+- cueva
+- dragón
+- lápiz
+CRIT: 9.1
+EXP: «Huesos» nombra a varios.
+
+TIPO: opcion
+P: ¿Cuál es el singular de «peces»?
+* pez
+- pece
+- pezes
+- pes
+CRIT: 9.1
+EXP: Un pez, muchos peces.
+
+TIPO: vf
+P: Los nombres en plural nombran a varios seres u objetos.
+R: V
+CRIT: 9.1
+EXP: Singular: uno solo. Plural: varios.
+
+TIPO: emparejar
+P: Une cada nombre en singular con su plural.
+R: flor = flores | luz = luces | árbol = árboles | casa = casas
+DIF: 2
+CRIT: 9.1
+EXP: Vocal: -s. Consonante: -es. Acaba en -z: -ces.
+
+TIPO: opcion
+P: «Las lechuzas» es un nombre…
+* femenino y plural
+- masculino y plural
+- femenino y singular
+- masculino y singular
+DIF: 2
+CRIT: 9.1
+EXP: «Las» nos dice que es femenino y que son varias.
+
+TIPO: opcion
+P: «El dragón» es un nombre…
+* masculino y singular
+- femenino y singular
+- masculino y plural
+- femenino y plural
+DIF: 2
+CRIT: 9.1
+EXP: «El» nos dice que es masculino y que es uno solo.
+
+# Tema 2 | Sinónimos y antónimos
+TIPO: opcion
+P: ¿Qué palabra es un sinónimo de «enorme»?
+* gigante
+- pequeño
+- rápido
+- viejo
+CRIT: 9.1
+EXP: Los sinónimos significan lo mismo o casi lo mismo.
+
+TIPO: opcion
+P: ¿Qué palabra es un sinónimo de «contento»?
+* alegre
+- triste
+- cansado
+- serio
+CRIT: 9.1
+EXP: Contento y alegre significan lo mismo.
+
+TIPO: opcion
+P: ¿Qué palabra es un sinónimo de «empezar»?
+* comenzar
+- terminar
+- parar
+- dormir
+CRIT: 9.1
+EXP: Empezar y comenzar significan lo mismo.
+
+TIPO: opcion
+P: ¿Qué palabra es un antónimo de «antiguo»?
+* moderno
+- viejo
+- grande
+- roto
+CRIT: 9.1
+EXP: Los antónimos significan lo contrario.
+
+TIPO: opcion
+P: ¿Qué palabra es un antónimo de «abrir»?
+* cerrar
+- empujar
+- tocar
+- romper
+CRIT: 9.1
+EXP: Lo contrario de abrir es cerrar.
+
+TIPO: opcion
+P: ¿Qué palabra es un antónimo de «encima»?
+* debajo
+- arriba
+- cerca
+- lejos
+CRIT: 9.1
+EXP: Lo contrario de encima es debajo.
+
+TIPO: vf
+P: «Rápido» y «veloz» son sinónimos.
+R: V
+CRIT: 9.1
+EXP: Significan lo mismo.
+
+TIPO: vf
+P: «Frío» y «helado» son antónimos.
+R: F
+CRIT: 9.1
+EXP: Se parecen: son casi sinónimos. El antónimo de «frío» es «caliente».
+
+TIPO: emparejar
+P: Une cada palabra con su sinónimo.
+R: bonito = hermoso | veloz = rápido | acabar = terminar | hallar = encontrar
+DIF: 2
+CRIT: 9.1
+EXP: Los sinónimos significan lo mismo.
+
+TIPO: emparejar
+P: Une cada palabra con su antónimo.
+R: alto = bajo | lleno = vacío | día = noche | subir = descender
+DIF: 2
+CRIT: 9.1
+EXP: Los antónimos significan lo contrario.
+
+TIPO: completar
+P: La paleontóloga estaba muy alegre. Un sinónimo de «alegre» es ___.
+R: contenta
+- triste
+- enfadada
+- aburrida
+CRIT: 9.1
+EXP: Alegre y contenta significan lo mismo.
+
+# Tema 2 | Tónica y átona
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «hueso»?
+* hue
+- so
+CRIT: 9.1
+EXP: HUE-so: suena más fuerte «hue».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «dinosaurio»?
+- di
+- no
+* sau
+- rio
+DIF: 2
+CRIT: 9.1
+EXP: di-no-SAU-rio.
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «excavar»?
+- ex
+- ca
+* var
+CRIT: 9.1
+EXP: ex-ca-VAR.
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «música»?
+* mú
+- si
+- ca
+CRIT: 9.1
+EXP: MÚ-si-ca.
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «castillo»?
+- cas
+* ti
+- llo
+CRIT: 9.1
+EXP: cas-TI-llo.
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «fósil»?
+* fó
+- sil
+CRIT: 9.1
+EXP: FÓ-sil.
+
+TIPO: vf
+P: La sílaba tónica es la que suena más fuerte.
+R: V
+CRIT: 9.1
+EXP: Las demás sílabas son átonas.
+
+TIPO: vf
+P: En la palabra «mesa», la sílaba tónica es «sa».
+R: F
+CRIT: 9.1
+EXP: ME-sa: la tónica es «me».
+
+TIPO: opcion
+P: ¿Cómo se llaman las sílabas que suenan más flojo?
+* átonas
+- tónicas
+- monosílabas
+- plurales
+CRIT: 9.1
+EXP: Tónica: la fuerte. Átonas: las demás.
+
+TIPO: opcion
+P: ¿En qué palabra la sílaba tónica es la última?
+* camión
+- mesa
+- lápiz
+- pájaro
+DIF: 2
+CRIT: 9.1
+EXP: ca-MIÓN.
+
+TIPO: opcion
+P: ¿En qué palabra la sílaba tónica es la primera?
+* árbol
+- ratón
+- jardín
+- pared
+DIF: 2
+CRIT: 9.1
+EXP: ÁR-bol.
+
+# Tema 2 | Comprensión lectora
+TIPO: opcion
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: ¿Con quién fue Marta al campo?
+* Con su abuelo
+- Con su maestra
+- Con su hermano
+- Sola
+CRIT: 4.1
+EXP: El texto dice: «Marta y su abuelo fueron al campo».
+
+TIPO: opcion
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: ¿Qué encontró Marta?
+* Un diente enorme
+- Una moneda
+- Una piedra roja
+- Un cepillo
+CRIT: 4.1
+EXP: «Descubrió un diente enorme».
+
+TIPO: opcion
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: ¿Qué llevaron para trabajar?
+* Una pala y un cepillo
+- Un martillo y una sierra
+- Una red y un cubo
+- Una cuerda y una linterna
+CRIT: 4.1
+EXP: «Con una pala pequeña y un cepillo».
+
+TIPO: vf
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: Marta encontró el diente nada más llegar al campo.
+R: F
+CRIT: 4.1
+EXP: Lo encontró «después de cavar toda la mañana».
+
+TIPO: opcion
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: ¿Adónde van a llevar el diente?
+* Al museo
+- Al colegio
+- A su casa
+- Al río
+CRIT: 4.1
+EXP: «Lo guardó en una caja para llevarlo al museo».
+
+TIPO: opcion
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: ¿Cómo limpió Marta lo que encontró?
+* Con cuidado
+- Muy deprisa
+- Con agua caliente
+- No lo limpió
+CRIT: 4.1
+EXP: «Lo limpió con cuidado».
+
+TIPO: ordenar
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: Ordena lo que pasó en la historia.
+R: Fueron al campo | Cavaron toda la mañana | Marta vio algo blanco | Guardaron el diente en una caja
+DIF: 2
+CRIT: 4.1
+EXP: Primero llegan, luego cavan, después lo encuentran y al final lo guardan.
+
+TIPO: opcion
+TEXTO: Marta y su abuelo fueron al campo con una pala pequeña y un cepillo. Después de cavar toda la mañana, Marta vio algo blanco entre la tierra. Lo limpió con cuidado y descubrió un diente enorme. «¡Es de un dinosaurio!», gritó. Su abuelo sonrió y lo guardó en una caja para llevarlo al museo.
+P: ¿Qué título le va mejor a esta historia?
+* El gran hallazgo de Marta
+- Un día de lluvia
+- La caja perdida
+- El abuelo cocinero
+DIF: 2
+CRIT: 4.1
+EXP: La historia cuenta lo que Marta encontró.

@@ -98,6 +98,7 @@ small{opacity:.8}
 .tbar{flex:1;height:.9rem;background:rgba(255,255,255,.2);border-radius:1rem;overflow:hidden}
 .tbar i{display:block;height:100%;background:linear-gradient(90deg,#f9dd7e,#e0652d);transition:width 1s linear}
 .qcard{padding:.7rem 1.1rem;margin:.5rem 0}
+.readbox{padding:.6rem 1rem;margin:.5rem 0;font-size:1.25rem;line-height:1.45;max-height:38vh;overflow:auto;-webkit-user-select:text;user-select:text}
 .qmeta{font-size:.8rem;opacity:.7}
 .qtext{font-size:1.75rem;font-weight:bold;line-height:1.25}
 .blank{display:inline-block;min-width:4rem;border-bottom:.2rem solid var(--ink)}
@@ -427,6 +428,8 @@ function toast(msg){const d=document.createElement('div');d.innerHTML=msg;$('#to
 /* ============ PREGUNTAS: CONSTRUIR / IMPORTAR ============ */
 function mapType(s){s=plain(s);if(!s)return'';if(s==='open'||/^(ab|ret)/.test(s))return'open';if(/^(op|mc|mul|test)/.test(s))return'mc';
   if(/^(v|tf|true)/.test(s))return'tf';if(/^(com|fill|hue|rell)/.test(s))return'fill';if(/^ord/.test(s))return'order';if(/^(emp|rel|match|unir)/.test(s))return'match';return''}
+function normCrit(v){const m=String(v==null?'':v).match(/(\d+)\.(\d+)\s*$/);return m?m[1]+'.'+m[2]:''}
+const critName=c=>c?'LCL.2.'+c:'Sin criterio';
 function buildQ(raw){
   const text=String(raw.text||'').trim();if(!text)return{err:'Falta el enunciado (P:)'};
   let type=raw.type,opts=(raw.opts||[]).filter(o=>o.t!==''),r=String(raw.r==null?'':raw.r).trim();
@@ -434,6 +437,7 @@ function buildQ(raw){
   const dif=Math.min(3,Math.max(1,parseInt(raw.dif)||1));
   const q={id:uid(),subject:String(raw.subject||'General').trim()||'General',topic:String(raw.topic||'Varios').trim()||'Varios',type,text,
     difficulty:dif,points:Math.max(1,parseInt(raw.pts)||10*dif),time:Math.max(0,parseInt(raw.time)||0),explanation:String(raw.exp||'').trim()};
+  const cr=normCrit(raw.crit);if(cr)q.crit=cr;if(raw.read&&String(raw.read).trim())q.read=String(raw.read).trim();
   if(type==='mc'){q.options=opts.map(o=>o.t);q.correct=opts.findIndex(o=>o.ok);if(q.options.length<2)return{err:'Hacen falta al menos 2 opciones'};if(q.correct<0)return{err:'Marca la opción correcta con *'}}
   else if(type==='tf'){const p=plain(r);if(/^(v|verdadero|true|si)$/.test(p))q.answer=true;else if(/^(f|falso|false|no)$/.test(p))q.answer=false;else return{err:'En verdadero/falso la respuesta debe ser V o F'}}
   else if(type==='fill'){if(!r)return{err:'Falta la respuesta (R:)'};q.answer=r;q.options=opts.map(o=>o.t)}
@@ -445,7 +449,8 @@ function parseText(txt){let subject='General',topic='Varios';const qs=[],errs=[]
   txt.replace(/\r/g,'').split(/\n\s*\n/).forEach((block,bi)=>{const raw={opts:[]};let has=false;
     block.split('\n').map(l=>l.trim()).filter(Boolean).forEach(l=>{let m;
       if(l[0]==='#'){const p=l.replace(/^#+\s*/,'').split(/\s*\|\s*|\s+-\s+/);subject=p[0]||subject;topic=p.slice(1).join(' - ')||'Varios';return}
-      if(m=l.match(/^(TIPO|P|R|DIF|PTS|T|EXP)\s*:\s*(.*)$/i)){has=true;const k=m[1].toUpperCase(),v=m[2];
+      if(m=l.match(/^(TIPO|TEXTO|CRIT|P|R|DIF|PTS|T|EXP)\s*:\s*(.*)$/i)){has=true;const k=m[1].toUpperCase(),v=m[2];
+        if(k==='CRIT'){raw.crit=v;return}if(k==='TEXTO'){raw.read=v;return}
         if(k==='TIPO')raw.type=mapType(v);else if(k==='P')raw.text=v;else if(k==='R')raw.r=v;else if(k==='DIF')raw.dif=v;else if(k==='PTS')raw.pts=v;else if(k==='T')raw.time=v;else raw.exp=v;return}
       if(m=l.match(/^([*\-])\s*(.+)$/)){has=true;raw.opts.push({t:m[2].trim(),ok:m[1]==='*'})}});
     if(!has)return;raw.subject=subject;raw.topic=topic;const b=buildQ(raw);
@@ -454,7 +459,7 @@ function parseText(txt){let subject='General',topic='Varios';const qs=[],errs=[]
 function fromJSON(o){const g=(...k)=>{for(const x of k)if(o[x]!==undefined&&o[x]!==null)return o[x]};
   const type=mapType(g('tipo','type')),ops=g('opciones','options')||[],cor=g('correcta','correct'),ans=g('respuesta','answer');
   const raw={subject:g('asignatura','subject'),topic:g('tema','topic'),type,text:g('pregunta','enunciado','text'),dif:g('dificultad','difficulty'),
-    pts:g('puntos','points'),time:g('tiempo','time'),exp:g('explicacion','explicación','explanation'),opts:[],r:''};
+    pts:g('puntos','points'),time:g('tiempo','time'),exp:g('explicacion','explicación','explanation'),crit:g('criterio','crit'),read:g('texto','lectura','read'),opts:[],r:''};
   if(type==='mc')raw.opts=ops.map((t,i)=>({t:String(t),ok:typeof cor==='number'?i===cor:String(t)===String(cor!==undefined?cor:ans)}));
   else if(type==='fill'){raw.r=Array.isArray(ans)?ans.join('|'):String(ans==null?'':ans);raw.opts=ops.map(t=>({t:String(t)}))}
   else if(type==='tf')raw.r=ans===true?'V':ans===false?'F':String(ans==null?'':ans);
@@ -544,10 +549,10 @@ function vBook(){const tabs=[['q','📜 Preguntas'],['imp','📥 Importar'],['de
   return `<div class="wrap"><div class="bar"><button data-a="go" data-s="home">⬅ Salir</button><h1>📖 Libro de Hechizos</h1></div>
   <div class="tabs">${tabs.map(t=>`<button class="${V.tab===t[0]?'on':''}" data-a="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>
   <div class="parch pad">${V.tab==='imp'?bookImp():V.tab==='cfg'?bookCfg():V.tab==='dev'?bookDev():bookQ()}</div></div>`}
-function bookQ(){const gs=groups(),list=S.questions.filter(q=>!V.bg||gkey(q)===V.bg);
+function bookQ(){loadCrit();const gs=groups(),list=S.questions.filter(q=>!V.bg||gkey(q)===V.bg);
   return `<div class="row" style="justify-content:flex-start"><select data-c="bg"><option value="">Todos los grupos (${S.questions.length})</option>${gs.map(g=>`<option value="${esc(g.k)}" ${V.bg===g.k?'selected':''}>${esc(g.k)} (${g.n})</option>`).join('')}</select>
   <button class="gold" data-a="qnew">➕ Nueva pregunta</button>${V.bg?'<button class="bad" data-a="gdel">🗑️ Borrar este grupo</button>':''}</div>
-  ${list.map(q=>`<div class="qrow"><span class="ty" title="${TYPES[q.type].n}">${TYPES[q.type].e}</span><div class="qt"><b>${esc(q.text)}</b><small>${esc(gkey(q))} · ${TYPES[q.type].n} · ${'⭐'.repeat(q.difficulty)} · ${q.points} pts${q.time?' · '+q.time+' s':''}</small></div>
+  ${list.map(q=>`<div class="qrow"><span class="ty" title="${TYPES[q.type].n}">${TYPES[q.type].e}</span><div class="qt"><b>${esc(q.text)}</b><small>${esc(gkey(q))} · ${TYPES[q.type].n} · ${'⭐'.repeat(q.difficulty)} · ${q.points} pts${q.crit?' · '+critName(q.crit):''}${q.time?' · '+q.time+' s':''}</small></div>
   <button data-a="qed" data-id="${q.id}">✏️</button><button data-a="qdup" data-id="${q.id}" title="Duplicar">📄</button><button class="bad" data-a="qdel" data-id="${q.id}">🗑️</button></div>`).join('')||'<p>No hay preguntas en este grupo.</p>'}`}
 function bookImp(){return `<h3>Pega aquí tus preguntas (formato sencillo o JSON)</h3>
   <textarea id="imp" rows="9" placeholder="# Lengua | Tema 2&#10;TIPO: opcion&#10;P: …"></textarea>
@@ -616,6 +621,8 @@ function editor(q){V.ed=q?q.id:null;V.edq=q||null;const last=S.questions[S.quest
   <label>Dificultad<select id="e_d">${[1,2,3].map(n=>`<option ${d.difficulty===n?'selected':''} value="${n}">${'⭐'.repeat(n)}</option>`).join('')}</select></label>
   <label>Puntos<input type="number" id="e_pt" min="1" value="${d.points}"></label>
   <label>Tiempo (s, 0 = el general)<input type="number" id="e_ti" min="0" value="${d.time}"></label>
+  <label class="w">Criterio de evaluación (opcional; para las notas de las misiones)<input id="e_c" list="dl_c" value="${esc(d.crit||'')}" placeholder="Por ejemplo 9.1"><datalist id="dl_c">${Object.keys(CRIT||{}).map(k=>`<option value="${k}">${esc(String((CRIT[k]||{})['4']||'').slice(0,90))}</option>`).join('')}</datalist></label>
+  <label class="w">Texto de lectura (opcional; se enseña encima de la pregunta)<textarea id="e_rd" rows="2">${esc(d.read||'')}</textarea></label>
   <label class="w">Explicación breve (aparece tras responder)<textarea id="e_x" rows="2">${esc(d.explanation)}</textarea></label></div>
   <div id="e_err" class="err"></div><div class="row"><button data-a="mno">Cancelar</button><button class="gold big" data-a="qsave">💾 Guardar</button></div>`,'wide')}
 function exportJSON(){return JSON.stringify(S,null,1)}
@@ -639,12 +646,29 @@ function casasPorMesas(d){const p=d.planos[d.plano_vigente],mesas=p.mesas.map(m=
    Hoja: Alumno «COPA · 4ºA» · Acción «Mision» (CartaId = id, Tipo = título o «cerrada», Carta = JSON {qs})
          y Acción «Respuesta» (CartaId = id de la misión, Tipo = «#7» o «Casa Gryffindor», Carta = JSON {r:[1,0…], s:segundos}).
    Las respuestas se guardan sin el código de profe (escribirLibre), como el farol del baño. */
-const TAGC='COPA · 4ºA';let LISTA=null;
+const TAGC='COPA · 4ºA';let LISTA=null,CRIT=null;
+function loadCrit(){if(CRIT||!window.JAVI)return;CRIT={};fetch(JAVI.BASE+'data/criterios.json').then(r=>r.json()).then(d=>{CRIT=(d.areas.LCL||{}).criterios||{}}).catch(()=>{})}
+/* NOTAS POR CRITERIO: solo cuentan las respuestas individuales (#número). Nota = 10 × aciertos / preguntas de ese criterio (mínimo 1). */
+function nota(ok,n){return n?Math.max(1,Math.round(100*ok/n)/10):null}
+const fnota=(ok,n)=>n?String(nota(ok,n)).replace('.',','):'—';
+function notasDatos(ms){const crits=[],T={};
+  ms.forEach(m=>respuestas(m.id).forEach((r,w)=>{if(w[0]!=='#')return;m.qs.forEach((q,i)=>{if(i>=r.length)return;const c=q.crit||'';if(!crits.includes(c))crits.push(c);
+    const t=T[w]=T[w]||{},x=t[c]=t[c]||[0,0];x[0]+=r[i]?1:0;x[1]++})}));
+  crits.sort((a,b)=>parseFloat(a||99)-parseFloat(b||99));
+  const quien=Object.keys(T).sort((a,b)=>+a.slice(1)-+b.slice(1));return{crits,T,quien}}
+function notasTabla(ms){const d=notasDatos(ms),inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
+  const cab=['Nº','Alumno'];d.crits.forEach(c=>{cab.push(critName(c));cab.push('Aciertos')});cab.push('Total','Aciertos');
+  const filas=d.quien.map(w=>{const f=[w.slice(1),inv[w]||'?'];let o=0,n=0;d.crits.forEach(c=>{const x=d.T[w][c]||[0,0];o+=x[0];n+=x[1];f.push(fnota(x[0],x[1]));f.push(x[1]?x[0]+' de '+x[1]:'')});f.push(fnota(o,n));f.push(o+' de '+n);return f});
+  return{cab,filas}}
 function loadLista(){return LISTA?Promise.resolve(LISTA):fetch(JAVI.BASE+'data/lista-4A.json',{cache:'no-store'}).then(r=>r.json()).then(d=>LISTA=d.numeros)}
 function rowsC(acc){return JAVI.filas().filter(f=>plain(f.alumno)===plain(TAGC)&&plain(f.accion)===acc)}
 function jrow(f){const i=f.carta.indexOf('{');if(i<0)return null;try{return JSON.parse(f.carta.slice(i))}catch(e){return null}}
 function misiones(){const m=new Map();rowsC('mision').forEach(f=>{if(plain(f.tipo)==='cerrada'){const o=m.get(f.cartaId);if(o)o.cerrada=true;return}
-  const j=jrow(f);if(j&&j.qs&&j.qs.length)m.set(f.cartaId,{id:f.cartaId,titulo:f.tipo,dia:f.dia,qs:j.qs})});return[...m.values()].reverse()}
+  const j=jrow(f);if(!j||!j.qs||!j.qs.length)return;
+  /* las misiones largas van en varias filas (partes de 12 preguntas): {p:nº de parte, of:total, qs} */
+  let o=m.get(f.cartaId);if(!o||!j.of){o={id:f.cartaId,titulo:f.tipo,dia:f.dia,of:j.of||1,partes:{}};m.set(f.cartaId,o)}
+  o.partes[j.p||1]=j.qs});
+  const out=[];m.forEach(o=>{const ks=Object.keys(o.partes);if(ks.length<o.of)return;o.qs=[];for(let i=1;i<=o.of;i++)o.qs=o.qs.concat(o.partes[i]||[]);out.push(o)});return out.reverse()}
 function respuestas(id){const m=new Map();rowsC('respuesta').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r)m.set(f.tipo,j.r)});return m}
 const sum=a=>a.reduce((x,y)=>x+y,0);
 function devEnter(){V.screen='dev';V.dev=V.dev||{};document.body.classList.remove('en-home');
@@ -662,14 +686,16 @@ function vDev(){const d=V.dev;
     ${fa.length?`<div class="parch pad"><h3>📚 Para repasar</h3><ol>${fa.map(q=>`<li><b>${esc(q.text)}</b><br>Respuesta: ${esc(correctText(q))}${q.explanation?`<br><i>💡 ${esc(q.explanation)}</i>`:''}</li>`).join('')}</ol></div>`:''}
     <div class="row"><button class="gold big" data-a="devback">📜 Más misiones</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div>`}
   if(d.m){const q=d.m.qs[d.i];return `<div class="wrap">${top}<div class="phead"><span class="gname">Pregunta ${d.i+1} de ${d.m.qs.length}</span><span>${'⭐'.repeat(sum(d.res))}</span></div>
-    <div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div></div>`}
+    ${readBox(q)}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div></div>`}
   const ms=misiones().filter(m=>!m.cerrada);
   return `<div class="wrap">${top}<div class="parch pad">${ms.map(m=>{const h=hecha(m.id,d.who.id);return `<div class="qrow"><span class="ty">${h?'✅':'📜'}</span><div class="qt"><b>${esc(m.titulo)}</b><small>${m.qs.length} preguntas${h?' · hecha: '+sum(h)+' de '+h.length:''}</small></div><button class="${h?'':'gold big'}" data-a="devplay" data-id="${esc(m.id)}">${h?'🔁 Repasar':'✨ ¡Jugar!'}</button></div>`}).join('')||'<p style="font-size:1.2rem">Todavía no hay misiones. Cuando el profe envíe una, tarda unos minutos en llegar.</p>'}
   <div class="row"><button data-a="devref">🔄 Buscar misiones nuevas</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div></div>`}
-function devAnswered(ok){const d=V.dev,q=d.m.qs[d.i];d.res.push(ok?1:0);ok?SFX.ok():SFX.ko();
+function devAnswered(ok){const d=V.dev,q=d.m.qs[d.i];d.res.push(ok?1:0);
+  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res))}catch(e){}ok?SFX.ok():SFX.ko();
   modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2><div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}
 function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo funcionan dentro de la web de Javificación.</p>';
   if(!LISTA)loadLista().then(()=>{if(V.screen==='book'&&V.tab==='dev')render()}).catch(()=>{});
+  const subs=[...new Set(S.questions.map(q=>q.subject))],msel=V.dvm&&misiones().some(m=>m.id===V.dvm)?V.dvm:'';
   const gs=groups(),ms=misiones(),url=location.origin+location.pathname+'?solo#mision',inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
   const res=m=>{const rs=respuestas(m.id),n=m.qs.length,fallos=m.qs.map(()=>0);let filas=[...rs.entries()];
     filas.forEach(([w,r])=>r.forEach((x,i)=>{if(!x&&i<n)fallos[i]++}));
@@ -679,11 +705,14 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
     ${rs.size?`<table class="stand"><tr><th>Quién</th><th>Aciertos</th><th>Falló las preguntas</th></tr>${filas.map(([w,r])=>`<tr><td>${w[0]==='#'?esc(w.slice(1)+' · '+(inv[w]||'?')):esc(w)}</td><td><b>${sum(r)}</b> de ${r.length}</td><td>${r.map((x,i)=>x?'':i+1).filter(Boolean).join(', ')||'—'}</td></tr>`).join('')}</table>
     ${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
   return `<h3>📤 Enviar una misión a los dispositivos</h3>
-  <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
-  <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="0">Todas</option></select></label>
+  <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${subs.map(x=>`<option value="s:${esc(x)}">Todo «${esc(x)}» (${S.questions.filter(q=>q.subject===x&&q.type!=='open').length})</option>`).join('')}${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
+  <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="30">30</option><option value="0">Todas</option></select></label>
   <label>Título<input id="dv_t" placeholder="Repaso del tema"></label></div>
-  <div class="row"><button class="gold big" data-a="devsend">📤 Enviar misión</button></div>
+  <div class="row"><button class="gold big" data-a="devsend">📤 Enviar misión</button><button data-a="devbank">📥 Cargar el banco de evaluación del Tema 2</button></div>
   <p>Los alumnos entran en <b style="-webkit-user-select:text;user-select:text">${esc(url)}</b>, escriben el código de clase (4A), tocan su nombre y ponen su número de lista (o eligen su casa). La misión tarda unos minutos en aparecer en sus aparatos, y sus respuestas tardan otros tantos en llegar aquí. Las preguntas de «respuesta abierta» no se envían.</p>
+  <h3>🎓 Notas por criterio <button data-a="devcsv">⬇️ Exportar a Excel</button></h3>
+  <p><label>Con las respuestas de <select data-c="dvm"><option value="">todas las misiones</option>${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===msel?'selected':''}>${esc(m.titulo)}</option>`).join('')}</select></label> · Solo cuentan los alumnos que entran con su nombre (no las casas). Nota del 1 al 10 según los aciertos en las preguntas de cada criterio.</p>
+  ${(()=>{const t=notasTabla(msel?ms.filter(m=>m.id===msel):ms);return t.filas.length?`<div style="overflow:auto"><table class="stand"><tr>${t.cab.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.filas.map(f=>`<tr>${f.map((c,i)=>`<td>${i>1&&i%2===0?'<b>'+esc(c)+'</b>':esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`:'<p>Todavía no hay respuestas individuales.</p>'})()}
   <h3>📊 Resultados <button data-a="devref">🔄 Actualizar</button></h3>${ms.map(res).join('')||'<p>Aún no has enviado ninguna misión.</p>'}`}
 /* ============ CEREMONIA ============ */
 function balanced(){const st=shuffle(S.students),hs=shuffle(HK);return st.map((s,i)=>({id:s.id,name:s.name,h:hs[i%hs.length]}))}
@@ -802,10 +831,11 @@ function stopTimer(){clearInterval(T.id);T.id=null}
 function addTime(n){if(!T.id)return;T.left+=n;T.total=Math.max(T.total,T.left);drawTimer()}
 function drawTimer(){const el=$('#timer');if(el)el.innerHTML=`<div class="tbar"><i style="width:${100*T.left/T.total}%"></i></div><b>⏳ ${T.left}</b>`}
 /* armazón común */
+const readBox=q=>q.read?`<div class="readbox parch">📖 ${esc(q.read)}</div>`:'';
 const fmtQ=q=>esc(q.text).replace(/_{2,}/g,'<span class="blank"></span>');
 function shell(scene){const r=rd(),q=curQ(),g=GAMES[r.game];
   $('#stage').innerHTML=`<div class="play"><div class="phead"><span class="gname">${g.e} ${g.n}</span>${r.houses.map(h=>hb(h,who(h))).join('<b class="vs">VS</b>')}<span id="timer"></span></div>
-  ${scene||''}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))} · ${'⭐'.repeat(q.difficulty)} · ${q.points} puntos</div><div class="qtext">${fmtQ(q)}</div></div>
+  ${scene||''}${readBox(q)}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))} · ${'⭐'.repeat(q.difficulty)} · ${q.points} puntos</div><div class="qtext">${fmtQ(q)}</div></div>
   <div id="ans"></div><div id="jok"></div></div>`}
 function choiceList(q){if(q.type==='mc')return shuffle(q.options.map((t,i)=>({t,ok:i===q.correct})));
   if(q.type==='tf')return[{t:'✔ Verdadero',ok:q.answer===true},{t:'✘ Falso',ok:q.answer===false}];
@@ -983,17 +1013,24 @@ const ACT={
   devout(){V.dev={open:true};render()},
   devback(){const d=V.dev;d.m=null;d.end=false;render()},
   devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
-  devplay(d){const v=V.dev,m=misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.repaso=!!hecha(m.id,v.who.id);render()},
+  devplay(d){const v=V.dev,m=misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.repaso=!!hecha(m.id,v.who.id);
+    if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&c.length&&c.length<m.qs.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
+    render()},
   devnext(){closeModal();const d=V.dev;d.i++;if(d.i>=d.m.qs.length){d.end=true;SFX.fanfare();
       if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:'Respuesta',cartaId:d.m.id,tipo:d.who.id,carta:JSON.stringify({r:d.res,s:Math.round((Date.now()-d.t0)/1000)})});
-        try{localStorage.setItem('copa-hecha|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res))}catch(e){}}}
+        try{localStorage.setItem('copa-hecha|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res));localStorage.removeItem('copa-curso|'+d.m.id+'|'+d.who.id)}catch(e){}}}
     render()},
   devsend(){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para enviar la misión',texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Enviar misión».'});
-    const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0;let qs=shuffle(S.questions.filter(q=>q.type!=='open'&&(!g||gkey(q)===g)));if(n>0)qs=qs.slice(0,n);
+    const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0;let qs=S.questions.filter(q=>q.type!=='open'&&(!g||(g.indexOf('s:')===0?q.subject===g.slice(2):gkey(q)===g)));if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
     if(!qs.length)return toast('No hay preguntas para enviar en ese grupo');
-    const titulo=($('#dv_t').value.trim()||(g||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:'m'+Date.now().toString(36),tipo:titulo,carta:JSON.stringify({qs:qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;return o})})});
+    const titulo=($('#dv_t').value.trim()||(g.replace(/^s:/,'')||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+    const limpias=qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;delete o.points;delete o.difficulty;return o}),id='m'+Date.now().toString(36),of=Math.ceil(limpias.length/12);
+    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify({p,of,qs:limpias.slice((p-1)*12,p*12)})});
     render();toast('📤 Misión enviada: '+qs.length+' preguntas. Tarda unos minutos en llegar a los aparatos.')})},
+  devbank(){const go=()=>fetch(JAVI.BASE+'data/copa/tema2-evaluacion.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);S.questions=S.questions.filter(q=>q.subject!=='Tema 2').concat(r.qs);V.sel=null;save();render();toast('📥 '+r.qs.length+' preguntas del Tema 2 cargadas'+(r.errs.length?' ('+r.errs.length+' con problemas)':''))}).catch(()=>toast('❌ No he podido leer el banco del Tema 2'));
+    S.questions.some(q=>q.subject==='Tema 2')?ask('Ya tienes preguntas de «Tema 2». ¿Sustituirlas por el banco original?',go):go()},
+  devcsv(){const ms=misiones(),sel=V.dvm&&ms.some(m=>m.id===V.dvm)?ms.filter(m=>m.id===V.dvm):ms,t=notasTabla(sel);if(!t.filas.length)return toast('Todavía no hay notas que exportar');
+    JAVI.exportarCSV('notas-copa-4A-'+JAVI.util.clave(new Date()),[t.cab].concat(t.filas))},
   devclose(d){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo();ask('¿Cerrar esta misión? Dejará de salir en los aparatos (los resultados se conservan).',()=>{JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:d.id,tipo:'cerrada',carta:''});render()})})},
   /* libro */
   qnew(){editor(null)},qed(d){editor(qById(d.id))},
@@ -1001,7 +1038,7 @@ const ACT={
   qdel(d){ask('¿Borrar esta pregunta?',()=>{S.questions=S.questions.filter(q=>q.id!==d.id);save();render()})},
   gdel(){ask(`¿Borrar TODAS las preguntas de «${esc(V.bg)}»?`,()=>{S.questions=S.questions.filter(q=>gkey(q)!==V.bg);V.bg='';V.sel=null;save();render()})},
   qsave(){const type=$('#e_ty').value,lines=($('#e_o')?$('#e_o').value:'').split('\n').map(x=>x.trim()).filter(Boolean);
-    const raw={subject:$('#e_s').value,topic:$('#e_t').value,type,text:$('#e_p').value,dif:$('#e_d').value,pts:$('#e_pt').value,time:$('#e_ti').value,exp:$('#e_x').value,opts:[],r:$('#e_r')?$('#e_r').value:''};
+    const raw={subject:$('#e_s').value,topic:$('#e_t').value,type,text:$('#e_p').value,dif:$('#e_d').value,pts:$('#e_pt').value,time:$('#e_ti').value,exp:$('#e_x').value,crit:$('#e_c').value,read:$('#e_rd').value,opts:[],r:$('#e_r')?$('#e_r').value:''};
     if(type==='mc')raw.opts=lines.map(l=>({t:l.replace(/^\*\s*/,''),ok:l[0]==='*'}));else if(type==='fill')raw.opts=lines.map(t=>({t}));else if(type==='order'||type==='match')raw.r=lines.join('|');
     const b=buildQ(raw);if(b.err)return $('#e_err').textContent='⚠️ '+b.err;
     if(V.ed){b.q.id=V.ed;S.questions[S.questions.findIndex(q=>q.id===V.ed)]=b.q}else S.questions.push(b.q);V.sel=null;save();closeModal();render();toast('✅ Pregunta guardada')},
@@ -1018,6 +1055,7 @@ const CH={
   cfg(el){const k=el.dataset.k;S.cfg[k]=el.type==='number'||k==='maxQ'||k==='nHouses'||k==='matchN'?Math.max(0,parseInt(el.value)||0):el.value;if(k==='pass'&&!el.value)S.cfg.pass='alohomora';if(k==='mode'){save();return render()}if(k==='nHouses'){setHK();save();return render()}save()},
   cfgame(el){S.cfg.games[el.dataset.k]=el.checked;save()},
   bg(el){V.bg=el.value;render()},
+  dvm(el){V.dvm=el.value;render()},
   edty(el){$('#e_sp').innerHTML=edSpec(el.value,V.edq&&V.edq.type===el.value?V.edq:null)},
   regame(el){nextRound(el.value,rd().team)},
   repart(el){nextRound(rd().game,el.value==='1')},
