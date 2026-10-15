@@ -106,7 +106,7 @@ var HOJAS = [
       '<div class="carta">Lo habéis conseguido… pero cuidado: <b>el maleficio no se ha roto, solo duerme</b>. Volverá cada vez que haya discordia en el gimnasio.<br><br>Desde hoy, el <b>Medidor del Maleficio</b> vigilará cada sesión. Si la clase se congela 2 veces o menos, se encenderá una casilla. Con 6 casillas encendidas, el maleficio se romperá para siempre. Demostrad sesión a sesión que sabéis convivir.<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>'+pie('Imprimir en papel tipo pergamino y doblar'); } },
   { id:'pergamino', n:'Trozos del pergamino (prueba 4)', f:function(){
     return cab('📜', 'El Pergamino de Dumbledore', 'Sesión 1 · Prueba 4 · recortar y repartir por la pista')+
-      '<div class="trozos"><div>cuenta</div><div>las letras</div><div>de cada</div><div>palabra</div></div>'+pie('JUNTOS (6) · HACEMOS (7) · MAGIA (5) → 675'); } },
+      '<div class="trozos"><div>cuenta</div><div>las letras</div><div>de cada</div><div>palabra</div></div>'+pie('Recortar por la línea de puntos'); } },
   { id:'conflictos', n:'Tarjetas de conflicto (sesión 4)', f:function(){
     return cab('⚖️', 'Tarjetas del Wizengamot', 'Sesión 4 · recortar · cada grupo saca una, la representa y la clase propone soluciones con el semáforo')+
       '<div class="tarjetas">'+M.conflictos.map(function(c, i){ return '<div><small>Conflicto '+(i+1)+'</small>'+esc(/^«/.test(c) ? c : '«'+c+'»')+'</div>'; }).join('')+'</div>'+pie('🔴 Paro y respiro · 🟡 Hablo y escucho · 🟢 Acuerdo'); } },
