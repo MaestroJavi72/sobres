@@ -27,10 +27,6 @@
 .recogidas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .recogidas span{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(20px,3vw,32px);padding:8px 16px;border-radius:12px;background:#fffaf0;border:2px dashed #b8934f;color:#bfae8a}
 .recogidas span.ya{border-style:solid;color:#7a2030;background:#fff3cf}
-.candado{display:flex;gap:clamp(8px,2vw,18px);justify-content:center}
-.rueda{display:flex;flex-direction:column;align-items:center;gap:6px}
-.rueda button{width:clamp(56px,9vw,84px);height:46px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;font-size:26px;cursor:pointer}
-.rueda .d{width:clamp(70px,11vw,110px);height:clamp(90px,14vw,140px);border-radius:16px;background:linear-gradient(180deg,#3a2a16,#1a120a);color:#f3d27a;display:grid;place-items:center;
   font-family:'Cinzel',serif;font-weight:900;font-size:clamp(54px,9vw,96px);box-shadow:inset 0 6px 12px rgba(0,0,0,.6)}
 .cofre{font-size:clamp(90px,16vw,170px);line-height:1;transition:transform .6s}
 .cofre.abre{animation:abre 1.2s ease-out}
@@ -78,7 +74,7 @@ var PRUEBAS = [
   { ic:'📜', t:'El Pergamino de Dumbledore', p:'En parejas, uno con los ojos tapados y el otro le guía con la voz. Recoged los trozos del pergamino.', regla:true }
 ];
 var PASOS = [{ k:'carta', n:'✉️ Carta' }].concat(PRUEBAS.map(function(p, i){ return { k:'p'+i, n:p.ic+' Prueba '+(i+1) }; })).concat([{ k:'cofre', n:'🔒 Cofre' }]);
-var paso = 'carta', hechas = {}, toques = 0, dig = [0,0,0], abierto = false;
+var paso = 'carta', hechas = {}, toques = 0, abierto = false;
 
 function pintarPasos(){ $('pasos').innerHTML = PASOS.map(function(p){ return '<button type="button" data-p="'+p.k+'" aria-pressed="'+(p.k===paso)+'" class="'+(hechas[p.k] ? 'hecho' : '')+'">'+p.n+'</button>'; }).join(''); }
 function ir(k){ paso = k; pintarPasos(); pintar(); }
@@ -95,17 +91,21 @@ function pintar(){
     h = '<div class="prueba"><div class="ic">'+p.ic+'</div><h2>Prueba '+(i+1)+' · '+esc(p.t)+'</h2><p>'+esc(p.p)+'</p>';
     if(p.toques && !ok) h += '<div class="globo">🎈</div><div class="toques">'+toques+' / '+p.toques+'</div><div class="botones"><button class="gran verde" type="button" data-a="toque">+1 toque</button><button class="gran rojo" type="button" data-a="cae">💥 ¡Se ha caído!</button></div>';
     if(p.regla) h += '<div class="recogidas">'+['cuenta','las letras','de cada','palabra'].map(function(t){ return '<span class="'+(ok ? 'ya' : '')+'">'+t+'</span>'; }).join('')+'</div>';
-    if(ok) h += p.regla ? '<p style="font-size:clamp(22px,3vw,32px)"><b>JUNTOS</b> = 6 · <b>HACEMOS</b> = 7 · <b>MAGIA</b> = 5</p><div class="palabra">6 7 5</div>' : '<div class="palabra aparece">'+p.w+'</div>';
+    if(ok) h += p.regla ? '<p style="font-size:clamp(22px,3vw,32px)">¿Qué significa? Pensadlo juntos… ¡el código del cofre está en vuestras palabras!</p><div class="palabra">? ? ?</div>' : '<div class="palabra aparece">'+p.w+'</div>';
     h += '<div class="botones">'+(ok ? '' : '<button class="gran" type="button" data-a="superada">✨ ¡Prueba superada!</button>')+
       (ok ? '<button class="gran" type="button" data-ir="'+(i<3 ? 'p'+(i+1) : 'cofre')+'">'+(i<3 ? 'Siguiente prueba ›' : 'Al cofre ›')+'</button>' : '')+'</div>';
     h += '<div class="recogidas">'+PRUEBAS.slice(0,3).map(function(x, k){ return '<span class="'+(hechas['p'+k] ? 'ya' : '')+'">'+(hechas['p'+k] ? x.w : '?????')+'</span>'; }).join('')+'</div></div>';
   }
   if(paso==='cofre'){
+    /* el cofre es de verdad (decisión de Javi): la pizarra solo acompaña */
     if(!abierto){
-      h = '<div class="cofre" id="cofre">🧰</div><p class="instr">Escribid el código del candado.</p><div class="candado">'+dig.map(function(d, k){ return '<div class="rueda"><button type="button" data-d="'+k+'" data-v="1">▲</button><div class="d">'+d+'</div><button type="button" data-d="'+k+'" data-v="-1">▼</button></div>'; }).join('')+'</div>'+
-        '<div class="botones"><button class="gran" type="button" data-a="abrir">🔓 Abrir el cofre</button></div><p class="mensaje mal" id="msg"></p>';
+      h = '<div class="cofre" id="cofre">🧰</div><h2 style="font-family:Cinzel,serif;color:#7a2030;font-size:clamp(26px,4vw,44px)">¡Al cofre de Peeves!</h2>'+
+        '<p class="instr" style="font-size:clamp(20px,2.6vw,28px)">Tenéis las tres palabras y la regla del pergamino. Id hasta el cofre y probad el código en el candado. ¡Juntos!</p>'+
+        '<div class="recogidas">'+PRUEBAS.slice(0,3).map(function(x){ return '<span class="ya">'+x.w+'</span>'; }).join('')+'</div>'+
+        '<div class="recogidas">'+['cuenta','las letras','de cada','palabra'].map(function(t){ return '<span class="ya">'+t+'</span>'; }).join('')+'</div>'+
+        '<div class="botones"><button class="gran sec" type="button" data-a="pista">💡 Pista</button><button class="gran verde" type="button" data-a="abrir">🔓 ¡Se ha abierto!</button></div><p class="mensaje" id="msg"></p>';
     } else {
-      h = '<div class="cofre abre">🗝️</div><div class="diploma aparece"><h3>Orden de Merlín al Trabajo en Equipo</h3><p>Concedida a la clase de <b>'+esc(G)+'</b> por abrir el cofre de Peeves trabajando juntos.</p></div>'+
+      h = '<div class="cofre abre">🗝️</div><div class="diploma aparece"><h3>¡El cofre está abierto!</h3><p>Dentro: la llave del cuarto del material, la <b>Orden de Merlín al Trabajo en Equipo</b> para '+esc(G)+'… y otra carta de Dumbledore.</p></div>'+
         '<div class="carta">'+CARTA2+'<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>'+
         '<div class="botones"><button class="gran sec" type="button" data-a="leer2">🔊 Leer</button><a class="gran" href="i02-maleficio.html?grupo='+encodeURIComponent(G)+'" style="text-decoration:none">⚡ Abrir el Medidor del Maleficio</a></div>';
     }
@@ -115,17 +115,14 @@ function pintar(){
 $('zona').addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
   if(b.dataset.ir){ ir(b.dataset.ir); return; }
-  if(b.dataset.d!=null){ var k = +b.dataset.d; dig[k] = (dig[k] + (+b.dataset.v) + 10) % 10; SON.tic(); pintar(); return; }
-  var a = b.dataset.a;
+    var a = b.dataset.a;
   if(a==='leer') ACT.voz(CARTA.replace(/<[^>]+>/g, ' '));
   if(a==='leer2') ACT.voz(CARTA2.replace(/<[^>]+>/g, ' '));
   if(a==='toque'){ toques++; SON.tic(); if(toques>=25){ hechas[paso] = true; SON.fanfarria(); chispas(); } pintar(); pintarPasos(); }
   if(a==='cae'){ toques = 0; SON.fallo(); pintar(); }
   if(a==='superada'){ hechas[paso] = true; SON.magia(); chispas(); pintar(); pintarPasos(); }
-  if(a==='abrir'){
-    if(dig.join('')==='675'){ abierto = true; hechas.cofre = true; SON.fanfarria(); chispas(); pintar(); pintarPasos(); }
-    else { $('cofre').classList.remove('temblor'); void $('cofre').offsetWidth; $('cofre').classList.add('temblor'); $('msg').textContent = 'El candado no se abre… Pista: el pergamino dice qué hacer con las palabras.'; SON.fallo(); }
-  }
+  if(a==='pista'){ $('msg').textContent = 'Contad cuántas letras tiene JUNTOS, luego HACEMOS y luego MAGIA. Cada número es una cifra del candado.'; SON.magia(); }
+  if(a==='abrir'){ abierto = true; hechas.cofre = true; SON.fanfarria(); chispas(); pintar(); pintarPasos(); }
 });
 $('pasos').addEventListener('click', function(e){ var b = e.target.closest('[data-p]'); if(b) ir(b.dataset.p); });
 $('bPetri').addEventListener('click', function(){ MAL.petrificus(G); });

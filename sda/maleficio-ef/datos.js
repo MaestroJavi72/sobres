@@ -139,7 +139,7 @@ var M = {
     { n:1, fase:'Motivación', ic:'🗝️', tit:'El Maleficio de la Discordia', eval:'No se califica. Observación inicial (diario del maestro).',
       obj:['Despertar el interés por el reto y presentar la narrativa.','Vivenciar que los retos solo se superan cooperando.','Conocer la mecánica del «Petrificus Totalus».'],
       acts:[
-        { t:'La carta de Dumbledore', min:5, org:'Gran grupo, sentados', mat:'Carta (pizarra o papel), cofre con candado de 3 dígitos',
+        { t:'La carta de Dumbledore', min:5, org:'Gran grupo, sentados', mat:'Carta (pizarra o papel), cofre de verdad con candado de 3 dígitos',
           d:'En el centro de la pista hay un cofre cerrado con un candado de tres dígitos. Peeves ha robado la llave del cuarto del material de EF y la ha encerrado ahí. Se lee la carta de Dumbledore: el cofre solo se abre si la clase descubre un hechizo de tres palabras escondido en las pruebas. Se explica el maleficio: ante un insulto, una burla o alguien excluido, el maestro dice «¡Petrificus Totalus!» y toda la clase se congela 30 segundos.' },
         { t:'Prueba 1 · Cruzar el Lago Negro', min:8, org:'Gran grupo', mat:'Aros (menos aros que alumnos)',
           d:'Los aros son rocas en el Lago Negro. Hay menos rocas que alumnos, así que la clase tiene que compartirlas y pasarlas hacia delante para cruzar de orilla a orilla sin tocar el agua. Superada la prueba, la clase consigue la palabra JUNTOS.' },

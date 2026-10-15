@@ -120,7 +120,7 @@ Ocho sesiones de 45 minutos organizadas en seis fases. Las fases de Motivación 
 
 | Actividad | Explicación | Organización | Material | Tiempo |
 | --- | --- | --- | --- | --- |
-| **La carta de Dumbledore** | En el centro de la pista hay un cofre cerrado con un candado de tres dígitos. Peeves ha robado la llave del cuarto del material de EF y la ha encerrado ahí. Se lee la carta de Dumbledore: el cofre solo se abre si la clase descubre un hechizo de tres palabras escondido en las pruebas. Se explica el maleficio: ante un insulto, una burla o alguien excluido, el maestro dice «¡Petrificus Totalus!» y toda la clase se congela 30 segundos. | Gran grupo, sentados | Carta (pizarra o papel), cofre con candado de 3 dígitos | 5' |
+| **La carta de Dumbledore** | En el centro de la pista hay un cofre cerrado con un candado de tres dígitos. Peeves ha robado la llave del cuarto del material de EF y la ha encerrado ahí. Se lee la carta de Dumbledore: el cofre solo se abre si la clase descubre un hechizo de tres palabras escondido en las pruebas. Se explica el maleficio: ante un insulto, una burla o alguien excluido, el maestro dice «¡Petrificus Totalus!» y toda la clase se congela 30 segundos. | Gran grupo, sentados | Carta (pizarra o papel), cofre de verdad con candado de 3 dígitos | 5' |
 | **Prueba 1 · Cruzar el Lago Negro** | Los aros son rocas en el Lago Negro. Hay menos rocas que alumnos, así que la clase tiene que compartirlas y pasarlas hacia delante para cruzar de orilla a orilla sin tocar el agua. Superada la prueba, la clase consigue la palabra JUNTOS. | Gran grupo | Aros (menos aros que alumnos) | 8' |
 | **Prueba 2 · Wingardium Leviosa** | Cada grupo mantiene su globo en el aire. Todos deben tocarlo y tienen que llegar a 25 toques sin que caiga. Palabra: HACEMOS. | Grupos de 5-6 | Un globo por grupo | 8' |
 | **Prueba 3 · El Lazo del Diablo** | Nudo humano: el grupo se coge de las manos cruzadas y tiene que desenredarse sin soltarse. Palabra: MAGIA. | Grupos de 6-8 | — | 8' |
@@ -308,7 +308,7 @@ Las conclusiones se anotan en la programación para mejorar la siguiente situaci
 
 | Recurso | Para qué |
 | --- | --- |
-| 🗝️ Breakout de la sesión 1 | Carta de Dumbledore, las cuatro pruebas, las palabras y el candado 675 en la pizarra. |
+| 🗝️ Breakout de la sesión 1 | Carta de Dumbledore, las cuatro pruebas, las palabras y la pista para abrir el cofre de verdad (el candado es físico). |
 | ⚡ Medidor del Maleficio | Botón «¡Petrificus Totalus!» con cuenta atrás de 30 segundos, congelaciones de la sesión y las 8 casillas. |
 | 🚦 Semáforo de Hermione | La rutina para resolver conflictos, los roles de equipo y las tarjetas de conflicto del Wizengamot. |
 | 📜 Código de Merlín | Escribir el Pacto de Hogwarts y el Código final de cada clase, verlo en grande e imprimirlo para firmarlo. |

@@ -159,7 +159,7 @@ p('Las conclusiones se anotan en la programación para mejorar la siguiente situ
 /* recursos de la Javificación (solo en la web y el Word, como guía) */
 h2('Recursos en la Javificación');
 tab(['Recurso','Para qué'], [
-  ['🗝️ Breakout de la sesión 1','Carta de Dumbledore, las cuatro pruebas, las palabras y el candado 675 en la pizarra.'],
+  ['🗝️ Breakout de la sesión 1','Carta de Dumbledore, las cuatro pruebas, las palabras y la pista para abrir el cofre de verdad (el candado es físico).'],
   ['⚡ Medidor del Maleficio','Botón «¡Petrificus Totalus!» con cuenta atrás de 30 segundos, congelaciones de la sesión y las 8 casillas.'],
   ['🚦 Semáforo de Hermione','La rutina para resolver conflictos, los roles de equipo y las tarjetas de conflicto del Wizengamot.'],
   ['📜 Código de Merlín','Escribir el Pacto de Hogwarts y el Código final de cada clase, verlo en grande e imprimirlo para firmarlo.'],
