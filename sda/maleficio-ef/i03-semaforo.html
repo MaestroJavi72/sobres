@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Semáforo de Hermione</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.pest{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pest button{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:9px 16px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.pest button[aria-pressed="true"]{background:#7a2030;color:#fff;border-color:#7a2030}
+.semaforo{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;max-width:1150px}
+@media (max-width:820px){ .semaforo{grid-template-columns:1fr} }
+.luz{border-radius:24px;padding:16px;border:4px solid var(--c);background:#fffaf0;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;font:inherit;color:#3a2a16;opacity:.55;transition:all .25s}
+.luz .bola{width:clamp(80px,11vw,130px);height:clamp(80px,11vw,130px);border-radius:50%;background:var(--c);box-shadow:inset 0 -8px 16px rgba(0,0,0,.25)}
+.luz h2{font-family:'Cinzel',serif;font-size:clamp(24px,3vw,36px);color:#3a2a16}
+.luz p{font-size:clamp(18px,2.1vw,24px);line-height:1.35}
+.luz.on{opacity:1;transform:scale(1.03);box-shadow:0 0 0 6px var(--c),0 0 40px var(--c)}
+.luz.on .bola{box-shadow:0 0 40px var(--c),inset 0 -8px 16px rgba(0,0,0,.15)}
+.frase{font-family:'EB Garamond',Georgia,serif;font-size:clamp(22px,3vw,34px);line-height:1.5;max-width:1000px}
+.frase select{font:inherit;font-weight:700;color:#7a2030;background:#fff3cf;border:2px dashed #b8934f;border-radius:10px;padding:0 6px;max-width:100%}
+.tarjeta{max-width:880px;min-height:220px;display:grid;place-items:center;padding:24px;border-radius:22px;border:4px solid #7a2030;background:#fffaf0;
+  font-family:'EB Garamond',Georgia,serif;font-size:clamp(26px,4vw,48px);line-height:1.25;box-shadow:0 12px 28px rgba(0,0,0,.25)}
+.num{font-family:'Cinzel',serif;font-weight:800;color:#6b5732}
+.pasosW{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:18px}
+.pasosW span{padding:6px 12px;border-radius:10px;background:#f3ead5;border:1px solid #b8934f}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;width:100%;max-width:1100px}
+.rol{background:#fffaf0;border:3px solid #b8934f;border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rol .ic{font-size:clamp(54px,8vw,84px)}
+.rol h2{font-family:'Cinzel',serif;color:#7a2030;font-size:clamp(20px,2.4vw,28px)}
+.rol p{font-size:clamp(17px,2vw,22px)}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🚦 Semáforo de Hermione<span class="sub">El Maleficio de la Discordia · Sesión 4 y siempre que haga falta</span></h1>
+    <a class="volver" href="../?id=maleficio-ef" data-volver="../?id=maleficio-ef">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <nav class="pest" id="pest">
+      <button type="button" data-v="sem" aria-pressed="true">🚦 El semáforo</button>
+      <button type="button" data-v="wiz" aria-pressed="false">⚖️ El Wizengamot</button>
+      <button type="button" data-v="rol" aria-pressed="false">🧙 Roles de equipo</button>
+    </nav>
+    <div id="zona" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%"></div>
+  </section>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script src="../comun/barra.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="datos.js"></script>
+<script src="comun.js"></script>
+<script>
+(function(){
+'use strict';
+var M = MALEFICIO, $ = MAL.$, esc = MAL.esc, SON = ACT.SON, vista = 'sem', luz = 0, cola = [], tarjeta = null;
+var EMOC = ['enfadado/a','triste','nervioso/a','avergonzado/a','frustrado/a','apartado/a','dolido/a'];
+var CUANDO = ['no me pasáis el balón','os reís si fallo','me empujas','haces trampa','me dejáis fuera','me gritas','no me escuchas'];
+var GUSTA = ['me lo pases también a mí','me animes cuando fallo','esperes tu turno','juguemos limpio','me dejes jugar con vosotros','me lo digas sin gritar','escuches mi idea'];
+function opts(l){ return l.map(function(x){ return '<option>'+esc(x)+'</option>'; }).join(''); }
+function pintar(){
+  var z = $('zona'), h = '';
+  if(vista==='sem'){
+    h = '<div class="semaforo">'+M.semaforo.map(function(s, i){ return '<button type="button" class="luz'+(i===luz ? ' on' : '')+'" style="--c:'+s.col+'" data-l="'+i+'"><span class="bola"></span><h2>'+s.ic+' '+esc(s.t)+'</h2><p>'+esc(s.d)+'</p></button>'; }).join('')+'</div>'+
+      '<div class="frase">«Yo me he sentido <select>'+opts(EMOC)+'</select> cuando <select>'+opts(CUANDO)+'</select>. Me gustaría que <select>'+opts(GUSTA)+'</select>».</div>'+
+      '<div class="botones"><button class="gran sec" type="button" data-a="ant">‹ Anterior</button><button class="gran" type="button" data-a="sig">Siguiente luz ›</button><button class="gran azul" type="button" data-a="respira">🐉 Respiración del dragón</button></div>';
+  }
+  if(vista==='wiz'){
+    h = '<div class="pasosW"><span>1. Sacad una tarjeta</span><span>2. Representadla en 1 minuto</span><span>3. El Wizengamot propone soluciones con el semáforo</span><span>4. Votad la más justa</span></div>'+
+      (tarjeta==null ? '<div class="tarjeta">⚖️ Pulsa «Sacar tarjeta»</div>' : '<div class="num">Tarjeta '+(tarjeta+1)+' de '+M.conflictos.length+'</div><div class="tarjeta aparece">'+esc(/^«/.test(M.conflictos[tarjeta]) ? M.conflictos[tarjeta] : '«'+M.conflictos[tarjeta]+'»')+'</div>')+
+      '<div class="botones"><button class="gran" type="button" data-a="sacar">🎴 Sacar tarjeta</button><button class="gran sec" type="button" data-a="crono">⏳ 1 minuto</button></div><div class="cifra" id="crono"></div>';
+  }
+  if(vista==='rol'){
+    h = '<div class="roles">'+M.roles.map(function(r){ return '<div class="rol"><span class="ic">'+r.ic+'</span><h2>'+esc(r.n)+'</h2><p>'+esc(r.d)+'</p></div>'; }).join('')+'</div>'+
+      '<p class="instr">En cada grupo, cada uno tiene un rol. En la sesión siguiente, los roles rotan.</p>';
+  }
+  z.innerHTML = h;
+}
+var crono = 0;
+$('zona').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.l!=null){ luz = +b.dataset.l; SON.tic(); pintar(); return; }
+  var a = b.dataset.a;
+  if(a==='sig'){ luz = (luz+1)%3; SON.tic(); pintar(); }
+  if(a==='ant'){ luz = (luz+2)%3; SON.tic(); pintar(); }
+  if(a==='respira') ACT.voz('Toma aire por la nariz, uno, dos, tres. Suéltalo despacio por la boca, como un dragón tranquilo. Otra vez. Y una más.');
+  if(a==='sacar'){ if(!cola.length) cola = ACT.mezclar(M.conflictos.map(function(x, i){ return i; })); tarjeta = cola.shift(); SON.magia(); pintar(); }
+  if(a==='crono'){
+    clearInterval(crono); var s = 60, c = $('crono'); c.textContent = '1:00';
+    crono = setInterval(function(){ s--; var el = $('crono'); if(!el){ clearInterval(crono); return; } el.textContent = '0:'+String(s).padStart(2,'0'); if(s<=0){ clearInterval(crono); el.textContent = '¡Tiempo!'; SON.fanfarria(); } }, 1000);
+  }
+});
+$('pest').addEventListener('click', function(e){
+  var b = e.target.closest('[data-v]'); if(!b) return; vista = b.dataset.v;
+  Array.prototype.forEach.call($('pest').children, function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+  pintar();
+});
+ACT.iniciar('maleficio-ef');
+pintar();
+})();
+</script>
+</body>
+</html>

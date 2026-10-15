@@ -50,7 +50,7 @@ fetch('../../data/sda/indice.json', { cache:'no-store' }).then(function(r){ retu
   function enl(c, flecha){
     if(!c) return '<a class="vacio" aria-hidden="true">·</a>';
     var n = (info[c]||{}).nombre || c, u = s.enlaces[c].split('/').pop()+PROFE;
-    return '<a href="'+u+'" title="'+esc(c+' · '+n)+'">'+(flecha==='‹' ? '‹ <span class="ic">'+(ICONOS[c]||'🎮')+'</span>'+esc(n) : esc(n)+' <span class="ic">'+(ICONOS[c]||'🎮')+'</span> ›')+'</a>';
+    return '<a href="'+u+'" title="'+esc(c+' · '+n)+'">'+(flecha==='‹' ? '‹ <span class="ic">'+(((s.iconos||{})[c])||ICONOS[c]||'🎮')+'</span>'+esc(n) : esc(n)+' <span class="ic">'+(((s.iconos||{})[c])||ICONOS[c]||'🎮')+'</span> ›')+'</a>';
   }
   var f = d.fecha ? d.fecha.split('-') : null, dia = f ? DIAS[new Date(+f[0], +f[1]-1, +f[2], 12).getDay()]+' '+(+f[2])+' '+MESES[+f[1]-1] : '';
   var etq = /^puntúa$/i.test(d.etq) ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(d.etq) ? '<span class="etq">➕ ampliación</span>' : '';

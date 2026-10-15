@@ -198,16 +198,20 @@ function fechaBonita(f){ var p = f.split('-'); return DIAS[JAVI.diaSemana(f)]+' 
 
 /* ---------- criterios: el texto completo sale al tocar el código ---------- */
 function textoCriterio(cod){
-  var m = cod.match(/LCL\.2\.(\d+\.\d+)/); if(!m || !CRIT) return null;
+  if(!CRIT) return null;
+  var m = cod.match(/LCL\.2\.(\d+\.\d+)/), e = cod.match(/^(\d\.\d)\.([ab])$/);
+  if(e){ var x = CRIT.areas.EF.criterios.filter(function(k){ return k.id===e[1]; })[0]; return x ? x[e[2]==='a' ? '3' : '4'] : null; }   /* EF: a = 3º, b = 4º */
+  if(!m) return null;
   var c = CRIT.areas.LCL.criterios.filter(function(x){ return x.id===m[1]; })[0];
   return c ? c['4'] : null;
 }
+var RE_EF = /\b\d\.\d\.[ab]\b/;
 function marcarCodigos(root){
   var andar = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), nodos = [], n;
-  while((n = andar.nextNode())) if(/LCL\.2\.\d+\.\d+|\bI-\d{1,2}\b/.test(n.nodeValue) && !n.parentNode.closest('.crit,.inter')) nodos.push(n);
+  while((n = andar.nextNode())) if((/LCL\.2\.\d+\.\d+|\bI-\d{1,2}\b/.test(n.nodeValue) || (esEF() && RE_EF.test(n.nodeValue))) && !n.parentNode.closest('.crit,.inter')) nodos.push(n);
   nodos.forEach(function(t){
     var frag = document.createElement('span');
-    frag.innerHTML = esc(t.nodeValue).replace(/LCL\.2\.\d+\.\d+/g, function(c){ return '<button type="button" class="crit" data-c="'+c+'">'+c+'</button>'; })
+    frag.innerHTML = esc(t.nodeValue).replace(esEF() ? /\b\d\.\d\.[ab]\b/g : /LCL\.2\.\d+\.\d+/g, function(c){ return '<button type="button" class="crit" data-c="'+c+'">'+c+'</button>'; })
                                       .replace(/\b(I-\d{1,2})\b/g, function(c){
                                         var u = SDA && SDA.enlaces && SDA.enlaces[c];   /* actividad ya creada: enlace */
                                         return u ? '<a class="inter listo" href="'+u+(JAVI.ES_PROFE ? '?profe' : '')+'" title="Abrir la actividad">▶ '+c+'</a>' : '<span class="inter">'+c+'</span>';
@@ -220,13 +224,16 @@ document.addEventListener('click', function(e){
   var b = e.target.closest && e.target.closest('.crit'), g = $('globo');
   if(!b){ g.hidden = true; return; }
   var tx = textoCriterio(b.dataset.c);
-  g.innerHTML = '<b>'+esc(b.dataset.c)+'</b><br>'+(tx ? esc(tx) : 'Texto no encontrado en los criterios del 2º ciclo.')+'<br><small style="opacity:.75">Orden de 30 de mayo de 2023 · 4º</small>';
+  g.innerHTML = '<b>'+esc(b.dataset.c)+'</b><br>'+(tx ? esc(tx) : 'Texto no encontrado en los criterios del 2º ciclo.')+'<br><small style="opacity:.75">Orden de 30 de mayo de 2023 · '+(esEF() && /a$/.test(b.dataset.c) ? '3º' : '4º')+'</small>';
   g.hidden = false;
   var r = b.getBoundingClientRect(), w = Math.min(innerWidth*0.92, 420);
   g.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.left))+'px';
   g.style.top = (r.bottom + 8 + g.offsetHeight > innerHeight ? Math.max(8, r.top - g.offsetHeight - 8) : r.bottom + 8)+'px';
 });
 
+function esEF(){ return !!(SDA && SDA.asig==='EF'); }
+function conFechas(){ return !!(SDA && SDA.sesiones.every(function(s){ return s.fecha; })); }
+var ASIG = { LCL:'Lengua', EF:'Educación Física', MAT:'Matemáticas' };
 /* recursos imprimibles (fichas, plantillas…) de una sesión */
 function recursosDe(n){ return ((SDA && SDA.recursos) || []).filter(function(r){ return (r.sesiones||[]).indexOf(n)>=0; }); }
 var PROFE = JAVI.ES_PROFE ? '?profe' : '';
@@ -243,14 +250,25 @@ function actividades(s){
 function btnJuego(a, extra){
   var u = SDA.enlaces && SDA.enlaces[a.cod];
   var etq = /^puntúa$/i.test(a.etq) ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(a.etq) ? '<span class="etq">➕ ampliación</span>' : '';
-  return u ? '<a class="btn juego" href="'+u+PROFE+'"><span class="ic">'+(ICONOS[a.cod]||'🎮')+'</span><span>'+esc(a.nombre)+(extra ? '<small>'+extra+'</small>' : '')+'</span>'+etq+'</a>' : '';
+  return u ? '<a class="btn juego" href="'+u+PROFE+'"><span class="ic">'+(((SDA.iconos||{})[a.cod])||ICONOS[a.cod]||'🎮')+'</span><span>'+esc(a.nombre)+(extra ? '<small>'+extra+'</small>' : '')+'</span>'+etq+'</a>' : '';
 }
 function btnFicha(r, extra){ return '<a class="btn ficha" href="'+r.url+PROFE+'"><span class="ic">'+r.ic+'</span><span>'+esc(r.n.replace(/^Ficha para familias · /, 'Ficha: '))+(extra ? '<small>'+extra+'</small>' : '')+'</span></a>'; }
 
 /* ---------- pestaña Semana ---------- */
 var semana = null;
 function semanas(){ var l = []; SDA.sesiones.forEach(function(s){ var w = JAVI.lunesDe(s.fecha); if(l.indexOf(w)<0) l.push(w); }); return l; }
+/* SA sin fechas (p. ej. la misma para varias clases): todas las sesiones con su fase */
+function pintarSesiones(){
+  document.querySelector('#p-semana .semnav').style.display = 'none';
+  $('dias').innerHTML = SDA.sesiones.map(function(s, k){
+    return '<article class="dia">'+
+      '<div class="cab"><span class="num">'+(k+1)+'</span><span class="fch">'+esc(s.fase || 'Sesión '+(k+1))+'<small>Sesión '+(k+1)+' · '+esc(s.duracion)+'</small></span></div>'+
+      '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
+      '<div class="botones">'+actividades(s).map(function(a){ return btnJuego(a); }).join('')+recursosDe(k+1).map(function(r){ return btnFicha(r); }).join('')+'</div></article>';
+  }).join('');
+}
 function pintarSemana(){
+  if(!conFechas()){ pintarSesiones(); return; }
   var ws = semanas(), i = ws.indexOf(semana), hoy = U.clave(new Date());
   var fin = JAVI.sumarDias(semana, 4), p1 = semana.split('-'), p2 = fin.split('-');
   $('semTit').innerHTML = 'Semana '+(i+1)+' de '+ws.length+'<small>del '+(+p1[2])+' '+MESES[+p1[1]-1]+' al '+(+p2[2])+' '+MESES[+p2[1]-1]+'</small>';
@@ -273,10 +291,14 @@ $('semSig').addEventListener('click', function(){ moverSemana(1); });
 
 /* ---------- pestaña Juegos y fichas ---------- */
 function pintarGalerias(){
-  var j = [];
-  SDA.sesiones.forEach(function(s, k){ actividades(s).forEach(function(a){ j.push(btnJuego(a, 'Sesión '+(k+1)+' · '+fechaBonita(s.fecha))); }); });
+  var j = [], vistos = {};   /* cada actividad una vez, con todas sus sesiones */
+  SDA.sesiones.forEach(function(s, k){ actividades(s).forEach(function(a){
+    if(vistos[a.cod]){ vistos[a.cod].push(k+1); return; } vistos[a.cod] = [k+1];
+    j.push({ a:a, s:vistos[a.cod], f:s.fecha });
+  }); });
+  j = j.map(function(x){ return btnJuego(x.a, 'Sesi'+(x.s.length>1 ? 'ones ' : 'ón ')+x.s.join(', ')+(x.f && x.s.length===1 ? ' · '+fechaBonita(x.f) : '')); });
   $('galJuegos').innerHTML = j.join('');
-  $('galFichas').innerHTML = (SDA.recursos||[]).map(function(r){ return btnFicha(r, 'Sesión '+r.sesiones.join(', ')); }).join('');
+  $('galFichas').innerHTML = (SDA.recursos||[]).map(function(r){ return btnFicha(r, r.d || ((r.sesiones||[]).length ? 'Sesi'+(r.sesiones.length>1 ? 'ones ' : 'ón ')+r.sesiones.join(', ') : '')); }).join('');
 }
 
 /* ---------- pestañas ---------- */
@@ -300,10 +322,12 @@ function pintar(md){
   document.title = SDA ? SDA.titulo : h1;
   if(SDA){
     var fs = SDA.sesiones.map(function(s){ return s.fecha; });
-    $('hSub').textContent = SDA.grupo+' · Lengua · '+SDA.sesiones.length+' sesiones, del '+fechaBonita(fs[0])+' al '+fechaBonita(fs[fs.length-1]);
-    $('hChips').innerHTML = ['📖 '+SDA.unidad, '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('');
+    $('hSub').textContent = SDA.grupo+' · '+(ASIG[SDA.asig]||SDA.asig)+' · '+SDA.sesiones.length+' sesiones'+(conFechas() ? ', del '+fechaBonita(fs[0])+' al '+fechaBonita(fs[fs.length-1]) : ' de '+String(SDA.sesiones[0].duracion||'').replace("'", ' minutos'));
+    if(SDA.icono) document.querySelector('.heroe .fosil').textContent = SDA.icono;
+    if(!conFechas()) document.querySelector('[data-p="semana"]').textContent = '📅 Sesiones';
+    $('hChips').innerHTML = [SDA.unidad ? '📖 '+SDA.unidad : '', '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].filter(Boolean).map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('');
     /* semana que se abre: la de hoy, o la siguiente con clase, o la última */
-    var ws = semanas(), hoyW = JAVI.lunesDe(U.clave(new Date()));
+    var ws = conFechas() ? semanas() : [], hoyW = JAVI.lunesDe(U.clave(new Date()));
     semana = ws.filter(function(w){ return w>=hoyW; })[0] || ws[ws.length-1];
     pintarSemana(); pintarGalerias();
   } else {

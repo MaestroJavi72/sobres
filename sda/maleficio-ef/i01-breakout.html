@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Breakout · El Maleficio de la Discordia</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.clases{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-family:var(--f-sub);color:var(--tinta-suave)}
+.pasos{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.pasos button{font-family:var(--f-sub);font-weight:700;font-size:15px;padding:7px 12px;border-radius:999px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.pasos button[aria-pressed="true"]{background:#7a2030;color:#fff;border-color:#7a2030}
+.pasos button.hecho::after{content:' ✔'}
+.carta{max-width:820px;background:#fffaf0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23fffaf0'/%3E%3Ccircle cx='1' cy='1' r='.6' fill='%23ead7a8'/%3E%3C/svg%3E");
+  border:2px solid #b8934f;border-radius:6px;padding:clamp(18px,3vw,34px);text-align:left;font-family:'EB Garamond',Georgia,serif;font-size:clamp(20px,2.4vw,27px);line-height:1.45;box-shadow:0 10px 26px rgba(0,0,0,.25);position:relative}
+.carta .sello{position:absolute;right:-16px;bottom:-16px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#b8323a,#7a2030);color:#f3d27a;display:grid;place-items:center;font:800 26px 'Cinzel',serif;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+.carta .firma{text-align:right;font-style:italic;margin-top:12px}
+.prueba{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:900px}
+.prueba .ic{font-size:clamp(60px,10vw,110px);line-height:1}
+.prueba h2{font-family:'Cinzel',serif;color:#7a2030;font-size:clamp(26px,4vw,44px)}
+.prueba p{font-size:clamp(19px,2.3vw,25px)}
+.palabra{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:clamp(50px,11vw,130px);color:#7a2030;letter-spacing:.08em;text-shadow:0 0 24px rgba(243,210,122,.9)}
+.toques{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(70px,14vw,160px);color:#3a2a16;line-height:1}
+.globo{font-size:clamp(50px,8vw,90px);animation:flota 2.4s ease-in-out infinite}
+@keyframes flota{50%{transform:translateY(-14px)}}
+.recogidas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.recogidas span{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(20px,3vw,32px);padding:8px 16px;border-radius:12px;background:#fffaf0;border:2px dashed #b8934f;color:#bfae8a}
+.recogidas span.ya{border-style:solid;color:#7a2030;background:#fff3cf}
+.candado{display:flex;gap:clamp(8px,2vw,18px);justify-content:center}
+.rueda{display:flex;flex-direction:column;align-items:center;gap:6px}
+.rueda button{width:clamp(56px,9vw,84px);height:46px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;font-size:26px;cursor:pointer}
+.rueda .d{width:clamp(70px,11vw,110px);height:clamp(90px,14vw,140px);border-radius:16px;background:linear-gradient(180deg,#3a2a16,#1a120a);color:#f3d27a;display:grid;place-items:center;
+  font-family:'Cinzel',serif;font-weight:900;font-size:clamp(54px,9vw,96px);box-shadow:inset 0 6px 12px rgba(0,0,0,.6)}
+.cofre{font-size:clamp(90px,16vw,170px);line-height:1;transition:transform .6s}
+.cofre.abre{animation:abre 1.2s ease-out}
+@keyframes abre{0%{transform:scale(1)}30%{transform:scale(1.2) rotate(-6deg)}60%{transform:scale(1.1) rotate(6deg)}100%{transform:scale(1)}}
+.diploma{max-width:760px;border:6px double #c9972e;border-radius:12px;padding:22px;background:#fffaf0;font-family:'Cinzel',serif;color:#3a2a16}
+.diploma h3{font-family:'Cinzel Decorative','Cinzel',serif;color:#7a2030;font-size:clamp(24px,3.6vw,40px)}
+.chispas{position:fixed;inset:0;pointer-events:none;z-index:50}
+.chispas i{position:absolute;top:-20px;font-style:normal;font-size:24px;animation:cae 2.6s linear forwards}
+@keyframes cae{to{transform:translateY(110vh) rotate(540deg)}}
+.flotaPetri{position:fixed;right:16px;bottom:72px;z-index:40;font-family:var(--f-sub);font-weight:800;font-size:17px;padding:10px 16px;border-radius:14px;border:3px solid #bfe3ff;background:#1d3f7a;color:#fff;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🗝️ El Maleficio de la Discordia<span class="sub">Breakout · Sesión 1 (Motivación) · EF 3º y 4º</span></h1>
+    <a class="volver" href="../?id=maleficio-ef" data-volver="../?id=maleficio-ef">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <div class="clases">Clase: <span id="clases"></span></div>
+  <section class="escena">
+    <nav class="pasos" id="pasos"></nav>
+    <div id="zona" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%"></div>
+  </section>
+</div>
+<button class="flotaPetri" id="bPetri" type="button" title="Toda la clase congelada 30 segundos">⚡ Petrificus</button>
+<div class="chispas" id="chispas"></div>
+
+<script src="../../comun/javi.js"></script>
+<script src="../comun/barra.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="datos.js"></script>
+<script src="comun.js"></script>
+<script>
+(function(){
+'use strict';
+var $ = MAL.$, esc = MAL.esc, SON = ACT.SON, G = null;
+var CARTA = 'Queridos alumnos y alumnas de Hogwarts:<br><br>Peeves, el poltergeist, ha robado la llave del cuarto del material de Educación Física y la ha encerrado en este cofre con un candado mágico de tres cifras. Pero eso no es lo peor: ha lanzado sobre el gimnasio el <b>Maleficio de la Discordia</b>.<br><br>Cada vez que alguien insulte, se burle o deje fuera a un compañero, el maestro gritará <b>«¡Petrificus Totalus!»</b> y toda la clase quedará congelada durante 30 segundos.<br><br>El cofre solo se abre con un hechizo de <b>tres palabras</b>, escondido en las pruebas que os esperan. Ninguna se puede superar solo. Confío en vosotros.';
+var CARTA2 = 'Lo habéis conseguido… pero cuidado: <b>el maleficio no se ha roto, solo duerme</b>. Volverá cada vez que haya discordia en el gimnasio.<br><br>Desde hoy, el <b>Medidor del Maleficio</b> vigilará cada sesión. Si la clase se congela 2 veces o menos, se encenderá una casilla. Con 6 casillas encendidas, el maleficio se romperá para siempre.<br><br>Demostrad sesión a sesión que sabéis convivir.';
+var PRUEBAS = [
+  { ic:'🌊', t:'Cruzar el Lago Negro', p:'Los aros son rocas. Hay menos rocas que magos: compartidlas y pasadlas hacia delante para cruzar sin tocar el agua.', w:'JUNTOS' },
+  { ic:'🎈', t:'Wingardium Leviosa', p:'Mantened el globo en el aire. Todos tienen que tocarlo. ¡25 toques sin que caiga!', w:'HACEMOS', toques:25 },
+  { ic:'🌿', t:'El Lazo del Diablo', p:'Cogeos de las manos cruzadas y desenredad el nudo sin soltaros.', w:'MAGIA' },
+  { ic:'📜', t:'El Pergamino de Dumbledore', p:'En parejas, uno con los ojos tapados y el otro le guía con la voz. Recoged los trozos del pergamino.', regla:true }
+];
+var PASOS = [{ k:'carta', n:'✉️ Carta' }].concat(PRUEBAS.map(function(p, i){ return { k:'p'+i, n:p.ic+' Prueba '+(i+1) }; })).concat([{ k:'cofre', n:'🔒 Cofre' }]);
+var paso = 'carta', hechas = {}, toques = 0, dig = [0,0,0], abierto = false;
+
+function pintarPasos(){ $('pasos').innerHTML = PASOS.map(function(p){ return '<button type="button" data-p="'+p.k+'" aria-pressed="'+(p.k===paso)+'" class="'+(hechas[p.k] ? 'hecho' : '')+'">'+p.n+'</button>'; }).join(''); }
+function ir(k){ paso = k; pintarPasos(); pintar(); }
+function chispas(){ var c = $('chispas'); for(var i=0;i<40;i++){ var e = document.createElement('i'); e.textContent = ['✨','⭐','✨','💫'][i%4]; e.style.left = (Math.random()*100)+'vw'; e.style.animationDelay = (Math.random()*0.8)+'s'; c.appendChild(e); setTimeout(function(x){ return function(){ x.remove(); }; }(e), 3600); } }
+function pintar(){
+  var z = $('zona'), h = '';
+  if(paso==='carta'){
+    h = '<div class="carta">'+CARTA+'<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>'+
+      '<div class="botones"><button class="gran sec" type="button" data-a="leer">🔊 Leer en voz alta</button><button class="gran" type="button" data-ir="p0">¡A por la primera prueba! ›</button></div>';
+  }
+  var m = paso.match(/^p(\d)$/);
+  if(m){
+    var i = +m[1], p = PRUEBAS[i], ok = hechas[paso];
+    h = '<div class="prueba"><div class="ic">'+p.ic+'</div><h2>Prueba '+(i+1)+' · '+esc(p.t)+'</h2><p>'+esc(p.p)+'</p>';
+    if(p.toques && !ok) h += '<div class="globo">🎈</div><div class="toques">'+toques+' / '+p.toques+'</div><div class="botones"><button class="gran verde" type="button" data-a="toque">+1 toque</button><button class="gran rojo" type="button" data-a="cae">💥 ¡Se ha caído!</button></div>';
+    if(p.regla) h += '<div class="recogidas">'+['cuenta','las letras','de cada','palabra'].map(function(t){ return '<span class="'+(ok ? 'ya' : '')+'">'+t+'</span>'; }).join('')+'</div>';
+    if(ok) h += p.regla ? '<p style="font-size:clamp(22px,3vw,32px)"><b>JUNTOS</b> = 6 · <b>HACEMOS</b> = 7 · <b>MAGIA</b> = 5</p><div class="palabra">6 7 5</div>' : '<div class="palabra aparece">'+p.w+'</div>';
+    h += '<div class="botones">'+(ok ? '' : '<button class="gran" type="button" data-a="superada">✨ ¡Prueba superada!</button>')+
+      (ok ? '<button class="gran" type="button" data-ir="'+(i<3 ? 'p'+(i+1) : 'cofre')+'">'+(i<3 ? 'Siguiente prueba ›' : 'Al cofre ›')+'</button>' : '')+'</div>';
+    h += '<div class="recogidas">'+PRUEBAS.slice(0,3).map(function(x, k){ return '<span class="'+(hechas['p'+k] ? 'ya' : '')+'">'+(hechas['p'+k] ? x.w : '?????')+'</span>'; }).join('')+'</div></div>';
+  }
+  if(paso==='cofre'){
+    if(!abierto){
+      h = '<div class="cofre" id="cofre">🧰</div><p class="instr">Escribid el código del candado.</p><div class="candado">'+dig.map(function(d, k){ return '<div class="rueda"><button type="button" data-d="'+k+'" data-v="1">▲</button><div class="d">'+d+'</div><button type="button" data-d="'+k+'" data-v="-1">▼</button></div>'; }).join('')+'</div>'+
+        '<div class="botones"><button class="gran" type="button" data-a="abrir">🔓 Abrir el cofre</button></div><p class="mensaje mal" id="msg"></p>';
+    } else {
+      h = '<div class="cofre abre">🗝️</div><div class="diploma aparece"><h3>Orden de Merlín al Trabajo en Equipo</h3><p>Concedida a la clase de <b>'+esc(G)+'</b> por abrir el cofre de Peeves trabajando juntos.</p></div>'+
+        '<div class="carta">'+CARTA2+'<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>'+
+        '<div class="botones"><button class="gran sec" type="button" data-a="leer2">🔊 Leer</button><a class="gran" href="i02-maleficio.html?grupo='+encodeURIComponent(G)+'" style="text-decoration:none">⚡ Abrir el Medidor del Maleficio</a></div>';
+    }
+  }
+  z.innerHTML = h;
+}
+$('zona').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.ir){ ir(b.dataset.ir); return; }
+  if(b.dataset.d!=null){ var k = +b.dataset.d; dig[k] = (dig[k] + (+b.dataset.v) + 10) % 10; SON.tic(); pintar(); return; }
+  var a = b.dataset.a;
+  if(a==='leer') ACT.voz(CARTA.replace(/<[^>]+>/g, ' '));
+  if(a==='leer2') ACT.voz(CARTA2.replace(/<[^>]+>/g, ' '));
+  if(a==='toque'){ toques++; SON.tic(); if(toques>=25){ hechas[paso] = true; SON.fanfarria(); chispas(); } pintar(); pintarPasos(); }
+  if(a==='cae'){ toques = 0; SON.fallo(); pintar(); }
+  if(a==='superada'){ hechas[paso] = true; SON.magia(); chispas(); pintar(); pintarPasos(); }
+  if(a==='abrir'){
+    if(dig.join('')==='675'){ abierto = true; hechas.cofre = true; SON.fanfarria(); chispas(); pintar(); pintarPasos(); }
+    else { $('cofre').classList.remove('temblor'); void $('cofre').offsetWidth; $('cofre').classList.add('temblor'); $('msg').textContent = 'El candado no se abre… Pista: el pergamino dice qué hacer con las palabras.'; SON.fallo(); }
+  }
+});
+$('pasos').addEventListener('click', function(e){ var b = e.target.closest('[data-p]'); if(b) ir(b.dataset.p); });
+$('bPetri').addEventListener('click', function(){ MAL.petrificus(G); });
+ACT.iniciar('maleficio-ef');
+JAVI.listo(function(){ MAL.botonesClase($('clases'), function(g){ G = g; if(paso==='cofre') pintar(); }); pintarPasos(); pintar(); });
+})();
+</script>
+</body>
+</html>

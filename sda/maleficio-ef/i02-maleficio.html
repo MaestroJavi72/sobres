@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medidor del Maleficio</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<style>
+.clases{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-family:var(--f-sub);color:var(--tinta-suave)}
+.petriBtn{font-family:var(--f-titulo);font-weight:900;font-size:clamp(26px,4.4vw,52px);padding:18px 34px;border-radius:24px;border:4px solid #bfe3ff;cursor:pointer;
+  background:radial-gradient(circle at 30% 20%,#7fb8ff,#1d3f7a);color:#fff;text-shadow:0 0 14px #bfe3ff;box-shadow:0 8px 0 #0d2340,0 0 40px rgba(127,184,255,.6)}
+.petriBtn:active{transform:translateY(4px);box-shadow:0 4px 0 #0d2340}
+.hoyCaja{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.copos{font-size:clamp(34px,5vw,56px);min-height:1.2em;letter-spacing:4px}
+.contador{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(20px,2.6vw,28px);color:#3a2a16}
+.contador b{font-size:1.5em;color:#1d3f7a}
+.medidor{display:grid;grid-template-columns:repeat(8,1fr);gap:clamp(6px,1vw,12px);width:100%;max-width:1100px}
+@media (max-width:760px){ .medidor{grid-template-columns:repeat(4,1fr)} }
+.casilla{border-radius:18px;border:3px solid #b8934f;background:#e9dcc0;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:132px;position:relative;cursor:pointer;font:inherit;color:#6b5732}
+.casilla .ic{font-size:clamp(30px,4vw,46px);filter:grayscale(1);opacity:.45}
+.casilla .n{font-family:'Cinzel',serif;font-weight:800;font-size:15px}
+.casilla .t{font-size:13px;line-height:1.15}
+.casilla.on{background:radial-gradient(circle at 50% 30%,#fff6c9,#f3d27a);border-color:#c9972e;box-shadow:0 0 22px rgba(243,210,122,.9);color:#3a2a16}
+.casilla.on .ic{filter:none;opacity:1}
+.casilla.off{background:#c9c3b6;border-color:#8a8070}
+.casilla.off::after{content:'✖';position:absolute;top:4px;right:8px;color:#7a2030;font-weight:800}
+.casilla.sel{outline:4px dashed #7a2030;outline-offset:3px}
+.estadoM{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(20px,3vw,32px);color:#7a2030}
+.roto{font-family:'Cinzel Decorative','Cinzel',serif;font-size:clamp(30px,5vw,56px);color:#1e8449;text-shadow:0 0 18px #fff}
+.ayuda{font-size:15px;color:#6b5732;max-width:900px}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⚡ Medidor del Maleficio<span class="sub">El Maleficio de la Discordia · EF 3º y 4º</span></h1>
+    <a class="volver" href="../?id=maleficio-ef" data-volver="../?id=maleficio-ef">← Volver</a>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <div class="clases">Clase: <span id="clases"></span></div>
+
+  <section class="escena">
+    <div class="hoyCaja">
+      <button class="petriBtn" id="bPetri" type="button">⚡ ¡Petrificus Totalus!</button>
+      <div><div class="contador">Hoy: <b id="nCong">0</b> congelaciones</div><div class="copos" id="copos"></div>
+        <button class="mini" id="bMenos" type="button" title="Si se ha contado una de más">− Quitar una</button></div>
+    </div>
+    <p class="ayuda">Ante un insulto, una burla o alguien excluido: toca el botón y toda la clase se congela 30 segundos. Con <b>2 o menos</b> congelaciones, la sesión enciende su casilla.</p>
+    <div class="medidor" id="medidor"></div>
+    <div class="estadoM" id="estadoM"></div>
+    <div class="botones"><button class="gran" id="bCerrar" type="button">🏁 Cerrar la sesión</button></div>
+  </section>
+</div>
+
+<script src="../../comun/javi.js"></script>
+<script src="../comun/barra.js"></script>
+<script src="datos.js"></script>
+<script src="comun.js"></script>
+<script>
+(function(){
+'use strict';
+var M = MALEFICIO, G = null, sel = null, $ = MAL.$;
+function estado(){ return MAL.ultimas(G, 'Maleficio', function(f){ return f.cartaId; }); }
+function siguiente(e){ for(var i=1;i<=8;i++) if(!e['S'+i]) return i; return 8; }
+function pintar(){
+  var e = estado(), n = MAL.congelaciones(G), on = 0;
+  if(!sel) sel = siguiente(e);
+  $('nCong').textContent = n; $('copos').textContent = '❄️'.repeat(Math.min(n, 12));
+  $('medidor').innerHTML = M.sesiones.map(function(s){
+    var x = e['S'+s.n], cl = x ? (x.j.ok ? ' on' : ' off') : '';
+    if(x && x.j.ok) on++;
+    return '<button type="button" class="casilla'+cl+(s.n===sel ? ' sel' : '')+'" data-s="'+s.n+'"><span class="ic">'+s.ic+'</span><span class="n">Sesión '+s.n+'</span><span class="t">'+MAL.esc(s.tit)+'</span>'+(x ? '<span class="t">❄️ '+x.j.c+'</span>' : '')+'</button>';
+  }).join('');
+  $('estadoM').innerHTML = on>=6 ? '<div class="roto">✨ ¡Maleficio roto! ✨</div>'+on+' de 8 casillas encendidas' : on+' de 8 casillas encendidas · hacen falta 6 para romper el maleficio';
+  $('bCerrar').textContent = '🏁 Cerrar la sesión '+sel+' ('+n+(n===1 ? ' congelación' : ' congelaciones')+')';
+}
+$('medidor').addEventListener('click', function(e){ var b = e.target.closest('[data-s]'); if(!b) return; sel = +b.dataset.s; pintar(); });
+$('bPetri').addEventListener('click', function(){ MAL.petrificus(G, pintar); pintar(); });
+$('bMenos').addEventListener('click', function(){ MAL.ponerCongelaciones(G, MAL.congelaciones(G)-1); pintar(); });
+$('bCerrar').addEventListener('click', function(){
+  var n = MAL.congelaciones(G), ok = n<=2 ? 1 : 0;
+  if(!MAL.conLlave('Para guardar el Medidor de '+G+', escribe tu código.')) return;
+  if(!confirm('Sesión '+sel+' de '+G+': '+n+' congelaciones → '+(ok ? 'se ENCIENDE la casilla ✨' : 'la casilla se queda apagada')+'. ¿Guardar?')) return;
+  JAVI.escribir({ alumno:MAL.TAG(G), accion:'Maleficio', cartaId:'S'+sel, tipo:n+' congelaciones', carta:JSON.stringify({ c:n, ok:ok }) });
+  if(ok) MAL.sonar([523,659,784,1046,1318], 'triangle', 0.1); else MAL.sonar([330,262], 'sawtooth', 0.15);
+  MAL.ponerCongelaciones(G, 0); sel = null; pintar();
+  MAL.aviso(ok ? '¡Casilla encendida!' : 'Esta vez el maleficio ha ganado. ¡La próxima!');
+});
+$('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
+JAVI.listo(function(){
+  MAL.botonesClase($('clases'), function(g){ G = g; sel = null; pintar(); });
+  JAVI.avisoPrueba();
+});
+})();
+</script>
+</body>
+</html>

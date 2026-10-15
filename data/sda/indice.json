@@ -208,6 +208,118 @@
      ]
     }
    ]
+  },
+  {
+   "id": "maleficio-ef",
+   "md": "maleficio-ef.md",
+   "titulo": "El Maleficio de la Discordia",
+   "grupo": "3ºA, 3ºB, 4ºA y 4ºB",
+   "asig": "EF",
+   "inicio": "",
+   "icono": "⚡",
+   "unidad": "Juegos cooperativos · competencia específica 3",
+   "reto": "Peeves ha lanzado el Maleficio de la Discordia sobre el gimnasio: con cada insulto, burla o compañero excluido, «¡Petrificus Totalus!» y la clase se congela 30 segundos. Para romperlo, la clase debe encender 6 de las 8 casillas del Medidor del Maleficio, superar el Torneo de los Tres Magos cooperativo y firmar el Código de Merlín.",
+   "producto": "El Código de Merlín (decálogo de convivencia firmado y colgado en el gimnasio) y el Torneo de los Tres Magos cooperativo",
+   "evaluacion": "Rúbrica de observación por tercios en las sesiones 5-7 (70 %) y Diana del Pensadero de autoevaluación en la sesión 8 (30 %)",
+   "criterios": [
+    "3.1",
+    "3.2",
+    "3.3"
+   ],
+   "sesiones": [
+    {
+     "titulo": "El Maleficio de la Discordia",
+     "fase": "Motivación",
+     "objetivo": "Despertar el interés por el reto y presentar la narrativa. Vivenciar que los retos solo se superan cooperando. Conocer la mecánica del «Petrificus Totalus».",
+     "duracion": "45'",
+     "interactivas": "I-1 Breakout del cofre, I-2 Medidor del Maleficio"
+    },
+    {
+     "titulo": "El Espejo de Oesed",
+     "fase": "Activación",
+     "objetivo": "Recordar lo que ya saben sobre convivir en el juego y detectar los conflictos de la clase. Reconocer cómo se sienten en EF cuando hay conflictos. Consensuar las primeras normas (Pacto de Hogwarts).",
+     "duracion": "45'",
+     "interactivas": "I-2 Medidor del Maleficio, I-4 Código de Merlín"
+    },
+    {
+     "titulo": "Las Clases de Hogwarts",
+     "fase": "Exploración",
+     "objetivo": "Experimentar distintos juegos cooperativos por estaciones. Descubrir qué estrategias ayudan al grupo (escuchar, turnarse, animar). Reconocer las emociones que aparecen al cooperar.",
+     "duracion": "45'",
+     "interactivas": "I-2 Medidor del Maleficio"
+    },
+    {
+     "titulo": "El Tribunal del Wizengamot",
+     "fase": "Estructuración",
+     "objetivo": "Aprender una rutina para resolver conflictos hablando: el Semáforo de Hermione. Conocer y practicar los roles de equipo. Distinguir conductas que ayudan y que dañan la convivencia, incluidas las discriminatorias.",
+     "duracion": "45'",
+     "interactivas": "I-3 Semáforo de Hermione, I-2 Medidor del Maleficio"
+    },
+    {
+     "titulo": "Torneo de los Tres Magos I · Los Dragones",
+     "fase": "Aplicación",
+     "objetivo": "Aplicar la cooperación, los roles y el semáforo en retos físicos. Superar los retos con toda la clase contra el maleficio, no entre casas. Gestionar la frustración cuando el reto se resiste.",
+     "duracion": "45'",
+     "interactivas": "I-5 Evaluación: Sombrero y rúbrica, I-2 Medidor del Maleficio, I-3 Semáforo de Hermione"
+    },
+    {
+     "titulo": "Torneo de los Tres Magos II · El Lago de las Sirenas",
+     "fase": "Aplicación",
+     "objetivo": "Aplicar la deportividad en juegos de colaboración-oposición. Respetar normas consensuadas que hacen el juego inclusivo. Reconocer y valorar el juego limpio propio y del rival.",
+     "duracion": "45'",
+     "interactivas": "I-5 Evaluación: Sombrero y rúbrica, I-2 Medidor del Maleficio, I-3 Semáforo de Hermione"
+    },
+    {
+     "titulo": "Torneo de los Tres Magos III · El Laberinto",
+     "fase": "Aplicación",
+     "objetivo": "Crear y enseñar un juego cooperativo con normas consensuadas. Guiar y confiar en un compañero. Redactar el Código de Merlín (producto final).",
+     "duracion": "45'",
+     "interactivas": "I-5 Evaluación: Sombrero y rúbrica, I-4 Código de Merlín, I-2 Medidor del Maleficio"
+    },
+    {
+     "titulo": "El Gran Comedor",
+     "fase": "Conclusión",
+     "objetivo": "Reflexionar sobre lo aprendido y valorar el propio progreso. Firmar el compromiso del Código de Merlín. Celebrar el reto conseguido.",
+     "duracion": "45'",
+     "interactivas": "I-5 Evaluación: Diana del Pensadero y notas, I-4 Código de Merlín, I-2 Medidor del Maleficio"
+    }
+   ],
+   "enlaces": {
+    "I-1": "maleficio-ef/i01-breakout.html",
+    "I-2": "maleficio-ef/i02-maleficio.html",
+    "I-3": "maleficio-ef/i03-semaforo.html",
+    "I-4": "maleficio-ef/i04-codigo.html",
+    "I-5": "maleficio-ef/evaluacion.html"
+   },
+   "iconos": {
+    "I-1": "🗝️",
+    "I-2": "⚡",
+    "I-3": "🚦",
+    "I-4": "📜",
+    "I-5": "🎩"
+   },
+   "recursos": [
+    {
+     "n": "Anexo imprimible: rúbricas, registro, diana, cartas, tarjetas y diplomas",
+     "ic": "🖨️",
+     "url": "maleficio-ef/anexo.html",
+     "sesiones": [
+      1,
+      4,
+      5,
+      6,
+      7,
+      8
+     ]
+    },
+    {
+     "n": "La situación completa en Word",
+     "ic": "📄",
+     "url": "maleficio-ef/SA-El-Maleficio-de-la-Discordia.docx",
+     "sesiones": [],
+     "d": "Con el anexo de evaluación (17 páginas)"
+    }
+   ]
   }
  ]
 }

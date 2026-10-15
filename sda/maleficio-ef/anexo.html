@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anexo imprimible · El Maleficio de la Discordia</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.barra select{font-size:15px;padding:6px 8px;border-radius:8px}
+.rub{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:9.6pt;table-layout:fixed}
+.rub th{background:#f3ead5;border:1.5px solid var(--linea);padding:1.6mm;font-size:9.6pt}
+.rub td{border:1.5px solid var(--linea);padding:1.6mm;vertical-align:top;line-height:1.28}
+.rub td:first-child{font-weight:700;width:24%}
+.rub td:first-child small{display:block;font-weight:400;color:var(--suave);font-size:8.6pt;margin-top:1mm}
+.rub th.n1{color:#c0392b}.rub th.n2{color:#b9770e}.rub th.n3{color:#2e86c1}.rub th.n4{color:#1e8449}
+.reg{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:10pt;table-layout:fixed}
+.reg th,.reg td{border:1px solid var(--linea);padding:.8mm 1.4mm;text-align:center}
+.reg th{background:#f3ead5;font-size:9pt}
+.reg td:first-child,.reg td:nth-child(2){text-align:left}
+.reg tr.f{height:8.6mm}
+.diana{display:flex;gap:6mm;align-items:center}
+.diana svg{flex:0 0 64mm;width:64mm;height:64mm}
+.frasesD{flex:1;display:flex;flex-direction:column;gap:2mm;font-family:'Andika',sans-serif;font-size:12.5pt;line-height:1.25}
+.frasesD div{display:flex;gap:2mm;align-items:baseline}
+.frasesD b{display:inline-grid;place-items:center;flex:0 0 7mm;width:7mm;height:7mm;border-radius:50%;color:#fff;font-size:10.5pt}
+.carasT{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:12pt}
+.carasT td,.carasT th{border:1.5px solid var(--linea);padding:1mm 1.6mm;text-align:center}
+.carasT td:first-child{text-align:left}
+.carasT .c{font-size:18pt}
+.carta{flex:1;border:2px solid var(--oro);border-radius:3mm;padding:7mm 9mm;font-size:13pt;line-height:1.45;background:#fffdf6;position:relative}
+.carta .firma{text-align:right;font-style:italic;margin-top:3mm}
+.carta .sello{position:absolute;right:6mm;bottom:5mm;width:16mm;height:16mm;border-radius:50%;background:#7a2030;color:#f3d27a;display:grid;place-items:center;font:800 15pt 'Cinzel',serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.trozos{display:grid;grid-template-columns:1fr 1fr;gap:4mm;flex:1}
+.trozos div{border:2px dashed var(--linea);border-radius:4mm;display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:38pt;color:var(--granate);text-align:center}
+.tarjetas{display:grid;grid-template-columns:1fr 1fr;gap:3mm;flex:1}
+.tarjetas div{border:2px dashed var(--linea);border-radius:3mm;padding:3mm 4mm;display:flex;flex-direction:column;justify-content:center;gap:1.5mm;font-size:14pt;line-height:1.3;text-align:center}
+.tarjetas div small{font-family:'Cinzel',serif;font-size:9pt;color:var(--suave)}
+.tarjetas .ic{font-size:26pt}
+.diseno .lin{border-bottom:1.5px dotted var(--linea);height:9mm}
+.diploma{flex:1;border:5mm double #c9972e;border-radius:4mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4mm;text-align:center;padding:10mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.diploma .tit{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;color:var(--granate);font-size:26pt;line-height:1.15}
+.diploma p{font-size:14pt;max-width:150mm}
+.diploma .lin{border-bottom:1.5px solid #8a7a5a;width:110mm;height:12mm}
+.diploma .ic{font-size:40pt}
+.likert{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:11pt}
+.likert td,.likert th{border:1.5px solid var(--linea);padding:1.2mm 2mm}
+.likert td.c,.likert th.c{width:9mm;text-align:center}
+.likert th{background:#f3ead5}
+@media print{ .diploma,.rub th,.reg th,.likert th{ -webkit-print-color-adjust:exact;print-color-adjust:exact } }
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../?id=maleficio-ef#juegos" id="bVolver">← Volver</a>
+  <label>Hoja: <select id="selHoja"></select></label>
+  <button class="prim" type="button" id="bUna">🖨️ Imprimir esta hoja</button>
+  <button type="button" onclick="window.print()">🖨️ Imprimir todo</button>
+  <label>Clase: <select id="selClase"><option value="">— en blanco —</option></select></label>
+  <a href="SA-El-Maleficio-de-la-Discordia.docx" download>📄 Descargar el Word</a>
+</nav>
+<main id="hojas"></main>
+
+<script src="../../comun/javi.js"></script>
+<script src="datos.js"></script>
+<script src="comun.js"></script>
+<script>
+(function(){
+'use strict';
+var M = MALEFICIO, CR = ['3.1','3.2','3.3'], esc = MAL.esc, G = '', NOMS = [];
+function cab(ic, t, sub, sello){ return '<header class="cabecera"><span class="buho" aria-hidden="true">'+ic+'</span><div><h1>'+t+'</h1><div class="sub">'+sub+'</div></div><span class="esp"></span><div class="sello">'+(sello || 'CEIP Arias Montano<br>EF · 3º y 4º')+'</div></header>'; }
+function pie(t){ return '<footer class="pie"><span>'+t+'</span><span>⚡ El Maleficio de la Discordia</span></footer>'; }
+function filasN(n){ var l = NOMS.length ? NOMS : new Array(n).fill(''); return l; }
+
+var HOJAS = [
+  { id:'rub3', n:'Rúbrica de 3º', f:function(){ return rubrica('a', '3º'); } },
+  { id:'rub4', n:'Rúbrica de 4º', f:function(){ return rubrica('b', '4º'); } },
+  { id:'reg', n:'Hoja de registro (observación)', f:function(){
+    return cab('📋', 'Hoja de registro de la observación', 'Rodea la sesión en la que le toca (un tercio al azar en las sesiones 5, 6 y 7) y anota la nota de 1 a 10', (G || 'Clase: ______')+'<br>Fecha: __________')+
+      '<table class="reg"><tr><th style="width:6%">Nº</th><th style="width:25%">Alumno/a</th><th style="width:12%">Sesión</th><th>3.1<br>Emociones</th><th>3.2<br>Normas</th><th>3.3<br>Cooperar</th><th style="width:27%">Observaciones</th></tr>'+
+      filasN(23).map(function(x, i){ return '<tr class="f"><td>'+(i+1)+'</td><td>'+esc(x)+'</td><td>5 · 6 · 7</td><td></td><td></td><td></td><td></td></tr>'; }).join('')+'</table>'+
+      '<p class="aviso">Niveles: Insuficiente 1-4 · Suficiente 5 · Bien 6 · Notable 7-8 · Sobresaliente 9-10. Si alguien falta el día que le toca, pasa al tercio siguiente o a la sesión 8.</p>'+pie('Heteroevaluación · Fase de Aplicación · '+M.pesos.hetero+' % de la nota de cada criterio'); } },
+  { id:'diana', n:'Diana del Pensadero (alumnado)', f:function(){
+    var cols = ['#e74c3c','#e74c3c','#3498db','#3498db','#27ae60','#27ae60'];
+    return cab('🎯', 'La Diana del Pensadero', 'Autoevaluación · Sesión 8 · El Maleficio de la Discordia', 'Nombre: _______________<br>Clase: ______')+
+      '<div class="nota">Piensa en las sesiones del Maleficio. En cada frase, rodea tu carita y <b>colorea en la diana</b> desde fuera hacia dentro: 😟 1 anillo · 🙂 2 · 😊 3 · 🤩 4 (hasta el centro).</div>'+
+      '<div class="diana">'+MAL.dianaSVG(null, { w:300 })+'<div class="frasesD">'+M.diana.map(function(d, i){ return '<div><b style="background:'+cols[i]+'">'+(i+1)+'</b><span>'+esc(d.t)+'</span></div>'; }).join('')+'</div></div>'+
+      '<table class="carasT"><tr><th style="width:44%">Frase</th>'+M.caras.map(function(k){ return '<th>'+k.t+'</th>'; }).join('')+'</tr>'+
+      M.diana.map(function(d, i){ return '<tr><td>'+(i+1)+'. '+esc(d.t)+'</td>'+M.caras.map(function(k){ return '<td class="c">'+k.ic+'</td>'; }).join('')+'</tr>'; }).join('')+'</table>'+
+      '<div class="ej"><h2>Lo que más me ha costado:</h2><div style="border-bottom:1.5px dotted var(--linea);height:8mm"></div><h2>Lo que mejor he hecho:</h2><div style="border-bottom:1.5px dotted var(--linea);height:8mm"></div></div>'+
+      pie('Para el maestro: frases 1-2 → 3.1 · 3-4 → 3.2 · 5-6 → 3.3 · nota = media de las 2 frases × 2,5'); } },
+  { id:'seneca', n:'Notas para Séneca', f:function(){
+    return cab('📊', 'Notas para Séneca', 'Nota del criterio = '+M.pesos.hetero+' % rúbrica (H) + '+M.pesos.auto+' % diana (A) · CE3 = media de los tres', (G || 'Clase: ______'))+
+      '<table class="reg"><tr><th rowspan="2" style="width:22%">Alumno/a</th>'+CR.map(function(c){ return '<th colspan="3">'+c+' '+esc(M.crit[c].corto)+'</th>'; }).join('')+'<th rowspan="2">CE3</th></tr><tr>'+CR.map(function(){ return '<th>H</th><th>A</th><th>Nota</th>'; }).join('')+'</tr>'+
+      filasN(23).map(function(x){ return '<tr class="f"><td>'+esc(x)+'</td>'+new Array(10).fill('<td></td>').join('')+'</tr>'; }).join('')+'</table>'+
+      '<p class="aviso">Ejemplo: H = 7 y A = 8,75 → 0,7 × 7 + 0,3 × 8,75 = 7,5. La web lo calcula sola en Evaluación → Notas para Séneca (exportable a Excel).</p>'+pie('Los tres criterios valen lo mismo para la competencia específica 3 (art. 10.5 de la Orden de 30/05/2023)'); } },
+  { id:'docente', n:'Evaluación de la práctica docente', f:function(){
+    return cab('🧑‍🏫', 'Evaluación de la práctica docente', 'Al terminar la situación · 1 nada · 2 poco · 3 bastante · 4 mucho')+
+      '<table class="likert"><tr><th>Indicador</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th></tr>'+M.docente.map(function(t){ return '<tr><td>'+esc(t)+'</td><td class="c"></td><td class="c"></td><td class="c"></td><td class="c"></td></tr>'; }).join('')+'</table>'+
+      '<table class="likert"><tr><th>Opinión del alumnado (sesión 8)</th><th class="c">👍</th><th class="c">👌</th><th class="c">👎</th></tr><tr><td>¿Te han gustado los juegos?</td><td></td><td></td><td></td></tr><tr><td>¿Te has sentido incluido/a?</td><td></td><td></td><td></td></tr><tr><td>¿Te ha servido el Semáforo de Hermione?</td><td></td><td></td><td></td></tr></table>'+
+      '<table class="likert"><tr><th>Indicadores de resultados</th><th style="width:28%">Dato</th></tr><tr><td>Casillas encendidas en el Medidor del Maleficio (de 8)</td><td></td></tr><tr><td>Media de congelaciones por sesión</td><td></td></tr><tr><td>% de alumnado con 5 o más en 3.1 / 3.2 / 3.3</td><td></td></tr><tr><td>Criterio con más diferencia entre H y A</td><td></td></tr></table>'+
+      '<div class="ej reto"><h2>Propuestas de mejora</h2><div class="lin"></div><div class="lin"></div><div class="lin"></div></div>'+pie('Evaluación del proceso de enseñanza (art. 10.7 de la Orden)'); } },
+  { id:'cartas', n:'Cartas de Dumbledore (sesión 1)', f:function(){
+    return cab('✉️', 'Cartas de Dumbledore', 'Sesión 1 · la primera se lee al empezar; la segunda va dentro del cofre')+
+      '<div class="carta">Queridos alumnos y alumnas de Hogwarts:<br><br>Peeves, el poltergeist, ha robado la llave del cuarto del material de Educación Física y la ha encerrado en un cofre con un candado mágico de tres cifras. Además, ha lanzado sobre el gimnasio el <b>Maleficio de la Discordia</b>: cada vez que alguien insulte, se burle o deje fuera a un compañero, el maestro gritará <b>«¡Petrificus Totalus!»</b> y toda la clase quedará congelada durante 30 segundos.<br><br>El cofre solo se abre con un hechizo de <b>tres palabras</b>, escondido en las pruebas que os esperan. Ninguna se puede superar solo. Confío en vosotros.<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>'+
+      '<div class="carta">Lo habéis conseguido… pero cuidado: <b>el maleficio no se ha roto, solo duerme</b>. Volverá cada vez que haya discordia en el gimnasio.<br><br>Desde hoy, el <b>Medidor del Maleficio</b> vigilará cada sesión. Si la clase se congela 2 veces o menos, se encenderá una casilla. Con 6 casillas encendidas, el maleficio se romperá para siempre. Demostrad sesión a sesión que sabéis convivir.<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>'+pie('Imprimir en papel tipo pergamino y doblar'); } },
+  { id:'pergamino', n:'Trozos del pergamino (prueba 4)', f:function(){
+    return cab('📜', 'El Pergamino de Dumbledore', 'Sesión 1 · Prueba 4 · recortar y repartir por la pista')+
+      '<div class="trozos"><div>cuenta</div><div>las letras</div><div>de cada</div><div>palabra</div></div>'+pie('JUNTOS (6) · HACEMOS (7) · MAGIA (5) → 675'); } },
+  { id:'conflictos', n:'Tarjetas de conflicto (sesión 4)', f:function(){
+    return cab('⚖️', 'Tarjetas del Wizengamot', 'Sesión 4 · recortar · cada grupo saca una, la representa y la clase propone soluciones con el semáforo')+
+      '<div class="tarjetas">'+M.conflictos.map(function(c, i){ return '<div><small>Conflicto '+(i+1)+'</small>'+esc(/^«/.test(c) ? c : '«'+c+'»')+'</div>'; }).join('')+'</div>'+pie('🔴 Paro y respiro · 🟡 Hablo y escucho · 🟢 Acuerdo'); } },
+  { id:'roles', n:'Roles y semáforo (sesión 4)', f:function(){
+    return cab('🧙', 'Roles de equipo y Semáforo de Hermione', 'Sesiones 4-7 · recortar una tarjeta de cada rol por grupo')+
+      '<div class="tarjetas">'+M.roles.map(function(r){ return '<div><span class="ic">'+r.ic+'</span><b>'+esc(r.n)+'</b>'+esc(r.d)+'</div>'; }).join('')+
+        M.semaforo.map(function(s){ return '<div style="border-color:'+s.col+'"><span class="ic">'+s.ic+'</span><b>'+esc(s.t)+'</b>'+esc(s.d)+'</div>'; }).join('')+
+        '<div><span class="ic">💬</span><b>Frase mágica</b>«Yo me he sentido… cuando… Me gustaría que…»</div></div>'+pie('Los roles rotan cada sesión'); } },
+  { id:'diseno', n:'Tarjeta de diseño de juego (sesión 7)', f:function(){
+    var una = '<div class="ej diseno" style="border:2px dashed var(--linea);border-radius:3mm;padding:4mm;flex:1"><h2><span class="num">✨</span>Creadores de hechizos · nuestro juego cooperativo</h2>'+
+      '<p>Nombre mágico del juego:</p><div class="lin"></div><p>Objetivo (¿qué tenemos que conseguir todos juntos?):</p><div class="lin"></div>'+
+      '<p>Regla 1:</p><div class="lin"></div><p>Regla 2:</p><div class="lin"></div><p>Regla 3:</p><div class="lin"></div><p>¿Cómo participan todos (nadie se queda fuera)?</p><div class="lin"></div><p>Material: ______________________   Grupo: ______________</p></div>';
+    return cab('🌀', 'Torneo III · El Laberinto', 'Sesión 7 · una tarjeta por grupo')+una+pie('8 minutos para diseñarlo · después se lo enseñáis a otro grupo'); } },
+  { id:'dip1', n:'Diploma · Trabajo en Equipo (sesión 1)', f:function(){ return diploma('🗝️', 'Orden de Merlín<br>al Trabajo en Equipo', 'Concedida a la clase de '+(G || '__________')+' por abrir el cofre de Peeves trabajando juntos: JUNTOS HACEMOS MAGIA.'); } },
+  { id:'dip2', n:'Diploma · Primera Clase (sesión 8)', f:function(){ return diploma('🏰', 'Orden de Merlín,<br>Primera Clase', 'Por romper el Maleficio de la Discordia y demostrar que en nuestro gimnasio se convive con respeto, ayuda y juego limpio.', true); } }
+];
+function rubrica(l, curso){
+  return cab('👁️', 'Rúbrica de observación · '+curso, 'Heteroevaluación · Sesiones 5, 6 y 7 (un tercio cada día) · Competencia específica 3')+
+    '<table class="rub"><tr><th>Criterio</th>'+M.niveles.map(function(n, i){ return '<th class="n'+(i+1)+'">'+n.n+'<br>('+n.r+')</th>'; }).join('')+'</tr>'+
+    CR.map(function(c){ return '<tr><td>'+c+'.'+l+' '+esc(M.crit[c].corto)+'<small>'+esc(M.crit[c][l])+'</small></td>'+M.rubrica[c][l].map(function(x){ return '<td>'+esc(x)+'</td>'; }).join('')+'</tr>'; }).join('')+'</table>'+
+    '<p class="aviso">Elige el nivel que mejor describe lo observado y, dentro del nivel, la nota. Saberes: '+CR.map(function(c){ return c+' → '+M.crit[c].saberes.join(', '); }).join(' · ')+'.</p>'+
+    pie('Orden de 30 de mayo de 2023 · criterios '+CR.map(function(c){ return c+'.'+l; }).join(', '));
+}
+function diploma(ic, t, p, firma){
+  return '<div class="diploma"><span class="ic">'+ic+'</span><div class="tit">'+t+'</div><p>'+esc(p)+'</p>'+(firma ? '<p>Otorgada a:</p><div class="lin"></div>' : '')+'<p style="font-style:italic">Albus Dumbledore · Director de Hogwarts</p><p style="font-size:11pt;color:#6b5732">CEIP Arias Montano · Educación Física</p></div>';
+}
+function pintar(){ document.getElementById('hojas').innerHTML = HOJAS.map(function(h){ return '<section class="hoja" id="'+h.id+'">'+h.f()+'</section>'; }).join(''); }
+var sel = document.getElementById('selHoja');
+sel.innerHTML = HOJAS.map(function(h){ return '<option value="'+h.id+'">'+esc(h.n)+'</option>'; }).join('');
+sel.addEventListener('change', function(){ var el = document.getElementById(sel.value); if(el) el.scrollIntoView({ behavior:'smooth' }); });
+document.getElementById('bUna').addEventListener('click', function(){
+  var id = sel.value; Array.prototype.forEach.call(document.querySelectorAll('.hoja'), function(h){ h.style.display = h.id===id ? '' : 'none'; });
+  setTimeout(function(){ window.print(); Array.prototype.forEach.call(document.querySelectorAll('.hoja'), function(h){ h.style.display = ''; }); }, 50);
+});
+var sc = document.getElementById('selClase');
+sc.addEventListener('change', function(){
+  var g = sc.value;
+  function poner(){ G = g; var r = g ? JAVI.grupo(g) : null; NOMS = r ? r.nombres : []; pintar(); }
+  if(!g){ G = ''; NOMS = []; pintar(); return; }
+  if(!JAVI.protegerClase(g, { alAbrir:poner })) return; poner();
+});
+document.getElementById('bVolver').addEventListener('click', function(e){ try{ if(document.referrer && new URL(document.referrer).origin===location.origin){ e.preventDefault(); history.back(); } }catch(err){} });
+pintar();
+JAVI.listo(function(){ sc.innerHTML += MAL.clases().map(function(g){ return '<option>'+g+'</option>'; }).join(''); });
+})();
+</script>
+</body>
+</html>
