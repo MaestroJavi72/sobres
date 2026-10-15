@@ -97,6 +97,7 @@ a.ses:hover,a.ses:focus-visible{transform:translateY(-2px);border-color:var(--ac
 .btn.plan{background:transparent;color:#14403a;border:2px dashed #b8934f;font-size:14px;padding:5px 10px}
 .btn.plan.hecho{border-style:solid;background:#eef6ea}
 .etq{margin-left:auto;font-size:11px;font-family:'Cinzel',serif;padding:3px 7px;border-radius:999px;background:#f3d27a;color:#3a2a16;white-space:nowrap}
+.btn.sust{border:1.5px dashed #8a6a1f;margin-top:8px;justify-content:center}
 @media print{ .modo,.flecha{display:none!important} .dia,.bloque{background:#fff!important;break-inside:avoid} .btn{border:1px solid #999!important;background:#fff!important;color:#000!important} }
 
 /* ---------- situaciones de aprendizaje ---------- */
@@ -294,6 +295,7 @@ function pintarDias(){
         (sinClase ? '' : '<a class="btn plan'+(nf ? ' hecho' : '')+'" href="../sesion/?profe&grupo='+encodeURIComponent(s.grupo).replace('%C2%BA','o')+'&fecha='+f+'&asig='+s.asig+(nf ? '#clase' : '#preparar')+'">📋 '+(nf ? 'Sesión planificada · '+nf+' fases' : 'Planificar esta sesión')+'</a>')+
         '</div>';
     });
+    if(!sinClase && ses.length) html += '<a class="btn noImprimir sust" href="sustitucion.html?fecha='+f+(JAVI.ES_PROFE ? '&profe' : '')+'">🖨️ Hoja para la sustitución</a>';
     html += '</article>';
   }
   box.innerHTML = html;
@@ -380,10 +382,11 @@ var RECURSOS = {
     { ic:'🏦', n:'Bóveda de la clase', d:'Autoevaluación, recompensas y movimientos.', url:'../boveda/' },
     { ic:'👑', n:'Responsable y capitanes', d:'Sorteos sin repetir hasta que salga toda la clase.', url:'../sorteos/' },
     { ic:'✍️', n:'Copia del pichi (3ºB)', d:'Seis frases sobre respeto y juego limpio para copiar: en grande o en hoja.', url:'../ef/copia-pichi-3b.html', nuevo:true },
-    { ic:'📋', n:'Sesión y Ruleta', d:'La sesión de EF de hoy, por fases.', url:'../sesion/?asig=EF#clase' }
+    { ic:'📋', n:'Sesión y Ruleta', d:'La sesión de EF de hoy, por fases.', url:'../sesion/?asig=EF#clase' },
+    { ic:'📚', n:'Teoría de EF', d:'8 temas para días de lluvia: teoría, juegos, prueba evaluable por criterios y ficha.', url:'../ef/teoria/', nuevo:true }
   ],
   MAT: [
-    { ic:'✖️', n:'Duelo de tablas', d:'Multiplicaciones al azar, por alumno o por mesas, con galeones.', url:'../tablas/', nuevo:true }
+    { ic:'✖️', n:'Duelo de tablas', d:'Multiplicaciones al azar, por alumno o por mesas (sin galeones).', url:'../tablas/', nuevo:true }
   ]
 };
 function pintarRecursos(){

@@ -1,0 +1,267 @@
+{
+ "_nota": "Teoría de EF para días de lluvia o de clase en el aula (3º y 4º). Cada tema: teoría en diapositivas, juegos para la pizarra y una prueba evaluable con el criterio de cada pregunta (Orden de 30 de mayo de 2023). Textos originales para 3º-4º. En prueba, ok = posición de la respuesta correcta en o (empieza en 0).",
+ "temas": [
+  {
+   "id": "moverse",
+   "ic": "🏃",
+   "t": "¡A moverse! Actividad física y salud",
+   "crit": ["1.1"],
+   "intro": "Por qué moverse cada día nos hace más fuertes, más felices y nos ayuda a pensar mejor.",
+   "teoria": [
+    { "ic": "❤️", "t": "Moverse es salud", "p": ["Cuando nos movemos, el corazón y los pulmones trabajan y se hacen más fuertes.", "Los huesos y los músculos crecen sanos.", "Dormimos mejor y estamos de mejor humor."] },
+    { "ic": "⏱️", "t": "60 minutos al día", "p": ["Los niños y niñas necesitan al menos 60 minutos de actividad física cada día.", "No hace falta hacerlo de golpe: el recreo, ir andando al cole, jugar en el parque… ¡todo suma!", "Si te cansas un poco y respiras más rápido, lo estás haciendo bien."] },
+    { "ic": "💪", "t": "Las capacidades físicas", "p": ["Resistencia: aguantar mucho rato haciendo algo (correr, nadar).", "Fuerza: empujar, levantar, saltar, trepar.", "Velocidad: hacer algo lo más rápido posible.", "Flexibilidad: estirarnos y llegar más lejos con el cuerpo."] },
+    { "ic": "🚲", "t": "Desplazamientos activos", "p": ["Ir andando, en bici o en patinete al cole es moverse sin darte cuenta.", "Además, no contamina: es bueno para ti y para el planeta.", "Subir escaleras en lugar de usar el ascensor también cuenta."] },
+    { "ic": "🧠", "t": "Cuerpo activo, mente activa", "p": ["Después de moverte, te concentras mejor en clase.", "El ejercicio ayuda a quitar los nervios y el enfado.", "Jugar con otros nos ayuda a hacer amigos."] },
+    { "ic": "🛋️", "t": "Cuidado con el sedentarismo", "p": ["Sedentarismo es pasar demasiado tiempo sentado o tumbado sin moverse.", "Mucho rato de sofá, pantallas y poco juego no es bueno para la salud.", "Truco: cada hora sentado, levántate y muévete un poco."] }
+   ],
+   "pensar": "¿Qué podrías hacer esta semana para moverte un poco más? Di dos ideas.",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Activo o sedentario?", "cajas": ["🏃 Activo", "🛋️ Sedentario"], "items": [["Ir al cole andando", 0], ["Jugar a la consola toda la tarde", 1], ["Montar en bici", 0], ["Saltar a la comba", 0], ["Ver la tele tres horas seguidas", 1], ["Subir por las escaleras", 0], ["Jugar al pichi en el recreo", 0], ["Ir siempre en coche aunque esté cerca", 1], ["Bailar", 0], ["Estar tumbado con el móvil", 1], ["Nadar en la piscina", 0], ["Pasear al perro", 0]] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["Los niños y niñas deben moverse al menos 60 minutos al día.", true, "Es lo que recomiendan los médicos: una hora o más cada día."], ["Solo hacemos actividad física en la clase de EF.", false, "También en el recreo, en el parque, yendo andando o en bici…"], ["El corazón es un músculo y se hace más fuerte con el ejercicio.", true, "Sí: con el ejercicio el corazón bombea mejor."], ["Moverse nos ayuda a concentrarnos mejor en clase.", true, "Después de moverte, el cerebro trabaja mejor."], ["La flexibilidad es correr muy rápido.", false, "Eso es la velocidad. La flexibilidad es poder estirarse."], ["Ir andando al cole es un desplazamiento activo.", true, "Andando, en bici o en patinete: ¡te mueves y no contaminas!"], ["Estar muchas horas sentado es bueno para la salud.", false, "Eso es sedentarismo: hay que levantarse y moverse."], ["El ejercicio ayuda a estar de buen humor.", true, "Al movernos nos sentimos mejor y más tranquilos."]] },
+    { "tipo": "clasifica", "t": "¿Qué capacidad física es?", "cajas": ["🫁 Resistencia", "💪 Fuerza", "⚡ Velocidad", "🤸 Flexibilidad"], "items": [["Correr 10 minutos sin parar", 0], ["Levantar una caja pesada", 1], ["Ganar una carrera de 20 metros", 2], ["Tocarte los pies sin doblar las rodillas", 3], ["Nadar mucho rato", 0], ["Trepar por una cuerda", 1], ["Reaccionar rápido a una señal", 2], ["Hacer el puente", 3]] }
+   ],
+   "prueba": [
+    { "p": "¿Cuánto tiempo de actividad física al día necesitan los niños y niñas?", "o": ["Al menos 60 minutos", "10 minutos", "Solo los días de EF"], "ok": 0, "c": "1.1", "e": "Una hora o más cada día." },
+    { "p": "¿Cuál de estos es un desplazamiento activo?", "o": ["Ir al cole en coche", "Ir al cole en bici", "Ir al cole en autobús"], "ok": 1, "c": "1.1", "e": "En bici te mueves tú y no contaminas." },
+    { "p": "¿Qué es el sedentarismo?", "o": ["Hacer mucho deporte", "Pasar demasiado tiempo sin moverse", "Comer mucha fruta"], "ok": 1, "c": "1.1", "e": "Mucho tiempo sentado o tumbado sin moverse." },
+    { "p": "Correr mucho rato sin pararte es…", "o": ["Resistencia", "Flexibilidad", "Fuerza"], "ok": 0, "c": "1.1", "e": "Aguantar mucho tiempo es resistencia." },
+    { "p": "¿Qué le pasa al corazón cuando hacemos ejercicio a menudo?", "o": ["Se hace más débil", "Se hace más fuerte", "No le pasa nada"], "ok": 1, "c": "1.1", "e": "El corazón es un músculo y se entrena." },
+    { "p": "¿Cuál es un beneficio del ejercicio para la mente?", "o": ["Nos concentramos mejor", "Nos enfadamos más", "Dormimos peor"], "ok": 0, "c": "1.1", "e": "Moverse ayuda a pensar y a estar tranquilos." },
+    { "p": "Si llevas una hora sentado, lo mejor es…", "o": ["Seguir sentado otra hora", "Levantarte y moverte un poco", "Tumbarte en el sofá"], "ok": 1, "c": "1.1", "e": "Romper el tiempo sentado es muy sano." },
+    { "p": "¿Cuál de estas actividades es un ocio activo?", "o": ["Jugar a la pelota en el parque", "Ver vídeos en la tablet", "Jugar a la consola"], "ok": 0, "c": "1.1", "e": "En el parque te mueves y juegas con otros." },
+    { "p": "Estirarte para tocarte los pies trabaja la…", "o": ["Velocidad", "Flexibilidad", "Resistencia"], "ok": 1, "c": "1.1", "e": "Estirarse es flexibilidad." },
+    { "p": "Ir andando o en bici al cole, además de sano, es bueno para…", "o": ["El planeta, porque no contamina", "Llegar más cansado", "Nada más"], "ok": 0, "c": "1.1", "e": "Es un desplazamiento sostenible." }
+   ]
+  },
+  {
+   "id": "comer",
+   "ic": "🍎",
+   "t": "Comer bien para jugar mejor",
+   "crit": ["1.2"],
+   "intro": "La comida es la gasolina del cuerpo: aprendemos a elegir la mejor.",
+   "teoria": [
+    { "ic": "⛽", "t": "La comida es nuestra energía", "p": ["Para correr, jugar y pensar, el cuerpo necesita energía.", "Esa energía sale de lo que comemos y bebemos.", "Comer variado y en su justa medida es la clave."] },
+    { "ic": "🍽️", "t": "El plato saludable", "p": ["La mitad del plato: verduras, hortalizas y fruta.", "Un cuarto: pan, pasta, arroz o patatas (mejor integrales).", "Un cuarto: legumbres, huevo, pescado o carne.", "Para beber: agua."] },
+    { "ic": "🥕", "t": "Cinco al día", "p": ["Toma al menos 5 raciones de fruta y verdura cada día.", "Cuantos más colores en el plato, mejor.", "La fruta es el mejor postre y la mejor merienda."] },
+    { "ic": "🥛", "t": "Un buen desayuno", "p": ["El desayuno nos da energía para empezar la mañana.", "Un desayuno completo tiene: un lácteo, un cereal (pan, tostada) y una fruta.", "Sin desayunar, nos cansamos antes y prestamos menos atención."] },
+    { "ic": "💧", "t": "¡Agua!", "p": ["El agua es la mejor bebida.", "Bebe antes, durante y después de hacer ejercicio.", "Los refrescos y zumos de bote tienen mucho azúcar: solo de vez en cuando."] },
+    { "ic": "🍭", "t": "De vez en cuando", "p": ["Chuches, bollería, patatas fritas de bolsa y refrescos: solo en ocasiones especiales.", "Tienen mucho azúcar, sal o grasa y poca cosa buena.", "No hay que prohibirlo todo: hay que saber elegir."] }
+   ],
+   "pensar": "¿Cómo es tu desayuno? ¿Le falta algo para ser completo?",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Cada día o de vez en cuando?", "cajas": ["✅ Cada día", "⏳ De vez en cuando"], "items": [["Fruta", 0], ["Chuches", 1], ["Agua", 0], ["Verduras", 0], ["Refresco con azúcar", 1], ["Pan", 0], ["Bollería industrial", 1], ["Legumbres (lentejas, garbanzos)", 0], ["Patatas fritas de bolsa", 1], ["Leche o yogur", 0], ["Pescado", 0], ["Hamburguesa con patatas fritas", 1]] },
+    { "tipo": "clasifica", "t": "Completa el plato saludable", "cajas": ["🥦 Verduras y frutas", "🍞 Cereales", "🍳 Proteínas"], "items": [["Lechuga", 0], ["Arroz", 1], ["Huevo", 2], ["Manzana", 0], ["Pasta", 1], ["Pescado", 2], ["Tomate", 0], ["Pan integral", 1], ["Lentejas", 2], ["Zanahoria", 0], ["Patata cocida", 1], ["Pollo", 2]] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["El agua es la mejor bebida para hacer deporte.", true, "Sí: hay que beber agua antes, durante y después."], ["Desayunar no sirve para nada.", false, "El desayuno nos da la energía de la mañana."], ["Debemos tomar 5 raciones de fruta y verdura al día.", true, "Es el famoso «5 al día»."], ["Los refrescos tienen mucho azúcar.", true, "Por eso son solo para de vez en cuando."], ["La mitad del plato saludable son chuches.", false, "¡La mitad son verduras y frutas!"], ["La fruta es una buena merienda.", true, "Fácil, rica y sana."], ["Si hago deporte puedo comer bollería todos los días.", false, "Hacer deporte no convierte la bollería en sana."], ["Comer variado es comer de todo un poco.", true, "Variado y en su justa medida."]] }
+   ],
+   "prueba": [
+    { "p": "¿Cuál es la mejor bebida para hacer ejercicio?", "o": ["Un refresco", "Agua", "Una bebida energética"], "ok": 1, "c": "1.2", "e": "El agua: antes, durante y después." },
+    { "p": "En el plato saludable, ¿qué ocupa la mitad?", "o": ["La carne", "Las verduras y frutas", "El pan"], "ok": 1, "c": "1.2", "e": "La mitad: verduras, hortalizas y frutas." },
+    { "p": "¿Qué significa «5 al día»?", "o": ["5 comidas de chuches", "5 raciones de fruta y verdura", "5 vasos de refresco"], "ok": 1, "c": "1.2", "e": "Cinco raciones de fruta y verdura cada día." },
+    { "p": "¿Cuál es un desayuno completo?", "o": ["Leche, tostada y fruta", "Un zumo de bote", "Nada, para no llegar tarde"], "ok": 0, "c": "1.2", "e": "Lácteo + cereal + fruta." },
+    { "p": "¿Cuál de estos alimentos es de «de vez en cuando»?", "o": ["Manzana", "Lentejas", "Bollería"], "ok": 2, "c": "1.2", "e": "La bollería tiene mucho azúcar y grasa." },
+    { "p": "¿Cuál es la mejor merienda antes de ir a entrenar?", "o": ["Una fruta y un bocadillo pequeño", "Una bolsa de chuches", "Un refresco"], "ok": 0, "c": "1.2", "e": "Da energía de la buena." },
+    { "p": "¿Qué alimento tiene proteínas?", "o": ["El huevo", "La lechuga", "El azúcar"], "ok": 0, "c": "1.2", "e": "Huevo, pescado, carne y legumbres." },
+    { "p": "Si no desayunas, por la mañana…", "o": ["Rindes más", "Te cansas antes y atiendes peor", "No pasa nada"], "ok": 1, "c": "1.2", "e": "Te falta energía." },
+    { "p": "¿Por qué los refrescos son solo para de vez en cuando?", "o": ["Porque tienen mucho azúcar", "Porque tienen muchas vitaminas", "Porque son agua"], "ok": 0, "c": "1.2", "e": "Mucho azúcar y nada de lo bueno." },
+    { "p": "Comer variado significa…", "o": ["Comer siempre lo mismo", "Comer de todo un poco", "Comer solo lo que más me gusta"], "ok": 1, "c": "1.2", "e": "De todo un poco y en su medida." }
+   ]
+  },
+  {
+   "id": "higiene",
+   "ic": "🧼",
+   "t": "Higiene y equipación",
+   "crit": ["1.2"],
+   "intro": "Ir limpio y bien equipado a EF es cuidarte a ti y a los demás.",
+   "teoria": [
+    { "ic": "👟", "t": "La equipación de EF", "p": ["Ropa deportiva cómoda que deje moverse.", "Zapatillas de deporte bien atadas (¡cordones con doble nudo!).", "Pelo largo recogido.", "Sin pulseras, collares, relojes ni pendientes largos: pueden hacer daño."] },
+    { "ic": "🎒", "t": "La bolsa de aseo", "p": ["Una camiseta limpia para cambiarte.", "Una toallita o toalla pequeña.", "Jabón o toallitas, peine y desodorante si lo usas.", "Una botella de agua con tu nombre."] },
+    { "ic": "🚿", "t": "Después de EF", "p": ["Cuando sudamos, la ropa se moja y huele.", "Al terminar: lávate la cara, las manos y cámbiate de camiseta.", "En casa, una buena ducha."] },
+    { "ic": "🙌", "t": "Manos limpias", "p": ["Lávate las manos con agua y jabón: antes de comer, después de ir al baño y después de EF.", "Frota bien entre los dedos y las uñas, unos 20 segundos.", "Así no pasamos microbios a los demás."] },
+    { "ic": "☀️", "t": "Con calor y al aire libre", "p": ["Gorra y crema protectora cuando hace sol.", "Bebe agua a menudo.", "En duchas o piscinas, usa chanclas para evitar hongos."] },
+    { "ic": "🦷", "t": "Higiene de cada día", "p": ["Dientes: tres veces al día, sobre todo antes de dormir.", "Uñas cortas y limpias.", "Ropa limpia cada día."] }
+   ],
+   "pensar": "¿Qué llevas tú en la bolsa de aseo? ¿Qué te falta?",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Sí o no en clase de EF?", "cajas": ["👍 Sí", "👎 No"], "items": [["Zapatillas bien atadas", 0], ["Chanclas", 1], ["Pelo recogido", 0], ["Collar largo", 1], ["Botella de agua", 0], ["Vaqueros apretados", 1], ["Camiseta de repuesto", 0], ["Reloj y pulseras", 1], ["Ropa deportiva cómoda", 0], ["Chicle en la boca", 1], ["Gorra si hace sol", 0], ["Zapatillas desatadas", 1]] },
+    { "tipo": "ordena", "t": "Ordena: al terminar la clase de EF", "pasos": ["Vuelta a la calma: estiramos y respiramos", "Bebo agua", "Me lavo la cara y las manos", "Me cambio de camiseta", "Guardo la ropa sudada en la bolsa", "En casa: ducha"] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["Hay que lavarse las manos antes de comer.", true, "Con agua y jabón, unos 20 segundos."], ["Con las zapatillas desatadas no pasa nada.", false, "Te puedes tropezar y hacerte daño."], ["Es mejor quitarse las pulseras y relojes para EF.", true, "Pueden engancharse o hacer daño a alguien."], ["Después de sudar es bueno cambiarse de camiseta.", true, "La ropa mojada enfría y huele."], ["Basta con lavarse las manos solo con agua, un segundo.", false, "Con jabón y frotando bien."], ["En las duchas de la piscina es bueno llevar chanclas.", true, "Evitan los hongos de los pies."], ["Puedo compartir mi botella de agua con todos.", false, "Cada uno su botella: así no pasamos microbios."], ["El pelo largo, mejor recogido para hacer deporte.", true, "Así no te tapa los ojos ni se engancha."]] }
+   ],
+   "prueba": [
+    { "p": "¿Qué calzado es el adecuado para EF?", "o": ["Chanclas", "Zapatillas de deporte bien atadas", "Botas de agua"], "ok": 1, "c": "1.2", "e": "Zapatillas de deporte con los cordones atados." },
+    { "p": "¿Qué debes hacer al terminar la clase de EF?", "o": ["Lavarme y cambiarme de camiseta", "Nada", "Ponerme más ropa encima de la sudada"], "ok": 0, "c": "1.2", "e": "Aseo y camiseta limpia." },
+    { "p": "¿Por qué nos quitamos pulseras y collares para EF?", "o": ["Porque pesan mucho", "Porque pueden engancharse y hacer daño", "Porque se rompen"], "ok": 1, "c": "1.2", "e": "Es una norma de seguridad." },
+    { "p": "¿Cuándo hay que lavarse las manos?", "o": ["Solo cuando se ven sucias", "Antes de comer y después del baño", "Una vez a la semana"], "ok": 1, "c": "1.2", "e": "Y también después de EF." },
+    { "p": "¿Qué no debe faltar en la bolsa de aseo?", "o": ["Una camiseta limpia", "Un balón", "Un juguete"], "ok": 0, "c": "1.2", "e": "Camiseta limpia, toalla, jabón…" },
+    { "p": "Si hace mucho sol en el patio, conviene…", "o": ["Gorra, crema y beber agua", "Correr sin parar sin beber", "Ponerse un abrigo"], "ok": 0, "c": "1.2", "e": "Protegernos del sol y beber." },
+    { "p": "¿Por qué no compartimos la botella de agua?", "o": ["Para no pasar microbios", "Porque el agua se acaba", "Porque es de mala educación"], "ok": 0, "c": "1.2", "e": "Cada uno su botella." },
+    { "p": "¿Cuántas veces al día nos lavamos los dientes?", "o": ["Una a la semana", "Tres, sobre todo antes de dormir", "Nunca"], "ok": 1, "c": "1.2", "e": "Tres veces al día." },
+    { "p": "El pelo largo en EF va mejor…", "o": ["Suelto", "Recogido", "Con pinzas de metal"], "ok": 1, "c": "1.2", "e": "Recogido, para ver bien y no engancharse." },
+    { "p": "¿Para qué sirven las chanclas en las duchas de la piscina?", "o": ["Para nadar más rápido", "Para evitar hongos en los pies", "Para no mojarse"], "ok": 1, "c": "1.2", "e": "Protegen de los hongos." }
+   ]
+  },
+  {
+   "id": "descanso",
+   "ic": "😴",
+   "t": "Descanso, postura y pantallas",
+   "crit": ["1.2", "1.1"],
+   "intro": "Dormir bien, sentarse bien y no abusar de las pantallas también es salud.",
+   "teoria": [
+    { "ic": "🛏️", "t": "Dormir es entrenar", "p": ["Mientras dormimos, el cuerpo crece y se recupera.", "A vuestra edad hay que dormir entre 9 y 12 horas.", "Si duermes poco, al día siguiente estás cansado y de mal humor."] },
+    { "ic": "🌙", "t": "Trucos para dormir bien", "p": ["Acostarte más o menos a la misma hora.", "Apagar las pantallas un buen rato antes de dormir.", "Cenar ligero y no muy tarde."] },
+    { "ic": "🪑", "t": "Sentarse bien", "p": ["Espalda apoyada en el respaldo.", "Pies apoyados en el suelo.", "La mesa a la altura de los codos y la cabeza no muy agachada."] },
+    { "ic": "🎒", "t": "La mochila", "p": ["Llévala con las dos asas, bien pegada a la espalda.", "No debe pesar mucho: como mucho un 10 % de lo que pesas tú.", "Mejor aún: mochila de ruedas, sin arrastrarla por escaleras."] },
+    { "ic": "📦", "t": "Levantar cosas del suelo", "p": ["Dobla las rodillas, no la espalda.", "Espalda recta y el objeto cerca del cuerpo.", "Si pesa mucho, pide ayuda."] },
+    { "ic": "📱", "t": "Pantallas con cabeza", "p": ["Las pantallas para jugar o ver vídeos: como mucho 2 horas al día.", "Mucho rato quieto delante de una pantalla es sedentarismo.", "Haz descansos: mira lejos, levántate y muévete."] }
+   ],
+   "pensar": "¿A qué hora te acuestas? ¿Cuántas horas duermes?",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Buena o mala postura?", "cajas": ["✅ Bien", "❌ Mal"], "items": [["Mochila con las dos asas", 0], ["Mochila colgada de un solo hombro", 1], ["Espalda apoyada en el respaldo", 0], ["Sentado en el borde de la silla, encorvado", 1], ["Levantar peso doblando las rodillas", 0], ["Levantar peso doblando la espalda", 1], ["Pies apoyados en el suelo", 0], ["Leer tumbado con la cabeza muy doblada", 1], ["Mochila ligera, solo con lo necesario", 0], ["Llevar todos los libros cada día", 1]] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["Los niños y niñas necesitan dormir entre 9 y 12 horas.", true, "El cuerpo crece y se recupera durmiendo."], ["Usar la tablet en la cama ayuda a dormir mejor.", false, "La luz de las pantallas quita el sueño."], ["Para levantar algo pesado, hay que doblar las rodillas.", true, "Y mantener la espalda recta."], ["La mochila es mejor llevarla en un solo hombro.", false, "Con las dos asas, para repartir el peso."], ["Pasar 5 horas al día jugando a la consola es sano.", false, "Como mucho 2 horas de pantallas de ocio al día."], ["Acostarse a la misma hora ayuda a dormir mejor.", true, "Al cuerpo le gustan las rutinas."], ["Sentado, los pies deben estar apoyados en el suelo.", true, "Y la espalda en el respaldo."], ["Cuando dormimos el cuerpo no hace nada.", false, "Crece, repara y guarda lo aprendido."]] },
+    { "tipo": "ordena", "t": "Ordena: así levanto una caja del suelo", "pasos": ["Me pongo cerca de la caja", "Separo un poco los pies", "Doblo las rodillas con la espalda recta", "Agarro bien la caja, pegada al cuerpo", "Me levanto estirando las piernas"] }
+   ],
+   "prueba": [
+    { "p": "¿Cuántas horas debéis dormir a vuestra edad?", "o": ["Entre 5 y 6", "Entre 9 y 12", "Más de 15"], "ok": 1, "c": "1.2", "e": "Entre 9 y 12 horas." },
+    { "p": "¿Cómo se lleva bien la mochila?", "o": ["Con las dos asas", "En un solo hombro", "Arrastrándola por las escaleras"], "ok": 0, "c": "1.2", "e": "Con las dos asas y pegada a la espalda." },
+    { "p": "Para levantar algo pesado del suelo…", "o": ["Doblo la espalda", "Doblo las rodillas con la espalda recta", "Lo cojo con una mano"], "ok": 1, "c": "1.2", "e": "Las piernas hacen la fuerza." },
+    { "p": "¿Cómo debemos sentarnos?", "o": ["Espalda en el respaldo y pies en el suelo", "En el borde de la silla", "Con las piernas encima de la mesa"], "ok": 0, "c": "1.2", "e": "Espalda apoyada, pies en el suelo." },
+    { "p": "¿Cuánto tiempo de pantallas para jugar o ver vídeos se recomienda como mucho?", "o": ["2 horas al día", "6 horas al día", "Todo el que quiera"], "ok": 0, "c": "1.1", "e": "Como mucho 2 horas al día." },
+    { "p": "¿Qué ayuda a dormir mejor?", "o": ["Jugar con el móvil en la cama", "Apagar las pantallas antes de dormir", "Cenar muchísimo"], "ok": 1, "c": "1.2", "e": "Sin pantallas antes de dormir." },
+    { "p": "¿Cuánto debería pesar como mucho la mochila?", "o": ["Lo mismo que yo", "Más o menos un 10 % de mi peso", "No importa"], "ok": 1, "c": "1.2", "e": "Que no pase de un 10 % de tu peso." },
+    { "p": "Si duermes poco, al día siguiente…", "o": ["Estás cansado y te cuesta atender", "Estás lleno de energía", "Corres más rápido"], "ok": 0, "c": "1.2", "e": "Dormir es recuperar fuerzas." },
+    { "p": "Estar muchas horas quieto delante de una pantalla es…", "o": ["Sedentarismo", "Deporte", "Descanso activo"], "ok": 0, "c": "1.1", "e": "Hay que hacer descansos y moverse." },
+    { "p": "¿Qué hace el cuerpo mientras dormimos?", "o": ["Nada", "Crece y se recupera", "Se cansa más"], "ok": 1, "c": "1.2", "e": "Dormir es parte de entrenar." }
+   ]
+  },
+  {
+   "id": "danino",
+   "ic": "🚭",
+   "t": "Hábitos que hacen daño",
+   "crit": ["1.1", "1.2"],
+   "intro": "Tabaco, alcohol, bebidas energéticas… sabemos decir que no a lo que nos hace daño.",
+   "teoria": [
+    { "ic": "🚬", "t": "El tabaco", "p": ["El tabaco tiene nicotina, una sustancia que engancha (crea adicción).", "Daña los pulmones y el corazón: cuesta más respirar y correr.", "El humo también hace daño a quien está cerca: es el fumador pasivo."] },
+    { "ic": "💨", "t": "El vapeo tampoco", "p": ["Los vapeadores y cigarrillos electrónicos también suelen tener nicotina.", "Aunque huelan a fruta, no son sanos.", "Lo más sano es no empezar nunca."] },
+    { "ic": "🍺", "t": "El alcohol", "p": ["El alcohol daña el cerebro, el hígado y el corazón.", "En los niños y niñas hace todavía más daño porque el cuerpo está creciendo.", "En España está prohibido venderlo a menores de 18 años."] },
+    { "ic": "⚡", "t": "Bebidas energéticas", "p": ["Tienen mucha cafeína y mucho azúcar.", "No son para niños: pueden acelerar el corazón, dar nervios y quitar el sueño.", "Para tener energía: comer bien, dormir bien y beber agua."] },
+    { "ic": "🙅", "t": "Saber decir que no", "p": ["Si alguien te ofrece algo que hace daño, puedes decir «No, gracias» y seguir tranquilo.", "Un buen amigo no te obliga a hacer algo que no quieres.", "Si te preocupa algo, cuéntaselo a un adulto de confianza."] },
+    { "ic": "🏅", "t": "Los deportistas lo saben", "p": ["Los deportistas cuidan lo que comen, duermen bien y no fuman.", "Para rendir en el deporte, el cuerpo necesita estar sano.", "Tú también eres deportista: ¡cuídate!"] }
+   ],
+   "pensar": "Si un amigo te ofrece algo que hace daño, ¿qué le dirías? Inventad la respuesta entre todos.",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Me ayuda o me hace daño?", "cajas": ["💚 Me ayuda", "💔 Me hace daño"], "items": [["Beber agua", 0], ["Fumar", 1], ["Dormir 10 horas", 0], ["Bebida energética", 1], ["Jugar al aire libre", 0], ["Respirar el humo de quien fuma", 1], ["Comer fruta", 0], ["Beber alcohol", 1], ["Hacer deporte con amigos", 0], ["Vapear", 1], ["Decir «No, gracias»", 0], ["Pasar la noche con el móvil", 1]] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["La nicotina del tabaco engancha.", true, "Por eso cuesta tanto dejarlo: lo mejor es no empezar."], ["El humo del tabaco solo hace daño a quien fuma.", false, "También a quien está cerca: fumador pasivo."], ["Los vapeadores con sabor a fruta son sanos.", false, "Suelen tener nicotina y no son sanos."], ["Las bebidas energéticas no son para niños.", true, "Tienen mucha cafeína y azúcar."], ["En España no se puede vender alcohol a menores de 18 años.", true, "Es la ley."], ["Un buen amigo te obliga a hacer cosas que no quieres.", false, "Un buen amigo respeta tu «no»."], ["Fumar hace que cueste más respirar y correr.", true, "Daña los pulmones."], ["Si algo te preocupa, puedes contárselo a un adulto de confianza.", true, "Familia, maestros… siempre hay alguien."]] }
+   ],
+   "prueba": [
+    { "p": "¿Qué sustancia del tabaco engancha?", "o": ["La vitamina C", "La nicotina", "El agua"], "ok": 1, "c": "1.1", "e": "La nicotina crea adicción." },
+    { "p": "¿Qué es un fumador pasivo?", "o": ["Quien respira el humo de otros", "Quien fuma poco", "Quien hace deporte"], "ok": 0, "c": "1.1", "e": "El humo también daña a quien está cerca." },
+    { "p": "¿Qué órganos daña sobre todo el tabaco?", "o": ["Pulmones y corazón", "Uñas y pelo", "Ninguno"], "ok": 0, "c": "1.1", "e": "Por eso cuesta más respirar y correr." },
+    { "p": "Las bebidas energéticas…", "o": ["Son ideales para niños", "Tienen mucha cafeína y azúcar y no son para niños", "Son como el agua"], "ok": 1, "c": "1.2", "e": "Aceleran el corazón y quitan el sueño." },
+    { "p": "¿A partir de qué edad se puede comprar alcohol en España?", "o": ["12 años", "16 años", "18 años"], "ok": 2, "c": "1.1", "e": "Está prohibido venderlo a menores de 18." },
+    { "p": "Si alguien te ofrece algo que te hace daño…", "o": ["Digo «No, gracias»", "Lo pruebo para no quedar mal", "Me escondo"], "ok": 0, "c": "1.2", "e": "Saber decir que no." },
+    { "p": "¿Qué es mejor para tener energía?", "o": ["Una bebida energética", "Comer bien, dormir y beber agua", "Un refresco"], "ok": 1, "c": "1.2", "e": "La energía de verdad sale de los buenos hábitos." },
+    { "p": "Los vapeadores…", "o": ["Son sanos porque huelen bien", "Suelen tener nicotina y no son sanos", "Ayudan a correr"], "ok": 1, "c": "1.1", "e": "Lo más sano es no empezar." },
+    { "p": "¿Por qué el alcohol hace aún más daño a los niños?", "o": ["Porque su cuerpo está creciendo", "Porque beben más rápido", "No les hace daño"], "ok": 0, "c": "1.1", "e": "El cuerpo y el cerebro están creciendo." },
+    { "p": "Si algo te preocupa, puedes…", "o": ["Guardarlo en secreto siempre", "Contárselo a un adulto de confianza", "Enfadarte"], "ok": 1, "c": "1.2", "e": "Familia o maestros pueden ayudarte." }
+   ]
+  },
+  {
+   "id": "seguridad",
+   "ic": "⛑️",
+   "t": "Calentamiento, seguridad y primeros auxilios",
+   "crit": ["1.3", "1.2"],
+   "intro": "Cómo prepararnos para no hacernos daño y qué hacer si alguien se lesiona.",
+   "teoria": [
+    { "ic": "🔥", "t": "El calentamiento", "p": ["Antes de hacer ejercicio, calentamos para preparar el cuerpo.", "Sube la temperatura de los músculos y las pulsaciones.", "Así evitamos lesiones y jugamos mejor."] },
+    { "ic": "🔄", "t": "Cómo se calienta", "p": ["1. Movilidad: tobillos, rodillas, cadera, hombros, cuello.", "2. Carrera suave y desplazamientos variados.", "3. Ejercicios un poco más intensos, como en el juego.", "Siempre de menos a más."] },
+    { "ic": "🧘", "t": "La vuelta a la calma", "p": ["Al terminar, bajamos el ritmo poco a poco.", "Estiramos suave, sin rebotes y sin dolor.", "Respiramos despacio y el corazón se tranquiliza."] },
+    { "ic": "⚽", "t": "El material y el espacio", "p": ["Usamos el material para lo que sirve.", "Lo recogemos y lo cuidamos: es de todos.", "Miramos que el suelo no esté mojado y que no haya obstáculos."] },
+    { "ic": "🆘", "t": "Si hay un accidente: P.A.S.", "p": ["PROTEGER: que nadie más se haga daño (para el juego, aparta el peligro).", "AVISAR: llama a un adulto. En una emergencia de verdad: 112.", "SOCORRER: ayudar con calma, solo lo que sabemos hacer."] },
+    { "ic": "🧊", "t": "Pequeños accidentes", "p": ["Golpe o torcedura: frío envuelto en un paño (nunca hielo directo), reposo y levantar la zona.", "Herida pequeña: lavar con agua y jabón y tapar.", "Sangre por la nariz: cabeza un poco hacia delante y apretar la nariz. ¡No echarla hacia atrás!"] }
+   ],
+   "pensar": "Si en el patio un compañero se cae y no se levanta, ¿qué hacéis? Practicad el P.A.S.",
+   "juegos": [
+    { "tipo": "ordena", "t": "Ordena el P.A.S.", "pasos": ["Proteger: paro el juego y aparto el peligro", "Avisar: llamo a un adulto (o al 112)", "Socorrer: ayudo con calma"] },
+    { "tipo": "ordena", "t": "Ordena la sesión de EF", "pasos": ["Calentamiento: movilidad de articulaciones", "Carrera suave", "Ejercicios más intensos, como en el juego", "Parte principal: el juego o deporte", "Vuelta a la calma: estiramientos suaves", "Aseo y beber agua"] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["El calentamiento ayuda a evitar lesiones.", true, "Prepara músculos, corazón y articulaciones."], ["Si sangra la nariz, hay que echar la cabeza hacia atrás.", false, "Hacia delante y apretando la nariz."], ["El número de emergencias es el 112.", true, "Sirve para cualquier emergencia."], ["El hielo se pone directamente sobre la piel mucho rato.", false, "Envuelto en un paño y a ratos."], ["Al estirar tiene que doler mucho para que funcione.", false, "Suave, sin rebotes y sin dolor."], ["Recoger el material es tarea de todos.", true, "Es de todos y todos lo cuidamos."], ["Lo primero en un accidente es proteger para que nadie más se haga daño.", true, "P de Proteger."], ["El calentamiento empieza con lo más fuerte.", false, "Siempre de menos a más."]] }
+   ],
+   "prueba": [
+    { "p": "¿Para qué sirve el calentamiento?", "o": ["Para preparar el cuerpo y evitar lesiones", "Para cansarse antes", "Para nada"], "ok": 0, "c": "1.2", "e": "Prepara músculos y corazón." },
+    { "p": "El calentamiento se hace…", "o": ["De más a menos", "De menos a más", "Todo al máximo"], "ok": 1, "c": "1.2", "e": "Empezamos suave y vamos subiendo." },
+    { "p": "¿Qué significa P.A.S.?", "o": ["Pasar, Atar, Saltar", "Proteger, Avisar, Socorrer", "Parar, Andar, Sentarse"], "ok": 1, "c": "1.3", "e": "Proteger, Avisar y Socorrer." },
+    { "p": "¿Cuál es el número de emergencias?", "o": ["112", "010", "123"], "ok": 0, "c": "1.3", "e": "El 112." },
+    { "p": "Si a un compañero le sangra la nariz…", "o": ["Cabeza hacia atrás", "Cabeza un poco hacia delante y apretar la nariz", "Que corra"], "ok": 1, "c": "1.3", "e": "Nunca hacia atrás." },
+    { "p": "Para un golpe o una torcedura…", "o": ["Frío envuelto en un paño y reposo", "Calor fuerte", "Seguir jugando"], "ok": 0, "c": "1.3", "e": "Frío, reposo y elevar." },
+    { "p": "¿Qué hacemos en la vuelta a la calma?", "o": ["Sprints", "Estiramientos suaves y respirar despacio", "Un partido"], "ok": 1, "c": "1.2", "e": "Bajar el ritmo poco a poco." },
+    { "p": "¿Qué es lo primero ante un accidente?", "o": ["Proteger para que nadie más se haga daño", "Hacer una foto", "Irse"], "ok": 0, "c": "1.3", "e": "Primero proteger." },
+    { "p": "Si el suelo del patio está mojado…", "o": ["Corremos más rápido", "Avisamos y tenemos cuidado o cambiamos de sitio", "No importa"], "ok": 1, "c": "1.3", "e": "Revisar el espacio previene lesiones." },
+    { "p": "El material de EF…", "o": ["Lo recoge siempre el maestro", "Lo cuidamos y recogemos entre todos", "Se puede tirar"], "ok": 1, "c": "1.3", "e": "Es de todos." }
+   ]
+  },
+  {
+   "id": "juegolimpio",
+   "ic": "🤝",
+   "t": "Juego limpio, respeto y emociones",
+   "crit": ["3.1", "3.2", "3.3"],
+   "intro": "Ganar no es lo más importante: jugar limpio, respetar y controlar las emociones, sí.",
+   "teoria": [
+    { "ic": "🤝", "t": "Juego limpio", "p": ["Respetar las reglas aunque nadie mire.", "Saludar al rival antes y después.", "Respetar al árbitro y al maestro.", "Ayudar a quien se cae, aunque sea del otro equipo."] },
+    { "ic": "🏆", "t": "Saber ganar y saber perder", "p": ["Si ganas: celebras sin burlarte.", "Si pierdes: felicitas al otro equipo y piensas cómo mejorar.", "Lo importante es esforzarse y divertirse juntos."] },
+    { "ic": "🚦", "t": "El semáforo de las emociones", "p": ["🔴 ROJO: me paro cuando me enfado.", "🟡 AMARILLO: respiro y pienso qué puedo hacer.", "🟢 VERDE: actúo con calma: hablo, pido ayuda o sigo jugando."] },
+    { "ic": "🗣️", "t": "Resolver conflictos hablando", "p": ["Escucho al otro sin interrumpir.", "Digo lo que siento sin gritar ni insultar: «Me ha molestado que…».", "Buscamos juntos una solución justa. Si no, pedimos ayuda a un adulto."] },
+    { "ic": "🌈", "t": "Todos jugamos", "p": ["Nadie se queda fuera: chicos y chicas juegan juntos.", "Cada uno tiene su ritmo y sus habilidades, y todas valen.", "No nos burlamos de nadie por cómo es o cómo juega."] },
+    { "ic": "📏", "t": "Las normas de clase", "p": ["Las normas las cumplimos todos, también las que acordamos juntos.", "Sirven para que el juego sea justo y seguro.", "Cuando alguien no las cumple, el juego deja de ser divertido para todos."] }
+   ],
+   "pensar": "Piensa en un juego en el que alguien se enfadó. ¿Qué podría haber hecho en el semáforo amarillo?",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Juego limpio o juego sucio?", "cajas": ["😇 Juego limpio", "😠 Juego sucio"], "items": [["Felicitar al equipo que ha ganado", 0], ["Hacer trampas cuando nadie mira", 1], ["Ayudar a levantarse a un rival", 0], ["Burlarse del que falla", 1], ["Aceptar la decisión del árbitro", 0], ["Dejar fuera a un compañero", 1], ["Pasar la pelota a todos", 0], ["Insultar al perder", 1], ["Saludar al rival al acabar", 0], ["Tirar el material al enfadarme", 1], ["Animar a mi equipo", 0], ["Discutir cada punto a gritos", 1]] },
+    { "tipo": "ordena", "t": "Ordena el semáforo: me he enfadado jugando", "pasos": ["🔴 Me paro", "🟡 Respiro hondo tres veces", "🟡 Pienso qué puedo hacer", "🟢 Hablo con calma o pido ayuda", "🟢 Vuelvo al juego"] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["Ganar es lo único importante.", false, "Lo importante es esforzarse, respetar y divertirse."], ["Si pierdo, felicito al otro equipo.", true, "Saber perder también es ser deportista."], ["Cuando me enfado, lo mejor es gritar.", false, "Primero me paro y respiro: semáforo rojo."], ["Las chicas y los chicos pueden jugar juntos a todo.", true, "Todos jugamos con todos."], ["Las normas solo hay que cumplirlas si el maestro mira.", false, "Juego limpio es cumplirlas siempre."], ["Para resolver un conflicto, escucho al otro.", true, "Escuchar es el primer paso."], ["Burlarse del que falla es parte del juego.", false, "Nunca: todos fallamos a veces."], ["Ayudar al rival que se ha caído es juego limpio.", true, "El respeto va antes que el resultado."]] }
+   ],
+   "prueba": [
+    { "p": "Tu equipo pierde un partido. ¿Qué haces?", "o": ["Felicito al otro equipo", "Me enfado y me voy", "Digo que han hecho trampas"], "ok": 0, "c": "3.2", "e": "Saber perder es juego limpio." },
+    { "p": "¿Qué es el juego limpio?", "o": ["Ganar como sea", "Respetar las reglas y a los demás", "Jugar solo con mis amigos"], "ok": 1, "c": "3.2", "e": "Reglas y respeto, siempre." },
+    { "p": "En el semáforo de las emociones, el rojo significa…", "o": ["Me paro", "Corro", "Grito"], "ok": 0, "c": "3.1", "e": "Rojo: me paro." },
+    { "p": "Después de pararme, en el amarillo…", "o": ["Respiro y pienso", "Empujo", "Me rindo"], "ok": 0, "c": "3.1", "e": "Amarillo: respiro y pienso." },
+    { "p": "Un compañero discute contigo por una jugada. ¿Qué es lo mejor?", "o": ["Gritar más fuerte", "Escuchar, hablar con calma y buscar una solución", "Dejar de hablarle"], "ok": 1, "c": "3.3", "e": "Los conflictos se resuelven hablando." },
+    { "p": "Un compañero siempre se queda sin jugar. ¿Qué haces?", "o": ["Lo invito a jugar", "Nada, no es mi problema", "Me río"], "ok": 0, "c": "3.3", "e": "Nadie se queda fuera." },
+    { "p": "El árbitro pita algo que no te gusta…", "o": ["Lo acepto y sigo jugando", "Lo insulto", "Me llevo el balón"], "ok": 0, "c": "3.2", "e": "Respetar al árbitro es parte del juego." },
+    { "p": "¿Pueden chicos y chicas jugar juntos a cualquier deporte?", "o": ["Sí", "No", "Solo a algunos"], "ok": 0, "c": "3.3", "e": "Todos jugamos con todos." },
+    { "p": "Te esfuerzas mucho y no te sale un ejercicio. ¿Qué piensas?", "o": ["«Soy malísimo, lo dejo»", "«Si practico, me saldrá mejor»", "«La culpa es de los demás»"], "ok": 1, "c": "3.1", "e": "Disposición positiva hacia el esfuerzo." },
+    { "p": "Un rival se cae y se hace daño. ¿Qué haces?", "o": ["Sigo jugando para marcar", "Paro y le ayudo", "Me río"], "ok": 1, "c": "3.2", "e": "El respeto va antes que el resultado." }
+   ]
+  },
+  {
+   "id": "juegos",
+   "ic": "🪀",
+   "t": "Juegos populares y deporte",
+   "crit": ["4.1", "4.2"],
+   "intro": "Los juegos de nuestros abuelos, los de Andalucía y el deporte de nuestro entorno.",
+   "teoria": [
+    { "ic": "👵", "t": "Juegos de toda la vida", "p": ["Los juegos populares se juegan desde hace muchísimos años.", "Pasan de abuelos a padres y de padres a hijos.", "Se juegan en la calle y en el patio, casi sin material."] },
+    { "ic": "🌻", "t": "Juegos de Andalucía", "p": ["El trompo, los boliches (canicas), las chapas, la comba con sus canciones…", "El pañuelo, el escondite, la rayuela, la billarda.", "¡Y el pichi, que tanto jugamos en el cole!"] },
+    { "ic": "🎶", "t": "Canciones y retahílas", "p": ["Muchos juegos tienen canciones para saltar a la comba o para echar a suertes.", "«Pito, pito, gorgorito…» sirve para elegir quién la queda.", "Cada pueblo tiene sus versiones: ¡pregunta en casa!"] },
+    { "ic": "🌍", "t": "Juegos del mundo", "p": ["En otros países hay juegos parecidos a los nuestros con otros nombres.", "Los compañeros que vienen de otros lugares nos pueden enseñar los suyos.", "Jugar a los juegos de otros es una forma de conocernos."] },
+    { "ic": "🏟️", "t": "El deporte federado", "p": ["Un club federado juega en una liga con otros clubes.", "Hay ligas femeninas, masculinas y mixtas: el deporte es de todos.", "En tu barrio o pueblo seguro que hay clubes de fútbol, baloncesto, balonmano, atletismo…"] },
+    { "ic": "🎯", "t": "Lo que tienen en común", "p": ["Reglas que todos aceptan.", "Respeto a los compañeros y a los rivales.", "Y lo más importante: pasarlo bien moviéndonos."] }
+   ],
+   "pensar": "Pregunta en casa a qué jugaban de pequeños. Mañana nos lo cuentas y lo probamos.",
+   "juegos": [
+    { "tipo": "clasifica", "t": "¿Juego popular o deporte federado?", "cajas": ["🪀 Juego popular", "🏟️ Deporte federado"], "items": [["El trompo", 0], ["Liga de baloncesto", 1], ["La comba", 0], ["El escondite", 0], ["Liga femenina de fútbol", 1], ["Los boliches (canicas)", 0], ["Campeonato de natación", 1], ["El pañuelo", 0], ["Liga de balonmano", 1], ["La rayuela", 0], ["Las chapas", 0], ["Competición de atletismo", 1]] },
+    { "tipo": "vf", "t": "¿Verdadero o falso?", "items": [["Los juegos populares pasan de abuelos a nietos.", true, "Por eso se llaman tradicionales."], ["Los boliches son lo mismo que las canicas.", true, "Así se llaman en muchos sitios de Andalucía."], ["El deporte federado es solo para chicos.", false, "Hay ligas femeninas, masculinas y mixtas."], ["Para jugar a los juegos populares hace falta mucho material caro.", false, "Casi siempre basta con una cuerda, una tiza o una pelota."], ["«Pito, pito, gorgorito» sirve para echar a suertes.", true, "Es una retahíla para elegir."], ["En otros países también hay juegos populares.", true, "¡Y muchos se parecen a los nuestros!"], ["Un club federado juega en una liga con otros clubes.", true, "Así funciona el deporte federado."], ["Los juegos populares no tienen reglas.", false, "Tienen reglas que todos aceptan."]] }
+   ],
+   "prueba": [
+    { "p": "¿Cómo se transmiten los juegos populares?", "o": ["Por la tele", "De generación en generación (abuelos, padres, hijos)", "Solo en los libros"], "ok": 1, "c": "4.1", "e": "De abuelos a nietos." },
+    { "p": "¿Cuál es un juego popular?", "o": ["El trompo", "La Liga de fútbol", "Un videojuego"], "ok": 0, "c": "4.1", "e": "El trompo (peonza)." },
+    { "p": "En muchos sitios de Andalucía, las canicas se llaman…", "o": ["Boliches", "Chapas", "Trompos"], "ok": 0, "c": "4.1", "e": "Boliches." },
+    { "p": "«Pito, pito, gorgorito» sirve para…", "o": ["Echar a suertes", "Calentar", "Ganar"], "ok": 0, "c": "4.1", "e": "Es una retahíla para elegir." },
+    { "p": "¿Qué material hace falta para la comba?", "o": ["Una cuerda", "Un balón", "Una raqueta"], "ok": 0, "c": "4.1", "e": "Solo una cuerda (¡y canciones!)." },
+    { "p": "¿Qué es un club federado?", "o": ["Un grupo de amigos en el parque", "Un club que compite en una liga con otros", "Una tienda de deportes"], "ok": 1, "c": "4.2", "e": "Compite en ligas oficiales." },
+    { "p": "¿Para quién es el deporte?", "o": ["Solo para chicos", "Solo para chicas", "Para todos: hay ligas femeninas, masculinas y mixtas"], "ok": 2, "c": "4.2", "e": "El deporte es de todos." },
+    { "p": "Un compañero nuevo nos enseña un juego de su país. Eso sirve para…", "o": ["Conocernos mejor", "Nada", "Perder el tiempo"], "ok": 0, "c": "4.1", "e": "Jugar juntos nos une." },
+    { "p": "¿Qué tienen en común los juegos populares y los deportes?", "o": ["Que tienen reglas que todos aceptan", "Que son carísimos", "Que solo se juegan en la tele"], "ok": 0, "c": "4.1", "e": "Reglas, respeto y diversión." },
+    { "p": "¿Cuál de estos juegos jugamos mucho en el cole?", "o": ["El pichi", "El golf", "El esquí"], "ok": 0, "c": "4.1", "e": "¡El pichi!" }
+   ]
+  }
+ ]
+}
