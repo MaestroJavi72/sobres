@@ -50,6 +50,17 @@ table.reg{width:100%;border-collapse:collapse;font-size:17px}
 table.reg th{text-align:left;font-family:var(--f-sub);color:var(--acento-2);padding:8px;border-bottom:2px solid var(--panel-borde)}
 table.reg td{padding:8px;border-bottom:1px solid var(--panel-borde)}
 .largo{color:#ff9a8f;font-weight:700}
+
+/* turnos */
+.turno{width:100%;display:flex;flex-direction:column;gap:8px;align-items:center}
+.cola{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;font-family:var(--f-sub);font-size:17px;color:var(--tinta-suave)}
+.cola .chip{font-family:var(--f-sub);font-weight:700;font-size:17px;padding:6px 10px;border-radius:999px;border:2px solid var(--acento);background:rgba(0,0,0,.25);color:var(--tinta);cursor:pointer}
+.cola .chip:first-of-type{background:var(--acento);color:var(--acento-tinta)}
+.cola .chip b{font-weight:400;opacity:.7;margin-left:4px}
+.pedir{font-family:var(--f-sub);font-weight:800;font-size:clamp(17px,2.2vw,21px);padding:10px 22px;border-radius:14px;border:2px solid var(--acento);background:rgba(0,0,0,.25);color:var(--tinta);cursor:pointer}
+.pedir[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta)}
+.toca{font-family:var(--f-sub);font-weight:800;font-size:clamp(22px,3.2vw,32px);color:var(--acento-2)}
+.vuelvo small{display:block;font-size:.65em;font-weight:600;opacity:.9}
 </style>
 </head>
 <body>
@@ -76,7 +87,7 @@ table.reg td{padding:8px;border-bottom:1px solid var(--panel-borde)}
       <div class="j-panel farol" id="f-chico"></div>
       <div class="j-panel farol" id="f-chica"></div>
     </div>
-    <p class="estado" style="margin-top:10px;text-align:center">Toca tu nombre al salir (se pone en rojo) y «He vuelto» al volver (verde). Las salidas se guardan aunque no se haya escrito el código del profe.</p>
+    <p class="estado" style="margin-top:10px;text-align:center">Toca tu nombre al salir (se pone en rojo) y «He vuelto» al volver (verde). Si está ocupado, «✋ Pedir turno»: al volver el de dentro, sale el primero de la cola. Pedir turno cuenta como una de las 2 salidas. Las salidas se guardan aunque no se haya escrito el código del profe.</p>
   </section>
 
   <!-- REGISTRO -->
@@ -115,20 +126,28 @@ function movimientos(dia){
   var fs = JAVI.filas().filter(function(f){ return U.normal(f.alumno)===k && U.normal(f.accion)==='baño'; });
   fs.forEach(function(f){ var m = f.carta.match(/anula (#g[a-z0-9]+)/); if(m) an[m[1]] = 1; });
   return fs.filter(function(f){ return f.dia===dia && !an[f.id] && !/anula/.test(f.carta); }).map(function(f){
-    var j = jsonDe(f.carta); return { id:f.id, quien:f.tipo, op:U.normal(f.cartaId), h:j.h || '', lado:j.lado || '' };
-  }).sort(function(a, b){ return a.h.localeCompare(b.h); });
+    var j = jsonDe(f.carta); return { id:f.id, quien:f.tipo, op:U.normal(f.cartaId), h:j.h || '', t:j.t || 0, lado:j.lado || '' };
+  }).sort(function(a, b){ return a.h.localeCompare(b.h) || (a.t && b.t ? a.t-b.t : 0); });
 }
 function lado(n){ var r = JAVI.grupo(GRUPO); return r && r.chicas.indexOf(n)>=0 ? 'chica' : 'chico'; }
-/* quién está fuera en cada lado y cuántas salidas lleva cada uno hoy */
+/* quién está fuera en cada lado, la cola de turnos y cuántas salidas lleva cada uno hoy
+   (CartaId: sale | vuelve | turno = pide turno | quita = sale de la cola) */
 function estado(){
-  var hoy = U.clave(new Date()), ms = movimientos(hoy), fuera = { chico:null, chica:null }, salidas = {};
+  var hoy = U.clave(new Date()), ms = movimientos(hoy), fuera = { chico:null, chica:null }, cola = { chico:[], chica:[] }, salidas = {};
+  function sacar(l, n){ cola[l] = cola[l].filter(function(x){ return x!==n; }); }
   ms.forEach(function(m){
     var l = m.lado || lado(m.quien);
-    if(m.op==='sale'){ fuera[l] = { quien:m.quien, h:m.h }; salidas[m.quien] = (salidas[m.quien]||0)+1; }
+    if(m.op==='sale'){ fuera[l] = { quien:m.quien, h:m.h }; salidas[m.quien] = (salidas[m.quien]||0)+1; sacar(l, m.quien); }
     if(m.op==='vuelve' && fuera[l] && fuera[l].quien===m.quien) fuera[l] = null;
+    if(m.op==='turno' && cola[l].indexOf(m.quien)<0 && !(fuera[l] && fuera[l].quien===m.quien)) cola[l].push(m.quien);
+    if(m.op==='quita') sacar(l, m.quien);
   });
-  return { fuera:fuera, salidas:salidas };
+  return { fuera:fuera, cola:cola, salidas:salidas };
 }
+/* salidas ya hechas + la que tiene pedida en la cola */
+function usadas(e, n){ return (e.salidas[n]||0) + (e.cola[lado(n)].indexOf(n)>=0 ? 1 : 0); }
+function apuntar(op, n){ var d = new Date(); JAVI.escribirLibre({ alumno:'BAÑO · '+GRUPO, accion:'Baño', cartaId:op, tipo:n, carta:JSON.stringify({ h:hhmm(d), t:d.getTime(), lado:lado(n) }) }); }
+var pidiendo = { chico:false, chica:false };
 function permitido(){ return (JAVI.ajuste('bano-permitido') || 'si')==='si'; }
 function enHorario(){ var d = new Date(), m = d.getHours()*60+d.getMinutes(), w = d.getDay(); return w>=1 && w<=5 && m>=INI && m<FIN; }
 
@@ -141,16 +160,25 @@ function pintarFarol(){
   ['chico','chica'].forEach(function(l){
     var f = e.fuera[l], box = $('f-'+l), h = '<h2>'+(l==='chico' ? '👦 Niños' : '👧 Niñas')+'</h2>'+
       '<div class="luces"><span class="luz roja'+(f ? ' on' : '')+'"></span><span class="luz verde'+(!f && per && hor ? ' on' : '')+'"></span></div>';
+    var cola = e.cola[l], abre = per && hor, ns = r ? r.nombres.filter(function(n){ return lado(n)===l; }) : [];
+    function rejilla(modo){
+      return '<div class="nombres">'+ns.map(function(n){
+        var u = usadas(e, n), ya = cola.indexOf(n)>=0 || (f && f.quien===n), no = !abre || ya || u>=MAX;
+        return '<button type="button" data-'+modo+'="'+esc(n)+'"'+(no ? ' disabled' : '')+'>'+esc(n)+'<small>'+(ya ? 'ya en turno' : u+' de '+MAX)+'</small></button>';
+      }).join('')+'</div>';
+    }
     if(f){
       var min = Math.max(0, Math.round((Date.now() - hoyA(f.h))/60000));
       h += '<div class="fuera">🚶 '+esc(f.quien)+'<small>Salió a las '+esc(f.h)+' · hace '+min+' min</small></div>'+
-        '<button class="vuelvo" type="button" data-vuelve="'+esc(f.quien)+'">✅ '+esc(f.quien)+' ha vuelto</button>';
-    } else {
-      var ns = r ? r.nombres.filter(function(n){ return lado(n)===l; }) : [];
-      h += '<div class="nombres">'+ns.map(function(n){
-        var s = e.salidas[n]||0, no = !per || !hor || s>=MAX;
-        return '<button type="button" data-sale="'+esc(n)+'"'+(no ? ' disabled' : '')+'>'+esc(n)+'<small>'+s+' de '+MAX+'</small></button>';
-      }).join('')+'</div>';
+        '<button class="vuelvo" type="button" data-vuelve="'+esc(f.quien)+'">✅ '+esc(f.quien)+' ha vuelto'+(cola.length && abre ? '<small>y sale '+esc(cola[0])+'</small>' : '')+'</button>';
+    } else if(cola.length){
+      h += '<div class="toca">¡Te toca, '+esc(cola[0])+'!</div>'+
+        '<button class="vuelvo" type="button" data-sale="'+esc(cola[0])+'"'+(abre ? '' : ' disabled')+'>🚶 Sale '+esc(cola[0])+'</button>';
+    }
+    if(cola.length) h += '<div class="cola">Turno: '+cola.map(function(n, i){ return '<button type="button" class="chip" data-quita="'+esc(n)+'" title="Quitar de la cola">'+(i+1)+'. '+esc(n)+'<b>✕</b></button>'; }).join('')+'</div>';
+    if(!f && !cola.length){ pidiendo[l] = false; h += rejilla('sale'); }
+    else if(abre){
+      h += '<div class="turno"><button class="pedir" type="button" data-pedir="'+l+'" aria-pressed="'+pidiendo[l]+'">'+(pidiendo[l] ? '✕ Cerrar' : '✋ Pedir turno')+'</button>'+(pidiendo[l] ? rejilla('turno') : '')+'</div>';
     }
     box.innerHTML = h;
   });
@@ -159,18 +187,33 @@ function hoyA(h){ var d = new Date(), p = String(h).split(':'); d.setHours(+p[0]
 $('v-farol').addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
   if(b.dataset.sale){
-    var n = b.dataset.sale, es = estado();
+    var n = b.dataset.sale, es = estado(), cl = es.cola[lado(n)], primero = cl[0]===n;
     if(!permitido() || !enHorario()){ aviso('Ahora no se puede ir.'); return; }
-    if((es.salidas[n]||0) >= MAX){ aviso(n+' ya ha salido '+MAX+' veces esta mañana.'); return; }
+    if(!primero && (es.salidas[n]||0) >= MAX){ aviso(n+' ya ha salido '+MAX+' veces esta mañana.'); return; }
     if(es.fuera[lado(n)]){ aviso('Espera a que vuelva '+es.fuera[lado(n)].quien+'.'); return; }
-    if(!confirm('¿'+n+' sale al baño?')) return;
-    JAVI.escribirLibre({ alumno:'BAÑO · '+GRUPO, accion:'Baño', cartaId:'sale', tipo:n, carta:JSON.stringify({ h:hhmm(new Date()), lado:lado(n) }) });
-    pintarFarol(); pintarRegistro();
+    if(cl.length && !primero){ aviso('Le toca antes a '+cl[0]+'.'); return; }
+    if(!primero && !confirm('¿'+n+' sale al baño?')) return;
+    apuntar('sale', n); pintarFarol(); pintarRegistro();
   }
   if(b.dataset.vuelve){
-    var q = b.dataset.vuelve;
-    JAVI.escribirLibre({ alumno:'BAÑO · '+GRUPO, accion:'Baño', cartaId:'vuelve', tipo:q, carta:JSON.stringify({ h:hhmm(new Date()), lado:lado(q) }) });
-    aviso('¡Bienvenido/a, '+q+'!'); pintarFarol(); pintarRegistro();
+    var q = b.dataset.vuelve, ev = estado(), sig = ev.cola[lado(q)][0];
+    apuntar('vuelve', q);
+    if(sig && permitido() && enHorario()){ apuntar('sale', sig); aviso('¡Bienvenido/a, '+q+'! Ahora le toca a '+sig+'.'); }
+    else aviso('¡Bienvenido/a, '+q+'!');
+    pintarFarol(); pintarRegistro();
+  }
+  if(b.dataset.pedir){ pidiendo[b.dataset.pedir] = !pidiendo[b.dataset.pedir]; pintarFarol(); }
+  if(b.dataset.turno){
+    var t = b.dataset.turno, et = estado(), lt = lado(t);
+    if(!permitido() || !enHorario()){ aviso('Ahora no se puede ir.'); return; }
+    if(et.cola[lt].indexOf(t)>=0){ aviso(t+' ya tiene turno.'); return; }
+    if(usadas(et, t) >= MAX){ aviso(t+' ya ha salido '+MAX+' veces esta mañana.'); return; }
+    apuntar('turno', t); pidiendo[lt] = false;
+    aviso(t+', tu turno es el número '+estado().cola[lt].length+'.'); pintarFarol();
+  }
+  if(b.dataset.quita){
+    var x = b.dataset.quita; if(!confirm('¿Quitar a '+x+' de la cola?')) return;
+    apuntar('quita', x); pintarFarol();
   }
 });
 /* el interruptor es del profe: con la llave abierta se cambia; si no, pide el código */
