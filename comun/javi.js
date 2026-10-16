@@ -621,6 +621,9 @@ function ponerInicio(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', ponerInicio); else ponerInicio();
 
+/* 🎵 MÚSICA RELAJANTE para cuando trabajan: botón abajo a la izquierda en todas las páginas (comun/musica.js) */
+(function(){ var s = document.createElement('script'); s.src = BASE+'comun/musica.js'; s.async = true; document.head.appendChild(s); })();
+
 /* ============================================================
    ARRANQUE: JAVI.listo(fn) espera a la lista de alumnos y a la Hoja
    (como mucho 4 s; si la Hoja tarda, arranca con lo que haya).
