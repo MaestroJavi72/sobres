@@ -1,7 +1,8 @@
 /* Javificación · 🎵 música relajante para cuando la clase trabaja (todas las páginas con comun/javi.js)
    Se genera en el navegador (Web Audio): sin archivos ni canciones con derechos.
    Estilos: Calma (acordes suaves y campanitas), Piano (notas sueltas) y Lluvia (lluvia con un fondo suave),
-   y vídeos de YouTube que pega Javi (lista en el aparato; el primero, el de Hogwarts que pidió).
+   mp3 que Javi elige de su ordenador (se guardan en el navegador, IndexedDB; NO se suben: la web es pública)
+   y vídeos de YouTube que pega Javi (lista en el aparato).
    Se recuerda en el aparato (localStorage «javi-musica»): si estaba sonando, al cambiar de página
    sigue en cuanto se toca la pantalla (el navegador no deja sonar sin un toque). */
 (function(){
@@ -101,7 +102,11 @@ function pararGen(rapido){
    Se ven en un reproductor pequeño junto al botón (YouTube no deja ocultarlo).
    Al cambiar de página sigue por donde iba (se guarda el segundo cada 5 s). */
 var KV = 'javi-musica-videos', KT = 'javi-musica-seg';
-var VIDEOS_INICIO = [{ id:'slxPFAJN9UM', t:'Harry Potter · Música ambiente de Hogwarts' }];
+var VIDEOS_INICIO = [];
+try{ if(!localStorage.getItem('javi-musica-sin-hp')){   /* Javi quitó el vídeo de Hogwarts (17/10/2026) */
+  var lv = JSON.parse(localStorage.getItem(KV) || '[]').filter(function(v){ return v.id!=='slxPFAJN9UM'; });
+  localStorage.setItem(KV, JSON.stringify(lv)); localStorage.setItem('javi-musica-sin-hp', '1');
+} }catch(e){}
 function videos(){ try{ var l = JSON.parse(localStorage.getItem(KV)); return Array.isArray(l) ? l : VIDEOS_INICIO.slice(); }catch(e){ return VIDEOS_INICIO.slice(); } }
 function guardarVideos(l){ try{ localStorage.setItem(KV, JSON.stringify(l)); }catch(e){} }
 function idDe(url){
@@ -141,9 +146,59 @@ function pararYT(quitar){
   if(quitar){ yt = null; ytId = null; }
   if(mini) mini.hidden = true;
 }
+/* ---------- mp3 de ESTE ordenador (IndexedDB «javi-musica»): el archivo no se sube a la web ---------- */
+var MP3 = [], audio = null, mp3Id = null, mp3Guardar = 0;
+function db(){
+  return new Promise(function(ok, mal){
+    var r = indexedDB.open('javi-musica', 1);
+    r.onupgradeneeded = function(){ r.result.createObjectStore('mp3', { keyPath:'id' }); };
+    r.onsuccess = function(){ ok(r.result); }; r.onerror = function(){ mal(r.error); };
+  });
+}
+function tx(modo, fn){ return db().then(function(d){ return new Promise(function(ok, mal){ var t = d.transaction('mp3', modo), st = t.objectStore('mp3'), r = fn(st); t.oncomplete = function(){ ok(r && r.result); }; t.onerror = function(){ mal(t.error); }; }); }); }
+function cargarMp3(){
+  return tx('readonly', function(st){ return st.getAll(); }).then(function(l){ MP3 = (l||[]).map(function(x){ return { id:x.id, t:x.t }; }); }).catch(function(){ MP3 = []; });
+}
+function anadirMp3(files){
+  var l = Array.prototype.slice.call(files||[]).filter(function(f){ return /^audio\//.test(f.type) || /\.(mp3|m4a|ogg|wav)$/i.test(f.name); });
+  if(!l.length) return;
+  var ultimo = null;
+  Promise.all(l.map(function(f){
+    var x = { id:'m'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), t:f.name.replace(/\.[^.]+$/, '').replace(/\s+/g, ' ').trim(), blob:f };
+    ultimo = x.id; return tx('readwrite', function(st){ return st.put(x); });
+  })).then(cargarMp3).then(function(){ estilo = 'mp3:'+ultimo; on = true; arrancar(); guardar(); pintar(); })
+    .catch(function(){ alert('No se ha podido guardar el archivo en este navegador.'); });
+}
+function arrancarMp3(id){
+  pararGen(); pararYT(true);
+  if(audio && mp3Id===id){ audio.volume = vol; audio.play().catch(function(){}); return; }
+  pararMp3();
+  mp3Id = id;
+  tx('readonly', function(st){ return st.get(id); }).then(function(x){
+    if(!x || mp3Id!==id) return;
+    if(!audio){ audio = new Audio(); audio.loop = true; }
+    if(audio.src) URL.revokeObjectURL(audio.src);
+    audio.src = URL.createObjectURL(x.blob); audio.volume = vol;
+    var seg = segGuardado(id);
+    audio.onloadedmetadata = function(){ if(seg && seg < audio.duration) audio.currentTime = seg; };
+    audio.play().catch(function(){});
+    clearInterval(mp3Guardar);
+    mp3Guardar = setInterval(function(){ try{ if(!audio.paused) localStorage.setItem(KT, JSON.stringify({ id:mp3Id, s:audio.currentTime })); }catch(e){} }, 5000);
+  });
+}
+function pararMp3(){ clearInterval(mp3Guardar); if(audio) audio.pause(); }
+function quitarMp3(id){
+  if(mp3Id===id){ pararMp3(); mp3Id = null; }
+  tx('readwrite', function(st){ return st.delete(id); }).then(cargarMp3).then(function(){ pintar(); });
+}
+
 function esYT(){ return /^yt:/.test(estilo); }
-function arrancar(){ if(esYT()) arrancarYT(estilo.slice(3)); else { pararYT(true); arrancarGen(); } }
-function parar(){ pararGen(); pararYT(false); }
+function arrancar(){
+  if(esYT()){ pararMp3(); arrancarYT(estilo.slice(3)); }
+  else if(/^mp3:/.test(estilo)) arrancarMp3(estilo.slice(4));
+  else { pararYT(true); pararMp3(); arrancarGen(); }
+}
+function parar(){ pararGen(); pararYT(false); pararMp3(); }
 
 /* ---------- botón y panel ---------- */
 var css = document.createElement('style');
@@ -180,6 +235,8 @@ document.head.appendChild(css);
 var caja = document.createElement('div'); caja.className = 'jv-mus';
 caja.innerHTML = '<div class="panel" hidden><b>🎵 Música para trabajar</b>'+
   '<h4>Hecha por la web</h4><div class="est">'+Object.keys(ESTILOS).map(function(k){ return '<button type="button" data-e="'+k+'">'+ESTILOS[k]+'</button>'; }).join('')+'</div>'+
+  '<h4>🎶 Tus mp3 (de este ordenador)</h4><div class="est" data-mp3></div>'+
+  '<label class="acc" style="text-align:center">📁 Añadir mp3 de este ordenador<input type="file" accept="audio/*,.mp3" multiple data-fich hidden></label>'+
   '<h4>📺 Tus vídeos de YouTube</h4><div class="est" data-lista></div>'+
   '<div class="nuevo"><input type="text" data-url placeholder="Pega un enlace de YouTube"><button type="button" data-a="anadir">➕</button></div>'+
   '<label>🔈 Volumen<input type="range" min="0" max="100" data-v></label>'+
@@ -199,9 +256,15 @@ function pintarLista(){
     return '<div class="fila"><button type="button" data-e="'+k+'" title="'+t+'">▶ '+t+'</button><button type="button" class="x" data-quita="'+v.id+'" title="Quitar de la lista">✕</button></div>';
   }).join('') || '<span class="aviso">Ninguno. Pega abajo un enlace.</span>';
 }
+function pintarMp3(){
+  caja.querySelector('[data-mp3]').innerHTML = MP3.map(function(m){
+    var t = String(m.t).replace(/[<>&"]/g, '');
+    return '<div class="fila"><button type="button" data-e="mp3:'+m.id+'" title="'+t+'">▶ '+t+'</button><button type="button" class="x" data-quitamp3="'+m.id+'" title="Quitar de este ordenador">✕</button></div>';
+  }).join('') || '<span class="aviso">Ninguno todavía. Se guardan solo en este navegador; no se suben a la web.</span>';
+}
 function pintar(esperando){
   caja.classList.toggle('on', on && !esperando); caja.classList.toggle('espera', !!esperando);
-  pintarLista();
+  pintarLista(); pintarMp3();
   Array.prototype.forEach.call(caja.querySelectorAll('[data-e]'), function(b){ b.setAttribute('aria-pressed', on && b.dataset.e===estilo ? 'true' : 'false'); });
   caja.querySelector('[data-v]').value = Math.round(vol*100);
   caja.querySelector('[data-a="onoff"]').textContent = on ? '⏹ Parar la música' : '▶ Poner música';
@@ -221,25 +284,33 @@ function anadir(){
 caja.addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
   if(b.dataset.e){ estilo = b.dataset.e; on = true; arrancar(); }
+  else if(b.dataset.quitamp3){
+    if(!confirm('¿Quitar esta música de este ordenador?')) return;
+    if(estilo==='mp3:'+b.dataset.quitamp3){ on = false; estilo = 'calma'; }
+    quitarMp3(b.dataset.quitamp3);
+  }
   else if(b.dataset.quita){
     var l = videos().filter(function(v){ return v.id!==b.dataset.quita; }); guardarVideos(l);
     if(estilo==='yt:'+b.dataset.quita){ pararYT(true); on = false; estilo = 'calma'; }
   }
   else if(b.dataset.a==='anadir'){ anadir(); return; }
   else if(b.dataset.a==='mover'){ ponerSitio((sitio()+1) % SITIOS.length); return; }
-  else if(b.dataset.a==='abrir'){ var p = caja.querySelector('.panel'); p.hidden = !p.hidden; if(on && !timer && !yt) arrancar(); }
+  else if(b.dataset.a==='abrir'){ var p = caja.querySelector('.panel'); p.hidden = !p.hidden; if(on && !timer && !yt && !(audio && !audio.paused)) arrancar(); }
   else if(b.dataset.a==='onoff'){ on = !on; if(on) arrancar(); else parar(); }
   guardar(); pintar();
 });
+caja.querySelector('[data-fich]').addEventListener('change', function(e){ anadirMp3(e.target.files); e.target.value = ''; });
 caja.querySelector('[data-url]').addEventListener('keydown', function(e){ if(e.key==='Enter') anadir(); });
 caja.querySelector('[data-v]').addEventListener('input', function(e){
   vol = e.target.value/100; guardar();
   if(ctx && on && !esYT()) master.gain.setTargetAtTime(vol, ctx.currentTime, 0.1);
   if(yt && yt.setVolume) yt.setVolume(Math.round(vol*100));
+  if(audio) audio.volume = vol;
 });
 document.addEventListener('click', function(e){ if(!caja.contains(e.target)) caja.querySelector('.panel').hidden = true; });
 function montar(){
   document.body.appendChild(caja); pintar();
+  cargarMp3().then(function(){ pintar(!!(on && !(timer || yt || (audio && !audio.paused)))); });
   if(!on) return;
   /* venía sonando de otra página: el navegador pide un toque antes de sonar */
   if(esYT()) cargarYT();
