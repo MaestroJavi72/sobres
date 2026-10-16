@@ -270,7 +270,11 @@ function cargarHorario(){
 function horario(){ return HORARIO; }
 function diaSemana(f){ var p = f.split('-'); return new Date(+p[0], +p[1]-1, +p[2], 12).getDay(); }
 function sesionesDelDia(f){ var d = diaSemana(f); return HORARIO ? HORARIO.sesiones.filter(function(s){ return s.dia===d; }) : []; }
-function festivos(){ return String(ajuste('festivos')||'').split(/[,\s]+/).filter(function(x){ return /^\d{4}-\d{2}-\d{2}$/.test(x); }); }
+function festivos(){
+  var l = String(ajuste('festivos')||'').split(/[,\s]+/).filter(function(x){ return /^\d{4}-\d{2}-\d{2}$/.test(x); });
+  ((HORARIO && HORARIO.festivos) || []).forEach(function(f){ if(l.indexOf(f)<0) l.push(f); });   /* fijos de data/horario.json */
+  return l;
+}
 function sumarDias(f, n){ var p = f.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]+n, 12); return clave(d); }
 function lunesDe(f){ var d = diaSemana(f); return sumarDias(f, d===0 ? -6 : 1-d); }
 
