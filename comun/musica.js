@@ -169,7 +169,10 @@ css.textContent =
   '.jv-mus .nuevo button{font:700 13px system-ui,sans-serif;padding:7px 9px;border-radius:8px;border:none;background:#c9a34a;color:#2b1c05;cursor:pointer}'+
   '.jv-mus input[type=range]{width:100%;accent-color:#c9a34a}'+
   '.jv-mus .aviso{font-weight:400;font-size:12px;opacity:.8}'+
-  '.jv-mus .mini{position:absolute;left:58px;bottom:0;background:#1f1830;border:2px solid #c9a34a;border-radius:10px;padding:3px;box-shadow:0 4px 14px rgba(0,0,0,.45)}'+
+  '.jv-mus .mini{position:fixed;background:#1f1830;border:2px solid #c9a34a;border-radius:10px;padding:3px;box-shadow:0 4px 14px rgba(0,0,0,.45)}'+
+  '.jv-mus .mini .bar{display:flex;align-items:center;gap:4px;padding:0 2px 3px;color:#f6e3a1;font-size:12px}'+
+  '.jv-mus .mini .bar span{flex:1}'+
+  '.jv-mus .mini .bar button{font:700 12px system-ui,sans-serif;padding:3px 8px;border-radius:7px;border:1px solid #6b5a8a;background:rgba(255,255,255,.08);color:#f6e3a1;cursor:pointer}'+
   '.jv-mus .mini .cuadro{width:200px;height:113px;border-radius:7px;overflow:hidden;background:#000}'+
   '@media print{ .jv-mus{display:none!important} }';
 document.head.appendChild(css);
@@ -182,9 +185,14 @@ caja.innerHTML = '<div class="panel" hidden><b>🎵 Música para trabajar</b>'+
   '<label>🔈 Volumen<input type="range" min="0" max="100" data-v></label>'+
   '<button type="button" class="acc" data-a="onoff"></button>'+
   '<span class="aviso">Sigue sonando al cambiar de página (toca la pantalla si se para).</span></div>'+
-  '<div class="mini" hidden title="Música de YouTube"><div class="cuadro"></div></div>'+
+  '<div class="mini" hidden><div class="bar"><span>🎵 Música</span><button type="button" data-a="mover" title="Llevarlo a otra esquina">⇄ Mover</button></div><div class="cuadro"></div></div>'+
   '<button type="button" data-a="abrir" title="Música relajante" aria-label="Música relajante">🎵</button>';
 mini = caja.querySelector('.mini');
+/* el reproductor se puede llevar a cualquier esquina para que no tape (se recuerda en el aparato) */
+var SITIOS = ['left:66px;bottom:10px','right:10px;bottom:62px','right:10px;top:10px','left:10px;top:10px'], KS = 'javi-musica-sitio';
+function sitio(){ var n = 0; try{ n = +localStorage.getItem(KS) || 0; }catch(e){} return n % SITIOS.length; }
+function ponerSitio(n){ mini.style.cssText = SITIOS[n]; try{ localStorage.setItem(KS, String(n)); }catch(e){} }
+ponerSitio(sitio());
 function pintarLista(){
   caja.querySelector('[data-lista]').innerHTML = videos().map(function(v){
     var k = 'yt:'+v.id, t = String(v.t||v.id).replace(/[<>&"]/g, '');
@@ -218,6 +226,7 @@ caja.addEventListener('click', function(e){
     if(estilo==='yt:'+b.dataset.quita){ pararYT(true); on = false; estilo = 'calma'; }
   }
   else if(b.dataset.a==='anadir'){ anadir(); return; }
+  else if(b.dataset.a==='mover'){ ponerSitio((sitio()+1) % SITIOS.length); return; }
   else if(b.dataset.a==='abrir'){ var p = caja.querySelector('.panel'); p.hidden = !p.hidden; if(on && !timer && !yt) arrancar(); }
   else if(b.dataset.a==='onoff'){ on = !on; if(on) arrancar(); else parar(); }
   guardar(); pintar();
