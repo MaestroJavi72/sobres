@@ -1,6 +1,7 @@
 /* Javificación · 🎵 música relajante para cuando la clase trabaja (todas las páginas con comun/javi.js)
    Se genera en el navegador (Web Audio): sin archivos ni canciones con derechos.
-   Estilos: Calma (acordes suaves y campanitas), Piano (notas sueltas) y Lluvia (lluvia con un fondo suave).
+   Estilos: Calma (acordes suaves y campanitas), Piano (notas sueltas) y Lluvia (lluvia con un fondo suave),
+   y vídeos de YouTube que pega Javi (lista en el aparato; el primero, el de Hogwarts que pidió).
    Se recuerda en el aparato (localStorage «javi-musica»): si estaba sonando, al cambiar de página
    sigue en cuanto se toca la pantalla (el navegador no deja sonar sin un toque). */
 (function(){
@@ -79,21 +80,70 @@ function programar(){
     }
   }
 }
-function arrancar(){
+function arrancarGen(){
   if(!ctx) crear();
   if(ctx.state==='suspended') ctx.resume();
-  parar(true);
+  pararGen(true);
   sig = ctx.currentTime + 0.1; compas = 0;
   if(estilo==='lluvia') lluvia = ruidoLluvia();
   programar(); timer = setInterval(programar, 300);
   master.gain.cancelScheduledValues(ctx.currentTime);
   master.gain.setTargetAtTime(vol, ctx.currentTime, 0.8);
 }
-function parar(rapido){
+function pararGen(rapido){
   clearInterval(timer); timer = 0;
+  if(!ctx) return;
   if(lluvia){ var l = lluvia; l.g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.3); setTimeout(function(){ try{ l.s.stop(); }catch(e){} }, 1500); lluvia = null; }
-  if(ctx && !rapido){ master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0, ctx.currentTime, 0.5); }
+  if(!rapido){ master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0, ctx.currentTime, 0.5); }
 }
+
+/* ---------- vídeos de YouTube (lista en el aparato: «javi-musica-videos») ----------
+   Se ven en un reproductor pequeño junto al botón (YouTube no deja ocultarlo).
+   Al cambiar de página sigue por donde iba (se guarda el segundo cada 5 s). */
+var KV = 'javi-musica-videos', KT = 'javi-musica-seg';
+var VIDEOS_INICIO = [{ id:'slxPFAJN9UM', t:'Harry Potter · Música ambiente de Hogwarts' }];
+function videos(){ try{ var l = JSON.parse(localStorage.getItem(KV)); return Array.isArray(l) ? l : VIDEOS_INICIO.slice(); }catch(e){ return VIDEOS_INICIO.slice(); } }
+function guardarVideos(l){ try{ localStorage.setItem(KV, JSON.stringify(l)); }catch(e){} }
+function idDe(url){
+  var m = String(url).trim().match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/|\/live\/)([A-Za-z0-9_-]{11})/) || String(url).trim().match(/^([A-Za-z0-9_-]{11})$/);
+  return m ? m[1] : null;
+}
+var yt = null, ytListo = null, ytId = null, ytGuardar = 0, mini = null;
+function cargarYT(){
+  if(ytListo) return ytListo;
+  ytListo = new Promise(function(ok){
+    if(window.YT && YT.Player) return ok();
+    var prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function(){ if(prev) try{ prev(); }catch(e){} ok(); };
+    var sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(sc);
+  });
+  return ytListo;
+}
+function segGuardado(id){ try{ var x = JSON.parse(localStorage.getItem(KT)) || {}; return x.id===id ? x.s||0 : 0; }catch(e){ return 0; } }
+function arrancarYT(id){
+  pararGen();
+  if(yt && ytId===id){ yt.setVolume(Math.round(vol*100)); yt.playVideo(); mini.hidden = false; return; }
+  pararYT(true);
+  ytId = id; mini.hidden = false;
+  var div = document.createElement('div'); mini.querySelector('.cuadro').innerHTML = ''; mini.querySelector('.cuadro').appendChild(div);
+  cargarYT().then(function(){
+    if(ytId!==id) return;
+    yt = new YT.Player(div, { width:200, height:113, videoId:id,
+      playerVars:{ autoplay:1, start:Math.floor(segGuardado(id)), loop:1, playlist:id, rel:0, modestbranding:1, playsinline:1 },
+      events:{ onReady:function(e){ e.target.setVolume(Math.round(vol*100)); e.target.playVideo(); } } });
+    clearInterval(ytGuardar);
+    ytGuardar = setInterval(function(){ try{ if(yt && yt.getCurrentTime) localStorage.setItem(KT, JSON.stringify({ id:ytId, s:yt.getCurrentTime() })); }catch(e){} }, 5000);
+  });
+}
+function pararYT(quitar){
+  clearInterval(ytGuardar);
+  if(yt){ try{ if(quitar) yt.destroy(); else yt.pauseVideo(); }catch(e){} }
+  if(quitar){ yt = null; ytId = null; }
+  if(mini) mini.hidden = true;
+}
+function esYT(){ return /^yt:/.test(estilo); }
+function arrancar(){ if(esYT()) arrancarYT(estilo.slice(3)); else { pararYT(true); arrancarGen(); } }
+function parar(){ pararGen(); pararYT(false); }
 
 /* ---------- botón y panel ---------- */
 var css = document.createElement('style');
@@ -104,47 +154,86 @@ css.textContent =
   '.jv-mus.espera>button{animation:jvMusE 1s ease-in-out infinite}'+
   '@keyframes jvMus{50%{box-shadow:0 0 0 8px rgba(108,92,231,.25),0 4px 14px rgba(0,0,0,.45)}}'+
   '@keyframes jvMusE{50%{transform:scale(1.12)}}'+
-  '.jv-mus .panel{position:absolute;left:0;bottom:58px;width:230px;background:#1f1830;color:#f6e3a1;border:2px solid #c9a34a;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.5)}'+
-  '.jv-mus .panel[hidden]{display:none}'+
+  '.jv-mus .panel{position:absolute;left:0;bottom:58px;width:270px;max-height:calc(100vh - 90px);overflow:auto;background:#1f1830;color:#f6e3a1;border:2px solid #c9a34a;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.5)}'+
+  '.jv-mus .panel[hidden],.jv-mus .mini[hidden]{display:none}'+
   '.jv-mus .panel b{font-size:15px}'+
+  '.jv-mus .panel h4{font-size:13px;margin:4px 0 0;opacity:.85;font-weight:700}'+
   '.jv-mus .est{display:flex;flex-direction:column;gap:5px}'+
+  '.jv-mus .est .fila{display:flex;gap:4px}'+
   '.jv-mus .est button,.jv-mus .acc{font:700 14px system-ui,sans-serif;padding:8px 10px;border-radius:10px;border:1px solid #6b5a8a;background:rgba(255,255,255,.06);color:#f6e3a1;cursor:pointer;text-align:left}'+
+  '.jv-mus .est .fila button:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
+  '.jv-mus .est .fila .x{flex:none;text-align:center;padding:8px}'+
   '.jv-mus .est button[aria-pressed="true"]{background:#c9a34a;color:#2b1c05;border-color:#c9a34a}'+
+  '.jv-mus .nuevo{display:flex;gap:4px}'+
+  '.jv-mus .nuevo input{flex:1;min-width:0;font:13px system-ui,sans-serif;padding:7px;border-radius:8px;border:1px solid #6b5a8a;background:#120d1e;color:#f6e3a1}'+
+  '.jv-mus .nuevo button{font:700 13px system-ui,sans-serif;padding:7px 9px;border-radius:8px;border:none;background:#c9a34a;color:#2b1c05;cursor:pointer}'+
   '.jv-mus input[type=range]{width:100%;accent-color:#c9a34a}'+
   '.jv-mus .aviso{font-weight:400;font-size:12px;opacity:.8}'+
+  '.jv-mus .mini{position:absolute;left:58px;bottom:0;background:#1f1830;border:2px solid #c9a34a;border-radius:10px;padding:3px;box-shadow:0 4px 14px rgba(0,0,0,.45)}'+
+  '.jv-mus .mini .cuadro{width:200px;height:113px;border-radius:7px;overflow:hidden;background:#000}'+
   '@media print{ .jv-mus{display:none!important} }';
 document.head.appendChild(css);
 
 var caja = document.createElement('div'); caja.className = 'jv-mus';
-caja.innerHTML = '<div class="panel" hidden><b>🎵 Música para trabajar</b><div class="est">'+
-  Object.keys(ESTILOS).map(function(k){ return '<button type="button" data-e="'+k+'">'+ESTILOS[k]+'</button>'; }).join('')+'</div>'+
+caja.innerHTML = '<div class="panel" hidden><b>🎵 Música para trabajar</b>'+
+  '<h4>Hecha por la web</h4><div class="est">'+Object.keys(ESTILOS).map(function(k){ return '<button type="button" data-e="'+k+'">'+ESTILOS[k]+'</button>'; }).join('')+'</div>'+
+  '<h4>📺 Tus vídeos de YouTube</h4><div class="est" data-lista></div>'+
+  '<div class="nuevo"><input type="text" data-url placeholder="Pega un enlace de YouTube"><button type="button" data-a="anadir">➕</button></div>'+
   '<label>🔈 Volumen<input type="range" min="0" max="100" data-v></label>'+
   '<button type="button" class="acc" data-a="onoff"></button>'+
   '<span class="aviso">Sigue sonando al cambiar de página (toca la pantalla si se para).</span></div>'+
+  '<div class="mini" hidden title="Música de YouTube"><div class="cuadro"></div></div>'+
   '<button type="button" data-a="abrir" title="Música relajante" aria-label="Música relajante">🎵</button>';
+mini = caja.querySelector('.mini');
+function pintarLista(){
+  caja.querySelector('[data-lista]').innerHTML = videos().map(function(v){
+    var k = 'yt:'+v.id, t = String(v.t||v.id).replace(/[<>&"]/g, '');
+    return '<div class="fila"><button type="button" data-e="'+k+'" title="'+t+'">▶ '+t+'</button><button type="button" class="x" data-quita="'+v.id+'" title="Quitar de la lista">✕</button></div>';
+  }).join('') || '<span class="aviso">Ninguno. Pega abajo un enlace.</span>';
+}
 function pintar(esperando){
   caja.classList.toggle('on', on && !esperando); caja.classList.toggle('espera', !!esperando);
+  pintarLista();
   Array.prototype.forEach.call(caja.querySelectorAll('[data-e]'), function(b){ b.setAttribute('aria-pressed', on && b.dataset.e===estilo ? 'true' : 'false'); });
   caja.querySelector('[data-v]').value = Math.round(vol*100);
   caja.querySelector('[data-a="onoff"]').textContent = on ? '⏹ Parar la música' : '▶ Poner música';
   caja.querySelector('[data-a="abrir"]').title = esperando ? 'Toca para que siga la música' : 'Música relajante';
 }
+function anadir(){
+  var inp = caja.querySelector('[data-url]'), id = idDe(inp.value);
+  if(!id){ inp.value = ''; inp.placeholder = 'Ese enlace no es de YouTube'; return; }
+  var l = videos(); if(l.some(function(v){ return v.id===id; })){ inp.value = ''; return; }
+  var v = { id:id, t:'Vídeo de YouTube' }; l.push(v); guardarVideos(l); inp.value = '';
+  estilo = 'yt:'+id; on = true; arrancar(); guardar(); pintar();
+  fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://www.youtube.com/watch?v='+id))
+    .then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      if(!j || !j.title) return; var l2 = videos(); l2.forEach(function(x){ if(x.id===id) x.t = j.title; }); guardarVideos(l2); pintar();
+    }).catch(function(){});
+}
 caja.addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
   if(b.dataset.e){ estilo = b.dataset.e; on = true; arrancar(); }
-  else if(b.dataset.a==='abrir'){ var p = caja.querySelector('.panel'); p.hidden = !p.hidden; if(on && !timer) arrancar(); }
+  else if(b.dataset.quita){
+    var l = videos().filter(function(v){ return v.id!==b.dataset.quita; }); guardarVideos(l);
+    if(estilo==='yt:'+b.dataset.quita){ pararYT(true); on = false; estilo = 'calma'; }
+  }
+  else if(b.dataset.a==='anadir'){ anadir(); return; }
+  else if(b.dataset.a==='abrir'){ var p = caja.querySelector('.panel'); p.hidden = !p.hidden; if(on && !timer && !yt) arrancar(); }
   else if(b.dataset.a==='onoff'){ on = !on; if(on) arrancar(); else parar(); }
   guardar(); pintar();
 });
+caja.querySelector('[data-url]').addEventListener('keydown', function(e){ if(e.key==='Enter') anadir(); });
 caja.querySelector('[data-v]').addEventListener('input', function(e){
   vol = e.target.value/100; guardar();
-  if(ctx && on) master.gain.setTargetAtTime(vol, ctx.currentTime, 0.1);
+  if(ctx && on && !esYT()) master.gain.setTargetAtTime(vol, ctx.currentTime, 0.1);
+  if(yt && yt.setVolume) yt.setVolume(Math.round(vol*100));
 });
 document.addEventListener('click', function(e){ if(!caja.contains(e.target)) caja.querySelector('.panel').hidden = true; });
 function montar(){
   document.body.appendChild(caja); pintar();
   if(!on) return;
   /* venía sonando de otra página: el navegador pide un toque antes de sonar */
+  if(esYT()) cargarYT();
   pintar(true);
   var seguir = function(){ document.removeEventListener('pointerdown', seguir, true); document.removeEventListener('keydown', seguir, true); if(on){ arrancar(); pintar(); } };
   document.addEventListener('pointerdown', seguir, true); document.addEventListener('keydown', seguir, true);
