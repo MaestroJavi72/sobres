@@ -215,7 +215,7 @@
    "titulo": "El Maleficio de la Discordia",
    "grupo": "3ºA, 3ºB, 4ºA y 4ºB",
    "asig": "EF",
-   "inicio": "",
+   "inicio": "2026-10-19",
    "icono": "⚡",
    "unidad": "Juegos cooperativos · competencia específica 3",
    "reto": "Peeves ha lanzado el Maleficio de la Discordia sobre el gimnasio: con cada insulto, burla o compañero excluido, «¡Petrificus Totalus!» y la clase se congela 30 segundos. Para romperlo, la clase debe encender 6 de las 8 casillas del Medidor del Maleficio, superar el Torneo de los Tres Magos cooperativo y firmar el Código de Merlín.",
@@ -319,6 +319,12 @@
      "sesiones": [],
      "d": "Con el anexo de evaluación (17 páginas)"
     }
+   ],
+   "grupos": [
+    "3ºA",
+    "3ºB",
+    "4ºA",
+    "4ºB"
    ]
   }
  ]

@@ -297,7 +297,22 @@ function cargarSdaFijas(){
 }
 function sdas(){
   var por = {};
-  SDA_FIJAS.forEach(function(x){ por[x.id] = JSON.parse(JSON.stringify(x)); });
+  SDA_FIJAS.forEach(function(x){
+    if(!(x.grupos||[]).length){ por[x.id] = JSON.parse(JSON.stringify(x)); return; }
+    /* la misma SA para varias clases («grupos»): una copia por clase con sus sesiones repartidas en su horario desde «inicio» */
+    x.grupos.forEach(function(g){
+      var c = JSON.parse(JSON.stringify(x)); delete c.grupos;
+      c.id = x.id+'|'+g; c.base = x.id; c.grupo = g; c.pagina = x.pagina+'&grupo='+encodeURIComponent(g);
+      if(c.inicio && HORARIO){
+        repartirSda(c);
+        c.sesiones.forEach(function(s){
+          var h = s.fecha && sesionesDelDia(s.fecha).filter(function(k){ return k.grupo===g && k.asig===c.asig && k.ini===s.ini; })[0];
+          if(h){ var a = h.ini.split(':'), b = h.fin.split(':'); s.duracion = ((+b[0]*60 + +b[1]) - (+a[0]*60 + +a[1]))+"'"; }
+        });
+      }
+      por[c.id] = c;
+    });
+  });
   filas().forEach(function(f){
     if(normal(f.accion)!=='sda' || normal(f.alumno).indexOf('sda · ')!==0) return;
     var j = jsonDeFila(f); if(j && j.id){ if(por[j.id] && por[j.id].pagina && !j.pagina) j.pagina = por[j.id].pagina; por[j.id] = j; }   /* la versión editada en la web manda */

@@ -684,7 +684,7 @@ function botonesSda(sd){
     var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
     if(!u) return;
     var etq = /^puntúa$/i.test(m[3]||'') ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(m[3]||'') ? '<span class="etq">➕ ampliación</span>' : '';
-    h += '<a class="btn juego" href="../sda/'+u+P+'"><span class="ic">'+(ICONOS[m[1]]||'🎮')+'</span><span>'+esc_(m[2])+'</span>'+etq+'</a>';
+    h += '<a class="btn juego" href="../sda/'+u+P+(P ? '&' : '?')+'grupo='+encodeURIComponent(sd.sda.grupo)+'"><span class="ic">'+(((sd.sda.iconos||{})[m[1]])||ICONOS[m[1]]||'🎮')+'</span><span>'+esc_(m[2])+'</span>'+etq+'</a>';
   });
   (sd.sda.recursos || []).forEach(function(r){
     if((r.sesiones||[]).indexOf(sd.i+1)<0) return;

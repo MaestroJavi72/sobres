@@ -92,6 +92,9 @@ body{background:var(--fondo-img),var(--fondo)}
 .panel[hidden]{display:none!important}
 
 /* ---------- semana ---------- */
+.clasesSda{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-family:var(--f-sub);color:#e8cf8a}
+.clasesSda a{font-weight:700;font-size:16px;padding:8px 14px;border-radius:999px;text-decoration:none;background:rgba(10,31,34,.85);color:#e8cf8a;border:2px solid #2f5a54}
+.clasesSda a.sel{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border-color:#fff1b8}
 .semnav{display:flex;align-items:center;gap:10px;margin-bottom:12px;background:rgba(10,31,34,.85);border:2px solid #2f5a54;border-radius:16px;padding:8px 10px}
 .semnav button{width:44px;height:44px;border-radius:12px;border:2px solid var(--oro);background:transparent;color:#f3d27a;font-size:22px;cursor:pointer}
 .semnav button:disabled{opacity:.3;cursor:default}
@@ -162,6 +165,7 @@ body{background:var(--fondo-img),var(--fondo)}
   </div>
 
   <section class="panel" id="p-semana">
+    <div class="clasesSda" id="clasesSda" hidden></div>
     <div class="semnav"><button type="button" id="semAnt" aria-label="Semana anterior">‹</button><div class="t" id="semTit"></div><button type="button" id="semSig" aria-label="Semana siguiente">›</button></div>
     <div class="dias" id="dias"><p class="vacio">Cargando…</p></div>
   </section>
@@ -190,6 +194,7 @@ body{background:var(--fondo-img),var(--fondo)}
 function $(id){ return document.getElementById(id); }
 var U = JAVI.util;
 var id = new URLSearchParams(location.search).get('id') || 'tema2-lengua-4a';
+var GRUPO_Q = new URLSearchParams(location.search).get('grupo') || '';   /* SA de varias clases: la de esta clase */
 var CRIT = null, SDA = null;
 var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'];
 var MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
@@ -250,7 +255,7 @@ function actividades(s){
 function btnJuego(a, extra){
   var u = SDA.enlaces && SDA.enlaces[a.cod];
   var etq = /^puntúa$/i.test(a.etq) ? '<span class="etq">⭐ puntúa</span>' : /ampliaci/i.test(a.etq) ? '<span class="etq">➕ ampliación</span>' : '';
-  return u ? '<a class="btn juego" href="'+u+PROFE+'"><span class="ic">'+(((SDA.iconos||{})[a.cod])||ICONOS[a.cod]||'🎮')+'</span><span>'+esc(a.nombre)+(extra ? '<small>'+extra+'</small>' : '')+'</span>'+etq+'</a>' : '';
+  return u ? '<a class="btn juego" href="'+u+PROFE+(GRUPO_Q ? '&grupo='+encodeURIComponent(GRUPO_Q) : '')+'"><span class="ic">'+(((SDA.iconos||{})[a.cod])||ICONOS[a.cod]||'🎮')+'</span><span>'+esc(a.nombre)+(extra ? '<small>'+extra+'</small>' : '')+'</span>'+etq+'</a>' : '';
 }
 function btnFicha(r, extra){ return '<a class="btn ficha" href="'+r.url+PROFE+'"><span class="ic">'+r.ic+'</span><span>'+esc(r.n.replace(/^Ficha para familias · /, 'Ficha: '))+(extra ? '<small>'+extra+'</small>' : '')+'</span></a>'; }
 
@@ -277,11 +282,11 @@ function pintarSemana(){
     if(JAVI.lunesDe(s.fecha)!==semana) return '';
     var p = s.fecha.split('-');
     return '<article class="dia'+(s.fecha===hoy ? ' hoy' : s.fecha < hoy ? ' pasada' : '')+'">'+
-      '<div class="cab"><span class="num">'+(k+1)+'</span><span class="fch">'+DIAS_LARGOS[JAVI.diaSemana(s.fecha)]+' '+(+p[2])+'<small>Sesión '+(k+1)+' · '+esc(s.duracion)+'</small></span></div>'+
+      '<div class="cab"><span class="num">'+(k+1)+'</span><span class="fch">'+DIAS_LARGOS[JAVI.diaSemana(s.fecha)]+' '+(+p[2])+'<small>Sesión '+(k+1)+' · '+esc(s.duracion)+(s.fase ? ' · '+esc(s.fase) : '')+'</small></span></div>'+
       '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
       '<div class="botones">'+actividades(s).map(function(a){ return btnJuego(a); }).join('')+
         recursosDe(k+1).map(function(r){ return btnFicha(r); }).join('')+
-        (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito=tutoria&grupo=4oA&asig=LCL&fecha='+s.fecha+'#preparar">📋 Planificar esta sesión</a>' : '')+
+        (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito='+(SDA.asig==='EF' ? 'ef' : 'tutoria')+'&grupo='+encodeURIComponent(SDA.grupo).replace('%C2%BA','o')+'&asig='+SDA.asig+'&fecha='+s.fecha+'#preparar">📋 Planificar esta sesión</a>' : '')+
       '</div></article>';
   }).join('') || '<p class="vacio">No hay sesiones esta semana.</p>';
 }
@@ -354,7 +359,14 @@ $('bImprimir').addEventListener('click', function(){ window.print(); });
 $('bPantalla').addEventListener('click', JAVI.pantallaCompleta);
 JAVI.listo(function(){
   document.documentElement.setAttribute('data-tema', 'hp');
-  SDA = JAVI.sdas().filter(function(s){ return s.id===id; })[0] || null;
+  var todas = JAVI.sdas(), copias = todas.filter(function(s){ return s.base===id; });
+  SDA = todas.filter(function(s){ return s.id===id || (s.base===id && s.grupo===GRUPO_Q); })[0] || null;
+  if(copias.length){
+    /* la misma SA en varias clases: botones de clase; sin clase elegida, las sesiones sin fechas */
+    if(!SDA){ GRUPO_Q = ''; SDA = JSON.parse(JSON.stringify(copias[0])); SDA.grupo = copias.map(function(c){ return c.grupo; }).join(', '); SDA.sesiones.forEach(function(x){ delete x.fecha; x.duracion = "45'"; }); }
+    var cs = $('clasesSda'); cs.hidden = false;
+    cs.innerHTML = 'Clase: <a href="?id='+encodeURIComponent(id)+'" class="'+(GRUPO_Q ? '' : 'sel')+'">Todas</a>'+copias.map(function(c){ return '<a href="?id='+encodeURIComponent(id)+'&grupo='+encodeURIComponent(c.grupo)+'" class="'+(c.grupo===GRUPO_Q ? 'sel' : '')+'">'+esc(c.grupo)+'</a>'; }).join('');
+  }
   Promise.all([
     fetch('../data/sda/'+encodeURIComponent(id)+'.md', { cache:'no-store' }).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); }),
     fetch('../data/criterios.json').then(function(r){ return r.json(); }).catch(function(){ return null; })

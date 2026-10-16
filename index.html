@@ -317,7 +317,7 @@ function pintarHoy(){
     if(s.asig==='EF' && s.grupo!=='4ºA') h += '<a class="bt sec" href="'+enlace('ef/', amb)+'">🤝 Coevaluación</a>';
     if(sd && sd.sesion.interactivas) (sd.sesion.interactivas.split(/,\s*(?=I-)/)).forEach(function(x){
       var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
-      if(u) h += '<a class="bt juego" href="sda/'+u+'?profe">🎮 '+esc(m[2])+'</a>';
+      if(u) h += '<a class="bt juego" href="sda/'+u+'?profe&grupo='+encodeURIComponent(s.grupo)+'">'+(((sd.sda.iconos||{})[m[1]])||'🎮')+' '+esc(m[2])+'</a>';
     });
     return h+'</div></article>';
   }).join('');
