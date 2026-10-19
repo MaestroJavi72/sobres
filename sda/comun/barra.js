@@ -60,6 +60,7 @@ fetch('../../data/sda/indice.json', { cache:'no-store' }).then(function(r){ retu
     enl(sig, '›')+
     '<a class="todos" href="../?id='+encodeURIComponent(ID)+(PROFE ? '&profe' : '')+'#juegos">🎮 Todos los juegos</a>';
   colocar(nav);
+  montarCrono(nav);
   if(window.JAVI) JAVI.listo(function(){ montarTurno(s, yo, d, nav); });
 }).catch(function(){});
 
@@ -157,6 +158,84 @@ function montarTurno(s, cod, d, nav){
     var cola = leer(kCola, []), i = cola.indexOf(quien); if(i>=0){ cola.splice(i,1); guardar(kCola, cola); }   /* ya ha salido en esta ronda */
     pintar();
   });
+  pintar();
+}
+
+/* ============================================================
+   ⏱️ CRONÓMETRO (pedido por Javi, 19/10/2026): en todas las actividades.
+   Botón en la barra con el tiempo; panel con cronómetro o cuenta atrás (1, 2, 3, 5, 10 min),
+   ⛶ en grande para la pizarra y aviso con sonido al acabar.
+   ============================================================ */
+function montarCrono(nav){
+  var css = document.createElement('style');
+  css.textContent =
+    '.jvCrono{position:relative;display:flex}'+
+    '.jvCrono>button{display:flex;align-items:center;gap:6px;border-radius:12px;padding:8px 14px;font:700 16px var(--f-sub,Cinzel,serif);background:rgba(10,31,34,.85);color:#e8cf8a;border:2px solid #2f5a54;cursor:pointer;font-variant-numeric:tabular-nums}'+
+    '.jvCrono.va>button{border-color:#5fbf86;color:#9be3b0}'+
+    '.jvCrono.poco>button{border-color:#d0473f;color:#ffb0a8;animation:jvCrP .5s infinite alternate}'+
+    '@keyframes jvCrP{to{transform:scale(1.06)}}'+
+    '.jvCrono .pan{position:absolute;right:0;top:calc(100% + 6px);z-index:60;width:260px;background:#0e2a28;color:#f6ead0;border:2px solid #c9a34a;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 12px 30px rgba(0,0,0,.5)}'+
+    '.jvCrono .pan[hidden]{display:none}'+
+    '.jvCrono .t{font:900 44px/1 Cinzel,serif;text-align:center;color:#f3d27a;font-variant-numeric:tabular-nums}'+
+    '.jvCrono .fila{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}'+
+    '.jvCrono .fila button{font:700 14px var(--f-sub,Cinzel,serif);padding:7px 10px;border-radius:10px;border:1px solid #2f5a54;background:rgba(255,255,255,.06);color:#f6ead0;cursor:pointer}'+
+    '.jvCrono .fila button.on{background:#c9a34a;color:#2b1c05;border-color:#c9a34a}'+
+    '.jvCronoG{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:rgba(5,15,16,.94);color:#f3d27a;cursor:pointer}'+
+    '.jvCronoG .t{font:900 clamp(120px,30vw,360px)/1 Cinzel,serif;font-variant-numeric:tabular-nums;text-shadow:0 0 40px rgba(243,210,122,.4)}'+
+    '.jvCronoG.poco .t{color:#ff8a7a}'+
+    '.jvCronoG.fin{animation:jvCrF .6s 4 alternate}'+
+    '@keyframes jvCrF{to{background:rgba(122,32,48,.95)}}'+
+    '.jvCronoG small{font:700 20px var(--f-sub,Cinzel,serif);color:#d9cfae}'+
+    '@media print{ .jvCrono,.jvCronoG{display:none!important} }';
+  document.head.appendChild(css);
+  var modo = 'crono', total = 0, ini = 0, acum = 0, corre = false, tick = 0, grande = null;
+  var box = document.createElement('div'); box.className = 'jvCrono';
+  box.innerHTML = '<button type="button" title="Cronómetro" aria-label="Cronómetro">⏱️ <span>00:00</span></button>'+
+    '<div class="pan" hidden><div class="fila"><button type="button" data-m="crono">⏱️ Cronómetro</button><button type="button" data-m="atras">⏳ Cuenta atrás</button></div>'+
+    '<div class="t">00:00</div>'+
+    '<div class="fila" data-pre>'+[1,2,3,5,10].map(function(m){ return '<button type="button" data-min="'+m+'">'+m+' min</button>'; }).join('')+'</div>'+
+    '<div class="fila"><button type="button" data-a="go">▶ Empezar</button><button type="button" data-a="reset">↺ A cero</button><button type="button" data-a="grande">⛶ En grande</button></div></div>';
+  nav.appendChild(box);
+  function ms(){ return acum + (corre ? Date.now() - ini : 0); }
+  function resto(){ return modo==='atras' ? Math.max(0, total - ms()) : ms(); }
+  function fmt(x){ var s = Math.ceil(x/1000); if(modo==='crono') s = Math.floor(x/1000); return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+  function pitar(n){ try{ var c = pitar.c = pitar.c || new (window.AudioContext||window.webkitAudioContext)(); for(var i=0;i<n;i++){ var o = c.createOscillator(), g = c.createGain(), t = c.currentTime + i*0.35; o.frequency.value = 880; g.gain.setValueAtTime(0.2, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.3); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+0.32); } }catch(e){} }
+  function pintar(){
+    var x = resto(), txt = fmt(x), poco = modo==='atras' && corre && x <= 10000;
+    box.querySelector('span').textContent = txt; box.querySelector('.t').textContent = txt;
+    box.classList.toggle('va', corre); box.classList.toggle('poco', poco);
+    Array.prototype.forEach.call(box.querySelectorAll('[data-m]'), function(b){ b.classList.toggle('on', b.dataset.m===modo); });
+    Array.prototype.forEach.call(box.querySelectorAll('[data-min]'), function(b){ b.classList.toggle('on', modo==='atras' && total===b.dataset.min*60000); });
+    box.querySelector('[data-pre]').hidden = modo!=='atras';
+    box.querySelector('[data-a="go"]').textContent = corre ? '⏸ Pausa' : (ms() ? '▶ Seguir' : '▶ Empezar');
+    if(grande){ grande.querySelector('.t').textContent = txt; grande.classList.toggle('poco', poco); }
+    if(modo==='atras' && corre && x<=0){
+      corre = false; acum = total; clearInterval(tick); pitar(4);
+      box.querySelector('span').textContent = '¡Tiempo!';
+      if(grande){ grande.querySelector('.t').textContent = '¡Tiempo!'; grande.classList.add('fin'); }
+    }
+  }
+  function parar(){ if(corre){ acum = ms(); corre = false; clearInterval(tick); } }
+  box.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.parentNode===box){ var p = box.querySelector('.pan'); p.hidden = !p.hidden; return; }
+    if(b.dataset.m){ parar(); modo = b.dataset.m; acum = 0; if(modo==='atras' && !total) total = 3*60000; }
+    if(b.dataset.min){ parar(); modo = 'atras'; total = b.dataset.min*60000; acum = 0; }
+    var a = b.dataset.a;
+    if(a==='go'){
+      if(corre) parar();
+      else { if(modo==='atras' && ms()>=total) acum = 0; ini = Date.now(); corre = true; clearInterval(tick); tick = setInterval(pintar, 250); }
+    }
+    if(a==='reset'){ parar(); acum = 0; }
+    if(a==='grande'){
+      grande = document.createElement('div'); grande.className = 'jvCronoG'; grande.title = 'Toca para cerrar';
+      grande.innerHTML = '<div class="t"></div><small>'+(modo==='atras' ? '⏳ Cuenta atrás' : '⏱️ Cronómetro')+' · toca para cerrar</small>';
+      grande.addEventListener('click', function(){ grande.remove(); grande = null; });
+      document.body.appendChild(grande);
+    }
+    pintar();
+  });
+  document.addEventListener('click', function(e){ if(!box.contains(e.target)) box.querySelector('.pan').hidden = true; });
   pintar();
 }
 

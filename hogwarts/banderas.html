@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Banderas de las casas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../sda/comun/ficha.css">
+<style>
+.hoja{padding:6mm;justify-content:center;align-items:center}
+.hoja svg{width:100%;height:100%;max-height:285mm}
+.barra select{font-size:15px;padding:6px;border-radius:8px}
+@media print{ .hoja{padding:4mm} .jv-pill,.jv-mus{display:none!important} }
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="./#hogwarts" id="bVolver" class="volver">← Volver</a>
+  <button class="prim" type="button" onclick="window.print()">🖨️ Imprimir las 5</button>
+  <label><input type="checkbox" id="cNombres"> Con los nombres de cada mesa</label>
+  <label><input type="checkbox" id="cTinta"> Ahorrar tinta</label>
+</nav>
+<main id="hojas"></main>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* Banderines originales (sin escudos oficiales): colores de las casas de la Copa, un animal y su valor.
+   Casa = mesa del plano vigente de data/mesas-4A.json (1 Gryffindor · 2 Hufflepuff · 3 Ravenclaw · 4 Slytherin · 5 Orden del Fénix). */
+var CASAS = [
+  { n:'Gryffindor', c:'#8f0b0d', c2:'#eeba30', e:'🦁', v:'Valentía' },
+  { n:'Hufflepuff', c:'#a67c00', c2:'#1d1a16', e:'🦡', v:'Lealtad y esfuerzo' },
+  { n:'Ravenclaw', c:'#1a2b6b', c2:'#b08d57', e:'🦅', v:'Ingenio y sabiduría' },
+  { n:'Slytherin', c:'#1a5a34', c2:'#c0c0c0', e:'🐍', v:'Ambición y astucia' },
+  { n:'Orden del Fénix', c:'#5b2a86', c2:'#ff9a3c', e:'🔥', v:'Unión y esperanza' }
+];
+var MESAS = null, conNombres = false, tinta = false;
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function nombres(i){
+  if(!MESAS || !conNombres) return [];
+  var p = MESAS.planos[MESAS.plano_vigente], m = p.mesas.filter(function(x){ return x.mesa===i+1; })[0], l = m ? m.alumnos.slice() : [];
+  if(p.pupitre_individual && p.equipo_pupitre===i+1) l.push(p.pupitre_individual);
+  return l;
+}
+function bandera(k, i){
+  var fondo = tinta ? '#fff' : k.c, texto = tinta ? k.c : '#fff', borde = k.c2==='#1d1a16' && !tinta ? '#1d1a16' : k.c2;
+  var ns = nombres(i), y0 = 205;
+  return '<svg viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bandera de '+esc(k.n)+'">'+
+    '<rect x="8" y="6" width="194" height="7" rx="3.5" fill="#6b4a1e"/><circle cx="8" cy="9.5" r="5" fill="#c9972e"/><circle cx="202" cy="9.5" r="5" fill="#c9972e"/>'+
+    '<path d="M18 13 H192 V250 L105 290 L18 250 Z" fill="'+fondo+'" stroke="'+borde+'" stroke-width="5" stroke-linejoin="round"/>'+
+    '<path d="M28 22 H182 V244 L105 279 L28 244 Z" fill="none" stroke="'+borde+'" stroke-width="1.6" stroke-dasharray="4 3"/>'+
+    '<text x="105" y="'+(ns.length ? 95 : 120)+'" text-anchor="middle" font-size="'+(ns.length ? 62 : 80)+'">'+k.e+'</text>'+
+    '<text x="105" y="'+(ns.length ? 140 : 175)+'" text-anchor="middle" font-family="Cinzel Decorative, Cinzel, serif" font-weight="900" font-size="'+(k.n.length>11 ? 17 : 22)+'" textLength="'+(k.n.length>11 ? 148 : 140)+'" lengthAdjust="spacingAndGlyphs" fill="'+texto+'" stroke="'+(tinta ? 'none' : borde)+'" stroke-width="'+(tinta ? 0 : .6)+'">'+esc(k.n.toUpperCase())+'</text>'+
+    '<rect x="45" y="'+(ns.length ? 150 : 188)+'" width="120" height="16" rx="8" fill="'+borde+'"/>'+
+    '<text x="105" y="'+(ns.length ? 161.5 : 199.5)+'" text-anchor="middle" font-family="Cinzel, serif" font-weight="800" font-size="9" fill="'+(tinta ? '#fff' : (k.c2==='#1d1a16' ? '#f6e3a1' : k.c))+'">'+esc(k.v.toUpperCase())+'</text>'+
+    (ns.length ? '<text x="105" y="183" text-anchor="middle" font-family="Cinzel, serif" font-weight="700" font-size="8" fill="'+texto+'" opacity=".9">MESA '+(i+1)+'</text>'+
+      ns.map(function(n, j){ return '<text x="105" y="'+(y0+j*11)+'" text-anchor="middle" font-family="EB Garamond, Georgia, serif" font-weight="700" font-size="10.5" fill="'+texto+'">'+esc(n)+'</text>'; }).join('')
+      : '<text x="105" y="225" text-anchor="middle" font-family="Cinzel, serif" font-weight="700" font-size="9" fill="'+texto+'" opacity=".9">MESA '+(i+1)+' · 4ºA</text>')+
+    '</svg>';
+}
+function pintar(){ document.getElementById('hojas').innerHTML = CASAS.map(function(k, i){ return '<section class="hoja">'+bandera(k, i)+'</section>'; }).join(''); }
+document.getElementById('cTinta').addEventListener('change', function(e){ tinta = e.target.checked; pintar(); });
+document.getElementById('cNombres').addEventListener('change', function(e){
+  var cb = e.target;
+  if(!cb.checked){ conNombres = false; pintar(); return; }
+  function poner(){ conNombres = true; cb.checked = true; pintar(); }
+  /* los nombres solo con el código de la clase (4A) */
+  if(!JAVI.protegerClase('4ºA', { alAbrir:poner })){ cb.checked = false; return; }
+  poner();
+});
+document.getElementById('bVolver').addEventListener('click', function(e){ try{ if(document.referrer && new URL(document.referrer).origin===location.origin && history.length>1){ e.preventDefault(); history.back(); } }catch(err){} });
+fetch('../data/mesas-4A.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(j){ MESAS = j; pintar(); }).catch(pintar);
+/* ?nombres: ya con los nombres si la clase está abierta (con la llave del profe) */
+if(/[?&]nombres\b/.test(location.search)) JAVI.listo(function(){ if(JAVI.claseAbierta('4ºA')){ conNombres = true; document.getElementById('cNombres').checked = true; pintar(); } });
+pintar();
+})();
+</script>
+</body>
+</html>
