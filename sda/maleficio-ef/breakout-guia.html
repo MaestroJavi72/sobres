@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Breakout · El Maleficio de la Discordia</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cinzel+Decorative:wght@700;900&family=EB+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../comun/ficha.css">
+<style>
+.hoja{gap:2.4mm}
+.g{font-family:'Andika',sans-serif;font-size:10.8pt;line-height:1.35}
+.g h2{font-family:'Cinzel',serif;color:var(--granate);font-size:13pt;margin-top:1mm}
+.g ul,.g ol{margin:0 0 0 5mm}
+.g li{margin:.6mm 0}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.prueba{border:1.5px solid var(--linea);border-radius:3mm;padding:2.2mm 3mm;font-family:'Andika',sans-serif;font-size:10.5pt;line-height:1.32}
+.prueba h3{font-family:'Cinzel',serif;color:var(--granate);font-size:12pt;display:flex;justify-content:space-between;gap:2mm}
+.prueba h3 span{color:var(--suave);font-size:10pt}
+.prueba .pal{display:inline-block;font-family:'Cinzel',serif;font-weight:800;color:#fff;background:var(--granate);padding:.4mm 3mm;border-radius:2mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.check li{list-style:none;margin-left:-5mm}
+.check li::before{content:'☐ ';font-size:12pt}
+.tabla2{width:100%;border-collapse:collapse;font-family:'Andika',sans-serif;font-size:10.5pt}
+.tabla2 td,.tabla2 th{border:1px solid var(--linea);padding:1.2mm 2mm;text-align:left;vertical-align:top}
+.tabla2 th{background:#f3ead5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.carta{flex:1;border:2px solid var(--oro);border-radius:3mm;padding:7mm 9mm;font-size:13pt;line-height:1.45;background:#fffdf6;position:relative}
+.carta .firma{text-align:right;font-style:italic;margin-top:3mm}
+.carta .sello{position:absolute;right:6mm;bottom:5mm;width:16mm;height:16mm;border-radius:50%;background:#7a2030;color:#f3d27a;display:grid;place-items:center;font:800 15pt 'Cinzel',serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.trozos{display:grid;grid-template-columns:1fr 1fr;gap:4mm;flex:1}
+.trozos div{border:2px dashed var(--linea);border-radius:4mm;display:grid;place-items:center;font-family:'Cinzel',serif;font-weight:800;font-size:38pt;color:var(--granate);text-align:center}
+.palabras{display:flex;flex-direction:column;gap:5mm;flex:1}
+.palabras div{flex:1;border:3px dashed var(--linea);border-radius:5mm;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;font-size:64pt;color:var(--granate)}
+.palabras small{font-family:'Cinzel',serif;font-size:11pt;font-weight:700;color:var(--suave)}
+.diploma{flex:1;border:5mm double #c9972e;border-radius:4mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4mm;text-align:center;padding:10mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.diploma .tit{font-family:'Cinzel Decorative','Cinzel',serif;font-weight:900;color:var(--granate);font-size:28pt;line-height:1.15}
+.diploma p{font-size:15pt;max-width:150mm}
+.diploma .ic{font-size:44pt}
+</style>
+</head>
+<body>
+<nav class="barra">
+  <a href="../?id=maleficio-ef#juegos" id="bVolver">← Volver</a>
+  <button class="prim" type="button" onclick="window.print()">🖨️ Imprimir todo</button>
+</nav>
+
+<!-- 1 · GUÍA -->
+<section class="hoja">
+  <header class="cabecera"><span class="buho">🗝️</span><div><h1>Breakout · El Maleficio de la Discordia</h1><div class="sub">Sesión 1 · Fase de Motivación · Guía del maestro</div></div><span class="esp"></span><div class="sello">EF · 3º y 4º<br>45-90 min</div></header>
+  <div class="nota">Peeves ha robado la llave del cuarto del material de EF y la ha encerrado en un cofre con un candado de 3 cifras. El cofre solo se abre con un hechizo de tres palabras escondido en las pruebas. Código: <b>675</b> (JUNTOS = 6 · HACEMOS = 7 · MAGIA = 5).</div>
+  <div class="dos g">
+    <div><h2>Material</h2><ul class="check">
+      <li>Cofre de verdad con candado de 3 cifras en <b>675</b></li>
+      <li>Dentro del cofre: llave, diploma (pág. 6) y 2ª carta (pág. 2)</li>
+      <li>1ª carta de Dumbledore (pág. 2)</li>
+      <li>Aros (menos que alumnos)</li>
+      <li>Un globo por grupo (y de repuesto)</li>
+      <li>Pañuelos para tapar los ojos (uno por pareja)</li>
+      <li>Trozos del pergamino recortados (pág. 3)</li>
+      <li>Palabras grandes JUNTOS · HACEMOS · MAGIA (págs. 4-5)</li>
+      <li>Pizarra: Breakout y Medidor del Maleficio</li>
+    </ul></div>
+    <div><h2>Antes de empezar</h2><ol>
+      <li>Cierra el cofre con el candado en 675 y déjalo en el centro de la pista.</li>
+      <li>Esconde o reparte los 4 trozos del pergamino por la pista.</li>
+      <li>Ten las 3 palabras grandes a mano (se entregan al superar cada prueba).</li>
+      <li>En la pizarra: «⚡ Medidor del Maleficio» en la clase que toca.</li>
+    </ol>
+    <h2>El maleficio</h2>
+    <p>Ante un <b>insulto, una burla o alguien excluido</b>: «¡Petrificus Totalus!» y toda la clase congelada 30 segundos (botón en la pizarra). Al final, con 2 congelaciones o menos se enciende la 1.ª casilla del Medidor.</p></div>
+  </div>
+  <h2 class="g" style="font-family:Cinzel,serif;color:var(--granate);font-size:13pt">Las pruebas</h2>
+  <div class="prueba"><h3>0 · La carta de Dumbledore <span>5'</span></h3>Sentados alrededor del cofre. Se lee la 1.ª carta (o en la pizarra con 🔊). Se explica el «Petrificus Totalus».</div>
+  <div class="prueba"><h3>1 · Cruzar el Lago Negro <span>8' · gran grupo · aros</span></h3>Los aros son rocas. Hay menos rocas que magos: tienen que compartirlas y pasarlas hacia delante para cruzar de orilla a orilla sin tocar el agua. Si alguien pisa el agua, vuelve a la orilla. Premio: <span class="pal">JUNTOS</span></div>
+  <div class="prueba"><h3>2 · Wingardium Leviosa <span>8' · grupos de 5-6 · globos</span></h3>Cada grupo mantiene su globo en el aire. Todos tienen que tocarlo y deben llegar a 25 toques sin que caiga (la pizarra cuenta los toques). Premio: <span class="pal">HACEMOS</span></div>
+  <div class="prueba"><h3>3 · El Lazo del Diablo <span>8' · grupos de 6-8</span></h3>Nudo humano: se cogen de las manos cruzadas con compañeros que no tengan al lado y tienen que desenredarse sin soltarse. Premio: <span class="pal">MAGIA</span></div>
+  <div class="prueba"><h3>4 · El Pergamino de Dumbledore <span>8' · parejas lazarillo · pañuelos</span></h3>Uno con los ojos tapados y el otro le guía solo con la voz. Recogen los trozos del pergamino y los juntan: «cuenta las letras de cada palabra». ¡Que descubran el código ellos! (Pista en la pizarra si se atascan.)</div>
+  <div class="prueba"><h3>5 · ¡Se abre el cofre! <span>8'</span></h3>Prueban el 675 en el candado. En la pizarra, «🔓 ¡Se ha abierto!». Dentro: llave, diploma y 2.ª carta: el maleficio solo duerme. Se presenta el Medidor. Asamblea: ¿qué nos ha ayudado a conseguirlo? Cerrar la sesión en el Medidor.</div>
+  <footer class="pie"><span>Si la clase dura 60-90', alarga las pruebas que más gusten o repite el Lago Negro con menos aros</span><span>⚡</span></footer>
+</section>
+
+<!-- 2 · CARTAS -->
+<section class="hoja">
+  <header class="cabecera"><span class="buho">✉️</span><div><h1>Cartas de Dumbledore</h1><div class="sub">La primera se lee al empezar · la segunda va DENTRO del cofre</div></div></header>
+  <div class="carta">Queridos alumnos y alumnas de Hogwarts:<br><br>Peeves, el poltergeist, ha robado la llave del cuarto del material de Educación Física y la ha encerrado en un cofre con un candado mágico de tres cifras. Además, ha lanzado sobre el gimnasio el <b>Maleficio de la Discordia</b>: cada vez que alguien insulte, se burle o deje fuera a un compañero, el maestro gritará <b>«¡Petrificus Totalus!»</b> y toda la clase quedará congelada durante 30 segundos.<br><br>El cofre solo se abre con un hechizo de <b>tres palabras</b>, escondido en las pruebas que os esperan. Ninguna se puede superar solo. Confío en vosotros.<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>
+  <div class="carta">Lo habéis conseguido… pero cuidado: <b>el maleficio no se ha roto, solo duerme</b>. Volverá cada vez que haya discordia en el gimnasio.<br><br>Desde hoy, el <b>Medidor del Maleficio</b> vigilará cada sesión. Si la clase se congela 2 veces o menos, se encenderá una casilla. Con 6 casillas encendidas, el maleficio se romperá para siempre. Demostrad sesión a sesión que sabéis convivir.<div class="firma">Albus Dumbledore</div><span class="sello">D</span></div>
+  <footer class="pie"><span>Recortar por la mitad y doblar</span><span>⚡</span></footer>
+</section>
+
+<!-- 3 · PERGAMINO -->
+<section class="hoja">
+  <header class="cabecera"><span class="buho">📜</span><div><h1>El Pergamino de Dumbledore</h1><div class="sub">Prueba 4 · recortar y repartir por la pista</div></div></header>
+  <div class="trozos"><div>cuenta</div><div>las letras</div><div>de cada</div><div>palabra</div></div>
+  <footer class="pie"><span>Recortar por la línea de puntos</span><span>⚡</span></footer>
+</section>
+
+<!-- 4-5 · PALABRAS -->
+<section class="hoja">
+  <div class="palabras"><div><small>Prueba 1 · Cruzar el Lago Negro</small>JUNTOS</div><div><small>Prueba 2 · Wingardium Leviosa</small>HACEMOS</div></div>
+  <footer class="pie"><span>Se entrega al superar cada prueba · recortar</span><span>⚡</span></footer>
+</section>
+<section class="hoja">
+  <div class="palabras"><div><small>Prueba 3 · El Lazo del Diablo</small>MAGIA</div><div style="font-size:34pt"><small>¿Qué hacemos con las palabras?</small>¡Al pergamino!</div></div>
+  <footer class="pie"><span>Se entrega al superar cada prueba · recortar</span><span>⚡</span></footer>
+</section>
+
+<!-- 6 · DIPLOMA -->
+<section class="hoja">
+  <div class="diploma"><span class="ic">🗝️</span><div class="tit">Orden de Merlín<br>al Trabajo en Equipo</div><p>Concedida a la clase de ______________ por abrir el cofre de Peeves trabajando juntos:</p><p style="font-family:'Cinzel',serif;font-weight:800;color:#7a2030;font-size:20pt">JUNTOS HACEMOS MAGIA</p><p style="font-style:italic">Albus Dumbledore · Director de Hogwarts</p><p style="font-size:11pt;color:#6b5732">CEIP Arias Montano · Educación Física</p></div>
+</section>
+<script src="../comun/ficha.js"></script>
+</body>
+</html>

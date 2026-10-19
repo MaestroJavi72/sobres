@@ -300,6 +300,14 @@
    },
    "recursos": [
     {
+     "n": "Breakout: guía del maestro, cartas, pergamino, palabras y diploma",
+     "ic": "🗝️",
+     "url": "maleficio-ef/breakout-guia.html",
+     "sesiones": [
+      1
+     ]
+    },
+    {
      "n": "Anexo imprimible: rúbricas, registro, diana, cartas, tarjetas y diplomas",
      "ic": "🖨️",
      "url": "maleficio-ef/anexo.html",
