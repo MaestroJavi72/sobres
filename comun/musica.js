@@ -176,15 +176,51 @@ function arrancarMp3(id){
   mp3Id = id;
   tx('readonly', function(st){ return st.get(id); }).then(function(x){
     if(!x || mp3Id!==id) return;
-    if(!audio){ audio = new Audio(); audio.loop = true; }
-    if(audio.src) URL.revokeObjectURL(audio.src);
-    audio.src = URL.createObjectURL(x.blob); audio.volume = vol;
-    var seg = segGuardado(id);
-    audio.onloadedmetadata = function(){ if(seg && seg < audio.duration) audio.currentTime = seg; };
-    audio.play().catch(function(){});
-    clearInterval(mp3Guardar);
-    mp3Guardar = setInterval(function(){ try{ if(!audio.paused) localStorage.setItem(KT, JSON.stringify({ id:mp3Id, s:audio.currentTime })); }catch(e){} }, 5000);
+    tocar(id, URL.createObjectURL(x.blob));
   });
+}
+/* suena un audio (archivo del ordenador o enlace) en bucle, siguiendo por el segundo guardado */
+function tocar(id, src){
+  if(!audio){ audio = new Audio(); audio.loop = true; audio.preload = 'auto'; }
+  if(/^blob:/.test(audio.src)) URL.revokeObjectURL(audio.src);
+  audio.src = src; audio.volume = vol;
+  var seg = segGuardado(id);
+  audio.onloadedmetadata = function(){ if(seg && seg < audio.duration) audio.currentTime = seg; };
+  audio.onerror = function(){ if(/^url:/.test(estilo)) alert('No se puede reproducir ese enlace. Si es de Google Drive, comprueba que está compartido como «Cualquier persona con el enlace».'); };
+  audio.play().catch(function(){});
+  clearInterval(mp3Guardar);
+  mp3Guardar = setInterval(function(){ try{ if(!audio.paused) localStorage.setItem(KT, JSON.stringify({ id:mp3Id, s:audio.currentTime })); }catch(e){} }, 5000);
+}
+
+/* ---------- mp3 por ENLACE (p. ej. Google Drive de Javi): la lista va a la Hoja (ajuste «musica-enlaces»)
+   y sale en todos los aparatos. Añadir o quitar pide el código; escuchar, no. ---------- */
+function enlaces(){ try{ var l = JSON.parse((window.JAVI && JAVI.ajuste('musica-enlaces')) || '[]'); return Array.isArray(l) ? l : []; }catch(e){ return []; } }
+function urlAudio(u){
+  var m = String(u).match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([\w-]{20,})/);
+  return m ? 'https://drive.google.com/uc?export=download&id='+m[1] : String(u).trim();
+}
+function conLlave(fn){ if(!window.JAVI) return; if(JAVI.llaveAbierta()) fn(); else JAVI.pedirCodigo({ texto:'La lista de enlaces se guarda en tu Hoja para todos los aparatos. Escribe tu código.', alAcertar:fn }); }
+function anadirEnlace(){
+  var inp = caja.querySelector('[data-urlmp3]'), u = inp.value.trim();
+  if(!/^https?:\/\//.test(u)){ inp.value = ''; inp.placeholder = 'Pega un enlace que empiece por https://'; return; }
+  conLlave(function(){
+    var t = prompt('¿Qué nombre le ponemos?', 'Música de Hogwarts'); if(t===null) return;
+    var l = enlaces(), x = { id:'u'+Date.now().toString(36), t:(t.trim() || 'Música').slice(0, 60), u:u };
+    l.push(x); JAVI.guardarAjuste('musica-enlaces', JSON.stringify(l)); inp.value = '';
+    estilo = 'url:'+x.id; on = true; arrancar(); guardar(); pintar();
+  });
+}
+function quitarEnlace(id){
+  conLlave(function(){
+    if(estilo==='url:'+id){ pararMp3(); mp3Id = null; on = false; estilo = 'calma'; guardar(); }
+    JAVI.guardarAjuste('musica-enlaces', JSON.stringify(enlaces().filter(function(x){ return x.id!==id; }))); pintar();
+  });
+}
+function arrancarUrl(id){
+  var x = enlaces().filter(function(e){ return e.id===id; })[0]; if(!x) return;
+  pararGen(); pararYT(true);
+  if(audio && mp3Id===id){ audio.volume = vol; audio.play().catch(function(){}); return; }
+  pararMp3(); mp3Id = id; tocar(id, urlAudio(x.u));
 }
 function pararMp3(){ clearInterval(mp3Guardar); if(audio) audio.pause(); }
 function quitarMp3(id){
@@ -196,6 +232,7 @@ function esYT(){ return /^yt:/.test(estilo); }
 function arrancar(){
   if(esYT()){ pararMp3(); arrancarYT(estilo.slice(3)); }
   else if(/^mp3:/.test(estilo)) arrancarMp3(estilo.slice(4));
+  else if(/^url:/.test(estilo)) arrancarUrl(estilo.slice(4));
   else { pararYT(true); pararMp3(); arrancarGen(); }
 }
 function parar(){ pararGen(); pararYT(false); pararMp3(); }
@@ -235,6 +272,8 @@ document.head.appendChild(css);
 var caja = document.createElement('div'); caja.className = 'jv-mus';
 caja.innerHTML = '<div class="panel" hidden><b>🎵 Música para trabajar</b>'+
   '<h4>Hecha por la web</h4><div class="est">'+Object.keys(ESTILOS).map(function(k){ return '<button type="button" data-e="'+k+'">'+ESTILOS[k]+'</button>'; }).join('')+'</div>'+
+  '<h4>🔗 Música por enlace (en todos los aparatos)</h4><div class="est" data-enl></div>'+
+  '<div class="nuevo"><input type="text" data-urlmp3 placeholder="Pega el enlace del mp3 (Drive…)"><button type="button" data-a="anadirenl">➕</button></div>'+
   '<h4>🎶 Tus mp3 (de este ordenador)</h4><div class="est" data-mp3></div>'+
   '<label class="acc" style="text-align:center">📁 Añadir mp3 de este ordenador<input type="file" accept="audio/*,.mp3" multiple data-fich hidden></label>'+
   '<h4>📺 Tus vídeos de YouTube</h4><div class="est" data-lista></div>'+
@@ -256,6 +295,12 @@ function pintarLista(){
     return '<div class="fila"><button type="button" data-e="'+k+'" title="'+t+'">▶ '+t+'</button><button type="button" class="x" data-quita="'+v.id+'" title="Quitar de la lista">✕</button></div>';
   }).join('') || '<span class="aviso">Ninguno. Pega abajo un enlace.</span>';
 }
+function pintarEnl(){
+  caja.querySelector('[data-enl]').innerHTML = enlaces().map(function(m){
+    var t = String(m.t).replace(/[<>&"]/g, '');
+    return '<div class="fila"><button type="button" data-e="url:'+m.id+'" title="'+t+'">▶ '+t+'</button><button type="button" class="x" data-quitaenl="'+m.id+'" title="Quitar la música de la lista">✕</button></div>';
+  }).join('') || '<span class="aviso">Ninguno. Sube el mp3 a tu Google Drive, compártelo como «Cualquier persona con el enlace» y pega aquí el enlace.</span>';
+}
 function pintarMp3(){
   caja.querySelector('[data-mp3]').innerHTML = MP3.map(function(m){
     var t = String(m.t).replace(/[<>&"]/g, '');
@@ -264,7 +309,7 @@ function pintarMp3(){
 }
 function pintar(esperando){
   caja.classList.toggle('on', on && !esperando); caja.classList.toggle('espera', !!esperando);
-  pintarLista(); pintarMp3();
+  pintarLista(); pintarMp3(); pintarEnl();
   Array.prototype.forEach.call(caja.querySelectorAll('[data-e]'), function(b){ b.setAttribute('aria-pressed', on && b.dataset.e===estilo ? 'true' : 'false'); });
   caja.querySelector('[data-v]').value = Math.round(vol*100);
   caja.querySelector('[data-a="onoff"]').textContent = on ? '⏹ Parar la música' : '▶ Poner música';
@@ -284,6 +329,8 @@ function anadir(){
 caja.addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
   if(b.dataset.e){ estilo = b.dataset.e; on = true; arrancar(); }
+  else if(b.dataset.quitaenl){ if(confirm('¿Quitar esta música de la lista de todos los aparatos?')) quitarEnlace(b.dataset.quitaenl); return; }
+  else if(b.dataset.a==='anadirenl'){ anadirEnlace(); return; }
   else if(b.dataset.quitamp3){
     if(!confirm('¿Quitar esta música de este ordenador?')) return;
     if(estilo==='mp3:'+b.dataset.quitamp3){ on = false; estilo = 'calma'; }
@@ -299,6 +346,7 @@ caja.addEventListener('click', function(e){
   else if(b.dataset.a==='onoff'){ on = !on; if(on) arrancar(); else parar(); }
   guardar(); pintar();
 });
+caja.querySelector('[data-urlmp3]').addEventListener('keydown', function(e){ if(e.key==='Enter') anadirEnlace(); });
 caja.querySelector('[data-fich]').addEventListener('change', function(e){ anadirMp3(e.target.files); e.target.value = ''; });
 caja.querySelector('[data-url]').addEventListener('keydown', function(e){ if(e.key==='Enter') anadir(); });
 caja.querySelector('[data-v]').addEventListener('input', function(e){
@@ -318,6 +366,7 @@ function montar(){
   var seguir = function(){ document.removeEventListener('pointerdown', seguir, true); document.removeEventListener('keydown', seguir, true); if(on){ arrancar(); pintar(); } };
   document.addEventListener('pointerdown', seguir, true); document.addEventListener('keydown', seguir, true);
 }
+if(window.JAVI) JAVI.listo(function(){ pintar(!!(on && !(timer || yt || (audio && !audio.paused)))); });
 window.JAVI_MUSICA = { arrancar:arrancar, parar:parar };
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', montar); else montar();
 })();
