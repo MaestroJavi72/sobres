@@ -263,7 +263,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <h2 class="sec">Cartas de Educación Física</h2>
     <div class="tienda" id="tienda"></div>
     <h2 class="sec">🧾 Cartas compradas</h2>
-    <p class="aviso" style="margin-bottom:8px">Todas las cartas de esta clase, de la más nueva a la más antigua. «Usar» la gasta: Aurum Quintus da +5 al momento y Duplex/Triplex hacen que ese DÍA todo lo que gane valga ×2/×3.</p>
+    <p class="aviso" style="margin-bottom:8px">Todas las cartas de esta clase, de la más nueva a la más antigua. «Usar» la gasta. Aurum Quintus da +5 al momento. Duplex/Triplex conviene usarlas <b>al final de la clase</b>, si ha ido bien: multiplican ×2/×3 todo lo que ha ganado ese día (y lo que gane después).</p>
     <div class="compras" id="compras"></div>
   </section>
 
@@ -1346,10 +1346,30 @@ function pintarPerfil(){
     li.appendChild(sp); li.appendChild(t); ul.appendChild(li);
   });
 }
+/* lo que ha ganado hoy (sin lo anulado ni otras cartas): la base de las cartas ×2/×3 */
+function ganadoHoy(n){
+  var ms = delGrupo(), an = anulados(ms), s = 0;
+  ms.forEach(function(m){
+    if(nombreDe(m)!==n || m.dia!==HOY || m.accion.indexOf('galeon')!==0 || m.n<=0) return;
+    if(an[m.id] || /anula/.test(m.extra) || normal(m.motivo).indexOf('carta')===0) return;
+    s += m.n;
+  });
+  return s;
+}
+/* Duplex/Triplex (decisión de Javi, 20/10/2026): se usan al FINAL de la clase si ha ido bien;
+   multiplican todo lo ganado ese día (lo de antes, con un movimiento extra) y lo que gane después */
 function usarCarta(n, c){
+  var x = c.efecto==='x2' ? 2 : c.efecto==='x3' ? 3 : 0;
+  if(x && multiplicadorHoy(n)>1){ aviso(n+' ya tiene hoy una carta ×2/×3 activa. Guárdala para otro día.'); return; }
+  var ganado = x ? ganadoHoy(n) : 0;
   registrar(clv(n), 'Uso', 0, c.n, 'Uso de carta EF', 'EF'+c.id);
   if(c.efecto==='oro5'){ registrar(clv(n), 'Galeones', 5, 'Carta Aurum Quintus', 'Carta'); aviso(n+' usa Aurum Quintus: +5 '+MON+'.'); }
-  else if(c.efecto==='x2' || c.efecto==='x3') aviso(n+' usa '+c.n+': hoy sus '+MON+' valen ×'+(c.efecto==='x2'?2:3)+'.');
+  else if(x){
+    var extra = ganado*(x-1);
+    if(extra>0) registrar(clv(n), 'Galeones', extra, 'Carta '+c.n+' (×'+x+' de lo ganado hoy)', 'Carta');
+    aviso(extra>0 ? n+' usa '+c.n+': hoy había ganado '+ganado+' '+MON+' → +'+extra+' más. Lo que gane el resto del día también vale ×'+x+'.'
+                   : n+' usa '+c.n+': hoy todavía no había ganado nada; lo que gane el resto del día vale ×'+x+'.');
+  }
   else aviso(n+' usa '+c.n+': '+conMoneda(c.e).toLowerCase()+'.');
   pintarTodo();
 }
