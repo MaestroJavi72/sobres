@@ -363,6 +363,10 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
 .pInfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding-bottom:4px}
 .pInfo h3{margin:0;font-size:20px;letter-spacing:.06em;text-transform:none;color:#ffe9a6}
 .pNiv{font:15px Georgia,serif;color:#cdb987;overflow-wrap:anywhere}
+.pNiv .fal{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.pNiv .fal button{font:600 14px Georgia,serif;padding:4px 9px;border-radius:999px;border:1px solid #8a7440;background:rgba(255,255,255,.08);color:#f3e6c4;cursor:pointer}
+.pNiv .fal button[aria-pressed="true"]{background:#7a2a22;border-color:#b6493f;color:#fff;text-decoration:line-through}
+.pNiv .fal small{width:100%;font-size:12.5px;opacity:.85}
 .pInfo .barra{height:8px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden}
 .pInfo .barra i{display:block;height:100%;border-radius:9px;transition:width .5s}
 .pNum{display:flex;gap:14px;flex-wrap:wrap;font:13px Georgia,serif;color:#cdb987}
@@ -2310,8 +2314,11 @@ function pintarBanco(){
 }
 
 /* ---------- perfil del alumno (o de varios a la vez) ---------- */
+/* quién falta hoy en 4ºA: la misma lista que la Sesión y las actividades (localStorage «faltan|4ºA|fecha») */
+function claveFaltanHoy(){ return 'faltan|4ºA|'+clave(new Date()); }
+function faltanHoy(){ try{ return JSON.parse(localStorage.getItem(claveFaltanHoy())) || []; }catch(e){ return []; } }
 function abrirPerfil(nombres){
-  perfil = { nombres:nombres.slice() };
+  perfil = { nombres:nombres.slice(), todos:nombres.slice() };
   pestanaNeg = false;
   $('pCant').value = ''; $('pMotivo').value = ''; $('pCanjeN').value = '';
   pintarPerfil(); crearTiles();
@@ -2319,7 +2326,9 @@ function abrirPerfil(nombres){
   $('pCerrar').focus();
 }
 function pintarPerfil(){
-  var ns = perfil.nombres, cs = cuentas(), uno = ns.length===1;
+  /* a varios (casa o clase): los que faltan hoy no reciben los puntos */
+  if(perfil.todos && perfil.todos.length>1){ var fl = faltanHoy(); perfil.nombres = perfil.todos.filter(function(n){ return fl.indexOf(n)<0; }); }
+  var ns = perfil.nombres, cs = cuentas(), uno = !perfil.todos || perfil.todos.length===1;
   var av = $('pAvatar');
   if(uno){
     var c = cs[ns[0]], nv = nivelDe(c.acum), huevo = c.acum<0;
@@ -2333,8 +2342,11 @@ function pintarPerfil(){
     $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir del huevo' : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+(aspectoDe(ns[0]).chica ? (nv.sig.f||nv.sig.n) : nv.sig.n) : '¡Nivel máximo!');
   } else {
     av.innerHTML = '<div class="grupo">'+ns.slice(0,3).map(function(n){ var c = cs[n]; return '<span>'+personajeSVG(aspectoDe(n), nivelDe(c.acum).i, c.acum<0)+'</span>'; }).join('')+'</div>';
-    $('pNom').textContent = perfil.titulo || (ns.length===CONFIG.alumnos.length ? 'Toda la clase' : ns.length+' alumnos');
-    $('pNiv').textContent = ns.length===CONFIG.alumnos.length && !perfil.titulo ? ns.length+' alumnos' : ns.join(', ');
+    $('pNom').textContent = perfil.titulo || (perfil.todos.length===CONFIG.alumnos.length ? 'Toda la clase' : perfil.todos.length+' alumnos');
+    var fl2 = faltanHoy();
+    $('pNiv').innerHTML = '<div class="fal">'+perfil.todos.map(function(n){ var f = fl2.indexOf(n)>=0; return '<button type="button" data-falta="'+String(n).replace(/"/g,'&quot;')+'" aria-pressed="'+f+'" title="'+(f ? 'Falta hoy: toca si ha venido' : 'Toca si no ha venido')+'"></button>'; }).join('')+
+      '<small>'+ns.length+' de '+perfil.todos.length+' reciben los puntos · toca a quien no ha venido</small></div>';
+    Array.prototype.forEach.call($('pNiv').querySelectorAll('[data-falta]'), function(b){ b.textContent = b.dataset.falta; });
     $('pNiv').style.color = '';
     $('pBarra').style.width = '0%';
     $('pNum').innerHTML = ''; $('pSig').textContent = 'Lo que toques se aplica a todos.';
@@ -2344,6 +2356,12 @@ function pintarPerfil(){
   $('pHistWrap').hidden = !uno;
   if(uno) pintarHistorial(ns[0]);
 }
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('#pNiv [data-falta]'); if(!b) return;
+  var l = faltanHoy(), n = b.dataset.falta, i = l.indexOf(n); if(i>=0) l.splice(i, 1); else l.push(n);
+  try{ localStorage.setItem(claveFaltanHoy(), JSON.stringify(l)); }catch(err){}
+  pintarPerfil();
+});
 function crearTiles(){
   $('pTabPos').setAttribute('aria-selected', pestanaNeg ? 'false' : 'true');
   $('pTabNeg').setAttribute('aria-selected', pestanaNeg ? 'true' : 'false');
