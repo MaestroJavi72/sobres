@@ -113,6 +113,14 @@ h4{font:800 12px var(--tit);letter-spacing:.14em;text-transform:uppercase;color:
 .miCarta.usada img{filter:grayscale(1) brightness(.55)}
 .miCarta small{font:11px var(--cuerpo);color:var(--apagado)}
 /* mercader */
+.compras{display:flex;flex-direction:column;gap:6px}
+.compras .fila2{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 12px;border-radius:12px;border:1px solid rgba(232,200,114,.3);background:rgba(0,0,0,.25)}
+.compras .fila2 img{width:34px;height:auto;border-radius:4px}
+.compras .fila2 .q{flex:1;min-width:180px}
+.compras .fila2 .q b{color:var(--acento-2,#f3d27a)}
+.compras .fila2 small{opacity:.8}
+.compras .fila2 .ok{font-weight:700;color:#9be3b0}
+.compras .fila2 .x2{font-weight:700;color:#ffd36b}
 .tienda{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:14px}
 .prod{display:flex;flex-direction:column;gap:8px;align-items:center;padding:10px 10px 12px;border-radius:14px;border:1px solid rgba(232,200,114,.3);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(0,0,0,.3))}
 .prod img{width:100%;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,.5);cursor:zoom-in}
@@ -254,6 +262,9 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <div class="fila"><span class="aviso" id="mAviso"></span></div>
     <h2 class="sec">Cartas de Educación Física</h2>
     <div class="tienda" id="tienda"></div>
+    <h2 class="sec">🧾 Cartas compradas</h2>
+    <p class="aviso" style="margin-bottom:8px">Todas las cartas de esta clase, de la más nueva a la más antigua. «Usar» la gasta: Aurum Quintus da +5 al momento y Duplex/Triplex hacen que ese DÍA todo lo que gane valga ×2/×3.</p>
+    <div class="compras" id="compras"></div>
   </section>
 
   <!-- BÓVEDA -->
@@ -986,6 +997,38 @@ function pintarMercader(){
     box.appendChild(d);
   });
 }
+/* lista de cartas compradas de la clase (Registro EF…), con su uso */
+function pintarCompras(){
+  var box = $('compras'); if(!box) return;
+  var regs = [], porAlumno = {};
+  delGrupo().forEach(function(m){
+    if(!/^EF\d+/i.test(m.cartaId)) return;
+    var n = nombreDe(m), id = +m.cartaId.replace(/\D/g,'');
+    if(m.accion.indexOf('reg')===0){ var r = { n:n, id:id, dia:m.dia, t:m.t, usada:null }; regs.push(r); (porAlumno[n] = porAlumno[n] || []).push(r); }
+    if(m.accion.indexOf('uso')===0) (porAlumno['uso|'+n] = porAlumno['uso|'+n] || []).push({ id:id, dia:m.dia });
+  });
+  Object.keys(porAlumno).forEach(function(k){
+    if(k.indexOf('uso|')!==0) return;
+    var mis = porAlumno[k.slice(4)] || [];
+    porAlumno[k].forEach(function(u){ for(var i=0;i<mis.length;i++){ if(mis[i].id===u.id && !mis[i].usada){ mis[i].usada = u.dia; break; } } });
+  });
+  if(!regs.length){ box.innerHTML = '<p class="aviso">Todavía nadie de '+grupo+' ha comprado cartas.</p>'; return; }
+  box.innerHTML = '';
+  regs.slice().reverse().forEach(function(r){
+    var c = cartaPorId(r.id); if(!c) return;
+    var d = document.createElement('div'); d.className = 'fila2';
+    var hoyX = r.usada===HOY && (c.efecto==='x2' || c.efecto==='x3');
+    d.innerHTML = '<img src="'+img(c)+'" alt=""><span class="q"><b></b> · <span class="cn"></span> <small>('+RAREZAS[c.r]+', '+c.p+' '+MON+')</small><br><small>Comprada el '+r.dia.split('-').reverse().slice(0,2).join('/')+'</small></span>'+
+      (r.usada ? '<span class="'+(hoyX ? 'x2' : 'ok')+'">'+(hoyX ? '⚡ Activa hoy: ×'+(c.efecto==='x2' ? 2 : 3) : '✔ Usada el '+r.usada.split('-').reverse().slice(0,2).join('/'))+'</span>' : '');
+    d.querySelector('b').textContent = r.n; d.querySelector('.cn').textContent = c.n;
+    if(!r.usada){
+      var u = document.createElement('button'); u.type = 'button'; u.className = 'ghost'; u.textContent = '✨ Usar';
+      u.addEventListener('click', function(){ if(confirm('¿'+r.n+' usa «'+c.n+'» ahora? '+conMoneda(c.e)+'.')) usarCarta(r.n, c); });
+      d.appendChild(u);
+    }
+    box.appendChild(d);
+  });
+}
 function pintarTodo(){
   ponerTema();
   var soloBoveda = !EF.grupos[grupo];
@@ -996,7 +1039,7 @@ function pintarTodo(){
   Array.prototype.forEach.call($('grupos').children, function(b){ b.setAttribute('aria-selected', b.dataset.g===grupo ? 'true' : 'false'); });
   ['coev','clase','merc','bov'].forEach(function(k){ $('t_'+k).setAttribute('aria-selected', vista===k ? 'true' : 'false'); $('v_'+k).hidden = vista!==k; $('t_'+k).hidden = (soloBoveda && k!=='bov') || (esHog() && (k==='clase' || k==='merc')); });
   if(!soloBoveda && /^(coev|clase|merc)$/.test(vista)) history.replaceState(null, '', location.search+'#'+vista);
-  if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); }
+  if(!soloBoveda){ pintarCoev(); pintarClase(); pintarMercader(); pintarCompras(); }
   pintarBoveda();
   if(perfilDe && !$('mPerfil').hidden) pintarPerfil();
   if(window.JAVI && !soloBoveda) JAVI.protegerClase(grupo, { otras:Object.keys(EF.grupos), cambiar:function(g){ grupo = g; try{ localStorage.setItem('ef-grupo', g); }catch(e){} pintarTodo(); } });   /* código de clase */
@@ -1298,7 +1341,7 @@ function pintarPerfil(){
     var li = document.createElement('li'), sp = document.createElement('span'), compra = m.accion.indexOf('compra')===0;
     var de = String(m.extra).match(/Coevaluación · de ([^·#]+)/);
     sp.innerHTML = '<span class="'+(compra || m.n<0 ? 'menos' : 'mas')+'">'+(compra ? 'gasta '+m.n : (m.n>=0 ? '+'+m.n : '−'+(-m.n)))+'</span> · <i></i>';
-    sp.querySelector('i').textContent = m.motivo+(de ? ' (de '+de[1].trim()+')' : '');
+    sp.querySelector('i').textContent = m.motivo+(de ? ' (de '+de[1].trim()+')' : '')+(compra ? ': '+String(m.extra).split(' · ').slice(1).join(' · ') : '');
     var t = document.createElement('small'); t.className = 'etiq'; t.textContent = m.dia.split('-').reverse().slice(0,2).join('/');
     li.appendChild(sp); li.appendChild(t); ul.appendChild(li);
   });
