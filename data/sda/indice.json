@@ -237,7 +237,7 @@
     {
      "titulo": "El Espejo de Oesed",
      "fase": "Activación",
-     "objetivo": "Recordar lo que ya saben sobre convivir en el juego y detectar los conflictos de la clase. Reconocer cómo se sienten en EF cuando hay conflictos. Consensuar las primeras normas (Pacto de Hogwarts).",
+     "objetivo": "Recordar lo que ya saben sobre convivir en el juego y detectar los conflictos de la clase. Reconocer cómo se sienten en EF cuando hay conflictos. Consensuar las primeras normas (Pacto de Hogwarts). En las clases de 90 minutos (4ºA y 4ºB), además: la clase vota un juego que ya conoce y lo juega aplicando el Pacto.",
      "duracion": "45'",
      "interactivas": "I-2 Medidor del Maleficio, I-4 Código de Merlín"
     },
@@ -333,7 +333,15 @@
     "3ºB",
     "4ºA",
     "4ºB"
-   ]
+   ],
+   "partes": {
+    "3ºA": {
+     "1": 2
+    },
+    "3ºB": {
+     "1": 2
+    }
+   }
   }
  ]
 }

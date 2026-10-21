@@ -282,10 +282,10 @@ function pintarSemana(){
     if(JAVI.lunesDe(s.fecha)!==semana) return '';
     var p = s.fecha.split('-');
     return '<article class="dia'+(s.fecha===hoy ? ' hoy' : s.fecha < hoy ? ' pasada' : '')+'">'+
-      '<div class="cab"><span class="num">'+(k+1)+'</span><span class="fch">'+DIAS_LARGOS[JAVI.diaSemana(s.fecha)]+' '+(+p[2])+'<small>Sesión '+(k+1)+' · '+esc(s.duracion)+(s.fase ? ' · '+esc(s.fase) : '')+'</small></span></div>'+
+      '<div class="cab"><span class="num">'+(s.n||k+1)+'</span><span class="fch">'+DIAS_LARGOS[JAVI.diaSemana(s.fecha)]+' '+(+p[2])+'<small>Sesión '+(s.n||k+1)+' · '+esc(s.duracion)+(s.fase ? ' · '+esc(s.fase) : '')+'</small></span></div>'+
       '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
       '<div class="botones">'+actividades(s).map(function(a){ return btnJuego(a); }).join('')+
-        recursosDe(k+1).map(function(r){ return btnFicha(r); }).join('')+
+        recursosDe(s.n||k+1).map(function(r){ return btnFicha(r); }).join('')+
         (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito='+(SDA.asig==='EF' ? 'ef' : 'tutoria')+'&grupo='+encodeURIComponent(SDA.grupo).replace('%C2%BA','o')+'&asig='+SDA.asig+'&fecha='+s.fecha+'#preparar">📋 Planificar esta sesión</a>' : '')+
       '</div></article>';
   }).join('') || '<p class="vacio">No hay sesiones esta semana.</p>';

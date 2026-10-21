@@ -163,6 +163,8 @@ var M = {
           d:'Se desplazan con la música. Al pararla, el maestro dice una consigna: «grupos de 4», «grupos de 3 con al menos un chico y una chica», «grupos con alguien que nació en tu mismo trimestre». Regla mágica: nadie se queda fuera. Si alguien se queda solo, el grupo más cercano lo acoge y gana un punto para la casa.' },
         { t:'El Pacto de Hogwarts', min:12, org:'Grupos de 5-6', mat:'Pergaminos y lápices',
           d:'Cada grupo escribe 3 normas en un pergamino: una para respetar las reglas del juego, otra para tratarnos bien y otra para cuando hay un problema. Se ponen en común y se votan con el pulgar. Las más votadas forman el Pacto de Hogwarts, borrador del futuro Código de Merlín.' },
+        { t:'Clases de 90 minutos: el juego de la clase', min:40, org:'Gran grupo · equipos mixtos que hace el maestro', mat:'El que pida el juego elegido',
+          d:'Solo en las clases de 90 minutos (4ºA y 4ºB). La clase propone tres juegos que ya conoce y vota a mano alzada. Antes de jugar, en 3 minutos, ponen en práctica el Pacto de Hogwarts recién escrito: acuerdan cómo jugarlo para que nadie se quede fuera (equipos mixtos, todos tocan, nadie eliminado mucho rato). Se juega con el «Petrificus Totalus» activo. Al acabar: ¿hemos cumplido el Pacto? ¿Qué norma le añadiríamos?' },
         { t:'Medidor del Maleficio', min:5, org:'Gran grupo', mat:'Medidor (pizarra)',
           d:'¿Cuántas veces se ha congelado la clase hoy? Con 2 o menos se enciende una casilla del Medidor.' }
       ] },

@@ -687,7 +687,7 @@ function botonesSda(sd){
     h += '<a class="btn juego" href="../sda/'+u+P+(P ? '&' : '?')+'grupo='+encodeURIComponent(sd.sda.grupo)+'"><span class="ic">'+(((sd.sda.iconos||{})[m[1]])||ICONOS[m[1]]||'🎮')+'</span><span>'+esc_(m[2])+'</span>'+etq+'</a>';
   });
   (sd.sda.recursos || []).forEach(function(r){
-    if((r.sesiones||[]).indexOf(sd.i+1)<0) return;
+    if((r.sesiones||[]).indexOf(sd.sesion.n||sd.i+1)<0) return;
     h += '<a class="btn ficha" href="../sda/'+r.url+P+'"><span class="ic">'+r.ic+'</span><span>'+esc_(r.n.replace(/^Ficha para familias · /, 'Ficha: '))+'</span></a>';
   });
   return h ? '<div class="botones">'+h+'</div>' : '';

@@ -307,6 +307,13 @@ function sdas(){
     x.grupos.forEach(function(g){
       var c = JSON.parse(JSON.stringify(x)); delete c.grupos;
       c.id = x.id+'|'+g; c.base = x.id; c.grupo = g; c.pagina = x.pagina+'&grupo='+encodeURIComponent(g);
+      /* «partes»: en una clase, una sesión que se da en varios días ({"3ºA":{"1":2}} = la sesión 1 en 2 días); n = nº de sesión original */
+      var pt = (x.partes||{})[g] || {}, ses = [];
+      c.sesiones.forEach(function(s, i){
+        var k = +pt[i+1] || 1;
+        for(var j=1;j<=k;j++){ var s2 = JSON.parse(JSON.stringify(s)); s2.n = i+1; if(k>1){ s2.titulo += ' ('+j+'.ª parte)'; s2.parte = j; } ses.push(s2); }
+      });
+      c.sesiones = ses;
       if(c.inicio && HORARIO){
         repartirSda(c);
         c.sesiones.forEach(function(s){
