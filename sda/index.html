@@ -119,6 +119,11 @@ body{background:var(--fondo-img),var(--fondo)}
 .btn.juego:hover{background:#1d5c54}
 .btn.ficha{background:#fffaf0;color:#7a2030;border:2px solid #d9c08a}
 .btn.ficha:hover{background:#fff}
+.diarioT{font:600 15px/1.35 Georgia,serif;color:#3a2a16;background:rgba(184,147,79,.14);border-left:4px solid #b8934f;border-radius:8px;padding:6px 10px;margin:6px 0}
+.diarioT.recu{border-left-color:#7a2030;background:rgba(122,32,48,.07)}
+.movida{font:700 13px system-ui,sans-serif;color:#7a2030}
+.btn.diario{background:transparent;color:#3a2a16;border:2px solid #b8934f;font-size:14px;padding:6px 12px;cursor:pointer}
+#bNotas[hidden]{display:none}
 .btn.plan{background:transparent;color:#14403a;border:2px dashed #b8934f;font-size:14px;padding:6px 12px}
 .etq{margin-left:auto;font-size:11px;font-family:'Cinzel',serif;padding:3px 7px;border-radius:999px;background:#f3d27a;color:#3a2a16;white-space:nowrap}
 .vacio{color:#d9cfae;font-size:18px;text-align:center;padding:24px}
@@ -147,6 +152,7 @@ body{background:var(--fondo-img),var(--fondo)}
     <a class="volver" href="../?profe#planificacion" data-volver="../?profe#planificacion">← Volver</a>
     <span class="esp"></span>
     <a class="j-icono" id="bPlan" href="../planificacion/?profe#sda" title="Ver en la planificación" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:15px">📅 Planificación</a>
+    <a class="j-icono" id="bNotas" href="#" hidden title="Notas para Séneca" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">🎓 Notas</a>
     <button class="j-icono" id="bImprimir" type="button" aria-label="Imprimir" title="Imprimir">🖨️</button>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
   </div>
@@ -274,22 +280,38 @@ function pintarSesiones(){
 }
 function pintarSemana(){
   if(!conFechas()){ pintarSesiones(); return; }
-  var ws = semanas(), i = ws.indexOf(semana), hoy = U.clave(new Date());
+  var ws = semanas(), i = ws.indexOf(semana), hoy = U.clave(new Date()), proxima = -1;
+  SDA.sesiones.forEach(function(x, k){ if(proxima<0 && x.fecha>=hoy) proxima = k; });
   var fin = JAVI.sumarDias(semana, 4), p1 = semana.split('-'), p2 = fin.split('-');
   $('semTit').innerHTML = 'Semana '+(i+1)+' de '+ws.length+'<small>del '+(+p1[2])+' '+MESES[+p1[1]-1]+' al '+(+p2[2])+' '+MESES[+p2[1]-1]+'</small>';
   $('semAnt').disabled = i<=0; $('semSig').disabled = i>=ws.length-1;
   $('dias').innerHTML = SDA.sesiones.map(function(s, k){
     if(JAVI.lunesDe(s.fecha)!==semana) return '';
-    var p = s.fecha.split('-');
+    var p = s.fecha.split('-'), di = JAVI.diarioDe(SDA.grupo, s.fecha, SDA.asig||'EF'), ant = null;
+    if(!di && s.fecha>=hoy && proxima===k){ ant = JAVI.diarioAnterior(SDA.grupo, s.fecha, SDA.asig||'EF'); if(ant && !ant.pendiente && !ant.deberes) ant = null; }
+    var mv = s.movida ? s.movida.split('-') : null;
     return '<article class="dia'+(s.fecha===hoy ? ' hoy' : s.fecha < hoy ? ' pasada' : '')+'">'+
       '<div class="cab"><span class="num">'+(s.n||k+1)+'</span><span class="fch">'+DIAS_LARGOS[JAVI.diaSemana(s.fecha)]+' '+(+p[2])+'<small>Sesión '+(s.n||k+1)+' · '+esc(s.duracion)+(s.fase ? ' · '+esc(s.fase) : '')+'</small></span></div>'+
-      '<h4>'+esc(s.titulo)+'</h4><p>'+esc(s.objetivo)+'</p>'+
+      '<h4>'+esc(s.titulo)+'</h4>'+(mv ? '<div class="movida">↪ Se ha corrido (estaba el '+(+mv[2])+'/'+(+mv[1])+')</div>' : '')+'<p>'+esc(s.objetivo)+'</p>'+
+      (ant ? '<div class="diarioT recu">📓 Del último día ('+(+ant.fecha.split('-')[2])+'/'+(+ant.fecha.split('-')[1])+'): '+esc([ant.pendiente ? '⏳ Pendiente: '+ant.pendiente : '', ant.deberes ? '🏠 Deberes: '+ant.deberes : ''].filter(Boolean).join(' · '))+'</div>' : '')+
+      (di ? '<div class="diarioT">📓 '+esc(JAVI.textoDiario(di))+'</div>' : '')+
       '<div class="botones">'+actividades(s).map(function(a){ return btnJuego(a); }).join('')+
         recursosDe(s.n||k+1).map(function(r){ return btnFicha(r); }).join('')+
+        (JAVI.ES_PROFE && s.fecha<=hoy ? '<button type="button" class="btn diario" data-diario="'+s.fecha+'">📓 '+(di ? 'Diario' : 'Apuntar en el diario')+'</button>' : '')+
         (JAVI.ES_PROFE ? '<a class="btn plan" href="../sesion/?profe&ambito='+(SDA.asig==='EF' ? 'ef' : 'tutoria')+'&grupo='+encodeURIComponent(SDA.grupo).replace('%C2%BA','o')+'&asig='+SDA.asig+'&fecha='+s.fecha+'#preparar">📋 Planificar esta sesión</a>' : '')+
       '</div></article>';
   }).join('') || '<p class="vacio">No hay sesiones esta semana.</p>';
 }
+/* tras guardar el diario: las fechas pueden haberse corrido */
+function recargarSda(){
+  var n = JAVI.sdas().filter(function(s){ return s.id===SDA.id; })[0]; if(n) SDA = n;
+  if(semanas().indexOf(semana)<0) semana = semanas().filter(function(w){ return w>=semana; })[0] || semanas()[semanas().length-1];
+  pintarSemana();
+}
+$('dias').addEventListener('click', function(e){
+  var b = e.target.closest('[data-diario]'); if(!b) return;
+  JAVI.abrirDiario({ grupo:SDA.grupo, fecha:b.dataset.diario, asig:SDA.asig||'EF', alGuardar:function(){ recargarSda(); } });
+});
 function moverSemana(d){ var ws = semanas(), i = ws.indexOf(semana)+d; if(ws[i]){ semana = ws[i]; pintarSemana(); } }
 $('semAnt').addEventListener('click', function(){ moverSemana(-1); });
 $('semSig').addEventListener('click', function(){ moverSemana(1); });
@@ -329,6 +351,7 @@ function pintar(md){
     var fs = SDA.sesiones.map(function(s){ return s.fecha; });
     $('hSub').textContent = SDA.grupo+' · '+(ASIG[SDA.asig]||SDA.asig)+' · '+SDA.sesiones.length+' sesiones'+(conFechas() ? ', del '+fechaBonita(fs[0])+' al '+fechaBonita(fs[fs.length-1]) : ' de '+String(SDA.sesiones[0].duracion||'').replace("'", ' minutos'));
     if(SDA.icono) document.querySelector('.heroe .fosil').textContent = SDA.icono;
+    if(SDA.asig==='LCL' && JAVI.ES_PROFE){ $('bNotas').hidden = false; $('bNotas').href = 'notas.html?id='+encodeURIComponent(SDA.id); }
     if(!conFechas()) document.querySelector('[data-p="semana"]').textContent = '📅 Sesiones';
     $('hChips').innerHTML = [SDA.unidad ? '📖 '+SDA.unidad : '', '🎯 '+SDA.criterios.length+' criterios', '✍️ '+SDA.producto.split('(')[0].trim()].filter(Boolean).map(function(t){ return '<span>'+esc(t)+'</span>'; }).join('');
     /* semana que se abre: la de hoy, o la siguiente con clase, o la última */

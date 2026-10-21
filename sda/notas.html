@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notas para Séneca</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.cab h1{flex:1 1 220px;min-width:0;font-size:clamp(24px,4vw,42px);line-height:1.05}
+.sub{color:var(--tinta-suave);font-size:16px;margin-bottom:12px}
+.mini{font-size:15px;padding:8px 12px;border-radius:10px;border:1px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.barra{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.crits{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.crits button{font:700 15px/1.1 system-ui,sans-serif;padding:8px 12px;border-radius:10px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.crits button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.crits button small{display:block;font-weight:500;font-size:11px;opacity:.85}
+.papel{background:linear-gradient(180deg,#f6ead0,#ead7a8);color:#3a2a16;border:2px solid #b8934f;border-radius:18px;padding:14px 16px}
+.papel h2{font-family:'Cinzel',Georgia,serif;font-size:21px;line-height:1.15;margin-bottom:4px}
+.papel .txt{font:15px/1.4 Georgia,serif;color:#5a4526;margin-bottom:10px}
+.tScroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font:15px/1.3 Georgia,serif;min-width:560px}
+th,td{padding:6px 8px;border-bottom:1px solid rgba(138,116,64,.35);text-align:center;white-space:nowrap}
+th{font:800 13px/1.2 system-ui,sans-serif;color:#7a2030;text-transform:uppercase;letter-spacing:.04em;vertical-align:bottom}
+th small{display:block;font-weight:500;text-transform:none;letter-spacing:0;color:#6b5732}
+td:first-child,th:first-child{text-align:left}
+td small{display:block;font-size:12px;color:#6b5732}
+td input{width:64px;font:700 16px system-ui,sans-serif;text-align:center;padding:5px;border-radius:8px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16}
+td input.cambio{border-color:#1c6b3a;background:#e9f7ee}
+td.fin{font:900 18px Georgia,serif}
+.n1{color:#a3392f}.n5{color:#8a6a1f}.n7{color:#1c6b3a}
+.pesos{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font:15px Georgia,serif;margin:8px 0 2px}
+.pesos input{width:58px;font:700 15px system-ui,sans-serif;text-align:center;padding:4px;border-radius:8px;border:2px solid #b8934f;background:#fffaf0}
+.ayuda{font-size:14px;color:var(--tinta-suave);margin-top:12px;line-height:1.45}
+.resumen td{font-weight:700}
+@media print{ body{background:#fff!important;color:#000!important} .noImprimir{display:none!important} .papel{background:#fff} }
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🎓 Notas para Séneca</h1>
+    <a class="j-icono" id="bVolver" href="../?profe#lengua" data-volver="../?profe#lengua" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
+  </header>
+  <p class="sub" id="sub">Leyendo la Hoja…</p>
+  <div class="barra noImprimir">
+    <button class="mini" id="bGuardar" type="button" disabled>💾 Guardar las notas escritas</button>
+    <button class="mini" id="bExportar" type="button">⬇️ Exportar a Excel</button>
+    <button class="mini" id="bImprimir" type="button">🖨️ Imprimir</button>
+  </div>
+  <div class="crits noImprimir" id="crits"></div>
+  <section class="papel" id="papel"></section>
+  <p class="ayuda">
+    <b>De dónde sale cada nota (de 1 a 10):</b><br>
+    🎯 <b>Misiones</b>: las preguntas de La Copa de las Casas que llevan ese criterio, respondidas con su número de lista durante el tema (10 × aciertos ÷ preguntas, mínimo 1).<br>
+    🎮 <b>Juegos</b>: los aciertos (+1) en los juegos que puntúan, la Ruleta y el Duelo durante el tema. Solo cuentan en el criterio que elijas abajo. Quien tiene algún acierto saca de 5 a 10 según lo que ha acertado comparado con el que más; quien no tiene ninguno no tiene nota de juegos (no le baja).<br>
+    ✍️ <b>Control y cuaderno</b>: la nota que escribes tú (control, cuaderno, rúbrica, observación).<br>
+    <b>Nota del criterio</b> = media ponderada de las que haya, con los pesos de arriba. Si falta una, se reparte su peso entre las demás.
+  </p>
+</div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* NOTAS PARA SÉNECA DE UNA SA DE LENGUA (pedido por Javi, 21/10/2026)
+   Junta por criterio: misiones de la Copa (con criterio), aciertos en juegos y la nota escrita a mano.
+   Notas a mano: Alumno «NOTAS · 4ºA», Acción «NotaSA», CartaId = id de la SA, Tipo = nombre (o «_pesos»),
+   Carta = JSON {c:{"9.1":7,…}} (o {m:40,j:20,c:40,jc:"9.1"}). Manda la última; las notas de una fila se suman a las anteriores. */
+function $(id){ return document.getElementById(id); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+var U = JAVI.util, q = new URLSearchParams(location.search), ID = q.get('id') || 'tema2-lengua-4a';
+var SDA = null, G = '4ºA', CRIT = {}, LISTA = {}, critSel = null, cambios = {}, pesos = { m:40, j:20, c:40, jc:'9.1' };
+function coma(x){ return x==null ? '—' : String(Math.round(x*10)/10).replace('.', ','); }
+function clase(x){ return x==null ? '' : x<5 ? 'n1' : x<7 ? 'n5' : 'n7'; }
+function plain(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
+function jsonDe(f){ var i = f.carta.indexOf('{'); if(i<0) return null; try{ return JSON.parse(f.carta.slice(i)); }catch(e){ return null; } }
+
+/* ---------- fuentes ---------- */
+function rango(){ var fs = SDA.sesiones.map(function(s){ return s.fecha; }).filter(Boolean).sort(); return [fs[0], JAVI.sumarDias(fs[fs.length-1], 7)]; }
+function misionesNotas(){
+  var r = rango(), tag = plain('COPA · '+G), M = {}, R = {}, T = {};
+  JAVI.filas().forEach(function(f){
+    if(plain(f.alumno)!==tag) return;
+    var a = plain(f.accion), j;
+    if(a==='mision' && plain(f.tipo)!=='cerrada' && f.dia>=r[0] && f.dia<=r[1] && (j = jsonDe(f)) && j.qs){
+      var o = M[f.cartaId]; if(!o || !j.of){ o = M[f.cartaId] = { of:j.of||1, partes:{} }; } o.partes[j.p||1] = j.qs;
+    }
+    if(a==='respuesta' && String(f.tipo).charAt(0)==='#' && (j = jsonDe(f)) && j.r){ var k = f.cartaId+'|'+f.tipo; if(!R[k]) R[k] = j.r; }   /* vale la primera respuesta */
+  });
+  var inv = {}; Object.keys(LISTA).forEach(function(n){ inv['#'+LISTA[n]] = n; });
+  Object.keys(R).forEach(function(k){
+    var p = k.split('|'), m = M[p[0]], nom = inv[p[1]]; if(!m || !nom) return;
+    var qs = []; for(var i=1;i<=m.of;i++) qs = qs.concat(m.partes[i]||[]);
+    R[k].forEach(function(ok, i){ var c = qs[i] && qs[i].crit; if(!c) return; var t = T[nom] = T[nom] || {}, x = t[c] = t[c] || [0,0]; x[0] += ok ? 1 : 0; x[1]++; });
+  });
+  return T;   /* { nombre: { "9.1":[aciertos, preguntas] } } */
+}
+function juegosNotas(){
+  var r = rango(), a = {}, max = 0, out = {};
+  JAVI.movimientosDe(G).forEach(function(m){ if(m.n>0 && m.dia>=r[0] && m.dia<=r[1] && plain(m.motivo).indexOf('acierto')===0) a[m.nombre] = (a[m.nombre]||0) + 1; });
+  Object.keys(a).forEach(function(n){ if(a[n]>max) max = a[n]; });
+  Object.keys(a).forEach(function(n){ out[n] = { a:a[n], nota: max ? 5 + 5*a[n]/max : null }; });
+  return out;
+}
+function notasMano(){
+  var tag = plain('NOTAS · '+G), out = {};
+  JAVI.filas().forEach(function(f){
+    if(plain(f.alumno)!==tag || plain(f.accion)!=='notasa' || f.cartaId!==ID) return;
+    var j = jsonDe(f); if(!j) return;
+    if(f.tipo==='_pesos'){ ['m','j','c'].forEach(function(k){ if(j[k]!=null) pesos[k] = +j[k]; }); if(j.jc) pesos.jc = j.jc; return; }
+    var o = out[f.tipo] = out[f.tipo] || {}; Object.keys(j.c||{}).forEach(function(c){ o[c] = j.c[c]; });
+  });
+  return out;
+}
+var DATOS = null;
+function calcular(){
+  var mi = misionesNotas(), ju = juegosNotas(), ma = notasMano(), al = (JAVI.grupo(G)||{ nombres:[] }).nombres;
+  DATOS = { al:al, mi:mi, ju:ju, ma:ma };
+}
+function manoDe(n, c){ var k = n+'|'+c; if(k in cambios) return cambios[k]; return (DATOS.ma[n]||{})[c]; }
+function notaDe(n, c){
+  var x = (DATOS.mi[n]||{})[c], m = x && x[1] ? Math.max(1, 10*x[0]/x[1]) : null;
+  var j = c===pesos.jc && DATOS.ju[n] ? DATOS.ju[n].nota : null;
+  var h = manoDe(n, c); h = h==null || h==='' ? null : +h;
+  var s = 0, w = 0;
+  if(m!=null){ s += pesos.m*m; w += pesos.m; }
+  if(j!=null){ s += pesos.j*j; w += pesos.j; }
+  if(h!=null && !isNaN(h)){ s += pesos.c*h; w += pesos.c; }
+  return { m:m, x:x, j:j, h:h, fin: w ? s/w : null };
+}
+
+/* ---------- pintar ---------- */
+function textoCrit(c){ return CRIT[c] || ''; }
+function pintarCrits(){
+  $('crits').innerHTML = '<button type="button" data-c="" aria-pressed="'+(critSel===null)+'">📋 Todas<small>resumen</small></button>'+
+    SDA.criterios.map(function(c){ return '<button type="button" data-c="'+c+'" aria-pressed="'+(critSel===c)+'" title="'+esc(textoCrit(c))+'">LCL.2.'+c+'<small>'+esc(textoCrit(c).split(' ').slice(0, 3).join(' '))+'…</small></button>'; }).join('');
+}
+function pintar(){
+  pintarCrits();
+  var P = $('papel');
+  if(critSel===null){
+    P.innerHTML = '<h2>Todas las notas · '+esc(G)+'</h2><p class="txt">Nota de cada criterio con lo que hay hasta hoy. Toca un criterio arriba para ver de dónde sale y escribir las notas del control o del cuaderno.</p>'+
+      '<div class="tScroll"><table class="resumen"><thead><tr><th>Alumno</th>'+SDA.criterios.map(function(c){ return '<th title="'+esc(textoCrit(c))+'">'+c+'</th>'; }).join('')+'<th>Media</th></tr></thead><tbody>'+
+      DATOS.al.map(function(n){
+        var s = 0, k = 0;
+        return '<tr><td>'+esc(n)+'</td>'+SDA.criterios.map(function(c){ var x = notaDe(n, c).fin; if(x!=null){ s += x; k++; } return '<td class="'+clase(x)+'">'+coma(x)+'</td>'; }).join('')+'<td class="fin '+clase(k ? s/k : null)+'">'+coma(k ? s/k : null)+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+    return;
+  }
+  var c = critSel, conJ = c===pesos.jc;
+  P.innerHTML = '<h2>LCL.2.'+c+'</h2><p class="txt">'+esc(textoCrit(c))+'</p>'+
+    '<div class="pesos noImprimir">Pesos: 🎯 Misiones <input type="number" min="0" max="100" data-p="m" value="'+pesos.m+'"> % · 🎮 Juegos <input type="number" min="0" max="100" data-p="j" value="'+pesos.j+'"> % · ✍️ Control y cuaderno <input type="number" min="0" max="100" data-p="c" value="'+pesos.c+'"> %'+
+    ' <label>· 🎮 los juegos cuentan en <select data-p="jc">'+SDA.criterios.map(function(x){ return '<option'+(x===pesos.jc ? ' selected' : '')+'>'+x+'</option>'; }).join('')+'</select></label></div>'+
+    '<div class="tScroll"><table><thead><tr><th>Alumno</th><th>🎯 Misiones<small>aciertos</small></th>'+(conJ ? '<th>🎮 Juegos<small>aciertos</small></th>' : '')+'<th>✍️ Control y cuaderno<small>escríbela (1-10)</small></th><th>Nota</th></tr></thead><tbody>'+
+    DATOS.al.map(function(n){
+      var r = notaDe(n, c), ju = DATOS.ju[n], h = manoDe(n, c);
+      return '<tr><td>'+esc(n)+'</td><td>'+(r.m!=null ? coma(r.m)+'<small>'+r.x[0]+' de '+r.x[1]+'</small>' : '—')+'</td>'+
+        (conJ ? '<td>'+(r.j!=null ? coma(r.j)+'<small>'+ju.a+' acierto'+(ju.a>1 ? 's' : '')+'</small>' : '—')+'</td>' : '')+
+        '<td><input type="number" min="1" max="10" step="0.5" inputmode="decimal" data-n="'+esc(n)+'" value="'+(h==null ? '' : h)+'"'+((n+'|'+c) in cambios ? ' class="cambio"' : '')+' aria-label="Nota de '+esc(n)+'"></td>'+
+        '<td class="fin '+clase(r.fin)+'">'+coma(r.fin)+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
+}
+$('crits').addEventListener('click', function(e){ var b = e.target.closest('[data-c]'); if(!b) return; critSel = b.dataset.c || null; pintar(); });
+$('papel').addEventListener('change', function(e){
+  var t = e.target;
+  if(t.dataset.n){
+    var v = t.value.trim().replace(',', '.'); if(v!=='' && (isNaN(+v) || +v<1 || +v>10)){ t.value = ''; v = ''; }
+    cambios[t.dataset.n+'|'+critSel] = v==='' ? '' : +v; $('bGuardar').disabled = false; pintar();
+  } else if(t.dataset.p){
+    if(t.dataset.p==='jc') pesos.jc = t.value; else pesos[t.dataset.p] = Math.max(0, Math.min(100, +t.value||0));
+    cambios._pesos = true; $('bGuardar').disabled = false; pintar();
+  }
+});
+$('bGuardar').addEventListener('click', function(){
+  if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ titulo:'🔐 Código para guardar las notas', texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Guardar». Lo escrito se queda en esta pestaña mientras no la cierres.' , alAcertar:function(){ guardarBorrador(); location.reload(); } }); return; }
+  var por = {};
+  Object.keys(cambios).forEach(function(k){ if(k==='_pesos') return; var p = k.split('|'); (por[p[0]] = por[p[0]] || {})[p[1]] = cambios[k]==='' ? null : cambios[k]; });
+  Object.keys(por).forEach(function(n){ JAVI.escribir({ alumno:'NOTAS · '+G, accion:'NotaSA', cartaId:ID, tipo:n, carta:JSON.stringify({ c:por[n] }) }); });
+  if(cambios._pesos) JAVI.escribir({ alumno:'NOTAS · '+G, accion:'NotaSA', cartaId:ID, tipo:'_pesos', carta:JSON.stringify(pesos) });
+  cambios = {}; try{ sessionStorage.removeItem('notas-borrador|'+ID); }catch(e){}
+  $('bGuardar').disabled = true; calcular(); pintar();
+});
+function guardarBorrador(){ try{ sessionStorage.setItem('notas-borrador|'+ID, JSON.stringify({ cambios:cambios, pesos:pesos })); }catch(e){} }
+$('bExportar').addEventListener('click', function(){
+  var f = [['Alumno'].concat(SDA.criterios.map(function(c){ return 'LCL.2.'+c; })).concat(['Media'])];
+  DATOS.al.forEach(function(n){
+    var s = 0, k = 0, r = [n];
+    SDA.criterios.forEach(function(c){ var x = notaDe(n, c).fin; if(x!=null){ s += x; k++; } r.push(coma(x).replace('—', '')); });
+    r.push(coma(k ? s/k : null).replace('—', '')); f.push(r);
+  });
+  JAVI.exportarCSV('Notas '+G+' · '+SDA.titulo, f);
+});
+$('bImprimir').addEventListener('click', function(){ window.print(); });
+window.addEventListener('beforeunload', function(e){ if(Object.keys(cambios).length){ guardarBorrador(); } });
+
+JAVI.listo(function(){
+  JAVI.avisoPrueba();
+  SDA = JAVI.sdas().filter(function(s){ return s.id===ID; })[0];
+  if(!SDA){ $('sub').textContent = 'No encuentro esa situación de aprendizaje.'; return; }
+  G = SDA.grupo;
+  var fs = SDA.sesiones.map(function(s){ return s.fecha; }).filter(Boolean).sort();
+  function fc(f){ var p = f.split('-'); return (+p[2])+'/'+(+p[1]); }
+  $('sub').textContent = SDA.titulo+' · '+G+' · del '+fc(fs[0])+' al '+fc(fs[fs.length-1]);
+  try{ var b = JSON.parse(sessionStorage.getItem('notas-borrador|'+ID)); if(b){ cambios = b.cambios||{}; if(Object.keys(cambios).length) $('bGuardar').disabled = false; } }catch(e){}
+  Promise.all([
+    fetch(JAVI.BASE+'data/criterios.json').then(function(r){ return r.json(); }).then(function(d){ (d.areas.LCL.criterios||[]).forEach(function(c){ CRIT[c.id] = c['4'] || c['3'] || ''; }); }).catch(function(){}),
+    fetch(JAVI.BASE+'data/lista-'+G.replace(/[º\s]/g, '')+'.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(d){ LISTA = d.numeros || {}; }).catch(function(){})
+  ]).then(function(){
+    JAVI.protegerClase(G, { alAbrir:function(){
+      calcular();
+      try{ var b = JSON.parse(sessionStorage.getItem('notas-borrador|'+ID)); if(b && b.pesos) pesos = b.pesos; }catch(e){}
+      pintar();
+    } });
+  });
+});
+})();
+</script>
+</body>
+</html>

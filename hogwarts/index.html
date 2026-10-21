@@ -674,6 +674,7 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
           <div class="sig" id="pSig"></div>
         </div>
       </div>
+      <div id="pLogros"></div>
       <div class="pTabs" role="tablist">
         <button class="pTab" id="pTabPos" role="tab" type="button" aria-selected="true">Positivo</button>
         <button class="pTab neg" id="pTabNeg" role="tab" type="button" aria-selected="false">Necesita trabajo</button>
@@ -2384,6 +2385,8 @@ function pintarPerfil(){
     $('pBarra').style.width = '0%';
     $('pNum').innerHTML = ''; $('pSig').textContent = 'Lo que toques se aplica a todos.';
   }
+  $('pLogros').hidden = !uno;
+  if(uno) try{ $('pLogros').innerHTML = JAVI.logrosHTML((JAVI.logrosDe('4ºA', OPC_LOGROS)||{})[ns[0]]); }catch(e){ $('pLogros').innerHTML = ''; }
   $('pBarraWrap').hidden = !uno;
   $('pCanjeRow').hidden = !uno;
   $('pHistWrap').hidden = !uno;
@@ -2443,8 +2446,21 @@ function flotar(txt, neg){
   $('pFloat').appendChild(f);
   setTimeout(function(){ f.remove(); }, 1300);
 }
+/* LOGROS (21/10/2026): los de todas las clases (comun/javi.js) + la casa campeona de cada mes ya terminado */
+var OPC_LOGROS = { extra:function(nom){
+  var hoyMes = mesDe(clave(new Date())), meses = {}, out = [];
+  try{ JAVI.movimientosDe('4ºA').forEach(function(m){ var x = mesDe(m.dia); if(x && x<hoyMes) meses[x] = 1; }); }catch(e){}
+  Object.keys(meses).sort().forEach(function(m){
+    var r = []; try{ r = rankingCasas(m); }catch(e){}
+    var gana = r.filter(function(x){ return x.puesto===1 && x.total>0; })[0];
+    if(gana && gana.alumnos.indexOf(nom)>=0) out.push({ id:'casa-'+m, ic:'🏆', n:'Casa campeona', d:'Su casa ('+gana.nombre+') ganó '+nombreMes(m), ok:true, fecha:m+'-28', prog:'' });
+  });
+  if(!out.length) out.push({ id:'casa', ic:'🏆', n:'Casa campeona', d:'Que su casa gane la Casa del mes', ok:false, fecha:null, prog:'aún no' });
+  return out;
+} };
 function aplicar(nombres, n, motivo, cat){
   if(!nombres.length || !n) return;
+  var foto = null; if(n>0) try{ foto = JAVI.fotoLogros('4ºA', OPC_LOGROS); }catch(e){}
   var antes = cuentas(), cs, avisos = [];
   nombres.forEach(function(x){ enviarMovimiento(x, 'Galeones', n, motivo, CATS[cat] ? CATS[cat].n : ''); });
   cs = cuentas();
@@ -2459,6 +2475,7 @@ function aplicar(nombres, n, motivo, cat){
   aviso(avisos.length ? '¡'+avisos.join(' · ')+'!' : (n>0 ? '+'+n+' · '+motivo+' · '+para : '−'+(-n)+' · '+motivo+' · '+para));
   pintarBanco();
   try{ anuncioCasa(nombres, n); }catch(e){}
+  if(foto) try{ JAVI.anunciarLogros(JAVI.logrosNuevos('4ºA', foto, OPC_LOGROS)); }catch(e){}
 }
 /* AVISO EN GRANDE DE LA CASA (pedido por Javi, 20/10/2026): al dar o quitar puntos, la casa de cada alumno
    aparece en grande con lo que ha sumado o restado y su total del mes. No bloquea los clics. */

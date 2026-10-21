@@ -91,6 +91,9 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
 .cHoy h3.vacio{font-family:inherit;font-style:italic;font-weight:400;color:#8a7650;font-size:16px}
 .cHoy .sdaT{font-size:13px;color:#6b5732}
 .cHoy .sdaT a{color:#14403a}
+.cHoy .diarioT{font:600 13.5px/1.35 Georgia,serif;color:#3a2a16;background:rgba(184,147,79,.15);border-left:4px solid #b8934f;border-radius:8px;padding:5px 8px}
+.cHoy .diarioT.recu{border-left-color:#7a2030;background:rgba(122,32,48,.07)}
+.bt.diario{cursor:pointer;font:inherit}
 .bts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .bt{display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:10px;padding:6px 10px;font-family:var(--f-sub);font-weight:700;font-size:14px;line-height:1.2}
 .bt.prin{background:#14403a;color:#f6e3a1;border:2px solid #2d6b47}
@@ -156,7 +159,7 @@ a.mod:hover,a.mod:focus-visible{transform:translateY(-3px);border-color:var(--ac
       </a>
     </nav>
     <section id="hoy" hidden>
-      <div class="hoyCab"><h2>Hoy</h2><span id="hoyFecha"></span></div>
+      <div class="hoyCab"><h2>Hoy</h2><span id="hoyFecha"></span><a class="bt sec" href="resumen/" style="margin-left:auto">📊 Resumen de la semana</a></div>
       <div class="clasesHoy" id="clasesHoy"></div>
     </section>
   </main>
@@ -211,6 +214,7 @@ var SECCIONES = {
   ]},
   planificacion: { t:'Planificación', gr:'Todas las clases', mods:[
     { ic:'📅', n:'La semana', d:'Tu horario con cada sesión: tócala para planificarla.', url:'planificacion/', profe:true },
+    { ic:'📊', n:'Resumen de la semana', d:'Para el viernes: por clase, quién ha sumado y restado más, faltas, logros y cómo han ido las sesiones según el diario.', url:'resumen/', profe:true },
     { ic:'📚', n:'Situaciones de aprendizaje', d:'Con criterios de la Orden de 30 de mayo de 2023 y sesiones repartidas solas.', url:'planificacion/#sda', profe:true },
     { ic:'🏖️', n:'Días sin clase', d:'Festivos y vacaciones que se saltan al repartir.', url:'planificacion/#festivos', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Planificar una sesión concreta de cualquier clase.', url:'sesion/', profe:true },
@@ -296,6 +300,10 @@ $('pestanas').querySelector('[data-v=inicio]').addEventListener('click', functio
 var DIAS_L = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 var MESES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 var NOMBRE_ASIG = { EF:'EF', LCL:'Lengua', MAT:'Matemáticas' };
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-dg]'); if(!b) return;
+  JAVI.abrirDiario({ grupo:b.dataset.dg, fecha:JAVI.util.clave(new Date()), asig:b.dataset.da, alGuardar:pintarHoy });
+});
 function pintarHoy(){
   if(!profe || !JAVI.horario()) return;
   var hoy = JAVI.util.clave(new Date()), p = hoy.split('-'), ahora = new Date(), min = ahora.getHours()*60+ahora.getMinutes();
@@ -314,7 +322,12 @@ function pintarHoy(){
     var h = '<article class="cHoy '+s.asig+est+'"><div class="arr"><span class="gr">'+esc(s.grupo)+' · '+(NOMBRE_ASIG[s.asig]||s.asig)+'</span><span class="h">'+s.ini+'–'+s.fin+'</span></div>'+
       (tit ? '<h3>'+esc(tit)+'</h3>' : '<h3 class="vacio">Sin planificar</h3>');
     if(sd) h += '<div class="sdaT">📚 '+(sd.sda.pagina ? '<a href="'+sd.sda.pagina+'&profe#semana">'+esc(sd.sda.titulo)+'</a>' : esc(sd.sda.titulo))+' · sesión '+(sd.i+1)+' de '+sd.sda.sesiones.length+'</div>';
+    /* diario: lo de hoy si ya está apuntado; si no, lo que quedó pendiente y los deberes del último día */
+    var di = JAVI.diarioDe(s.grupo, hoy, s.asig), ant = di ? null : JAVI.diarioAnterior(s.grupo, hoy, s.asig);
+    if(di) h += '<div class="diarioT">📓 '+esc(JAVI.textoDiario(di))+'</div>';
+    else if(ant && (ant.pendiente || ant.deberes)){ var pa = ant.fecha.split('-'); h += '<div class="diarioT recu">📓 Del último día ('+(+pa[2])+'/'+(+pa[1])+'): '+esc([ant.pendiente ? '⏳ Pendiente: '+ant.pendiente : '', ant.deberes ? '🏠 Deberes: '+ant.deberes : ''].filter(Boolean).join(' · '))+'</div>'; }
     h += '<div class="bts"><a class="bt prin" href="'+enlace('sesion/?grupo='+g+'&fecha='+hoy+'&asig='+s.asig+'#clase', amb)+'">🎬 Sesión</a>';
+    h += '<button type="button" class="bt sec diario" data-dg="'+esc(s.grupo)+'" data-da="'+s.asig+'">📓 '+(di ? 'Diario' : 'Diario de hoy')+'</button>';
     if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('boveda/?grupo='+g, amb)+'">🏦 Bóveda</a><a class="bt sec" href="'+enlace('sorteos/?grupo='+g, amb)+'">👑 Sorteos</a>';
     if(s.asig==='EF' && s.grupo!=='4ºA') h += '<a class="bt sec" href="'+enlace('ef/', amb)+'">🤝 Coevaluación</a>';
     if(sd && sd.sesion.interactivas) (sd.sesion.interactivas.split(/,\s*(?=I-)/)).forEach(function(x){

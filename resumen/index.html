@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resumen de la semana</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.cab h1{flex:1 1 220px;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.navSemana{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.navSemana h2{font-family:var(--f-sub);font-size:clamp(18px,2.4vw,24px);color:var(--acento-2);flex:1;min-width:200px}
+.navSemana h2 small{display:block;font-size:14px;color:var(--tinta-suave);font-weight:500}
+.flecha{font-size:24px;width:46px;height:46px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.mini{font-size:15px;padding:8px 12px;border-radius:10px;border:1px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.clases{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,520px),1fr));gap:14px}
+.clase{background:linear-gradient(180deg,#f6ead0,#ead7a8);color:#3a2a16;border:2px solid #b8934f;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.clase h3{font-family:'Cinzel',Georgia,serif;font-size:24px;line-height:1.1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.clase h3 small{font:600 14px Georgia,serif;color:#6b5732}
+.clase h4{font:800 14px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#7a2030;margin:2px 0 4px}
+.clase ul{list-style:none;display:flex;flex-direction:column;gap:3px;font:16px/1.35 Georgia,serif}
+.clase li b{font-variant-numeric:tabular-nums}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){ .dos{grid-template-columns:1fr} }
+.pos{color:#1c6b3a}.neg{color:#a3392f}
+.ses li{display:flex;gap:6px;align-items:flex-start}
+.ses li .e{flex:none;width:22px;text-align:center}
+.ses li small{display:block;color:#6b5732;font-size:14px}
+.vacio{font-style:italic;color:#8a7650}
+.lgs{display:flex;flex-wrap:wrap;gap:6px}
+.lgs span{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 6px;border-radius:999px;font:700 14px/1.2 Georgia,serif;border:1px solid #c9a34a;background:rgba(243,210,122,.35)}
+.cerrada{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:15px Georgia,serif}
+.cerrada button{font:700 15px system-ui,sans-serif;padding:8px 12px;border-radius:10px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.nota{font-size:14px;color:var(--tinta-suave);margin-top:14px}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  .noImprimir,.navSemana button{display:none!important}
+  .clase{break-inside:avoid;background:#fff;border-color:#999}
+}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">📊 Resumen de la semana</h1>
+    <a class="j-icono" href="../?profe#planificacion" data-volver="../?profe#planificacion" title="Volver a la pantalla anterior" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
+  </header>
+  <div class="navSemana">
+    <button class="flecha noImprimir" id="sAnt" type="button" aria-label="Semana anterior">‹</button>
+    <h2 id="sTit"></h2>
+    <button class="flecha noImprimir" id="sSig" type="button" aria-label="Semana siguiente">›</button>
+    <button class="mini noImprimir" id="sHoy" type="button">Esta semana</button>
+    <button class="mini noImprimir" id="sImp" type="button">🖨️ Imprimir</button>
+  </div>
+  <div class="clases" id="clases"><p class="estado">Leyendo la Hoja…</p></div>
+  <p class="nota">Puntos: lo que ha sumado y restado cada alumno de lunes a viernes (sin los anulados). Faltas: las que se marcan en Sesión, Hogwarts y las actividades, guardadas <b>en este aparato</b>. Sesiones: según el diario de clase (📓).</p>
+</div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* RESUMEN DEL VIERNES (pedido por Javi, 21/10/2026): por clase, quién ha sumado y restado más esa semana,
+   quién ha faltado, los logros conseguidos y cómo han ido las sesiones según el diario. */
+function $(id){ return document.getElementById(id); }
+function esc(t){ var d = document.createElement('div'); d.textContent = t==null ? '' : t; return d.innerHTML; }
+var U = JAVI.util, MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'], NOMBRE_ASIG = { EF:'EF', LCL:'Lengua', MAT:'Matemáticas' };
+function fc(f){ var p = f.split('-'); return (+p[2])+'/'+(+p[1]); }
+var lunes = JAVI.lunesDe(U.clave(new Date()));
+
+function faltasDe(g, dias){
+  var por = {};
+  dias.forEach(function(f){ var l = []; try{ l = JSON.parse(localStorage.getItem('faltan|'+g+'|'+f)) || []; }catch(e){} l.forEach(function(n){ (por[n] = por[n] || []).push(f); }); });
+  return por;
+}
+function pintarClase(g, dias){
+  var gr = JAVI.grupo(g), viernes = dias[dias.length-1];
+  var h = '<article class="clase"><h3>'+esc(g)+' <small>'+(gr && gr.nombres ? gr.nombres.length+' alumnos' : '')+'</small></h3>';
+  /* sesiones del horario y su diario */
+  var fes = JAVI.festivos(), ses = [];
+  dias.forEach(function(f){ if(fes.indexOf(f)>=0) return; JAVI.sesionesDelDia(f).filter(function(s){ return s.grupo===g; }).sort(function(a, b){ return a.ini.localeCompare(b.ini); }).forEach(function(s){ ses.push({ f:f, s:s }); }); });
+  h += '<div><h4>📓 Sesiones</h4><ul class="ses">'+(ses.length ? ses.map(function(x){
+    var d = JAVI.diarioDe(g, x.f, x.s.asig), sd = JAVI.sdaDeSesion(g, x.f, x.s.asig), tit = sd ? sd.sesion.titulo : '';
+    var e = !d ? (x.f<=U.clave(new Date()) ? '❔' : '·') : d.dado===false ? '⛔' : '✅';
+    var det = d ? [d.dado===false ? 'No se dio'+(d.hecho ? ': '+d.hecho : '') : d.hecho, d.pendiente ? '⏳ '+d.pendiente : '', d.deberes ? '🏠 '+d.deberes : ''].filter(Boolean).join(' · ') : (x.f<=U.clave(new Date()) ? 'Sin apuntar en el diario' : '');
+    return '<li><span class="e">'+e+'</span><span>'+DIAS[JAVI.diaSemana(x.f)]+' '+fc(x.f)+' · '+(NOMBRE_ASIG[x.s.asig]||x.s.asig)+(tit ? ' · '+esc(tit) : '')+(det ? '<small>'+esc(det)+'</small>' : '')+'</span></li>';
+  }).join('') : '<li class="vacio">Sin clases esta semana.</li>')+'</ul></div>';
+  /* el resto lleva nombres: solo con la clase abierta */
+  if(!JAVI.claseAbierta(g)){
+    return h+'<div class="cerrada">🔒 Para ver los nombres, abre la clase. <button type="button" data-abrir="'+esc(g)+'">🔓 Abrir '+esc(g)+'</button></div></article>';
+  }
+  var ms = JAVI.movimientosDe(g).filter(function(m){ return m.dia>=dias[0] && m.dia<=viernes; }), tot = {};
+  ms.forEach(function(m){ var t = tot[m.nombre] = tot[m.nombre] || { pos:0, neg:0 }; if(m.n>0) t.pos += m.n; else t.neg += m.n; });
+  var nom = Object.keys(tot);
+  var mas = nom.filter(function(n){ return tot[n].pos>0; }).sort(function(a, b){ return tot[b].pos-tot[a].pos; }).slice(0, 5);
+  var menos = nom.filter(function(n){ return tot[n].neg<0; }).sort(function(a, b){ return tot[a].neg-tot[b].neg; }).slice(0, 5);
+  h += '<div class="dos"><div><h4>⬆️ Más puntos</h4><ul>'+(mas.length ? mas.map(function(n){ return '<li>'+esc(n)+' <b class="pos">+'+tot[n].pos+'</b></li>'; }).join('') : '<li class="vacio">Nadie esta semana.</li>')+'</ul></div>'+
+       '<div><h4>⬇️ Más negativos</h4><ul>'+(menos.length ? menos.map(function(n){ return '<li>'+esc(n)+' <b class="neg">−'+(-tot[n].neg)+'</b></li>'; }).join('') : '<li class="vacio">Ninguno. ¡Bien!</li>')+'</ul></div></div>';
+  var fl = faltasDe(g, dias), fn = Object.keys(fl).sort(function(a, b){ return fl[b].length-fl[a].length || a.localeCompare(b); });
+  h += '<div><h4>🚪 Faltas</h4><ul>'+(fn.length ? fn.map(function(n){ return '<li>'+esc(n)+' · '+fl[n].length+' día'+(fl[n].length>1 ? 's' : '')+' <small>('+fl[n].map(fc).join(', ')+')</small></li>'; }).join('') : '<li class="vacio">Ninguna apuntada en este aparato.</li>')+'</ul></div>';
+  var lg = []; try{ var L = JAVI.logrosDe(g); Object.keys(L).forEach(function(n){ L[n].forEach(function(o){ if(o.ok && o.fecha>=dias[0] && o.fecha<=viernes) lg.push({ n:n, o:o }); }); }); }catch(e){}
+  h += '<div><h4>🏅 Logros conseguidos</h4>'+(lg.length ? '<div class="lgs">'+lg.map(function(x){ return '<span title="'+esc(x.o.d)+'">'+x.o.ic+' '+esc(x.n)+' · '+esc(x.o.n)+'</span>'; }).join('')+'</div>' : '<p class="vacio">Ninguno esta semana.</p>')+'</div>';
+  return h+'</article>';
+}
+function pintar(){
+  var dias = [0,1,2,3,4].map(function(i){ return JAVI.sumarDias(lunes, i); }), p1 = dias[0].split('-'), p2 = dias[4].split('-');
+  var L = JAVI.lunesDe(U.clave(new Date())), dif = Math.round((new Date(lunes) - new Date(L)) / 864e5 / 7);
+  $('sTit').innerHTML = 'Del '+(+p1[2])+' de '+MESES[+p1[1]-1]+' al '+(+p2[2])+' de '+MESES[+p2[1]-1]+'<small>'+(dif===0 ? 'Esta semana' : dif===-1 ? 'La semana pasada' : dif===1 ? 'La semana que viene' : dif<0 ? 'Hace '+(-dif)+' semanas' : 'Dentro de '+dif+' semanas')+'</small>';
+  var H = JAVI.horario(), gs = [];
+  (H ? H.sesiones : []).forEach(function(s){ if(gs.indexOf(s.grupo)<0) gs.push(s.grupo); });
+  gs.sort(   /* 4ºA, 4ºB, 3ºA, 3ºB */function(a, b){ return b.charAt(0).localeCompare(a.charAt(0)) || a.localeCompare(b); });
+  $('clases').innerHTML = gs.map(function(g){ return pintarClase(g, dias); }).join('') || '<p class="estado">No se ha podido leer el horario.</p>';
+}
+$('clases').addEventListener('click', function(e){
+  var b = e.target.closest('[data-abrir]'); if(!b) return;
+  JAVI.protegerClase(b.dataset.abrir, { alAbrir:pintar });
+});
+$('sAnt').addEventListener('click', function(){ lunes = JAVI.sumarDias(lunes, -7); pintar(); });
+$('sSig').addEventListener('click', function(){ lunes = JAVI.sumarDias(lunes, 7); pintar(); });
+$('sHoy').addEventListener('click', function(){ lunes = JAVI.lunesDe(U.clave(new Date())); pintar(); });
+$('sImp').addEventListener('click', function(){ window.print(); });
+JAVI.listo(function(){ pintar(); JAVI.avisoPrueba(); });
+})();
+</script>
+</body>
+</html>

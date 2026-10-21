@@ -291,6 +291,258 @@ function quitarPuntos(g, nombre, mov, motivo){
 }
 
 /* ============================================================
+   MOVIMIENTOS DE UNA CLASE (para los logros y el resumen de la semana)
+   Galeones de la Hoja + los que aún están solo en este aparato (pendientes de Hogwarts / EF).
+   Quita los anulados («anula #g…») y las correcciones de Hogwarts («Corrección: …») con su original.
+   Devuelve [{ nombre, n, motivo, extra, dia, id }] ordenados por día.
+   ============================================================ */
+function movimientosDe(g){
+  var gr = grupo(g); if(!gr) return [];
+  var hog = sistemaDe(g)==='hogwarts', pre = normal(g+' · '), set = {};
+  gr.todos.forEach(function(a){ set[normal(a.n)] = a.n; });
+  for(var k in gr.alias) set[k] = gr.alias[k];
+  function nombreDe(al){
+    var a = normal(al);
+    if(hog) return a.indexOf(' · ')<0 ? set[a] || null : null;
+    return a.indexOf(pre)===0 ? set[a.slice(pre.length).trim()] || null : null;
+  }
+  var out = [], vistos = {};
+  filasCSV.forEach(function(f){
+    if(normal(f[2]).indexOf('galeon')!==0) return;
+    var m = String(f[5]||'').match(/#g[a-z0-9]+/), id = m ? m[0] : '', n = nombreDe(f[1]);
+    if(id) vistos[id] = 1;
+    if(n) out.push({ nombre:n, n:parseInt(f[3], 10) || 0, motivo:f[4]||'', extra:String(f[5]||''), dia:fechaFila(f[0]), id:id });
+  });
+  var lp = []; try{ lp = JSON.parse(leerLocal((PRUEBA ? 'prueba-' : '')+PEND_APP[hog ? 'hogwarts' : 'ef'])||'[]') || []; }catch(e){}
+  lp.forEach(function(p){
+    if(!p || vistos[p.id] || normal(p.accion).indexOf('galeon')!==0) return; vistos[p.id] = 1;
+    var n = nombreDe(p.alumno); if(n) out.push({ nombre:n, n:+p.n || 0, motivo:p.motivo||'', extra:p.id+(p.extra ? ' · '+p.extra : ''), dia:clave(new Date(p.t)), id:p.id });
+  });
+  var fuera = {};
+  out.forEach(function(m){ var x = m.extra.match(/anula (#g[a-z0-9]+)/); if(x){ fuera[x[1]] = 1; fuera[m.id] = 1; } });
+  out.forEach(function(m, i){
+    if(!/^corrección: /i.test(m.motivo) || fuera[m.id]) return;
+    var mot = m.motivo.replace(/^corrección: /i, '');
+    for(var j=i-1;j>=0;j--){ var o = out[j]; if(!fuera[o.id] && o.nombre===m.nombre && o.n===-m.n && o.motivo===mot){ fuera[o.id] = 1; fuera[m.id] = 1; return; } }
+  });
+  return out.filter(function(m){ return !fuera[m.id] && m.n; }).sort(function(a, b){ return a.dia<b.dia ? -1 : a.dia>b.dia ? 1 : 0; });
+}
+
+/* ============================================================
+   LOGROS AUTOMÁTICOS (pedido por Javi, 21/10/2026)
+   Se calculan solos con los movimientos de cada alumno; no se guardan en la Hoja.
+   opc.extra(nombre) → logros que añade una página (p. ej. la casa campeona del mes en Hogwarts).
+   Devuelve { nombre: [{ id, ic, n, d, ok, fecha, prog }] }
+   ============================================================ */
+var LOGROS = [
+  { id:'racha5',  ic:'🔥', n:'Racha de 5',        d:'5 días de clase sumando puntos sin ningún negativo entre medias', meta:5,  tipo:'racha' },
+  { id:'racha10', ic:'☄️', n:'Racha de 10',       d:'10 días de clase sumando puntos sin ningún negativo entre medias', meta:10, tipo:'racha' },
+  { id:'gran',    ic:'💥', n:'Gran día',          d:'+10 o más en un solo día', meta:10, tipo:'dia' },
+  { id:'acierto10', ic:'🎯', n:'Buena puntería',  d:'10 aciertos en juegos, ruletas y duelos', meta:10, tipo:'acierto' },
+  { id:'acierto25', ic:'🏹', n:'Puntería de élite', d:'25 aciertos en juegos, ruletas y duelos', meta:25, tipo:'acierto' },
+  { id:'compi3',  ic:'🤝', n:'Compi de confianza', d:'Compi del día 3 veces', meta:3, tipo:'compi' },
+  { id:'fichas10', ic:'🦉', n:'Buen compañero',   d:'10 fichas de los compañeros en la coevaluación', meta:10, tipo:'ficha' }
+];
+function sinTilde(s){ return normal(s).normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function logrosDe(g, opc){
+  opc = opc || {};
+  var gr = grupo(g); if(!gr) return {};
+  var ms = movimientosDe(g), dias = [], porAl = {};
+  ms.forEach(function(m){ if(dias.indexOf(m.dia)<0) dias.push(m.dia); (porAl[m.nombre] = porAl[m.nombre] || []).push(m); });
+  var res = {};
+  gr.nombres.forEach(function(nom){
+    var l = porAl[nom] || [], porDia = {}, cuenta = { acierto:0, compi:0, ficha:0 }, hitos = { acierto:[], compi:[], ficha:[] };
+    l.forEach(function(m){
+      var d = porDia[m.dia] = porDia[m.dia] || { pos:0, neg:0 };
+      if(m.n>0) d.pos += m.n; else d.neg += m.n;
+      var mot = sinTilde(m.motivo), t = null;
+      if(m.n>0 && mot.indexOf('acierto')===0) t = 'acierto';
+      else if(m.n>0 && mot.indexOf('compi del dia')===0) t = 'compi';
+      else if(m.n>0 && /coevaluacion/.test(sinTilde(m.extra))) t = 'ficha';
+      if(t){ cuenta[t]++; hitos[t].push(m.dia); }
+    });
+    var racha = 0, mejor = 0, fRacha = {}, fGran = null, maxDia = 0;
+    dias.forEach(function(d){
+      var x = porDia[d]; if(!x) return;   /* un día sin nada suyo ni suma ni corta */
+      if(x.neg<0){ racha = 0; return; }
+      if(x.pos>0){ racha++; if(racha>mejor) mejor = racha; [5,10].forEach(function(r){ if(racha>=r && !fRacha[r]) fRacha[r] = d; }); }
+      if(x.pos>=10 && !fGran) fGran = d;
+      if(x.pos>maxDia) maxDia = x.pos;
+    });
+    res[nom] = LOGROS.filter(function(L){ return !(L.tipo==='compi' && sistemaDe(g)==='hogwarts'); }).map(function(L){   /* en 4ºA no hay Compi del día */
+      var o = { id:L.id, ic:L.ic, n:L.n, d:L.d, ok:false, fecha:null, prog:'' };
+      if(L.tipo==='racha'){ o.fecha = fRacha[L.meta] || null; o.prog = Math.min(racha, L.meta)+'/'+L.meta; }
+      else if(L.tipo==='dia'){ o.fecha = fGran; o.prog = 'mejor día +'+maxDia; }
+      else { o.fecha = hitos[L.tipo][L.meta-1] || null; o.prog = Math.min(cuenta[L.tipo], L.meta)+'/'+L.meta; }
+      o.ok = !!o.fecha; return o;
+    }).concat(opc.extra ? opc.extra(nom) || [] : []);
+  });
+  return res;
+}
+/* los logros conseguidos ahora: se compara con una foto tomada antes de dar los puntos */
+function fotoLogros(g, opc){ var r = logrosDe(g, opc), f = {}; Object.keys(r).forEach(function(n){ f[n] = r[n].filter(function(o){ return o.ok; }).map(function(o){ return o.id; }); }); return f; }
+function logrosNuevos(g, antes, opc){
+  var r = logrosDe(g, opc), out = [];
+  Object.keys(r).forEach(function(n){ r[n].forEach(function(o){ if(o.ok && (antes[n]||[]).indexOf(o.id)<0) out.push({ nombre:n, logro:o }); }); });
+  return out;
+}
+var CSS_LOGRO =
+  '.jv-logro{position:fixed;inset:0;z-index:9995;display:flex;align-items:center;justify-content:center;gap:2vw;flex-wrap:wrap;padding:20px;pointer-events:none;background:rgba(5,8,16,.5);animation:jvLgF 3.4s ease forwards}'+
+  '@keyframes jvLgF{0%{opacity:0}8%{opacity:1}85%{opacity:1}100%{opacity:0}}'+
+  '.jv-logro .tj{display:flex;flex-direction:column;align-items:center;gap:.3em;padding:.7em 1.4em;border-radius:26px;background:radial-gradient(circle at 50% 20%,#3b2a63,#1a1230);border:5px solid #f3d27a;color:#fff;text-align:center;box-shadow:0 0 60px rgba(243,210,122,.6);font:700 clamp(16px,2.6vw,30px)/1.2 Georgia,serif;animation:jvLgS .7s cubic-bezier(.2,1.6,.4,1) both;max-width:min(90vw,520px)}'+
+  '@keyframes jvLgS{0%{transform:scale(.3) rotate(-10deg);opacity:0}100%{transform:none;opacity:1}}'+
+  '.jv-logro .tj .ic{font-size:2.6em;line-height:1}'+
+  '.jv-logro .tj .t{font:900 .7em/1 system-ui,sans-serif;letter-spacing:.2em;color:#f3d27a}'+
+  '.jv-logro .tj .nm{font:900 1.15em/1.1 Cinzel,Georgia,serif}'+
+  '.jv-logro .tj small{font:600 .6em/1.3 Georgia,serif;opacity:.9}';
+function anunciarLogros(lista){
+  if(!lista || !lista.length) return;
+  if(!document.getElementById('jvCssLogro')){ var c = document.createElement('style'); c.id = 'jvCssLogro'; c.textContent = CSS_LOGRO; document.head.appendChild(c); }
+  var v = document.querySelector('.jv-logro'); if(v) v.remove();
+  v = document.createElement('div'); v.className = 'jv-logro'; v.setAttribute('aria-hidden', 'true');
+  lista.slice(0, 4).forEach(function(x){
+    var t = document.createElement('div'); t.className = 'tj';
+    t.innerHTML = '<span class="t">¡NUEVO LOGRO!</span><span class="ic"></span><span class="nm"></span><span></span><small></small>';
+    t.children[1].textContent = x.logro.ic; t.children[2].textContent = x.nombre; t.children[3].textContent = x.logro.n; t.children[4].textContent = x.logro.d;
+    v.appendChild(t);
+  });
+  setTimeout(function(){ document.body.appendChild(v); if(sonidoPuntosActivo()) fanfarriaLogro(); }, 900);   /* después del aviso de la casa */
+  setTimeout(function(){ v.remove(); }, 4400);
+}
+function fanfarriaLogro(){
+  try{
+    sonCtx = sonCtx || new (window.AudioContext||window.webkitAudioContext)(); if(sonCtx.state==='suspended') sonCtx.resume();
+    var c = sonCtx, t0 = c.currentTime;
+    [[523,0],[659,.12],[784,.24],[1047,.36],[784,.52],[1047,.64]].forEach(function(x){
+      var o = c.createOscillator(), gn = c.createGain(); o.type = 'square'; o.frequency.value = x[0];
+      gn.gain.setValueAtTime(0.0001, t0+x[1]); gn.gain.exponentialRampToValueAtTime(0.07, t0+x[1]+0.02); gn.gain.exponentialRampToValueAtTime(0.0001, t0+x[1]+(x[1]>.6 ? .6 : .2));
+      o.connect(gn); gn.connect(c.destination); o.start(t0+x[1]); o.stop(t0+x[1]+.7);
+    });
+  }catch(e){}
+}
+/* chips de logros para un perfil (HTML); los que faltan salen apagados con lo que llevan */
+function logrosHTML(l){
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
+  return '<div class="jv-logros">'+(l||[]).map(function(o){
+    var f = o.fecha ? o.fecha.split('-') : null;
+    return '<span class="lg'+(o.ok ? ' ok' : '')+'" title="'+esc(o.n+': '+o.d+(o.ok ? ' · conseguido el '+(+f[2])+'/'+(+f[1]) : ' · lleva '+o.prog))+'"><b>'+o.ic+'</b>'+esc(o.n)+(o.ok ? '' : '<small>'+esc(o.prog)+'</small>')+'</span>';
+  }).join('')+'</div>';
+}
+var CSS_LOGROS_CHIPS =
+  '.jv-logros{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}'+
+  '.jv-logros .lg{display:inline-flex;align-items:center;gap:5px;padding:4px 10px 4px 6px;border-radius:999px;font:700 13px/1.2 Georgia,serif;border:1px dashed rgba(160,140,100,.6);opacity:.55;filter:grayscale(1)}'+
+  '.jv-logros .lg b{font-size:17px}'+
+  '.jv-logros .lg small{font:600 11px system-ui,sans-serif;opacity:.85}'+
+  '.jv-logros .lg.ok{opacity:1;filter:none;border:1px solid #c9a34a;background:linear-gradient(180deg,rgba(243,210,122,.35),rgba(201,151,46,.25))}';
+(function(){ var c = document.createElement('style'); c.textContent = CSS_LOGROS_CHIPS; (document.head||document.documentElement).appendChild(c); })();
+
+/* ============================================================
+   DIARIO DE CLASE (pedido por Javi, 21/10/2026)
+   Fila: Alumno «DIARIO · 3ºA», Acción «Diario», CartaId «2026-10-22 · EF», Tipo «si» | «no» (¿se dio la sesión?),
+         Carta = JSON { dado, hecho, pendiente, deberes }. Manda la última.
+   «No se ha dado» (dado:false): la sesión de la SA de ese día y las siguientes se corren a las próximas clases.
+   ============================================================ */
+function diarios(g, asig){
+  var k = normal('DIARIO · '+g), out = {};
+  filas().forEach(function(f){
+    if(normal(f.alumno)!==k || normal(f.accion)!=='diario') return;
+    var p = f.cartaId.split(' · '); if(asig && (p[1]||'EF')!==asig) return;
+    var j = jsonDeFila(f); if(!j) return;
+    j.fecha = p[0]; j.asig = p[1]||'EF'; j.grupo = g; out[f.cartaId] = j;
+  });
+  return Object.keys(out).map(function(c){ return out[c]; }).sort(function(a, b){ return a.fecha<b.fecha ? -1 : a.fecha>b.fecha ? 1 : 0; });
+}
+function diarioDe(g, fecha, asig){ var l = diarios(g, asig).filter(function(d){ return d.fecha===fecha; }); return l[l.length-1] || null; }
+/* el último diario anterior a una fecha (lo que quedó pendiente y los deberes) */
+function diarioAnterior(g, fecha, asig){ var l = diarios(g, asig).filter(function(d){ return d.fecha<fecha; }); return l[l.length-1] || null; }
+function guardarDiario(g, fecha, asig, d){
+  return escribir({ alumno:'DIARIO · '+g, accion:'Diario', cartaId:claveSesion(fecha, asig), tipo:d.dado===false ? 'no' : 'si', carta:JSON.stringify({ dado:d.dado!==false, hecho:d.hecho||'', pendiente:d.pendiente||'', deberes:d.deberes||'' }) });
+}
+/* corre las sesiones de una SA desde el primer día «no se ha dado» a las siguientes clases de su horario */
+function correrSesiones(s, saltar){
+  if(!saltar.length || !HORARIO || !s.grupo) return;
+  var k = -1;
+  s.sesiones.forEach(function(x, i){ if(k<0 && x.fecha && saltar.indexOf(x.fecha)>=0) k = i; });
+  if(k<0) return;
+  var fes = festivos(), f = s.sesiones[k].fecha, i = k, v = 0, asig = s.asig||'EF';
+  while(i < s.sesiones.length && v < 400){
+    if(fes.indexOf(f)<0 && saltar.indexOf(f)<0){
+      sesionesDelDia(f).filter(function(h){ return h.grupo===s.grupo && h.asig===asig; }).sort(function(a, b){ return a.ini.localeCompare(b.ini); }).forEach(function(h){
+        if(i >= s.sesiones.length) return;
+        var x = s.sesiones[i], a = h.ini.split(':'), b = h.fin.split(':');
+        if(x.fecha!==f){ x.movida = x.fecha; x.fecha = f; x.ini = h.ini; x.duracion = ((+b[0]*60 + +b[1]) - (+a[0]*60 + +a[1]))+"'"; }
+        i++;
+      });
+    }
+    f = sumarDias(f, 1); v++;
+  }
+}
+function fechaCorta(f){ var p = f.split('-'); return ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][diaSemana(f)]+' '+(+p[2])+'/'+(+p[1]); }
+var CSS_DIARIO =
+  '.jv-diario textarea{width:100%;min-height:58px;font:15px/1.35 Georgia,serif;padding:8px 10px;border-radius:10px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;margin:2px 0 8px;resize:vertical}'+
+  '.jv-diario label{display:block;text-align:left;font:800 13px/1.2 system-ui,sans-serif;color:#7a2030;margin-top:4px}'+
+  '.jv-diario .dado{display:flex;gap:6px;margin:6px 0 10px}'+
+  '.jv-diario .dado button{flex:1;font:800 14px/1.2 system-ui,sans-serif;padding:10px 8px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}'+
+  '.jv-diario .dado button[aria-pressed="true"]{background:#1c4d31;color:#fff;border-color:#1c4d31}'+
+  '.jv-diario .dado button.no[aria-pressed="true"]{background:#7a2a22;border-color:#7a2a22}'+
+  '.jv-diario .ses{font:600 14px/1.3 Georgia,serif;margin:0 0 4px;color:#3a2a16}'+
+  '.jv-diario .avisoNo{font:600 13px/1.35 Georgia,serif;color:#7a2a22;background:rgba(122,42,34,.08);border-radius:10px;padding:6px 8px;margin:0 0 6px}'+
+  '.jv-diario .caja{width:min(100%,520px);max-height:calc(100vh - 32px);overflow:auto;text-align:left}'+
+  '.jv-diario .caja h2{text-align:center}';
+/* ventana del diario. o = { grupo, fecha, asig, titulo, alGuardar } */
+function abrirDiario(o){
+  if(!document.getElementById('jvCssDiario')){ var c = document.createElement('style'); c.id = 'jvCssDiario'; c.textContent = CSS_LLAVE+CSS_DIARIO; document.head.appendChild(c); }
+  var kb = 'javi-diario-borrador|'+o.grupo+'|'+o.fecha+'|'+o.asig, d = null;
+  try{ d = JSON.parse(leerLocal(kb)); }catch(e){}
+  d = d || diarioDe(o.grupo, o.fecha, o.asig) || { dado:true, hecho:'', pendiente:'', deberes:'' };
+  var sd = sdaDeSesion(o.grupo, o.fecha, o.asig), tit = o.titulo || sd && sd.sesion.titulo || '';
+  var velo = document.createElement('div'); velo.className = 'jv-velo jv-diario';
+  velo.innerHTML = '<div class="jv-caja caja" role="dialog" aria-modal="true" aria-labelledby="jvDT"><h2 id="jvDT"></h2><p class="ses"></p>'+
+    '<div class="dado"><button type="button" class="si" data-d="1">✅ Se ha dado</button><button type="button" class="no" data-d="0">⛔ No se ha dado</button></div>'+
+    '<p class="avisoNo" hidden>Esta sesión y las siguientes de la situación de aprendizaje se correrán a las próximas clases.</p>'+
+    '<label for="jvDh">Qué se ha hecho</label><textarea id="jvDh"></textarea>'+
+    '<label for="jvDp">Queda pendiente</label><textarea id="jvDp"></textarea>'+
+    '<label for="jvDd">Deberes</label><textarea id="jvDd"></textarea>'+
+    '<div class="bts"><button type="button" class="no" data-x="cancelar">Cancelar</button><button type="button" class="si" data-x="guardar">💾 Guardar</button></div></div>';
+  velo.querySelector('h2').textContent = '📓 Diario · '+o.grupo+' · '+(o.asig==='LCL' ? 'Lengua' : o.asig)+' · '+fechaCorta(o.fecha);
+  velo.querySelector('.ses').textContent = tit ? (sd ? 'Sesión '+(sd.sesion.n||sd.i+1)+': ' : '')+tit : '';
+  var dado = d.dado!==false;
+  velo.querySelector('#jvDh').value = d.hecho||''; velo.querySelector('#jvDp').value = d.pendiente||''; velo.querySelector('#jvDd').value = d.deberes||'';
+  function pintarDado(){
+    velo.querySelector('[data-d="1"]').setAttribute('aria-pressed', String(dado));
+    velo.querySelector('[data-d="0"]').setAttribute('aria-pressed', String(!dado));
+    velo.querySelector('.avisoNo').hidden = dado || !sd;
+    velo.querySelector('label[for="jvDh"]').textContent = dado ? 'Qué se ha hecho' : 'Qué se ha hecho en su lugar';
+  }
+  function datos(){ return { dado:dado, hecho:velo.querySelector('#jvDh').value.trim(), pendiente:velo.querySelector('#jvDp').value.trim(), deberes:velo.querySelector('#jvDd').value.trim() }; }
+  velo.addEventListener('input', function(){ guardarLocal(kb, JSON.stringify(datos())); });
+  velo.addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.d){ dado = b.dataset.d==='1'; pintarDado(); guardarLocal(kb, JSON.stringify(datos())); return; }
+    if(b.dataset.x==='cancelar'){ velo.remove(); return; }
+    if(b.dataset.x==='guardar'){
+      guardarLocal(kb, JSON.stringify(datos()));   /* si hay que escribir el código, al volver sigue escrito */
+      if(!(!!llave() || (PRUEBA_FIJA && !PROBAR_CANDADO))){ velo.remove(); pedirCodigo({ titulo:'🔐 Código para guardar el diario', texto:'Escribe el código y, cuando la página vuelva, abre otra vez el diario: lo que has escrito sigue ahí.' }); return; }
+      guardarDiario(o.grupo, o.fecha, o.asig, datos());
+      try{ localStorage.removeItem(kb); }catch(err){}
+      velo.remove(); if(o.alGuardar) o.alGuardar();
+    }
+  });
+  pintarDado(); document.body.appendChild(velo);
+  setTimeout(function(){ velo.querySelector('#jvDh').focus(); }, 50);
+}
+/* resumen de una línea de un diario (para las tarjetas) */
+function textoDiario(d){
+  if(!d) return '';
+  var t = [];
+  if(d.dado===false) t.push('⛔ No se dio la sesión');
+  if(d.hecho) t.push((d.dado===false ? 'En su lugar: ' : '✅ ')+d.hecho);
+  if(d.pendiente) t.push('⏳ Pendiente: '+d.pendiente);
+  if(d.deberes) t.push('🏠 Deberes: '+d.deberes);
+  return t.join(' · ');
+}
+
+/* ============================================================
    HORARIO, PLANES DE SESIÓN Y SITUACIONES DE APRENDIZAJE
    - data/horario.json: sesiones de la semana (día, hora, grupo, asignatura)
    - Plan de una sesión: Alumno «PLAN · 4ºA», Acción «Plan», CartaId «2026-10-08 · LCL», JSON
@@ -368,6 +620,17 @@ function sdas(){
   filas().forEach(function(f){
     if(normal(f.accion)!=='sda' || normal(f.alumno).indexOf('sda · ')!==0) return;
     var j = jsonDeFila(f); if(j && j.id){ if(por[j.id] && por[j.id].pagina && !j.pagina) j.pagina = por[j.id].pagina; por[j.id] = j; }   /* la versión editada en la web manda */
+  });
+  /* «No se ha dado» en el diario: esa sesión y las siguientes se corren */
+  var noDadas = {};
+  filas().forEach(function(f){
+    if(normal(f.accion)!=='diario' || normal(f.alumno).indexOf('diario · ')!==0) return;
+    var k = f.alumno.replace(/^\s*DIARIO · /i, '').trim()+'|'+(f.cartaId.split(' · ')[1]||'EF');
+    var m = noDadas[k] = noDadas[k] || {}; m[f.cartaId.split(' · ')[0]] = normal(f.tipo)==='no';   /* manda la última */
+  });
+  Object.keys(por).forEach(function(id){
+    var s = por[id], m = noDadas[s.grupo+'|'+(s.asig||'EF')]; if(!m || !s.sesiones) return;
+    correrSesiones(s, Object.keys(m).filter(function(f){ return m[f]; }));
   });
   return Object.keys(por).map(function(k){ return por[k]; }).filter(function(s){ return !s.borrada; })
     .sort(function(a,b){ return (a.inicio||'').localeCompare(b.inicio||''); });
@@ -700,6 +963,8 @@ window.JAVI = {
   grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
+  movimientosDe:movimientosDe, logrosDe:logrosDe, fotoLogros:fotoLogros, logrosNuevos:logrosNuevos, anunciarLogros:anunciarLogros, logrosHTML:logrosHTML, LOGROS:LOGROS,
+  diarios:diarios, diarioDe:diarioDe, diarioAnterior:diarioAnterior, guardarDiario:guardarDiario, abrirDiario:abrirDiario, textoDiario:textoDiario,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, botonSonidoPuntos:botonSonidoPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,

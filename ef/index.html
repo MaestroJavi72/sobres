@@ -351,6 +351,8 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
         <div class="etiq" id="pSig"></div>
       </div>
     </div>
+    <h4>Logros</h4>
+    <div id="pLogros"></div>
     <h4>Puntos del profe</h4>
     <div class="motivos" id="pMotivos"></div>
     <h4>Sus cartas</h4>
@@ -829,6 +831,7 @@ function enviarForm(d){
 }
 /* mov: {alumno(clave completa), accion, n, motivo, extra} */
 function registrar(alumnoClave, accion, n, motivo, extra, cartaId){
+  var foto = null; if(/^galeon/i.test(accion) && n>0) try{ foto = JAVI.fotoLogros(grupo); }catch(e){}   /* logros: para avisar de los nuevos */
   var p = { id:idMov(), alumno:alumnoClave, accion:accion, n:n, motivo:motivo||'', extra:extra||'', cartaId:cartaId||'', t:Date.now() };
   pendientes.push(p); guardarPend();
   if(esHog()){   /* que se vea ya también en Hogwarts */
@@ -837,6 +840,7 @@ function registrar(alumnoClave, accion, n, motivo, extra, cartaId){
     lh.push(p); try{ localStorage.setItem(kh, JSON.stringify(lh)); }catch(e){}
   }
   enviarForm({ alumno:alumnoClave, accion:accion, cartaId: cartaId ? String(cartaId) : String(n), tipo:p.motivo, carta:p.id+(extra?' · '+extra:'') });
+  if(foto) try{ JAVI.anunciarLogros(JAVI.logrosNuevos(grupo, foto)); }catch(e){}
   return p;
 }
 /* todas las filas como movimientos homogéneos */
@@ -1311,6 +1315,7 @@ function pintarPerfil(){
   $('pBarra').style.width = pct+'%'; $('pBarra').style.background = nv.c;
   $('pNums').innerHTML = '<span><b>'+c.saldo+'</b> '+MON+' de saldo</span><span><b>'+c.acum+'</b> acumulados</span>';
   $('pSig').textContent = huevo ? 'Faltan '+(-c.acum)+' para salir '+(ESTILO==='vengadores' ? 'de la cápsula' : 'del huevo') : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+nomNivel(n, nv.sig) : '¡Nivel máximo!');
+  try{ $('pLogros').innerHTML = JAVI.logrosHTML((JAVI.logrosDe(grupo)||{})[n]); }catch(e){ $('pLogros').innerHTML = ''; }
   var box = $('pMotivos'); box.innerHTML = '';
   EF.motivosProfe.forEach(function(m){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo'+(m.g<0 ? ' neg' : '');
