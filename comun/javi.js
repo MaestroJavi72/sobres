@@ -251,9 +251,22 @@ function darPuntos(g, nombre, n, motivo, detalle){
 }
 /* SONIDO AL DAR O QUITAR PUNTOS (pedido por Javi, 21/10/2026): sintetizado, sin archivos.
    Positivo: campanitas mágicas que suben (más notas cuantos más puntos). Negativo: «uooo» que baja. */
-var sonCtx = null;
+var sonCtx = null, CLAVE_SON_PUNTOS = 'javi-sonido-puntos';
+/* 🔔/🔕: se guarda en este dispositivo y vale para Hogwarts y EF a la vez */
+function sonidoPuntosActivo(){ return leerLocal(CLAVE_SON_PUNTOS)!=='no'; }
+function botonSonidoPuntos(clase){
+  var b = document.createElement('button'); b.type = 'button'; b.className = clase||'';
+  function pintar(){ var on = sonidoPuntosActivo(); b.textContent = on ? '🔔' : '🔕'; b.title = on ? 'Silenciar el sonido de los puntos' : 'Activar el sonido de los puntos'; b.setAttribute('aria-pressed', String(!on)); b.setAttribute('aria-label', b.title); }
+  b.addEventListener('click', function(){
+    guardarLocal(CLAVE_SON_PUNTOS, sonidoPuntosActivo() ? 'no' : 'si');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-son-puntos]'), function(x){ x.pintar(); });
+    if(sonidoPuntosActivo()) sonarPuntos(1);
+  });
+  b.setAttribute('data-son-puntos', ''); b.pintar = pintar; pintar();
+  return b;
+}
 function sonarPuntos(n){
-  if(!n) return;
+  if(!n || !sonidoPuntosActivo()) return;
   try{
     sonCtx = sonCtx || new (window.AudioContext||window.webkitAudioContext)(); if(sonCtx.state==='suspended') sonCtx.resume();
     var c = sonCtx, t0 = c.currentTime;
@@ -682,7 +695,7 @@ window.JAVI = {
   grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
-  darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
+  darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, botonSonidoPuntos:botonSonidoPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,
   util:{ normal:normal, pad:pad, clave:clave, rnd:rnd, idMov:idMov, fechaFila:fechaFila, leerCSV:leerCSV }
