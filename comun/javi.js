@@ -350,6 +350,8 @@ function sdas(){
         for(var j=1;j<=k;j++){ var s2 = JSON.parse(JSON.stringify(s)); s2.n = i+1; if(k>1){ s2.titulo += ' ('+j+'.ª parte)'; s2.parte = j; } ses.push(s2); }
       });
       c.sesiones = ses;
+      /* «saltar»: días de esa clase en que no se dio la SA (p. ej. un día de teoría por lluvia): {"3ºA":["2026-10-21"]} */
+      c.saltar = (x.saltar||{})[g] || [];
       if(c.inicio && HORARIO){
         repartirSda(c);
         c.sesiones.forEach(function(s){
@@ -372,7 +374,7 @@ function guardarSda(s){ return escribir({ alumno:'SDA · '+s.grupo, accion:'SdA'
 function repartirSda(s){
   var fes = festivos(), f = s.inicio, i = 0, vueltas = 0;
   while(i < s.sesiones.length && vueltas < 400){
-    if(fes.indexOf(f)<0){
+    if(fes.indexOf(f)<0 && (s.saltar||[]).indexOf(f)<0){
       sesionesDelDia(f).forEach(function(h){ if(i < s.sesiones.length && h.grupo===s.grupo && h.asig===s.asig){ s.sesiones[i].fecha = f; s.sesiones[i].ini = h.ini; i++; } });
     }
     f = sumarDias(f, 1); vueltas++;
