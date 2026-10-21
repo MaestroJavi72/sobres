@@ -249,6 +249,29 @@ function darPuntos(g, nombre, n, motivo, detalle){
   } else console.info('[modo prueba] no se envía', p);
   return { id:p.id, n:p.n, mult:mult };
 }
+/* SONIDO AL DAR O QUITAR PUNTOS (pedido por Javi, 21/10/2026): sintetizado, sin archivos.
+   Positivo: campanitas mágicas que suben (más notas cuantos más puntos). Negativo: «uooo» que baja. */
+var sonCtx = null;
+function sonarPuntos(n){
+  if(!n) return;
+  try{
+    sonCtx = sonCtx || new (window.AudioContext||window.webkitAudioContext)(); if(sonCtx.state==='suspended') sonCtx.resume();
+    var c = sonCtx, t0 = c.currentTime;
+    function nota(f, t, dur, tipo, vol, fFin){
+      var o = c.createOscillator(), g = c.createGain(); o.type = tipo; o.frequency.setValueAtTime(f, t0+t);
+      if(fFin) o.frequency.exponentialRampToValueAtTime(fFin, t0+t+dur);
+      g.gain.setValueAtTime(0.0001, t0+t); g.gain.exponentialRampToValueAtTime(vol, t0+t+0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0+t+dur);
+      o.connect(g); g.connect(c.destination); o.start(t0+t); o.stop(t0+t+dur+0.05);
+    }
+    if(n>0){
+      var esc = [784, 988, 1175, 1568, 1976], k = Math.min(esc.length, 2+Math.min(3, Math.abs(n)-1));
+      for(var i=0;i<k;i++){ nota(esc[i], i*0.07, 0.35, 'triangle', 0.16); nota(esc[i]*2, i*0.07+0.02, 0.25, 'sine', 0.05); }
+      nota(2637, k*0.07, 0.5, 'sine', 0.06);   /* destello final */
+    } else {
+      nota(392, 0, 0.28, 'sawtooth', 0.07, 330); nota(311, 0.26, 0.55, 'sawtooth', 0.07, 220);
+    }
+  }catch(e){}
+}
 /* deshacer: el movimiento contrario (nunca se borra nada) */
 function quitarPuntos(g, nombre, mov, motivo){
   return darPuntos(g, nombre, -mov.n, 'Anulado: '+(motivo||''), 'anula '+mov.id);
@@ -659,7 +682,7 @@ window.JAVI = {
   grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
-  darPuntos:darPuntos, quitarPuntos:quitarPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
+  darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,
   util:{ normal:normal, pad:pad, clave:clave, rnd:rnd, idMov:idMov, fechaFila:fechaFila, leerCSV:leerCSV }

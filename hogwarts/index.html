@@ -2451,7 +2451,7 @@ function aplicar(nombres, n, motivo, cat){
     else if(antes[x].acum >= 0 && cs[x].acum < 0) avisos.push(x+' vuelve al huevo');
     else if(antes[x].acum >= 0 && d.i > a.i) avisos.push(x+' alcanza el nivel '+nombreNivel(x, d));
   });
-  flotar((n>0 ? '+' : '−')+Math.abs(n), n<0);
+  flotar((n>0 ? '+' : '−')+Math.abs(n), n<0); try{ JAVI.sonarPuntos(n); }catch(e){}
   var para = nombres.length===1 ? nombres[0] : nombres.length+' alumnos';
   aviso(avisos.length ? '¡'+avisos.join(' · ')+'!' : (n>0 ? '+'+n+' · '+motivo+' · '+para : '−'+(-n)+' · '+motivo+' · '+para));
   pintarBanco();

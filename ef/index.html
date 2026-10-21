@@ -544,6 +544,7 @@ function flotar(txt, neg, el){
   var f = document.createElement('span'); f.className = 'flota'; f.textContent = txt; if(neg) f.style.color = 'var(--rojoT)';
   f.style.left = (r.left + r.width/2)+'px'; f.style.top = (r.top + 20)+'px';
   document.body.appendChild(f); setTimeout(function(){ f.remove(); }, 1300);
+  try{ var v = parseInt(String(txt).replace('−','-'), 10); if(v) JAVI.sonarPuntos(neg ? -Math.abs(v) : v); }catch(e){}   /* sonido al dar o quitar puntos */
 }
 
 /* ---------- compatibilidad con el dibujo de personajes de Javificación ---------- */
