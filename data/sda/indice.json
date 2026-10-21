@@ -334,6 +334,14 @@
     "4ºA",
     "4ºB"
    ],
+   "notas": {
+    "3ºA": {
+     "2026-10-22": "terminar la última prueba del breakout y, con lo que sobre, tiempo libre."
+    },
+    "3ºB": {
+     "2026-10-22": "ordenar las pistas y sacar el código del cofre; con lo que sobre, tiempo libre."
+    }
+   },
    "saltar": {
     "3ºA": [
      "2026-10-21"

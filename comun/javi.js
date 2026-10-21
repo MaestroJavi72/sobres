@@ -358,6 +358,9 @@ function sdas(){
           var h = s.fecha && sesionesDelDia(s.fecha).filter(function(k){ return k.grupo===g && k.asig===c.asig && k.ini===s.ini; })[0];
           if(h){ var a = h.ini.split(':'), b = h.fin.split(':'); s.duracion = ((+b[0]*60 + +b[1]) - (+a[0]*60 + +a[1]))+"'"; }
         });
+        /* «notas»: lo que Javi ha decidido para un día concreto de una clase; va delante del objetivo */
+        var nt = (x.notas||{})[g] || {};
+        c.sesiones.forEach(function(s){ if(s.fecha && nt[s.fecha]) s.objetivo = 'Este día: '+nt[s.fecha]+' · '+(s.objetivo||''); });
       }
       por[c.id] = c;
     });
