@@ -194,7 +194,9 @@ function tocar(id, src){
 
 /* ---------- mp3 por ENLACE (p. ej. Google Drive de Javi): la lista va a la Hoja (ajuste «musica-enlaces»)
    y sale en todos los aparatos. Añadir o quitar pide el código; escuchar, no. ---------- */
-function enlaces(){ try{ var l = JSON.parse((window.JAVI && JAVI.ajuste('musica-enlaces')) || '[]'); return Array.isArray(l) ? l : []; }catch(e){ return []; } }
+/* 22/10/2026: Google Drive ya no deja reproducir sus audios desde otras webs (403 en las peticiones cross-site), así que sus enlaces no se usan */
+function esDrive(u){ return /drive\.google\.com|drive\.usercontent\.google\.com|docs\.google\.com/.test(String(u)); }
+function enlaces(){ try{ var l = JSON.parse((window.JAVI && JAVI.ajuste('musica-enlaces')) || '[]'); return Array.isArray(l) ? l.filter(function(x){ return !esDrive(x.u); }) : []; }catch(e){ return []; } }
 function urlAudio(u){
   var m = String(u).match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([\w-]{20,})/);
   return m ? 'https://drive.usercontent.google.com/download?id='+m[1]+'&export=download&confirm=t' : String(u).trim();   /* confirm=t: sin la página del antivirus de Drive */
@@ -203,6 +205,7 @@ function conLlave(fn){ if(!window.JAVI) return; if(JAVI.llaveAbierta()) fn(); el
 function anadirEnlace(){
   var inp = caja.querySelector('[data-urlmp3]'), u = inp.value.trim();
   if(!/^https?:\/\//.test(u)){ inp.value = ''; inp.placeholder = 'Pega un enlace que empiece por https://'; return; }
+  if(esDrive(u)){ inp.value = ''; alert('Google Drive no deja reproducir sus audios desde otras webs. Usa «📁 Añadir mp3» (se guarda en este aparato) o un vídeo de YouTube.'); return; }
   conLlave(function(){
     var t = prompt('¿Qué nombre le ponemos?', 'Música de Hogwarts'); if(t===null) return;
     var l = enlaces(), x = { id:'u'+Date.now().toString(36), t:(t.trim() || 'Música').slice(0, 60), u:u };
@@ -299,7 +302,7 @@ function pintarEnl(){
   caja.querySelector('[data-enl]').innerHTML = enlaces().map(function(m){
     var t = String(m.t).replace(/[<>&"]/g, '');
     return '<div class="fila"><button type="button" data-e="url:'+m.id+'" title="'+t+'">▶ '+t+'</button><button type="button" class="x" data-quitaenl="'+m.id+'" title="Quitar la música de la lista">✕</button></div>';
-  }).join('') || '<span class="aviso">Ninguno. Sube el mp3 a tu Google Drive, compártelo como «Cualquier persona con el enlace» y pega aquí el enlace.</span>';
+  }).join('') || '<span class="aviso">Ninguno. Pega el enlace directo a un mp3 (Google Drive no sirve: no deja reproducirlo desde otras webs).</span>';
 }
 function pintarMp3(){
   caja.querySelector('[data-mp3]').innerHTML = MP3.map(function(m){
@@ -378,7 +381,7 @@ function desdeDireccion(){
   var m = location.search.match(/[?&]musica=([^&#]+)/); if(!m) return;
   var u = decodeURIComponent(m[1]);
   try{ history.replaceState(null, '', location.pathname+location.search.replace(/([?&])musica=[^&#]+&?/, '$1').replace(/[?&]$/, '')+location.hash); }catch(e){}
-  if(!/^https?:\/\//.test(u) || enlaces().some(function(x){ return urlAudio(x.u)===urlAudio(u); })) return;
+  if(!/^https?:\/\//.test(u) || esDrive(u) || enlaces().some(function(x){ return urlAudio(x.u)===urlAudio(u); })) return;
   conLlave(function(){
     var l = enlaces(), x = { id:'u'+Date.now().toString(36), t:'Música de Hogwarts', u:u };
     l.push(x); JAVI.guardarAjuste('musica-enlaces', JSON.stringify(l));
