@@ -10,7 +10,7 @@
 if(window.JAVI_MUSICA || /[?&](solo|alumno)\b/.test(location.search)) return;   /* en las tablets de los alumnos, no */
 var K = 'javi-musica';
 function leer(){ try{ return JSON.parse(localStorage.getItem(K)) || {}; }catch(e){ return {}; } }
-function guardar(){ try{ localStorage.setItem(K, JSON.stringify({ on:on, estilo:estilo, vol:vol })); }catch(e){} }
+function guardar(){ try{ localStorage.setItem(K, JSON.stringify({ on:on, estilo:estilo, vol:vol, elegida:!!st.elegida })); }catch(e){} }
 var st = leer(), on = !!st.on, estilo = st.estilo || 'calma', vol = st.vol==null ? 0.35 : st.vol;
 var ESTILOS = { calma:'🌙 Calma', piano:'🎹 Piano', lluvia:'🌧️ Lluvia' };
 
@@ -328,7 +328,7 @@ function anadir(){
 }
 caja.addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
-  if(b.dataset.e){ estilo = b.dataset.e; on = true; arrancar(); }
+  if(b.dataset.e){ estilo = b.dataset.e; st.elegida = true; on = true; arrancar(); }
   else if(b.dataset.quitaenl){ if(confirm('¿Quitar esta música de la lista de todos los aparatos?')) quitarEnlace(b.dataset.quitaenl); return; }
   else if(b.dataset.a==='anadirenl'){ anadirEnlace(); return; }
   else if(b.dataset.quitamp3){
@@ -366,7 +366,27 @@ function montar(){
   var seguir = function(){ document.removeEventListener('pointerdown', seguir, true); document.removeEventListener('keydown', seguir, true); if(on){ arrancar(); pintar(); } };
   document.addEventListener('pointerdown', seguir, true); document.addEventListener('keydown', seguir, true);
 }
-if(window.JAVI) JAVI.listo(function(){ pintar(!!(on && !(timer || yt || (audio && !audio.paused)))); });
+/* LA MÚSICA DE JAVI EN TODOS LOS APARATOS (22/10/2026): si este aparato nunca ha elegido música,
+   suena la primera de la lista de enlaces de la Hoja; y si esa ya no está, vuelve a Calma. */
+function porDefecto(){
+  var l = enlaces();
+  if(/^url:/.test(estilo) && !l.some(function(x){ return 'url:'+x.id===estilo; })) estilo = 'calma';
+  if(!st.elegida && l.length && !/^(mp3|yt):/.test(estilo)) estilo = 'url:'+l[0].id;
+}
+/* ?musica=<enlace> en cualquier página: lo añade a la lista de todos los aparatos (pide el código una vez) */
+function desdeDireccion(){
+  var m = location.search.match(/[?&]musica=([^&#]+)/); if(!m) return;
+  var u = decodeURIComponent(m[1]);
+  try{ history.replaceState(null, '', location.pathname+location.search.replace(/([?&])musica=[^&#]+&?/, '$1').replace(/[?&]$/, '')+location.hash); }catch(e){}
+  if(!/^https?:\/\//.test(u) || enlaces().some(function(x){ return urlAudio(x.u)===urlAudio(u); })) return;
+  conLlave(function(){
+    var l = enlaces(), x = { id:'u'+Date.now().toString(36), t:'Música de Hogwarts', u:u };
+    l.push(x); JAVI.guardarAjuste('musica-enlaces', JSON.stringify(l));
+    estilo = 'url:'+x.id; st.elegida = true; guardar(); pintar();
+    alert('🎵 Música guardada para todos los aparatos. Toca 🎵 y «▶ Poner música».');
+  });
+}
+if(window.JAVI) JAVI.listo(function(){ porDefecto(); desdeDireccion(); pintar(!!(on && !(timer || yt || (audio && !audio.paused)))); });
 window.JAVI_MUSICA = { arrancar:arrancar, parar:parar };
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', montar); else montar();
 })();

@@ -226,6 +226,8 @@ function candidatos(rol, excluir){
 }
 function azar(l){ return l[Math.floor(U.rnd()*l.length)]; }
 function guardar(rol, nombre){ JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:ACCION[rol], cartaId:fecha, tipo:nombre }); }
+/* «Ya lo ha sido» (pedido por Javi, 22/10/2026): fue capitán o responsable antes de usar la web. Cuenta como hecho en la ronda, sin fecha */
+function yaFue(rol, nombre){ JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:ACCION[rol], cartaId:'ya lo ha sido', tipo:nombre }); }
 function anular(rol, r){ JAVI.escribir({ alumno:'SORTEO · '+grupo, accion:ACCION[rol], cartaId:r.fecha||'sin fecha', tipo:r.alumno, carta:'anula '+r.id }); }
 
 /* ============================================================
@@ -237,7 +239,8 @@ function pintarResp(){
   box.innerHTML = '';
   if(rPropuesto){
     nom.textContent = rPropuesto; nom.classList.remove('vacio');
-    box.innerHTML = '<button class="gran ok" id="rVale" type="button">✅ ¡Vale!</button><button class="gran sec" id="rOtro" type="button">🔁 No está, otro</button>';
+    box.innerHTML = '<button class="gran ok" id="rVale" type="button">✅ ¡Vale!</button><button class="gran sec" id="rOtro" type="button">🔁 No está, otro</button><button class="gran sec" id="rYaFue" type="button">✋ Ya lo ha sido, otro</button>';
+    $('rYaFue').addEventListener('click', function(){ yaFue('responsable', rPropuesto); aviso(rPropuesto+' ya fue responsable: cuenta como hecho.'); rPropuesto = null; sortearResp(true); });
     $('rVale').addEventListener('click', function(){
       var antes = rondas(grupo, 'responsable').n;
       guardar('responsable', rPropuesto); rPropuesto = null; fanfarria(); pintarTodo();
@@ -274,7 +277,8 @@ function pintarCap(){
   if(cPropuestos){
     n1.textContent = cPropuestos[0]; n2.textContent = cPropuestos[1]; n1.classList.remove('vacio'); n2.classList.remove('vacio');
     box.innerHTML = '<button class="gran ok" id="cVale" type="button">✅ ¡Vale!</button>'+
-      '<button class="gran sec" id="cOtro1" type="button">🔁 '+esc(cPropuestos[0])+' no está</button><button class="gran sec" id="cOtro2" type="button">🔁 '+esc(cPropuestos[1])+' no está</button>';
+      '<button class="gran sec" id="cOtro1" type="button">🔁 '+esc(cPropuestos[0])+' no está</button><button class="gran sec" id="cOtro2" type="button">🔁 '+esc(cPropuestos[1])+' no está</button>'+
+      '<button class="gran sec" id="cYaFue1" type="button">✋ '+esc(cPropuestos[0])+' ya lo ha sido</button><button class="gran sec" id="cYaFue2" type="button">✋ '+esc(cPropuestos[1])+' ya lo ha sido</button>';
     $('cVale').addEventListener('click', function(){
       var antes = rondas(grupo, 'capitan').n;
       cPropuestos.forEach(function(n){ guardar('capitan', n); });
@@ -282,6 +286,13 @@ function pintarCap(){
       if(rondas(grupo, 'capitan').n > antes) aviso('🎉 ¡Ya han sido capitanes todos! Empieza una ronda nueva.');
     });
     [0,1].forEach(function(i){
+      $('cYaFue'+(i+1)).addEventListener('click', function(){
+        yaFue('capitan', cPropuestos[i]); aviso(cPropuestos[i]+' ya fue capitán: cuenta como hecho.');
+        var c = candidatos('capitan', [cPropuestos[1-i]].concat(excluidosCap()));
+        if(!c.lista.length){ aviso('No hay más alumnos presentes.'); return; }
+        var n = azar(c.lista);
+        animar($(i ? 'c2' : 'c1'), n, function(){ cPropuestos[i] = n; pintarCap(); });
+      });
       $('cOtro'+(i+1)).addEventListener('click', function(){
         marcarFalta(cPropuestos[i]);
         var c = candidatos('capitan', [cPropuestos[1-i]].concat(excluidosCap()));
@@ -325,8 +336,8 @@ function pintarRol(rol, p){
   $(p+'YaT').textContent = '✅ Ya han salido ('+hechos+')';
   $(p+'FaltaT').textContent = '⏳ Faltan ('+v.quedan.length+')';
   var ya = v.clase.filter(function(n){ return v.ya[n]; }).sort(function(a,b){ return a.localeCompare(b,'es'); });
-  $(p+'Ya').innerHTML = ya.map(function(n){ var f = v.ya[n]; return '<span title="'+(f==='antes' ? 'Antes del 7/10' : f)+'">'+esc(n)+(f!=='antes' ? ' · '+f.split('-').reverse().slice(0,2).join('/') : '')+'</span>'; }).join('') || '<span>Nadie todavía</span>';
-  $(p+'Falta').innerHTML = v.quedan.slice().sort(function(a,b){ return a.localeCompare(b,'es'); }).map(function(n){ return '<span>'+esc(n)+'</span>'; }).join('') || '<span>¡Ya han salido todos!</span>';
+  $(p+'Ya').innerHTML = ya.map(function(n){ var f = v.ya[n]; return '<span title="'+(f==='antes' ? 'Ya lo había sido antes' : f)+'">'+esc(n)+(f!=='antes' ? ' · '+f.split('-').reverse().slice(0,2).join('/') : '')+'</span>'; }).join('') || '<span>Nadie todavía</span>';
+  $(p+'Falta').innerHTML = v.quedan.slice().sort(function(a,b){ return a.localeCompare(b,'es'); }).map(function(n){ return '<span data-yafue="'+esc(n)+'" role="button" tabindex="0" title="Toca si ya lo ha sido" style="cursor:pointer">'+esc(n)+'</span>'; }).join('') || '<span>¡Ya han salido todos!</span>';
 }
 function deshacer(rol){
   var lista = registros(grupo, rol).filter(function(r){ return r.id; });
@@ -338,6 +349,15 @@ function deshacer(rol){
   if(rol==='responsable'){ rPropuesto = null; } else { cPropuestos = null; }
   aviso('Sorteo deshecho.'); pintarTodo();
 }
+/* tocar a alguien de «Faltan»: ya lo ha sido */
+[['rFalta','responsable'],['cFalta','capitan']].forEach(function(x){
+  $(x[0]).addEventListener('click', function(e){
+    var b = e.target.closest('[data-yafue]'); if(!b) return;
+    var n = b.dataset.yafue;
+    if(!confirm('¿'+n+' ya ha sido '+(x[1]==='capitan' ? 'capitán' : 'responsable')+'? Pasará a «Ya han salido» y no saldrá en esta ronda.')) return;
+    yaFue(x[1], n); aviso(n+': hecho.'); pintarTodo();
+  });
+});
 $('rDeshacer').addEventListener('click', function(){ deshacer('responsable'); });
 $('cDeshacer').addEventListener('click', function(){ deshacer('capitan'); });
 
