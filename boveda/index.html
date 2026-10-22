@@ -77,6 +77,9 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #8a6a1f;border-radius:14px;padding:14px;box-shadow:0 4px 0 #7a5a14}
 .guardar:disabled{filter:grayscale(.7);opacity:.6;cursor:default;box-shadow:none}
 .recreo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--tinta2);margin-bottom:6px;cursor:pointer}
+.lugar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.lugar button{flex:1;min-width:150px;font-family:inherit;font-weight:800;font-size:17px;line-height:1.2;padding:10px 12px;border-radius:14px;border:2px dashed #b8934f;background:transparent;color:var(--tinta2);cursor:pointer}
+.lugar button[aria-pressed="true"]{border-style:solid;background:#a87c22;color:#fff;border-color:#a87c22}
 .recreo input{width:22px;height:22px;accent-color:#a87c22}
 .hecha{margin-top:12px;background:#e3f2d9;border:2px solid #7cb36a;border-radius:12px;padding:10px 12px;font-weight:700;color:#2d5a1e}
 .hecha button{margin-left:8px;background:none;border:none;text-decoration:underline;color:#7a2a22;font-weight:700}
@@ -301,6 +304,14 @@ var CONF = {
     'Ausencia de peleas o discusiones',
     'Recogida del material y fila ordenada y en silencio para subir'
   ],
+  /* ítems para los días en el AULA (lluvia, teoría o clase perdida por el comportamiento; pedido por Javi, 22/10/2026) */
+  itemsAula: [
+    'Llegada a clase: entrar en silencio y sentarse en su sitio',
+    'Atención a la explicación',
+    'Trabajo y participación en las actividades',
+    'Ausencia de peleas o discusiones',
+    'Orden al terminar: material recogido, sillas en su sitio y en silencio'
+  ],
   /* ítem extra que solo se evalúa algunos días (se pone delante). Días: 1=lunes … 5=viernes.
      En la pantalla hay una casilla para ponerlo o quitarlo a mano si cambia el horario. */
   extra: { item:'Subida del recreo: fila ordenada y en silencio', dias: { '3ºA':[3], '3ºB':[1,4] } },
@@ -440,7 +451,16 @@ var notas = [];
 var recreo = {};   /* grupo → true/false si se ha cambiado a mano hoy */
 function tocaRecreo(g){ return (CONF.extra.dias[g]||[]).indexOf(new Date().getDay())>=0; }
 function conRecreo(g){ return g in recreo ? recreo[g] : tocaRecreo(g); }
-function itemsDe(g){ return (conRecreo(g) ? [CONF.extra.item] : []).concat(CONF.items); }
+/* ⚽ en la pista o 📚 en el aula: por defecto en el aula si hoy se ha llegado al límite de tiempo perdido o el diario dice que no se dio la clase */
+var aula = {};
+function enAula(g){
+  if(g in aula) return aula[g];
+  var hoy = clave(new Date());
+  try{ var t = JSON.parse(localStorage.getItem('tiempo-perdido|'+g+'|'+hoy)); if(t && t.s/60 >= (/^3/.test(g) ? 20 : 30)) return true; }catch(e){}
+  try{ var d = window.JAVI && JAVI.diarioDe && JAVI.diarioDe(g, hoy, 'EF'); if(d && d.dado===false) return true; }catch(e){}
+  return false;
+}
+function itemsDe(g){ return (conRecreo(g) ? [CONF.extra.item] : []).concat(enAula(g) ? CONF.itemsAula : CONF.items); }
 function media(){
   var it = itemsDe(grupo), s = 0, i;
   for(i=0;i<it.length;i++){ if(!notas[i]) return null; s += notas[i]; }
@@ -463,6 +483,15 @@ function pintar(){
   pintarGrupos();
   $('tGrupo').textContent = grupo;
   var hecha = autoevHoy(grupo), it = itemsDe(grupo), box = $('items'); box.innerHTML = '';
+  if(!hecha){
+    var lg = document.createElement('div'); lg.className = 'lugar';
+    lg.innerHTML = '<button type="button" data-aula="0">⚽ Clase en la pista</button><button type="button" data-aula="1">📚 Clase en el aula (lluvia o teoría)</button>';
+    Array.prototype.forEach.call(lg.children, function(b){
+      b.setAttribute('aria-pressed', String((b.dataset.aula==='1')===enAula(grupo)));
+      b.addEventListener('click', function(){ aula[grupo] = b.dataset.aula==='1'; notas = []; pintar(); });
+    });
+    box.appendChild(lg);
+  }
   if(!hecha && CONF.extra.dias[grupo]){
     var lb = document.createElement('label'); lb.className = 'recreo';
     lb.innerHTML = '<input type="checkbox"> Hoy venimos del recreo (añade el ítem de la subida)';
@@ -602,7 +631,7 @@ function guardar(){
   var gal = Math.round(m), it = itemsDe(grupo);
   var det = it.map(function(t, i){ return (i+1)+': '+notas[i]; }).join(', ');
   var antes = saldoDe(grupo);
-  registrar(bovClave(grupo), 'Boveda', gal, 'Autoevaluación (media '+m.toFixed(1).replace('.',',')+')', det);
+  registrar(bovClave(grupo), 'Boveda', gal, 'Autoevaluación'+(enAula(grupo) ? ' en el aula' : '')+' (media '+m.toFixed(1).replace('.',',')+')', det);
   notas = [];
   pintar();
   animar(gal, antes, grupo);
