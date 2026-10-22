@@ -269,14 +269,22 @@ css.textContent =
   '.jv-mus .mini .bar span{flex:1}'+
   '.jv-mus .mini .bar button{font:700 12px system-ui,sans-serif;padding:3px 8px;border-radius:7px;border:1px solid #6b5a8a;background:rgba(255,255,255,.08);color:#f6e3a1;cursor:pointer}'+
   '.jv-mus .mini .cuadro{width:200px;height:113px;border-radius:7px;overflow:hidden;background:#000}'+
+  '.jv-mus .efx{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}'+
+  '.jv-mus .efx button{font:700 12px/1.1 system-ui,sans-serif;padding:7px 2px 6px;border-radius:10px;border:1px solid #6b5a8a;background:rgba(255,255,255,.06);color:#f6e3a1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}'+
+  '.jv-mus .efx button b{font-size:22px;line-height:1}'+
+  '.jv-mus .efx button[aria-pressed="true"]{background:#c9a34a;color:#2b1c05;border-color:#c9a34a;animation:jvMusE .5s ease-in-out infinite}'+
+  '.jv-mus .efxPara{font:700 13px system-ui,sans-serif;padding:7px;border-radius:10px;border:1px solid #b6493f;background:rgba(182,73,63,.25);color:#fff;cursor:pointer}'+
+  '.jv-mus .efxPara[hidden]{display:none}'+
   '@media print{ .jv-mus{display:none!important} }';
 document.head.appendChild(css);
 
 var caja = document.createElement('div'); caja.className = 'jv-mus';
-caja.innerHTML = '<div class="panel" hidden><b>🎵 Música para trabajar</b>'+
+caja.innerHTML = '<div class="panel" hidden><b>🥁 Efectos para la emoción</b><div class="efx" data-efx><span class="aviso">Cargando…</span></div>'+
+  '<button type="button" class="efxPara" data-a="efxpara" hidden>⏹ Parar el efecto</button>'+
+  '<b style="margin-top:6px">🎵 Música para trabajar</b>'+
   '<h4>Hecha por la web</h4><div class="est">'+Object.keys(ESTILOS).map(function(k){ return '<button type="button" data-e="'+k+'">'+ESTILOS[k]+'</button>'; }).join('')+'</div>'+
   '<h4>🔗 Música por enlace (en todos los aparatos)</h4><div class="est" data-enl></div>'+
-  '<div class="nuevo"><input type="text" data-urlmp3 placeholder="Pega el enlace del mp3 (Drive…)"><button type="button" data-a="anadirenl">➕</button></div>'+
+  '<div class="nuevo"><input type="text" data-urlmp3 placeholder="Enlace directo a un mp3 (Drive no sirve)"><button type="button" data-a="anadirenl">➕</button></div>'+
   '<h4>🎶 Tus mp3 (de este ordenador)</h4><div class="est" data-mp3></div>'+
   '<label class="acc" style="text-align:center">📁 Añadir mp3 de este ordenador<input type="file" accept="audio/*,.mp3" multiple data-fich hidden></label>'+
   '<h4>📺 Tus vídeos de YouTube</h4><div class="est" data-lista></div>'+
@@ -329,8 +337,22 @@ function anadir(){
       if(!j || !j.title) return; var l2 = videos(); l2.forEach(function(x){ if(x.id===id) x.t = j.title; }); guardarVideos(l2); pintar();
     }).catch(function(){});
 }
+/* 🥁 EFECTOS (comun/efectos.js, 22/10/2026): un toque suena; tocar el que suena lo para */
+function pintarEfx(){
+  var E = window.JAVI_EFECTOS, box = caja.querySelector('[data-efx]'); if(!E) return;
+  var son = E.sonando();
+  box.innerHTML = E.LISTA.map(function(x){ return '<button type="button" data-efx="'+x.id+'" title="'+x.d+'" aria-pressed="'+(son===x.id)+'"><b>'+x.ic+'</b>'+x.n+'</button>'; }).join('');
+  caja.querySelector('[data-a="efxpara"]').hidden = !son;
+}
+(function(){
+  function listo(){ pintarEfx(); window.JAVI_EFECTOS.alCambiar(pintarEfx); }
+  if(window.JAVI_EFECTOS){ listo(); return; }
+  var sc = document.createElement('script'); sc.src = ((window.JAVI && JAVI.BASE) || '../')+'comun/efectos.js'; sc.onload = listo; document.head.appendChild(sc);
+})();
 caja.addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.efx){ var E = window.JAVI_EFECTOS; if(E){ if(E.sonando()===b.dataset.efx) E.parar(); else E.tocar(b.dataset.efx); } return; }
+  if(b.dataset.a==='efxpara'){ if(window.JAVI_EFECTOS) JAVI_EFECTOS.parar(); return; }
   if(b.dataset.e){ estilo = b.dataset.e; st.elegida = true; on = true; arrancar(); }
   else if(b.dataset.quitaenl){ if(confirm('¿Quitar esta música de la lista de todos los aparatos?')) quitarEnlace(b.dataset.quitaenl); return; }
   else if(b.dataset.a==='anadirenl'){ anadirEnlace(); return; }
