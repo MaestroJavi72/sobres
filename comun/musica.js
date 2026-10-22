@@ -186,7 +186,7 @@ function tocar(id, src){
   audio.src = src; audio.volume = vol;
   var seg = segGuardado(id);
   audio.onloadedmetadata = function(){ if(seg && seg < audio.duration) audio.currentTime = seg; };
-  audio.onerror = function(){ if(/^url:/.test(estilo)) alert('No se puede reproducir ese enlace. Si es de Google Drive, comprueba que está compartido como «Cualquier persona con el enlace».'); };
+  audio.onerror = function(){ if(/^url:/.test(estilo)) alert('No se puede reproducir ese enlace. Comprueba que en Google Drive está compartido como «Cualquier persona con el enlace» y que el archivo es un MP3 de verdad (los que se bajan de YouTube a veces son M4A con el nombre cambiado: hay que convertirlo).'); };
   audio.play().catch(function(){});
   clearInterval(mp3Guardar);
   mp3Guardar = setInterval(function(){ try{ if(!audio.paused) localStorage.setItem(KT, JSON.stringify({ id:mp3Id, s:audio.currentTime })); }catch(e){} }, 5000);
@@ -197,7 +197,7 @@ function tocar(id, src){
 function enlaces(){ try{ var l = JSON.parse((window.JAVI && JAVI.ajuste('musica-enlaces')) || '[]'); return Array.isArray(l) ? l : []; }catch(e){ return []; } }
 function urlAudio(u){
   var m = String(u).match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=)([\w-]{20,})/);
-  return m ? 'https://drive.google.com/uc?export=download&id='+m[1] : String(u).trim();
+  return m ? 'https://drive.usercontent.google.com/download?id='+m[1]+'&export=download&confirm=t' : String(u).trim();   /* confirm=t: sin la página del antivirus de Drive */
 }
 function conLlave(fn){ if(!window.JAVI) return; if(JAVI.llaveAbierta()) fn(); else JAVI.pedirCodigo({ texto:'La lista de enlaces se guarda en tu Hoja para todos los aparatos. Escribe tu código.', alAcertar:fn }); }
 function anadirEnlace(){
