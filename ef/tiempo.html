@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiempo perdido</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 240px;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.clases{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.clases button{font:800 18px var(--f-sub);padding:9px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.clases button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.medidor{--c:#2f9a5a;background:var(--panel);border:3px solid var(--c);border-radius:26px;padding:clamp(14px,3vw,30px);display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,20px);text-align:center;transition:border-color .5s;box-shadow:0 0 40px color-mix(in srgb,var(--c) 35%,transparent)}
+.medidor.n1{--c:#d9a21b}.medidor.n2{--c:#e0602f}.medidor.n3{--c:#c23b4a}
+.msg{font:900 clamp(22px,4vw,44px)/1.1 var(--f-sub);color:var(--c)}
+.reloj{font:900 clamp(70px,16vw,200px)/1 var(--f-titulo);color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 6px 30px rgba(0,0,0,.5)}
+.reloj small{display:block;font:700 clamp(16px,2.2vw,26px) var(--f-sub);color:var(--tinta-suave);margin-top:.3em}
+.barra{position:relative;width:100%;height:clamp(34px,6vh,60px);border-radius:999px;background:rgba(0,0,0,.35);border:2px solid var(--panel-borde);overflow:hidden}
+.barra i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#2f9a5a,#d9a21b 50%,#e0602f 75%,#c23b4a);background-size:var(--tam,100%) 100%;background-repeat:no-repeat;transition:width .4s}
+.barra .marca{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.5)}
+.barra .marca span{position:absolute;top:50%;transform:translate(-50%,-50%);left:1px;font:800 13px system-ui,sans-serif;color:#fff;text-shadow:0 1px 3px #000;white-space:nowrap;padding:0 6px}
+.limites{display:flex;justify-content:space-between;width:100%;font:700 15px var(--f-sub);color:var(--tinta-suave)}
+.grande{font:900 clamp(22px,3.6vw,38px) var(--f-sub);padding:.55em 1.2em;border-radius:22px;border:3px solid var(--c);background:var(--c);color:#fff;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.grande.corre{background:transparent;color:var(--c);animation:late 1s ease-in-out infinite}
+@keyframes late{50%{transform:scale(1.04)}}
+.peq{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.peq button{font:700 16px var(--f-sub);padding:8px 14px;border-radius:12px;border:2px solid var(--panel-borde);background:rgba(0,0,0,.25);color:var(--tinta);cursor:pointer}
+.fin{display:flex;flex-direction:column;align-items:center;gap:10px}
+.fin[hidden]{display:none}
+.fin .ic{font-size:clamp(50px,8vw,90px);line-height:1}
+.fin a,.fin button{font:800 20px var(--f-sub);padding:12px 20px;border-radius:14px;border:2px solid var(--acento);background:var(--acento);color:var(--acento-tinta);text-decoration:none;cursor:pointer}
+.nota{font-size:14px;color:var(--tinta-suave);margin-top:12px;line-height:1.45}
+body.temblor .medidor{animation:tiembla .5s 3}
+@keyframes tiembla{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⏳ Tiempo perdido</h1>
+    <button class="j-icono" id="bPant" type="button" title="Pantalla completa">⛶</button>
+    <a class="j-icono" href="./" data-volver="./" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
+  </header>
+  <div class="clases" id="clases"></div>
+  <section class="medidor" id="med">
+    <div class="msg" id="msg">Vamos bien</div>
+    <div class="reloj" id="reloj">00:00<small></small></div>
+    <div class="barra" id="barra"><i id="relleno"></i></div>
+    <div class="limites"><span>0</span><span id="limTxt"></span></div>
+    <button class="grande" id="bMarcha" type="button">⏸ Estamos perdiendo tiempo</button>
+    <div class="peq">
+      <button type="button" data-aj="-60">−1 min</button><button type="button" data-aj="60">+1 min</button>
+      <button type="button" id="bCero">↺ Empezar de cero</button><button type="button" id="bApuntar">💾 Apuntar en la Hoja</button>
+    </div>
+    <div class="fin" id="fin" hidden>
+      <span class="ic">📚</span>
+      <div class="msg" id="finTxt"></div>
+      <div class="peq"><a id="aTeoria" href="teoria/">📚 Ir a la Teoría</a><button type="button" id="bDiario">📓 Apuntarlo en el diario</button></div>
+    </div>
+  </section>
+  <p class="nota">Pulsa el botón grande (o la barra espaciadora) cuando la clase pierde tiempo —no escuchan, tardan en hacer la fila, discusiones…— y otra vez cuando volvéis a trabajar. El tiempo se suma durante toda la clase y se guarda en este aparato aunque cambies de página. <b>Límite de Javi:</b> en 3º (clases de 1 hora) 20 minutos, en 4º (clases de 1 hora y media) 30 minutos: al llegar, la clase pasa a ser de teoría.</p>
+</div>
+
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* MEDIDOR DE TIEMPO PERDIDO EN EF (pedido por Javi, 22/10/2026)
+   Javi lo pone en marcha cuando se pierde tiempo y lo para cuando vuelven a trabajar.
+   Límite: 3º → 20 min, 4º → 30 min; al llegar, la clase es de teoría.
+   Se lleva en el aparato (localStorage «tiempo-perdido|3ºA|fecha»: {s: segundos acumulados, desde: ms si está en marcha}).
+   «Apuntar en la Hoja» (con código): Alumno «TIEMPO · 3ºA», Acción «TiempoPerdido», CartaId = fecha, Tipo = minutos. */
+function $(id){ return document.getElementById(id); }
+var U = JAVI.util, hoy = U.clave(new Date()), grupo = null, est = { s:0, desde:0 }, avisado = 0, tick = 0;
+var q = (location.search.match(/[?&]grupo=([^&#]+)/)||[])[1];
+function limite(g){ return /^3/.test(g) ? 20 : 30; }
+function clave(){ return 'tiempo-perdido|'+grupo+'|'+hoy; }
+function leer(){ try{ est = JSON.parse(localStorage.getItem(clave())) || { s:0, desde:0 }; }catch(e){ est = { s:0, desde:0 }; } }
+function guardar(){ try{ localStorage.setItem(clave(), JSON.stringify(est)); }catch(e){} }
+function segundos(){ return est.s + (est.desde ? (Date.now()-est.desde)/1000 : 0); }
+function mmss(s){ s = Math.floor(s); return U.pad(Math.floor(s/60))+':'+U.pad(s%60); }
+function efecto(k){ try{ if(window.JAVI_EFECTOS) JAVI_EFECTOS.tocar(k); }catch(e){} }
+function clasesEF(){
+  var H = JAVI.horario(), l = [];
+  (H ? H.sesiones : []).forEach(function(s){ if(s.asig==='EF' && l.indexOf(s.grupo)<0) l.push(s.grupo); });
+  return l.sort(function(a, b){ return a.charAt(0)===b.charAt(0) ? a.localeCompare(b) : b.localeCompare(a); });
+}
+function claseAhora(){
+  var d = new Date(), m = d.getHours()*60+d.getMinutes(), r = null;
+  JAVI.sesionesDelDia(hoy).forEach(function(s){ if(s.asig!=='EF') return; var a = s.ini.split(':'), b = s.fin.split(':'); if(m >= +a[0]*60 + +a[1] - 10 && m < +b[0]*60 + +b[1]) r = s.grupo; });
+  return r;
+}
+function elegir(g){
+  grupo = g; leer(); avisado = nivelDe(segundos());
+  try{ localStorage.setItem('tiempo-grupo', g); }catch(e){}
+  $('aTeoria').href = 'teoria/?grupo='+encodeURIComponent(g);
+  Array.prototype.forEach.call($('clases').children, function(b){ b.setAttribute('aria-pressed', String(b.dataset.g===g)); });
+  $('limTxt').textContent = 'Límite: '+limite(g)+' min';
+  var B = $('barra'); Array.prototype.forEach.call(B.querySelectorAll('.marca'), function(x){ x.remove(); });
+  [.5, .75].forEach(function(p){ var mk = document.createElement('div'); mk.className = 'marca'; mk.style.left = (p*100)+'%'; mk.innerHTML = '<span>'+Math.round(limite(g)*p)+' min</span>'; B.appendChild(mk); });
+  pintar();
+}
+function nivelDe(s){ var L = limite(grupo)*60; return s>=L ? 3 : s>=L*.75 ? 2 : s>=L*.5 ? 1 : 0; }
+function pintar(){
+  var s = segundos(), L = limite(grupo)*60, n = nivelDe(s), corre = !!est.desde;
+  $('reloj').firstChild.nodeValue = mmss(s);
+  $('reloj').querySelector('small').textContent = n>=3 ? 'tiempo perdido hoy' : 'quedan '+Math.ceil((L-s)/60)+' min para el límite';
+  $('relleno').style.width = Math.min(100, s/L*100)+'%'; $('relleno').style.setProperty('--tam', Math.max(100, L/Math.max(s, 1)*100)+'%');
+  $('med').className = 'medidor'+(n ? ' n'+n : '');
+  $('msg').textContent = ['Vamos bien 👍', '¡Cuidado! Ya habéis perdido la mitad', '¡A punto de perder la clase!', '¡Se acabó el tiempo!'][n];
+  $('bMarcha').textContent = corre ? '▶ Ya estamos trabajando' : '⏸ Estamos perdiendo tiempo';
+  $('bMarcha').classList.toggle('corre', corre);
+  $('fin').hidden = n<3;
+  $('finTxt').textContent = 'Habéis perdido '+Math.floor(s/60)+' minutos: hoy toca teoría.';
+  if(n>avisado){
+    avisado = n;
+    if(n===3){ efecto('triste'); document.body.classList.remove('temblor'); void document.body.offsetWidth; document.body.classList.add('temblor'); if(est.desde){ est.s = segundos(); est.desde = 0; guardar(); pintar(); } }
+    else efecto('gong');
+  }
+}
+function marcha(){
+  if(est.desde){ est.s = segundos(); est.desde = 0; }
+  else est.desde = Date.now();
+  guardar(); pintar();
+}
+$('bMarcha').addEventListener('click', marcha);
+document.addEventListener('keydown', function(e){ if(e.code==='Space' && !/INPUT|TEXTAREA|BUTTON/.test(e.target.tagName)){ e.preventDefault(); marcha(); } });
+Array.prototype.forEach.call(document.querySelectorAll('[data-aj]'), function(b){ b.addEventListener('click', function(){
+  var s = segundos(); est.s = Math.max(0, s + +b.dataset.aj); if(est.desde) est.desde = Date.now();
+  avisado = Math.min(avisado, nivelDe(est.s)); guardar(); pintar();
+}); });
+$('bCero').addEventListener('click', function(){ if(!confirm('¿Poner el tiempo perdido de '+grupo+' a cero?')) return; est = { s:0, desde:0 }; avisado = 0; guardar(); pintar(); });
+$('bApuntar').addEventListener('click', function(){
+  if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Apuntar en la Hoja». El tiempo sigue guardado en este aparato.' }); return; }
+  JAVI.escribir({ alumno:'TIEMPO · '+grupo, accion:'TiempoPerdido', cartaId:hoy, tipo:String(Math.round(segundos()/60)) });
+  alert('Apuntado: '+grupo+' ha perdido '+Math.round(segundos()/60)+' minutos hoy.');
+});
+$('bDiario').addEventListener('click', function(){
+  var m = Math.floor(segundos()/60);
+  try{ localStorage.setItem('javi-diario-borrador|'+grupo+'|'+hoy+'|EF', JSON.stringify({ dado:false, hecho:'Teoría: se perdieron '+m+' minutos de clase.', pendiente:'', deberes:'' })); }catch(e){}
+  JAVI.abrirDiario({ grupo:grupo, fecha:hoy, asig:'EF' });
+});
+$('bPant').addEventListener('click', JAVI.pantallaCompleta);
+JAVI.listo(function(){
+  JAVI.avisoPrueba();
+  var cs = clasesEF();
+  $('clases').innerHTML = cs.map(function(g){ return '<button type="button" data-g="'+g+'">'+g+'</button>'; }).join('');
+  $('clases').addEventListener('click', function(e){ var b = e.target.closest('[data-g]'); if(b) elegir(b.dataset.g); });
+  var g = q ? decodeURIComponent(q).replace(/o/i, 'º').toUpperCase() : null, guardado = null;
+  try{ guardado = localStorage.getItem('tiempo-grupo'); }catch(e){}
+  elegir(cs.indexOf(g)>=0 ? g : claseAhora() || (cs.indexOf(guardado)>=0 ? guardado : cs[0]));
+  tick = setInterval(function(){ if(est.desde) pintar(); }, 500);
+});
+})();
+</script>
+</body>
+</html>

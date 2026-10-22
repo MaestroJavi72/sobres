@@ -330,6 +330,7 @@ function pintarHoy(){
     h += '<button type="button" class="bt sec diario" data-dg="'+esc(s.grupo)+'" data-da="'+s.asig+'">📓 '+(di ? 'Diario' : 'Diario de hoy')+'</button>';
     if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('boveda/?grupo='+g, amb)+'">🏦 Bóveda</a><a class="bt sec" href="'+enlace('sorteos/?grupo='+g, amb)+'">👑 Sorteos</a>';
     if(s.asig==='EF' && s.grupo!=='4ºA') h += '<a class="bt sec" href="'+enlace('ef/', amb)+'">🤝 Coevaluación</a>';
+    if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('ef/tiempo.html?grupo='+g, amb)+'">⏳ Tiempo perdido</a>';
     if(sd && sd.sesion.interactivas) (sd.sesion.interactivas.split(/,\s*(?=I-)/)).forEach(function(x){
       var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
       if(u) h += '<a class="bt juego" href="sda/'+u+'?profe&grupo='+encodeURIComponent(s.grupo)+'">'+(((sd.sda.iconos||{})[m[1]])||'🎮')+' '+esc(m[2])+'</a>';
