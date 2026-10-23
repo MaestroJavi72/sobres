@@ -531,6 +531,45 @@ function abrirDiario(o){
   pintarDado(); document.body.appendChild(velo);
   setTimeout(function(){ velo.querySelector('#jvDh').focus(); }, 50);
 }
+/* ============================================================
+   ⏳ TIEMPO PARA BAJAR A EF (regla de Javi, 23/10/2026)
+   El reloj NO se para: cuenta desde la hora de inicio de la clase en el horario.
+   3º: si a los 20 minutos no se ha podido bajar, no se baja (teoría). 4º: 30 minutos.
+   localStorage «tiempo-perdido|3ºA|fecha» = { bajada: ms cuando bajaron, inicio: ms si se empezó a mano }.
+   ============================================================ */
+function limiteBajar(g){ return /^3/.test(g) ? 20 : 30; }
+function tiempoClase(g, fecha){
+  fecha = fecha || clave(new Date());
+  var k = 'tiempo-perdido|'+g+'|'+fecha, e = {};
+  try{ e = JSON.parse(leerLocal(k)) || {}; }catch(err){ e = {}; }
+  var L = limiteBajar(g), ini = e.inicio || null, h = null;
+  if(!ini){
+    h = sesionesDelDia(fecha).filter(function(s){ return s.grupo===g && s.asig==='EF'; }).sort(function(a, b){ return a.ini.localeCompare(b.ini); })[0];
+    if(h && festivos().indexOf(fecha)<0){ var p = fecha.split('-'), a = h.ini.split(':'); ini = new Date(+p[0], +p[1]-1, +p[2], +a[0], +a[1]).getTime(); }
+  }
+  var r = { grupo:g, fecha:fecha, clave:k, limite:L, inicio:ini, fin:ini ? ini + L*60000 : null, bajada:e.bajada || null, aMano:!!e.inicio };
+  var ahora = Date.now();
+  if(!ini) r.estado = 'sinclase';
+  else if(r.bajada) r.estado = r.bajada <= r.fin ? 'bajada' : 'teoria';
+  else if(ahora < ini) r.estado = 'antes';
+  else if(ahora < r.fin) r.estado = 'corre';
+  else r.estado = 'teoria';
+  r.perdidos = !ini ? 0 : Math.max(0, Math.round(((r.bajada || Math.min(ahora, r.fin)) - ini)/60000));
+  r.quedan = r.estado==='corre' ? Math.max(0, (r.fin - ahora)/1000) : 0;
+  r.fraccion = r.estado==='corre' ? Math.min(1, (ahora - ini)/(L*60000)) : r.estado==='teoria' ? 1 : r.estado==='bajada' ? Math.min(1, (r.bajada - ini)/(L*60000)) : 0;
+  return r;
+}
+function guardarTiempo(g, cambio){
+  var k = 'tiempo-perdido|'+g+'|'+clave(new Date()), e = {};
+  try{ e = JSON.parse(leerLocal(k)) || {}; }catch(err){ e = {}; }
+  for(var x in cambio){ if(cambio[x]==null) delete e[x]; else e[x] = cambio[x]; }
+  delete e.s; delete e.desde;   /* formato del primer medidor (22/10/2026) */
+  guardarLocal(k, JSON.stringify(e));
+}
+function bajamos(g){ guardarTiempo(g, { bajada:Date.now() }); }
+function deshacerBajada(g){ guardarTiempo(g, { bajada:null }); }
+function empezarAhora(g){ guardarTiempo(g, { inicio:Date.now(), bajada:null }); }
+function inicioDelHorario(g){ guardarTiempo(g, { inicio:null, bajada:null }); }
 /* resumen de una línea de un diario (para las tarjetas) */
 function textoDiario(d){
   if(!d) return '';
@@ -934,6 +973,8 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 /* 🎵 MÚSICA RELAJANTE para cuando trabajan: botón abajo a la izquierda en todas las páginas (comun/musica.js) */
 (function(){ var s = document.createElement('script'); s.src = BASE+'comun/musica.js'; s.async = true; document.head.appendChild(s); })();
+/* ⏳ TIEMPO PERDIDO siempre a mano en las páginas de EF (comun/medidor.js; él decide si la página es de EF) */
+(function(){ var s = document.createElement('script'); s.src = BASE+'comun/medidor.js'; s.async = true; document.head.appendChild(s); })();
 
 /* ============================================================
    ARRANQUE: JAVI.listo(fn) espera a la lista de alumnos y a la Hoja
@@ -964,6 +1005,7 @@ window.JAVI = {
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
   movimientosDe:movimientosDe, logrosDe:logrosDe, fotoLogros:fotoLogros, logrosNuevos:logrosNuevos, anunciarLogros:anunciarLogros, logrosHTML:logrosHTML, LOGROS:LOGROS,
+  tiempoClase:tiempoClase, limiteBajar:limiteBajar, bajamos:bajamos, deshacerBajada:deshacerBajada, empezarAhora:empezarAhora, inicioDelHorario:inicioDelHorario,
   diarios:diarios, diarioDe:diarioDe, diarioAnterior:diarioAnterior, guardarDiario:guardarDiario, abrirDiario:abrirDiario, textoDiario:textoDiario,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, botonSonidoPuntos:botonSonidoPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
