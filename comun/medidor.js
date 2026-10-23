@@ -38,9 +38,13 @@ function grupoActual(cx){
     if(el.contains(b)) return false;
     var t = (b.dataset && b.dataset.g) || String(b.textContent||'').trim(); if(/^[1-6]º[A-Z]$/.test(t)){ vis = t; return true; } return false;
   });
-  var cs = clasesEF(), l = [vis, cx.k ? leerL(cx.k) : null, qGrupo(), claseAhora(), leerL('tiempo-grupo')];
-  for(var i=0;i<l.length;i++) if(l[i] && cs.indexOf(l[i])>=0) return l[i];
-  return cs[0] || null;
+  var cs = clasesEF(), ahora = claseAhora(), l = [vis, cx.k ? leerL(cx.k) : null, qGrupo(), ahora, leerL('tiempo-grupo')].filter(function(x){ return x && cs.indexOf(x)>=0; });
+  /* la elegida si hoy tiene EF; si no, la clase de EF de ahora; si no, cualquiera de las elegidas que tenga EF hoy (23/10/2026: antes se escondía) */
+  function hoyEF(x){ return J.tiempoClase(x).estado!=='sinclase'; }
+  if(l[0] && hoyEF(l[0])) return l[0];
+  if(ahora) return ahora;
+  for(var i=0;i<l.length;i++) if(hoyEF(l[i])) return l[i];
+  return l[0] || cs[0] || null;
 }
 function mmss(s){ s = Math.max(0, Math.floor(s)); return J.util.pad(Math.floor(s/60))+':'+J.util.pad(s%60); }
 function hhmm(ms){ var d = new Date(ms); return d.getHours()+':'+J.util.pad(d.getMinutes()); }
@@ -65,12 +69,13 @@ function pintar(){
   if(!cx){ el.hidden = true; return; }
   g = grupoActual(cx); if(!g){ el.hidden = true; return; }
   var t = J.tiempoClase(g);
-  if(t.estado==='sinclase'){ el.hidden = true; return; }   /* hoy no hay EF con esta clase */
+
   var n = t.estado==='corre' ? (t.fraccion>=.75 ? 2 : t.fraccion>=.5 ? 1 : 0) : t.estado==='teoria' ? 3 : 0;
   el.hidden = false;
   el.className = 'jv-med'+(t.estado==='corre' && n ? ' n'+n : t.estado==='teoria' ? ' n3 fijo' : '');
   var b = el.querySelector('b'), sm = el.querySelector('small'), bt = el.querySelector('button');
-  if(t.estado==='antes'){ b.textContent = g+' · empieza a las '+hhmm(t.inicio); sm.textContent = t.limite+' min para bajar'; }
+  if(t.estado==='sinclase'){ b.textContent = 'Tiempo para bajar'; sm.textContent = 'hoy no hay EF con '+g; }
+  else if(t.estado==='antes'){ b.textContent = g+' · empieza a las '+hhmm(t.inicio); sm.textContent = t.limite+' min para bajar'; }
   else if(t.estado==='corre'){ b.textContent = g+' · '+mmss(t.quedan); sm.textContent = 'para bajar'; }
   else if(t.estado==='bajada'){ b.textContent = g+' · bajó a las '+hhmm(t.bajada); sm.textContent = '✅ a tiempo'; }
   else { b.textContent = g+' · 📚 hoy teoría'; sm.textContent = 'no se bajó a tiempo'; }

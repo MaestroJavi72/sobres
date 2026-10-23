@@ -144,7 +144,9 @@ JAVI.listo(function(){
   $('clases').addEventListener('click', function(e){ var b = e.target.closest('[data-g]'); if(b) elegir(b.dataset.g); });
   var g = q ? decodeURIComponent(q).replace(/o/i, 'º').toUpperCase() : null, guardado = null;
   try{ guardado = localStorage.getItem('tiempo-grupo'); }catch(e){}
-  elegir(cs.indexOf(g)>=0 ? g : claseAhora() || (cs.indexOf(guardado)>=0 ? guardado : cs[0]));
+  /* la que llega en la dirección si hoy tiene EF; si no, la clase de EF de ahora */
+  var ahora = claseAhora(), conEF = function(x){ return x && cs.indexOf(x)>=0 && JAVI.tiempoClase(x).estado!=='sinclase'; };
+  elegir(conEF(g) ? g : ahora || (cs.indexOf(g)>=0 ? g : cs.indexOf(guardado)>=0 ? guardado : cs[0]));
   setInterval(pintar, 1000);
 });
 })();

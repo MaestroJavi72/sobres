@@ -209,7 +209,7 @@ var SECCIONES = {
     { ic:'🎲', n:'Responsables y capitanes', d:'Responsable del día y capitanes de pichi, sin repetir.', url:'sorteos/', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/', profe:true },
     { ic:'⚡', n:'El Maleficio de la Discordia', d:'Situación de aprendizaje de juegos cooperativos (CE 3): breakout, Medidor del Maleficio, rúbricas por tercios y notas para Séneca.', url:'sda/?id=maleficio-ef', profe:true },
-    { ic:'⏳', n:'Tiempo perdido', d:'Medidor para la pizarra: si se pierden 20 minutos en 3º o 30 en 4º, la clase pasa a ser de teoría.', url:'ef/tiempo.html', profe:true },
+    { ic:'⏳', n:'Tiempo para bajar', d:'Cuenta atrás para la pizarra desde que empieza la clase: si en 20 minutos (3º) o 30 (4º) no se ha podido bajar, hoy toca teoría.', url:'ef/tiempo.html', profe:true },
     { ic:'📚', n:'Teoría de EF', d:'Días de lluvia o en el aula: salud, alimentación, higiene, hábitos… con juegos y pruebas evaluables por criterios.', url:'ef/teoria/', profe:true },
     { ic:'🚦', n:'Semáforo de contenidos', d:'Autoevaluación y heteroevaluación por tercios, exportable para Séneca.', listo:false }
   ]},
@@ -331,7 +331,7 @@ function pintarHoy(){
     h += '<button type="button" class="bt sec diario" data-dg="'+esc(s.grupo)+'" data-da="'+s.asig+'">📓 '+(di ? 'Diario' : 'Diario de hoy')+'</button>';
     if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('boveda/?grupo='+g, amb)+'">🏦 Bóveda</a><a class="bt sec" href="'+enlace('sorteos/?grupo='+g, amb)+'">👑 Sorteos</a>';
     if(s.asig==='EF' && s.grupo!=='4ºA') h += '<a class="bt sec" href="'+enlace('ef/', amb)+'">🤝 Coevaluación</a>';
-    if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('ef/tiempo.html?grupo='+g, amb)+'">⏳ Tiempo perdido</a>';
+    if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('ef/tiempo.html?grupo='+g, amb)+'">⏳ Tiempo para bajar</a>';
     if(sd && sd.sesion.interactivas) (sd.sesion.interactivas.split(/,\s*(?=I-)/)).forEach(function(x){
       var m = x.trim().match(/^(I-\d+)\s+(.*?)\s*(?:\(([^)]*)\))?$/), u = m && sd.sda.enlaces && sd.sda.enlaces[m[1]];
       if(u) h += '<a class="bt juego" href="sda/'+u+'?profe&grupo='+encodeURIComponent(s.grupo)+'">'+(((sd.sda.iconos||{})[m[1]])||'🎮')+' '+esc(m[2])+'</a>';
