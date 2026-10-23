@@ -113,6 +113,15 @@ table.notas th{font-family:var(--f-sub);color:var(--acento-2);padding:6px;border
 table.notas th:first-child,table.notas td:first-child{text-align:left}
 table.notas td{padding:6px;border-bottom:1px solid var(--panel-borde);text-align:center}
 table.notas td small{display:block;font-size:12px;color:var(--tinta-suave)}
+.mano{margin-top:12px}
+.mano[hidden]{display:none}
+.mano summary{cursor:pointer;font-family:var(--f-sub);font-weight:700;color:var(--acento-2);font-size:17px}
+.mano .fila{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.mano .lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px;margin:8px 0}
+.mano .lista label{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;border-radius:10px;background:rgba(0,0,0,.2);font-size:16px}
+.mano .lista input{width:62px;font:700 16px system-ui,sans-serif;text-align:center;padding:4px;border-radius:8px;border:1px solid var(--panel-borde);background:rgba(255,255,255,.9);color:#222}
+.mano .lista input.cambio{outline:3px solid #2f9a5a}
+.mano textarea{width:100%;min-height:70px;font:14px/1.3 system-ui,sans-serif;padding:8px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(255,255,255,.9);color:#222}
 .n-baja{color:#ffb0a8;font-weight:700}.n-alta{color:#8fe3a6;font-weight:700}
 .resp{display:flex;flex-direction:column;gap:4px;margin-top:10px;font-size:15px}
 .resp div{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,.18)}
@@ -195,6 +204,12 @@ body.alumno .solo-profe{display:none!important}
       <div class="barra"><span class="et">Ver:</span><select id="nFiltro"></select><span style="flex:1"></span><button class="mini" id="nRefrescar" type="button">🔄 Leer la Hoja</button><button class="mini" id="nExportar" type="button">📥 Exportar a Excel</button></div>
       <p class="estado" id="nAyuda" style="margin-bottom:8px"></p>
       <div style="overflow-x:auto"><table class="notas" id="nTabla"></table></div>
+      <details class="mano" id="mano"><summary>✍️ Notas a mano (prueba hecha en papel o de viva voz)</summary>
+        <div class="fila"><span class="et">Tema:</span><select id="mTema"></select><span class="et">Criterio:</span><select id="mCrit"></select></div>
+        <div class="lista" id="mLista"></div>
+        <details><summary class="estado" style="cursor:pointer">📋 Pegar una lista (una línea por alumno: «Nombre nota»)</summary><textarea id="mPegar" placeholder="Valeria 9&#10;Ahinara 10"></textarea><button class="mini" id="mPegarB" type="button">Rellenar las casillas</button></details>
+        <div class="fila"><button class="btn" id="mGuardar" type="button" disabled>💾 Guardar las notas</button><span class="estado" id="mEstado"></span></div>
+      </details>
       <details style="margin-top:12px"><summary class="estado" style="cursor:pointer">Respuestas guardadas (para anular alguna)</summary><div class="resp" id="nResp"></div></details>
     </div>
   </section>
@@ -248,6 +263,7 @@ function clasesEF(){
     .sort(function(a, b){ return a.localeCompare(b); });
 }
 function ponerClase(g){
+  if(G && G!==g && typeof manoCambios==='object'){ manoCambios = {}; try{ sessionStorage.removeItem('teoria-mano'); }catch(e){} }   /* las notas a mano sin guardar son de la otra clase */
   G = g; guardar('teoria-grupo', g);
   document.documentElement.setAttribute('data-tema', JAVI.temaDe(g));
   Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function(b){ b.setAttribute('aria-pressed', b.dataset.g===g ? 'true' : 'false'); });
@@ -480,12 +496,37 @@ function resultados(g){
   return out;
 }
 function nota(ok, n){ return n ? Math.max(1, Math.round(100*ok/n)/10) : null; }
+/* NOTAS A MANO (pedido por Javi, 23/10/2026): Acción «TeoriaNota», CartaId = tema, Tipo = nombre, Carta = {c:"1.1", n:9} (n null = quitar). Manda la última.
+   Una nota a mano sustituye, en ese tema y criterio, a lo que salga de las respuestas. */
+function notasMano(g){
+  var k = U.normal(TAG(g)), out = {};
+  JAVI.filas().forEach(function(f){
+    if(U.normal(f.alumno)!==k || f.accion!=='TeoriaNota') return;
+    var j = jsonFila(f); if(!j || !j.c) return;
+    out[f.cartaId+'|'+f.tipo+'|'+j.c] = j.n==null || j.n==='' ? null : +j.n;
+  });
+  return out;   /* { "moverse|Valeria|1.1": 9 } */
+}
 function tablaNotas(){
   var f = $('nFiltro').value || 'todos', rs = resultados(G).filter(function(r){ return f==='todos' || r.tema.id===f; }), crits = [], T2 = {}, r = JAVI.grupo(G);
+  /* por tema y criterio: la nota a mano si la hay; si no, aciertos / preguntas. Con varios temas: media de los temas */
+  var porTema = {}, M = notasMano(G);
   rs.forEach(function(x){ x.items.forEach(function(it){
-    if(crits.indexOf(it.c)<0) crits.push(it.c);
-    var a = T2[x.quien] = T2[x.quien] || {}, c = a[it.c] = a[it.c] || { ok:0, n:0 }; c.n++; c.ok += it.ok;
+    var k = x.quien+'|'+it.c+'|'+x.tema.id, c = porTema[k] = porTema[k] || { quien:x.quien, c:it.c, ok:0, n:0 }; c.n++; c.ok += it.ok;
   }); });
+  Object.keys(M).forEach(function(k){
+    var p = k.split('|'); if(f!=='todos' && p[0]!==f) return;
+    var kk = p[1]+'|'+p[2]+'|'+p[0];
+    if(M[k]==null){ if(porTema[kk]) delete porTema[kk].mano; return; }
+    var c = porTema[kk] = porTema[kk] || { quien:p[1], c:p[2], ok:0, n:0 }; c.mano = M[k];
+  });
+  Object.keys(porTema).forEach(function(k){
+    var x = porTema[k], v = x.mano!=null ? x.mano : nota(x.ok, x.n); if(v==null) return;
+    if(crits.indexOf(x.c)<0) crits.push(x.c);
+    var a = T2[x.quien] = T2[x.quien] || {}, c = a[x.c] = a[x.c] || { suma:0, temas:0, ok:0, n:0, mano:0 };
+    c.suma += v; c.temas++; c.ok += x.ok; c.n += x.n; if(x.mano!=null) c.mano++;
+  });
+  Object.keys(T2).forEach(function(n){ Object.keys(T2[n]).forEach(function(c){ var x = T2[n][c]; x.nota = Math.round(10*x.suma/x.temas)/10; }); });
   crits.sort(function(a, b){ return parseFloat(a)-parseFloat(b) || a.localeCompare(b); });
   var nombres = (r ? r.nombres : []).concat(Object.keys(T2).filter(function(n){ return !r || r.nombres.indexOf(n)<0; }));
   return { crits:crits, T:T2, nombres:nombres, rs:rs };
@@ -506,16 +547,60 @@ function pintarNotas(){
   else $('nTabla').innerHTML = '<tr><th>Alumno/a</th>'+d.crits.map(function(c){ return '<th title="'+esc(textoCrit(c))+'">EF '+c+'</th>'; }).join('')+'<th>Media</th></tr>'+
     d.nombres.map(function(n){
       var a = d.T[n] || {}, sum = 0, cuantos = 0;
-      var tds = d.crits.map(function(c){ var x = a[c]; if(!x) return '<td>—</td>'; var nt = nota(x.ok, x.n); sum += nt; cuantos++; return '<td class="'+(nt<5 ? 'n-baja' : nt>=8 ? 'n-alta' : '')+'">'+String(nt).replace('.', ',')+'<small>'+x.ok+'/'+x.n+'</small></td>'; }).join('');
+      var tds = d.crits.map(function(c){ var x = a[c]; if(!x) return '<td>—</td>'; var nt = x.nota; sum += nt; cuantos++; return '<td class="'+(nt<5 ? 'n-baja' : nt>=8 ? 'n-alta' : '')+'">'+String(nt).replace('.', ',')+'<small>'+(x.mano ? '✍️ a mano' : x.ok+'/'+x.n)+'</small></td>'; }).join('');
       var m = cuantos ? Math.round(10*sum/cuantos)/10 : null;
       return '<tr><td>'+esc(n)+'</td>'+tds+'<td>'+(m==null ? '—' : '<b>'+String(m).replace('.', ',')+'</b>')+'</td></tr>';
     }).join('');
+  pintarMano();
   $('nResp').innerHTML = d.rs.slice().reverse().map(function(x){
     var ok = x.items.reduce(function(s, i){ return s+i.ok; }, 0);
     return '<div><span class="x">'+esc(x.dia.split('-').reverse().join('/'))+' · <b>'+esc(x.quien)+'</b> · '+x.tema.ic+' '+esc(x.tema.t)+' · '+x.modo+' · '+ok+'/'+x.items.length+'</span><button class="mini" type="button" data-anula="'+esc(x.id)+'">🗑️ Anular</button></div>';
   }).join('') || '<div class="estado">Nada todavía.</div>';
 }
 $('nFiltro').addEventListener('change', pintarNotas);
+/* ---------- ✍️ notas a mano ---------- */
+var manoCambios = {};   /* lo escrito sin guardar sigue en la pestaña aunque la página se recargue al poner el código */
+try{ manoCambios = JSON.parse(sessionStorage.getItem('teoria-mano')) || {}; }catch(e){}
+function pintarMano(){
+  try{ sessionStorage.setItem('teoria-mano', JSON.stringify(manoCambios)); }catch(e){}
+  if(!JAVI.claseAbierta(G)){ $('mano').hidden = true; return; }
+  $('mano').hidden = false;
+  var tv = $('mTema').value || (T && T.id) || DATOS.temas[0].id;
+  $('mTema').innerHTML = DATOS.temas.map(function(t){ return '<option value="'+t.id+'">'+t.ic+' '+esc(t.t)+'</option>'; }).join(''); $('mTema').value = tv;
+  var tm = DATOS.temas.filter(function(t){ return t.id===tv; })[0], cv = $('mCrit').value;
+  $('mCrit').innerHTML = tm.crit.map(function(c){ return '<option value="'+c+'">EF '+c+'</option>'; }).join(''); if(tm.crit.indexOf(cv)>=0) $('mCrit').value = cv;
+  var c = $('mCrit').value, M = notasMano(G), r = JAVI.grupo(G), ns = r ? r.nombres : [];
+  $('mLista').innerHTML = ns.map(function(n){
+    var k = tv+'|'+n+'|'+c, v = k in manoCambios ? manoCambios[k] : M[k];
+    return '<label><span>'+esc(n)+'</span><input type="number" min="1" max="10" step="0.5" inputmode="decimal" data-mn="'+esc(n)+'" value="'+(v==null ? '' : v)+'"'+(k in manoCambios ? ' class="cambio"' : '')+'></label>';
+  }).join('');
+  var nc = Object.keys(manoCambios).length;
+  $('mGuardar').disabled = !nc; $('mEstado').textContent = nc ? nc+' nota'+(nc>1 ? 's' : '')+' sin guardar' : '';
+}
+$('mTema').addEventListener('change', pintarMano);
+$('mCrit').addEventListener('change', pintarMano);
+$('mLista').addEventListener('change', function(e){
+  var i = e.target.closest('[data-mn]'); if(!i) return;
+  var v = i.value.trim().replace(',', '.'); if(v!=='' && (isNaN(+v) || +v<1 || +v>10)){ aviso('La nota va del 1 al 10.'); i.value = ''; v = ''; }
+  manoCambios[$('mTema').value+'|'+i.dataset.mn+'|'+$('mCrit').value] = v==='' ? null : +v; pintarMano();
+});
+$('mPegarB').addEventListener('click', function(){
+  var r = JAVI.grupo(G), ns = r ? r.nombres : [], hechos = 0, raros = [];
+  $('mPegar').value.split(/\n+/).forEach(function(l){
+    if(!l.trim()) return;
+    var m = l.trim().match(/^(?:\d+[.)]\s*)?(.+?)[\s:;,=-]+(\d+(?:[.,]\d+)?)\s*$/);
+    if(!m){ raros.push(l.trim()); return; }
+    var nom = ns.filter(function(n){ return U.normal(n)===U.normal(m[1]); })[0], v = +m[2].replace(',', '.');
+    if(!nom || v<1 || v>10){ raros.push(l.trim()); return; }
+    manoCambios[$('mTema').value+'|'+nom+'|'+$('mCrit').value] = v; hechos++;
+  });
+  pintarMano(); aviso(hechos+' notas puestas'+(raros.length ? ' · no entiendo: '+raros.join(' / ') : '')+'. Revisa y pulsa «Guardar».');
+});
+$('mGuardar').addEventListener('click', function(){
+  if(!conLlave('Para guardar las notas escribe tu código. Lo escrito sigue en las casillas mientras no cierres la página.')) return;
+  Object.keys(manoCambios).forEach(function(k){ var p = k.split('|'); JAVI.escribir({ alumno:TAG(G), accion:'TeoriaNota', cartaId:p[0], tipo:p[1], carta:JSON.stringify({ c:p[2], n:manoCambios[k] }) }); });
+  var n = Object.keys(manoCambios).length; manoCambios = {}; pintarMano(); pintarNotas(); aviso('✅ '+n+' notas guardadas.');
+});
 $('nRefrescar').addEventListener('click', function(){ aviso('Leyendo la Hoja…'); JAVI.leerHoja().then(function(){ pintarNotas(); aviso('Hoja leída.'); }).catch(function(){ aviso('No se ha podido leer la Hoja.'); }); });
 $('nResp').addEventListener('click', function(e){
   var b = e.target.closest('[data-anula]'); if(!b) return;
@@ -526,7 +611,7 @@ $('nResp').addEventListener('click', function(e){
 $('nExportar').addEventListener('click', function(){
   if(!JAVI.claseAbierta(G)){ JAVI.protegerClase(G, { alAbrir:pintarNotas }); return; }
   var d = tablaNotas(), t = [['Alumno/a'].concat(d.crits.map(function(c){ return 'EF '+c; }))];
-  d.nombres.forEach(function(n){ var a = d.T[n] || {}; t.push([n].concat(d.crits.map(function(c){ var x = a[c]; return x ? String(nota(x.ok, x.n)).replace('.', ',') : ''; }))); });
+  d.nombres.forEach(function(n){ var a = d.T[n] || {}; t.push([n].concat(d.crits.map(function(c){ var x = a[c]; return x ? String(x.nota).replace('.', ',') : ''; }))); });
   JAVI.exportarCSV('teoria-EF-'+G.replace(/º/g,'')+'-'+hoy(), t);
 });
 
@@ -640,7 +725,7 @@ JAVI.listo(function(){
       VISTAS.forEach(function(k){ $('v-'+k).hidden = true; }); $('v-alumno').hidden = false;
       pintarAlumno(); return;
     }
-    var cs = clasesEF(), g = (location.search.match(/[?&]grupo=([^&#]+)/)||[])[1]; g = g ? decodeURIComponent(g) : leer('teoria-grupo');
+    var cs = clasesEF(), g = (location.search.match(/[?&]grupo=([^&#]+)/)||[])[1]; g = g ? decodeURIComponent(g).replace(/o/i, 'º').toUpperCase() : leer('teoria-grupo');
     $('selTema').innerHTML = DATOS.temas.map(function(t){ return '<option value="'+t.id+'">'+t.ic+' '+esc(t.t)+'</option>'; }).join('');
     T = tema(leer('teoria-tema') || DATOS.temas[0].id); $('selTema').value = T.id;
     pintarClases(); ponerClase(cs.indexOf(g)>=0 ? g : cs[0]);
