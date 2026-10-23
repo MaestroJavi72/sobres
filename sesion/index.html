@@ -135,6 +135,7 @@ label.campo{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(
     <h1 class="j-titulo">📋 Sesión</h1>
     <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button>
     <a class="j-icono" id="bSorteos" href="../sorteos/?profe" title="Responsable y capitanes" style="text-decoration:none">👑</a>
+    <a class="j-icono" id="bTiempo" href="../ef/tiempo.html" title="Tiempo perdido" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">⏳ Tiempo perdido</a>
     <a class="j-icono" id="bSemana" href="../planificacion/?profe" title="Planificación semanal" style="text-decoration:none;width:auto;padding:0 12px;font-family:var(--f-sub);font-weight:700;font-size:16px">📅 Semana</a>
     <a class="j-icono" id="bInicio" href="../?profe" data-volver="" title="Volver a la pantalla anterior" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
   </header>
@@ -308,6 +309,8 @@ function pintarAsigs(){
   $('hueco').textContent = h ? '🕘 '+h.ini+'–'+h.fin : (JAVI.horario() ? 'Este día no hay '+(NOMBRE_ASIG[asig]||asig)+' con '+grupo+' en el horario' : '');
   $('bSemana').href = '../planificacion/?profe&semana='+JAVI.lunesDe(fecha);
   $('bSorteos').href = JAVI.conAmbito('../sorteos/?profe&grupo='+encodeURIComponent(grupo).replace('%C2%BA','o'));
+  $('bTiempo').href = '../ef/tiempo.html?grupo='+encodeURIComponent(grupo).replace('%C2%BA','o');
+  $('bTiempo').style.display = asig==='EF' ? '' : 'none';   /* solo en EF */
 }
 function pintarSda(){
   var box = $('sdaInfo'), sd = JAVI.sdaDeSesion(grupo, fecha, asig);
