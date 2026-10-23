@@ -75,6 +75,14 @@ select option{color:#111}
 .orden div{font-size:clamp(17px,2.2vw,22px);padding:8px 12px;border-radius:10px;background:rgba(47,191,85,.2);border:1px solid #2fbf55}
 .fin{text-align:center;font-family:var(--f-sub);font-size:clamp(22px,3vw,32px);color:var(--acento-2);margin:12px 0}
 .marcador{text-align:center;color:var(--tinta-suave);margin-bottom:6px}
+.crono{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:4px 0 8px}
+.crono .seg{--p:100%;width:clamp(86px,12vw,130px);height:clamp(86px,12vw,130px);border-radius:50%;display:grid;place-items:center;font:900 clamp(34px,5vw,56px)/1 var(--f-sub);color:#fff;
+  background:radial-gradient(closest-side,#1d2a24 78%,transparent 80% 100%),conic-gradient(var(--c,#2f9a5a) var(--p),rgba(255,255,255,.12) 0);font-variant-numeric:tabular-nums}
+.crono .seg.poco{--c:#e0602f}.crono .seg.cero{--c:#c23b4a;animation:latido .5s ease-in-out 4}
+@keyframes latido{50%{transform:scale(1.12)}}
+.crono .ops2{display:flex;gap:5px;flex-wrap:wrap}
+.crono .ops2 button{font:700 14px var(--f-sub);padding:6px 10px;border-radius:10px;border:1px solid var(--panel-borde);background:rgba(0,0,0,.2);color:var(--tinta);cursor:pointer}
+.crono .ops2 button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
 
 /* quién responde */
 .quien{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;margin:6px 0 12px}
@@ -406,6 +414,19 @@ function pintarDisp(){
 
 /* ---------- prueba: por turnos en la pizarra (el profe marca) ---------- */
 var oral = null;
+/* CUENTA ATRÁS POR PREGUNTA (pedido por Javi, 23/10/2026): 20, 25 o 30 segundos; empieza al salir la pregunta y vuelve a empezar al elegir quién responde */
+var cronoT = 0, cronoFin = 0, cronoSeg = +leer('teoria-segundos') || 25;
+function pitar(f, dur, vol){ try{ var c = pitar.c = pitar.c || new (window.AudioContext||window.webkitAudioContext)(); if(c.state==='suspended') c.resume(); var o = c.createOscillator(), g = c.createGain(), t = c.currentTime; o.type = 'square'; o.frequency.value = f; g.gain.setValueAtTime(vol||0.08, t); g.gain.exponentialRampToValueAtTime(0.0001, t+dur); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.02); }catch(e){} }
+function arrancarCrono(){ cronoFin = Date.now() + cronoSeg*1000; clearInterval(cronoT); cronoT = setInterval(pintarCrono, 200); pintarCrono(); }
+function pararCrono(){ clearInterval(cronoT); cronoT = 0; }
+var cronoUlt = null;
+function pintarCrono(){
+  var el = document.querySelector('#pOral .crono .seg'); if(!el){ pararCrono(); return; }
+  var r = Math.max(0, Math.ceil((cronoFin - Date.now())/1000));
+  el.textContent = r; el.style.setProperty('--p', (r/cronoSeg*100)+'%');
+  el.classList.toggle('poco', r>0 && r<=5); el.classList.toggle('cero', r===0);
+  if(r!==cronoUlt){ if(r>0 && r<=3) pitar(880, 0.12); if(r===0){ pitar(440, 0.7, 0.12); pararCrono(); } cronoUlt = r; }
+}
 function pintarOral(){
   if(!oral) oral = { orden:mezcla(T.prueba.map(function(x, i){ return i; })), pos:0, quien:'', marcado:null, ops:null };
   var z = $('pOral'), h = '<h2>🗣️ '+esc(T.t)+'</h2>';
@@ -415,17 +436,23 @@ function pintarOral(){
   }
   var qi = oral.orden[oral.pos], q = T.prueba[qi];
   if(!oral.ops) oral.ops = mezcla(q.o.map(function(x, i){ return i; }));
-  h += '<p class="marcador">Pregunta '+(oral.pos+1)+' de '+oral.orden.length+' · criterio EF '+q.c+'</p><div class="quien" id="quienO"></div><div class="preg">'+esc(q.p)+'</div><div class="ops">'+
+  h += '<p class="marcador">Pregunta '+(oral.pos+1)+' de '+oral.orden.length+' · criterio EF '+q.c+'</p><div class="quien" id="quienO"></div>'+
+    (oral.marcado==null ? '<div class="crono"><div class="seg" aria-live="off">'+cronoSeg+'</div><div class="ops2">'+[20,25,30].map(function(n){ return '<button type="button" data-seg="'+n+'" aria-pressed="'+(n===cronoSeg)+'">'+n+' s</button>'; }).join('')+'<button type="button" data-oral="crono" title="Volver a empezar la cuenta">↺</button></div></div>' : '')+
+    '<div class="preg">'+esc(q.p)+'</div><div class="ops">'+
     oral.ops.map(function(i, n){ var cl = oral.marcado==null ? '' : (i===q.ok ? ' ok' : ''); return '<button type="button" class="'+cl+'" disabled><b>'+'ABC'.charAt(n)+'</b>'+esc(q.o[i])+'</button>'; }).join('')+'</div>';
-  if(oral.marcado==null) h += '<div class="nav"><button class="btn" style="background:#2a8f4a;border-color:#2a8f4a;color:#fff" type="button" data-oral="1">✅ Acierta</button><button class="btn" style="background:#b8323a;border-color:#b8323a;color:#fff" type="button" data-oral="0">❌ Falla</button><button class="btn sec" type="button" data-oral="ver">👁️ Ver la respuesta</button></div>';
+  if(oral.marcado==null) h += '<div class="nav"><button class="btn" style="background:#2a8f4a;border-color:#2a8f4a;color:#fff" type="button" data-oral="1">✅ Acierta</button><button class="btn" style="background:#b8323a;border-color:#b8323a;color:#fff" type="button" data-oral="0">❌ Falla</button><button class="btn sec" type="button" data-oral="ver">👁️ Ver la respuesta</button><button class="btn sec" type="button" data-oral="sig">Siguiente ›</button></div>';
   else h += '<div class="expl '+(oral.marcado ? 'ok' : 'ko')+'">'+(oral.quien ? esc(oral.quien)+': ' : '')+(oral.marcado ? 'acierto ✅' : oral.marcado===0 ? 'fallo ❌' : '')+' '+esc(q.e)+'</div><div class="nav"><button class="btn" type="button" data-oral="sig">Siguiente ›</button></div>';
   z.innerHTML = h;
-  quien($('quienO'), function(n){ oral.quien = n; });
+  quien($('quienO'), function(n){ oral.quien = n; if(oral.marcado==null) arrancarCrono(); });
   if(oral.quien) $('quienO').querySelector('.nom').textContent = oral.quien;
+  if(oral.marcado==null){ if(oral.cronoDe!==oral.pos){ oral.cronoDe = oral.pos; arrancarCrono(); } else { clearInterval(cronoT); cronoT = setInterval(pintarCrono, 200); pintarCrono(); } }
+  else pararCrono();
 }
 $('pOral').addEventListener('click', function(e){
+  var sg = e.target.closest('[data-seg]'); if(sg){ cronoSeg = +sg.dataset.seg; guardar('teoria-segundos', cronoSeg); arrancarCrono(); Array.prototype.forEach.call(document.querySelectorAll('#pOral [data-seg]'), function(x){ x.setAttribute('aria-pressed', String(+x.dataset.seg===cronoSeg)); }); return; }
   var b = e.target.closest('[data-oral]'); if(!b) return;
   var a = b.dataset.oral;
+  if(a==='crono'){ arrancarCrono(); return; }
   if(a==='otra'){ oral = null; pintarOral(); return; }
   if(a==='notas'){ verVista('notas'); return; }
   if(a==='sig'){ oral.pos++; oral.marcado = null; oral.ops = null; oral.quien = ''; quien.actual = ''; pintarOral(); return; }
