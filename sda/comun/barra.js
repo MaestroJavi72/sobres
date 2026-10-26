@@ -8,6 +8,12 @@ var ID = m[1], ARCHIVO = m[2], PROFE = /[?&]profe/.test(location.search) ? '?pro
 var ICONOS = { 'I-1':'📖','I-2':'👏','I-3':'🔀','I-4':'🗂️','I-5':'🏭','I-6':'⚙️','I-7':'🔍','I-8':'🎡','I-9':'🃏','I-10':'🔮','I-11':'⚖️','I-12':'💡','I-13':'🎙️','I-14':'📚','I-15':'🎲','I-16':'⚔️' };
 var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'], MESES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
+/* 🚦 pantalla dividida con el baño también en las fichas, que no cargan comun/javi.js */
+(function(){
+  if(window.JAVI) return;   /* javi.js ya lo carga */
+  var s = document.createElement('script'); s.src = (document.currentScript && document.currentScript.src || '').replace(/sda\/comun\/barra\.js.*$/, 'comun/panel-bano.js'); s.async = true; document.head.appendChild(s);
+})();
+
 /* 🏠 Inicio junto a «← Volver» en las fichas (no cargan comun/javi.js, que lo pone en las demás páginas) */
 (function(){
   if(document.querySelector('.jv-inicio') || window.JAVI) return;
