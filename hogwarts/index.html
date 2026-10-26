@@ -533,7 +533,11 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
 @media (prefers-reduced-motion:reduce){
   .mote,.env.float,.hint,.env.float .seal,.rslot.glow .aura{animation:none!important}
 }
+/* ?panel: dentro de la pantalla dividida (comun/panel-bano.js, 26/10/2026): solo grupos de trabajo y alumnos con sus puntos */
+html.panel #tabs,html.panel .banco h2.sec,html.panel #subTabs,html.panel .banco .atajos,html.panel .bHerr,html.panel #bVista{display:none!important}
+html.panel .banco .shop-in{padding-top:6px}
 </style>
+<script>if(/[?&]panel/.test(location.search)) document.documentElement.classList.add('panel');</script>
 </head>
 <body>
 <div class="app" id="app" data-vista="tienda">
@@ -1828,7 +1832,7 @@ function verSub(s){
   bancoEl.scrollTop = 0;
 }
 Array.prototype.forEach.call(document.querySelectorAll('#subTabs button'), function(b){ b.addEventListener('click', function(){ verSub(b.dataset.s); }); });
-(function(){ var s = 'alumnos'; try{ s = localStorage.getItem('hogwarts-sub') || 'alumnos'; }catch(e){} verSub(s); })();
+(function(){ var s = 'alumnos'; try{ s = localStorage.getItem('hogwarts-sub') || 'alumnos'; }catch(e){} if(/[?&]panel/.test(location.search)) s = 'alumnos'; verSub(s); })();   /* en el panel, siempre Alumnos */
 if(!CONFIG.sobresLibres){ tabSobres.hidden = true; }
 
 /* ---------- registro: desplegables y "Mis cartas" ---------- */
