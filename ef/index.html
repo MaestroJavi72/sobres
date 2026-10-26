@@ -88,6 +88,9 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
 .cerrar{position:absolute;top:10px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(232,200,114,.5);background:rgba(0,0,0,.35);color:var(--crema);font:22px/1 var(--cuerpo);cursor:pointer}
 .caja h3{font:800 17px var(--tit);letter-spacing:.08em;color:var(--oroClaro);margin:0 44px 12px 0}
 .caja p{line-height:1.45;margin-bottom:8px}
+.todosFal{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.todosFal button{font:600 15px var(--cuerpo,Georgia),serif;padding:6px 11px;border-radius:999px;border:1px solid rgba(232,200,114,.45);background:rgba(255,255,255,.08);color:inherit;cursor:pointer}
+.todosFal button[aria-pressed="true"]{background:#7a2a22;border-color:#b6493f;color:#fff;text-decoration:line-through}
 .motivos{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:10px;margin-top:6px}
 .motivo{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:14px;border:1px solid rgba(232,200,114,.3);
   background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(0,0,0,.25));font:700 14px var(--cuerpo);text-align:center}
@@ -245,6 +248,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <div class="coevTop">
       <span class="contador" id="cCont">0 / 0</span>
       <span class="aviso" id="cAviso">Cada alumno toca su nombre y da su ficha a un compañero.</span>
+      <button class="ghost" id="cTodos" type="button">👥 Puntos a toda la clase</button>
       <button class="go" id="cCerrar" type="button">Cerrar sesión · Compi del día</button>
       <div class="progreso"><i id="cProg" style="width:0%"></i></div>
     </div>
@@ -255,7 +259,7 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
 
   <!-- LA CLASE -->
   <section id="v_clase" hidden>
-    <div class="fila"><span class="aviso" id="estado">Cargando…</span><button class="ghost" id="bAct" type="button">Actualizar</button></div>
+    <div class="fila"><span class="aviso" id="estado">Cargando…</span><button class="go" id="bTodos" type="button">👥 Toda la clase</button><button class="ghost" id="bAct" type="button">Actualizar</button></div>
     <h2 class="sec">Alumnos</h2>
     <div class="alumnos" id="aAlumnos"></div>
   </section>
@@ -335,6 +339,18 @@ select,input{padding:.55em .7em;border-radius:8px;border:1px solid rgba(232,200,
     <h3 id="kTit">Compi del día</h3>
     <div class="compi" id="kElige"></div>
     <div class="alumnos" id="kAlumnos" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- toda la clase (pedido por Javi, 26/10/2026) -->
+<div class="modal" id="mTodos" role="dialog" aria-modal="true" aria-labelledby="tTit" hidden>
+  <div class="caja">
+    <button class="cerrar" type="button" data-cierra="mTodos" aria-label="Cerrar">×</button>
+    <h3 id="tTit">👥 Toda la clase</h3>
+    <p class="aviso" id="tAviso"></p>
+    <div class="todosFal" id="tFaltan"></div>
+    <h4>Puntos del profe para todos</h4>
+    <div class="motivos" id="tMotivos"></div>
   </div>
 </div>
 
@@ -1038,6 +1054,42 @@ function pintarCompras(){
     box.appendChild(d);
   });
 }
+/* PUNTOS A TODA LA CLASE (pedido por Javi, 26/10/2026): los mismos motivos del profe, a todos los que han venido.
+   Quién falta: la misma lista que la Sesión y las actividades (localStorage «faltan|grupo|fecha»); se toca el nombre para quitarlo. */
+function claveFaltan(){ return 'faltan|'+grupo+'|'+HOY; }
+function faltanHoy(){ try{ return JSON.parse(localStorage.getItem(claveFaltan())) || []; }catch(e){ return []; } }
+function abrirTodos(){ pintarTodos(); $('mTodos').hidden = false; }
+function pintarTodos(){
+  var todos = (CONFIG.alumnos || []).slice(), fl = faltanHoy(), van = todos.filter(function(n){ return fl.indexOf(n)<0; });
+  $('tTit').textContent = '👥 Toda la clase · '+grupo;
+  $('tAviso').textContent = van.length+' de '+todos.length+' reciben los puntos. Toca a quien no ha venido para quitarlo.';
+  var fb = $('tFaltan'); fb.innerHTML = '';
+  todos.forEach(function(n){
+    var b = document.createElement('button'), f = fl.indexOf(n)>=0; b.type = 'button'; b.textContent = n; b.setAttribute('aria-pressed', String(f));
+    b.title = f ? 'Falta hoy: toca si ha venido' : 'Toca si no ha venido';
+    b.addEventListener('click', function(){ var l = faltanHoy(), i = l.indexOf(n); if(i>=0) l.splice(i, 1); else l.push(n); try{ localStorage.setItem(claveFaltan(), JSON.stringify(l)); }catch(e){} pintarTodos(); });
+    fb.appendChild(b);
+  });
+  var box = $('tMotivos'); box.innerHTML = '';
+  EF.motivosProfe.forEach(function(m){
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'motivo'+(m.g<0 ? ' neg' : '');
+    b.innerHTML = '<span class="ic"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="'+(m.g<0 ? '#c23b4a' : '#2f9a5a')+'"/><text x="24" y="31" text-anchor="middle" font-family="Georgia" font-weight="700" font-size="20" fill="#fff">'+(m.g>0?'+':'−')+Math.abs(m.g)+'</text></svg></span><span></span>';
+    b.lastChild.textContent = m.n;
+    b.addEventListener('click', function(){
+      var lista = (CONFIG.alumnos || []).filter(function(n){ return faltanHoy().indexOf(n)<0; });
+      if(!lista.length){ aviso('No hay nadie para darle puntos.'); return; }
+      if(!confirm((m.g>0 ? '¿Dar ' : '¿Quitar ')+Math.abs(m.g)+' a '+lista.length+' alumnos por «'+m.n+'»?')) return;
+      lista.forEach(function(n){
+        var mult = m.g>0 ? multiplicadorHoy(n) : 1, v = m.g*mult;
+        registrar(clv(n), 'Galeones', v, m.n+(mult>1 ? ' (×'+mult+')' : ''), 'Profe · toda la clase');
+      });
+      flotar((m.g>0 ? '+' : '−')+Math.abs(m.g), m.g<0, b);
+      aviso((m.g>0 ? '+' : '−')+Math.abs(m.g)+' a '+lista.length+' alumnos · '+m.n+'.');
+      $('mTodos').hidden = true; pintarTodo();
+    });
+    box.appendChild(b);
+  });
+}
 function pintarTodo(){
   ponerTema();
   var soloBoveda = !EF.grupos[grupo];
@@ -1421,6 +1473,8 @@ Object.keys(EF.grupos).forEach(function(g){
   $('grupos').appendChild(b);
 });
 ['coev','clase','merc'].forEach(function(k){ $('t_'+k).addEventListener('click', function(){ vista = k; pintarTodo(); }); });
+$('bTodos').addEventListener('click', abrirTodos);
+$('cTodos').addEventListener('click', abrirTodos);
 $('t_teo').addEventListener('click', function(){ location.href = 'teoria/?grupo='+encodeURIComponent(grupo); });
 $('t_tie').addEventListener('click', function(){ location.href = 'tiempo.html?grupo='+encodeURIComponent(grupo); });
 $('t_mal').addEventListener('click', function(){ location.href = '../sda/maleficio-ef/i02-maleficio.html?grupo='+encodeURIComponent(grupo); });
