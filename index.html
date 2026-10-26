@@ -189,7 +189,7 @@ var SECCIONES = {
     { ic:'🧙', n:'El Mercader', d:'Compra sobres de cartas con tus galeones. Ofertas del día.', url:'hogwarts/', alumnos:true },
     { ic:'✉️', n:'Sobres', d:'Abrir sobres de cartas cuando el profe lo decida.', url:'hogwarts/#sobres', profe:true },
     { ic:'🃏', n:'Mis cartas', d:'Consulta tus cartas, tus galeones y tu nivel.', url:'hogwarts/#mis', alumnos:true },
-    { ic:'🏦', n:'Bóveda de 4ºA', d:'Autoevaluación de la clase en EF, galeones de todos y recompensas.', url:'boveda/?grupo=4oA', alumnos:true },
+    { ic:'🏦', n:'Bóveda de Gringotts de 4ºA', d:'Autoevaluación de la clase en EF, galeones de todos y recompensas.', url:'boveda/?grupo=4oA', alumnos:true },
     { ic:'🎲', n:'Responsable y capitanes', d:'En las clases de EF de 4ºA, sin repetir hasta que salga toda la clase.', url:'sorteos/?grupo=4oA', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/?grupo=4oA', profe:true },
     { ic:'🚦', n:'El farol del baño', d:'Semáforos de niños y niñas, con registro diario. Se guarda sin código.', url:'bano/', alumnos:true },
@@ -205,7 +205,7 @@ var SECCIONES = {
   ]},
   ef: { t:'Educación Física', gr:'4ºA · 4ºB · 3ºA · 3ºB', ambito:'ef', multiverso:true, mods:[
     { ic:'🧹', n:'El Campo de Quidditch', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', url:'ef/', profe:true },
-    { ic:'🏦', n:'Bóveda de la clase', d:'Autoevaluación de la clase, galeones de todos y recompensas.', url:'boveda/', alumnos:true },
+    { ic:'🏦', n:'Bóveda de Gringotts', d:'Autoevaluación de la clase, galeones de todos y recompensas.', url:'boveda/', alumnos:true, nombreBoveda:true },
     { ic:'🎲', n:'Responsables y capitanes', d:'Responsable del día y capitanes de pichi, sin repetir.', url:'sorteos/', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/', profe:true },
     { ic:'⚡', n:'El Maleficio de la Discordia', d:'Situación de aprendizaje de juegos cooperativos (CE 3): breakout, Medidor del Maleficio, rúbricas por tercios y notas para Séneca.', url:'sda/?id=maleficio-ef', profe:true },
@@ -329,7 +329,7 @@ function pintarHoy(){
     else if(ant && (ant.pendiente || ant.deberes)){ var pa = ant.fecha.split('-'); h += '<div class="diarioT recu">📓 Del último día ('+(+pa[2])+'/'+(+pa[1])+'): '+esc([ant.pendiente ? '⏳ Pendiente: '+ant.pendiente : '', ant.deberes ? '🏠 Deberes: '+ant.deberes : ''].filter(Boolean).join(' · '))+'</div>'; }
     h += '<div class="bts"><a class="bt prin" href="'+enlace('sesion/?grupo='+g+'&fecha='+hoy+'&asig='+s.asig+'#clase', amb)+'">🎬 Sesión</a>';
     h += '<button type="button" class="bt sec diario" data-dg="'+esc(s.grupo)+'" data-da="'+s.asig+'">📓 '+(di ? 'Diario' : 'Diario de hoy')+'</button>';
-    if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('boveda/?grupo='+g, amb)+'">🏦 Bóveda</a><a class="bt sec" href="'+enlace('sorteos/?grupo='+g, amb)+'">👑 Sorteos</a>';
+    if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('boveda/?grupo='+g, amb)+'">🏦 '+esc((JAVI.TEMAS[JAVI.temaDe(s.grupo)] || JAVI.TEMAS.hp).lugar.replace(/^el /, ''))+'</a><a class="bt sec" href="'+enlace('sorteos/?grupo='+g, amb)+'">👑 Sorteos</a>';
     if(s.asig==='EF' && s.grupo!=='4ºA') h += '<a class="bt sec" href="'+enlace('ef/', amb)+'">🤝 Coevaluación</a>';
     if(s.asig==='EF') h += '<a class="bt sec" href="'+enlace('ef/tiempo.html?grupo='+g, amb)+'">⏳ Tiempo para bajar</a>';
     if(sd && sd.sesion.interactivas) (sd.sesion.interactivas.split(/,\s*(?=I-)/)).forEach(function(x){
@@ -361,7 +361,8 @@ function sdaEnCurso(){
 }
 JAVI.listo(function(){
   /* el apartado de EF se llama como el mundo del trimestre */
-  var ne = JAVI.nombreEF(); SECCIONES.ef.mods.forEach(function(m){ if(m.url==='ef/'){ m.n = ne.n; m.ic = ne.ic; } }); pintarSeccion('ef');
+  var ne = JAVI.nombreEF(), bv = JAVI.TEMAS[JAVI.temaActual()] || JAVI.TEMAS.hp;
+  SECCIONES.ef.mods.forEach(function(m){ if(m.url==='ef/'){ m.n = ne.n; m.ic = ne.ic; } if(m.nombreBoveda) m.n = bv.boveda; }); pintarSeccion('ef');
   pintarMundos(); sdaEnCurso(); pintarHoy(); mostrar(); JAVI.avisoPrueba(); });
 })();
 </script>
