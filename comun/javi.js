@@ -27,11 +27,14 @@ var REGISTRO = {
    boveda: el tesoro de la clase · lugar: «¡FIESTA EN …!» */
 var TEMAS = {
   hp:         { n:'Harry Potter', mundo:'Mundo mágico',       trimestre:1, icono:'🔮',
-                moneda:'galeones', moneda1:'galeón',  simbolo:'G', boveda:'Bóveda de Gringotts',        lugar:'Gringotts' },
+                moneda:'galeones', moneda1:'galeón',  simbolo:'G', boveda:'Bóveda de Gringotts',        lugar:'Gringotts',
+                ef:'El Campo de Quidditch', efIc:'🧹' },
   vengadores: { n:'Vengadores',   mundo:'Mundo de héroes',    trimestre:2, icono:'🛡️',
-                moneda:'créditos', moneda1:'crédito', simbolo:'★', boveda:'Cámara acorazada del Cuartel', lugar:'el Cuartel' },
+                moneda:'créditos', moneda1:'crédito', simbolo:'★', boveda:'Cámara acorazada del Cuartel', lugar:'el Cuartel',
+                ef:'El Cuartel de los Héroes', efIc:'🛡️' },
   pokemon:    { n:'Pokémon',      mundo:'Mundo de criaturas', trimestre:3, icono:'⚡',
-                moneda:'monedas',  moneda1:'moneda',  simbolo:'⚡', boveda:'Hucha del Gimnasio',          lugar:'el Gimnasio' }
+                moneda:'monedas',  moneda1:'moneda',  simbolo:'⚡', boveda:'Hucha del Gimnasio',          lugar:'el Gimnasio',
+                ef:'El Gimnasio de Entrenadores', efIc:'⚡' }
 };
 
 /* ---------- dónde está la web (para encontrar data/ y los módulos) ---------- */
@@ -723,6 +726,8 @@ function temaDe(g){
   var b = BASE_ALUMNOS && BASE_ALUMNOS[g];
   return b && b.tema && TEMAS[b.tema] ? b.tema : temaActual();
 }
+/* NOMBRE DEL APARTADO DE EF (decisión de Javi, 26/10/2026): cambia con el mundo del trimestre */
+function nombreEF(t){ var w = TEMAS[t || temaActual()] || TEMAS.hp; return { n:w.ef, ic:w.efIc }; }
 function aplicarTema(){
   var t = temaActual();
   document.documentElement.setAttribute('data-tema', t);
@@ -1010,7 +1015,7 @@ window.JAVI = {
   tiempoClase:tiempoClase, limiteBajar:limiteBajar, bajamos:bajamos, deshacerBajada:deshacerBajada, empezarAhora:empezarAhora, inicioDelHorario:inicioDelHorario,
   diarios:diarios, diarioDe:diarioDe, diarioAnterior:diarioAnterior, guardarDiario:guardarDiario, abrirDiario:abrirDiario, textoDiario:textoDiario,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, botonSonidoPuntos:botonSonidoPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
-  ajuste:ajuste, guardarAjuste:guardarAjuste, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
+  ajuste:ajuste, guardarAjuste:guardarAjuste, nombreEF:nombreEF, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,
   util:{ normal:normal, pad:pad, clave:clave, rnd:rnd, idMov:idMov, fechaFila:fechaFila, leerCSV:leerCSV }
 };

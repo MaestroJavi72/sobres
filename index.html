@@ -204,7 +204,7 @@ var SECCIONES = {
     { ic:'📚', n:'Situaciones de aprendizaje', d:'Crear o editar las de Lengua y repartirlas en el horario.', url:'planificacion/#sda', profe:true }
   ]},
   ef: { t:'Educación Física', gr:'4ºA · 4ºB · 3ºA · 3ºB', ambito:'ef', multiverso:true, mods:[
-    { ic:'🤸', n:'Gamificación EF', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', url:'ef/', profe:true },
+    { ic:'🧹', n:'El Campo de Quidditch', d:'Coevaluación, Compi del día, la clase y el Mercader de EF.', url:'ef/', profe:true },
     { ic:'🏦', n:'Bóveda de la clase', d:'Autoevaluación de la clase, galeones de todos y recompensas.', url:'boveda/', alumnos:true },
     { ic:'🎲', n:'Responsables y capitanes', d:'Responsable del día y capitanes de pichi, sin repetir.', url:'sorteos/', profe:true },
     { ic:'📋', n:'Sesión y Ruleta', d:'Plan de la sesión y Ruleta de preguntas con puntos automáticos.', url:'sesion/', profe:true },
@@ -359,7 +359,10 @@ function sdaEnCurso(){
   });
   box.innerHTML = h || '<p class="pronto">Todavía no hay temas de Lengua con página.</p>';
 }
-JAVI.listo(function(){ pintarMundos(); sdaEnCurso(); pintarHoy(); mostrar(); JAVI.avisoPrueba(); });
+JAVI.listo(function(){
+  /* el apartado de EF se llama como el mundo del trimestre */
+  var ne = JAVI.nombreEF(); SECCIONES.ef.mods.forEach(function(m){ if(m.url==='ef/'){ m.n = ne.n; m.ic = ne.ic; } }); pintarSeccion('ef');
+  pintarMundos(); sdaEnCurso(); pintarHoy(); mostrar(); JAVI.avisoPrueba(); });
 })();
 </script>
 </body>

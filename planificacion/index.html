@@ -388,7 +388,7 @@ var RECURSOS = {
     { ic:'📋', n:'Sesión y Ruleta de 4ºA', d:'La sesión de Lengua de hoy y la Ruleta de preguntas.', url:'../sesion/?grupo=4oA&asig=LCL&ambito=tutoria#clase' }
   ],
   EF: [
-    { ic:'🤸', n:'Gamificación EF', d:'Coevaluación, la clase y el Mercader de EF.', url:'../ef/' },
+    { ic:'🧹', n:'El Campo de Quidditch', d:'Coevaluación, la clase y el Mercader de EF.', url:'../ef/', nombreEF:true },
     { ic:'🏦', n:'Bóveda de la clase', d:'Autoevaluación, recompensas y movimientos.', url:'../boveda/' },
     { ic:'👑', n:'Responsable y capitanes', d:'Sorteos sin repetir hasta que salga toda la clase.', url:'../sorteos/' },
     { ic:'✍️', n:'Copia del pichi (3ºB)', d:'Seis frases sobre respeto y juego limpio para copiar: en grande o en hoja.', url:'../ef/copia-pichi-3b.html', nuevo:true },
@@ -548,6 +548,7 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-f]'), function(b){
 
 /* ---------- arranque ---------- */
 JAVI.listo(function(){
+  RECURSOS.EF.forEach(function(r){ if(r.nombreEF){ var ne = JAVI.nombreEF(); r.n = ne.n; r.ic = ne.ic; } });   /* nombre del mundo del trimestre */
   lunes = JAVI.lunesDe(q.get('semana') || U.clave(new Date()));
   pintarModo(); pintarSemana(); pintarListaSda(); pintarRecursos(); pintarFestivos();
   var v = (location.hash||'').replace('#',''); verVista(['semana','sda','recursos','festivos'].indexOf(v)>=0 ? v : 'semana');

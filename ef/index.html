@@ -497,6 +497,8 @@ function ponerTema(){
   if(!window.JAVI) return;
   var t = JAVI.temaDe(grupo), w = JAVI.TEMAS[t];
   document.documentElement.setAttribute('data-tema', t);
+  /* el apartado se llama como el mundo (26/10/2026): El Campo de Quidditch · El Cuartel de los Héroes · El Gimnasio de Entrenadores */
+  if(w && w.ef){ var mk = document.querySelector('header.top .marca small'); if(mk) mk.textContent = w.efIc+' '+w.ef; document.title = w.ef+' · Javificación'; }
   MON = w ? w.moneda : 'galeones';
   /* niveles y personajes del mundo */
   ESTILO = t;
