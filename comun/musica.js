@@ -12,7 +12,9 @@ var K = 'javi-musica';
 function leer(){ try{ return JSON.parse(localStorage.getItem(K)) || {}; }catch(e){ return {}; } }
 function guardar(){ try{ localStorage.setItem(K, JSON.stringify({ on:on, estilo:estilo, vol:vol, elegida:!!st.elegida })); }catch(e){} }
 var st = leer(), on = !!st.on, estilo = st.estilo || 'calma', vol = st.vol==null ? 0.35 : st.vol;
-var ESTILOS = { calma:'🌙 Calma', piano:'🎹 Piano', lluvia:'🌧️ Lluvia' };
+var ESTILOS = { calma:'🌙 Calma', piano:'🎹 Piano', lluvia:'🌧️ Lluvia', halloween:'🎃 Halloween' };
+/* 🎃 HALLOWEEN (27/10/2026): el estilo solo sale los días de Halloween de comun/fiesta.js (o con ?fiesta=halloween) */
+function esHalloween(){ return document.documentElement.classList.contains('fiesta-halloween') || !!(window.JAVI_FIESTA && window.JAVI_FIESTA.fiesta==='halloween'); }
 
 /* ---------- motor de sonido ---------- */
 var ctx = null, master = null, eco = null, seco = null, lluvia = null, timer = 0, sig = 0, acorde = 0, compas = 0;
@@ -60,9 +62,36 @@ function ruidoLluvia(){
   g.gain.linearRampToValueAtTime(0.9, ctx.currentTime+3);
   return { s:s, g:g };
 }
+/* vals de miedo en La menor (3/4): bajo en el 1, acordes cortos en el 2 y el 3, caja de música, campana y viento */
+var HW_ACORDES = [[57,60,64],[50,53,57],[52,56,59],[57,60,64],[53,57,60],[50,53,57],[52,56,59],[52,56,59]];   /* Am Dm E Am F Dm E E */
+var HW_BAJOS = [45,38,40,45,41,38,40,40];
+var HW_MEL = [69,71,72,74,76,77,80,81];   /* La menor armónica */
+function viento(t){
+  var n = ctx.sampleRate*6, b = ctx.createBuffer(1, n, ctx.sampleRate), d = b.getChannelData(0);
+  for(var i=0;i<n;i++) d[i] = Math.random()*2-1;
+  var src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+  src.buffer = b; f.type = 'bandpass'; f.Q.value = 6;
+  f.frequency.setValueAtTime(300, t); f.frequency.linearRampToValueAtTime(950, t+2.5); f.frequency.linearRampToValueAtTime(280, t+5.5);
+  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.05, t+2); g.gain.linearRampToValueAtTime(0.0001, t+5.8);
+  src.connect(f); f.connect(g); salida(g); src.start(t); src.stop(t+6);
+}
+function programarHalloween(){
+  var tiempo = compas % 3, barra = Math.floor(compas/3), k = Math.floor(barra/2) % HW_ACORDES.length, ac = HW_ACORDES[k];
+  if(tiempo===0){
+    nota(HW_BAJOS[k], sig, 1.5, 'triangle', 0.09);
+    if(Math.random() < 0.7){ var m = ac[Math.floor(Math.random()*3)] + 12; nota(m, sig, 1.3, 'sine', 0.045); }   /* caja de música */
+    if(barra % 16 === 0) nota(45, sig, 5, 'sine', 0.07, 0.004);   /* campana */
+    if(barra % 24 === 12) viento(sig);
+  } else {
+    ac.forEach(function(m){ nota(m, sig, 0.32, 'triangle', 0.022); });
+    if(tiempo===2 && Math.random() < 0.35) nota(HW_MEL[Math.floor(Math.random()*HW_MEL.length)], sig, 0.9, 'sine', 0.04);
+  }
+  compas++; sig += 0.52;
+}
 function programar(){
   var t = ctx.currentTime;
   while(sig < t + 1.2){
+    if(estilo==='halloween'){ programarHalloween(); continue; }
     if(estilo==='calma'){
       if(compas % 4 === 0) pad(ACORDES[acorde % 4], sig, 8.5, 0.028);
       if(Math.random() < 0.55) nota(PENTA[Math.floor(Math.random()*PENTA.length)]+12, sig + Math.random()*0.6, 3.5, 'sine', 0.05);
@@ -322,6 +351,7 @@ function pintar(esperando){
   caja.classList.toggle('on', on && !esperando); caja.classList.toggle('espera', !!esperando);
   pintarLista(); pintarMp3(); pintarEnl();
   Array.prototype.forEach.call(caja.querySelectorAll('[data-e]'), function(b){ b.setAttribute('aria-pressed', on && b.dataset.e===estilo ? 'true' : 'false'); });
+  var bh = caja.querySelector('[data-e="halloween"]'); if(bh) bh.hidden = !esHalloween();
   caja.querySelector('[data-v]').value = Math.round(vol*100);
   caja.querySelector('[data-a="onoff"]').textContent = on ? '⏹ Parar la música' : '▶ Poner música';
   caja.querySelector('[data-a="abrir"]').title = esperando ? 'Toca para que siga la música' : 'Música relajante';
@@ -353,7 +383,7 @@ caja.addEventListener('click', function(e){
   var b = e.target.closest('button'); if(!b) return;
   if(b.dataset.efx){ var E = window.JAVI_EFECTOS; if(E){ if(E.sonando()===b.dataset.efx) E.parar(); else E.tocar(b.dataset.efx); } return; }
   if(b.dataset.a==='efxpara'){ if(window.JAVI_EFECTOS) JAVI_EFECTOS.parar(); return; }
-  if(b.dataset.e){ estilo = b.dataset.e; st.elegida = true; on = true; arrancar(); }
+  if(b.dataset.e){ estilo = b.dataset.e; st.elegida = true; on = true; arrancar(); try{ if(esHalloween()) sessionStorage.setItem('javi-musica-hw-elegida', '1'); }catch(err){} }
   else if(b.dataset.quitaenl){ if(confirm('¿Quitar esta música de la lista de todos los aparatos?')) quitarEnlace(b.dataset.quitaenl); return; }
   else if(b.dataset.a==='anadirenl'){ anadirEnlace(); return; }
   else if(b.dataset.quitamp3){
@@ -394,6 +424,10 @@ function montar(){
 /* LA MÚSICA DE JAVI EN TODOS LOS APARATOS (22/10/2026): si este aparato nunca ha elegido música,
    suena la primera de la lista de enlaces de la Hoja; y si esa ya no está, vuelve a Calma. */
 function porDefecto(){
+  var gen = /^(calma|piano|lluvia)$/.test(estilo), elegidaHoy = false;
+  try{ elegidaHoy = sessionStorage.getItem('javi-musica-hw-elegida')==='1'; }catch(e){}
+  if(esHalloween() && gen && !elegidaHoy) estilo = 'halloween';
+  if(!esHalloween() && estilo==='halloween') estilo = 'calma';
   var l = enlaces();
   if(/^url:/.test(estilo) && !l.some(function(x){ return 'url:'+x.id===estilo; })) estilo = 'calma';
   if(!st.elegida && l.length && !/^(mp3|yt):/.test(estilo)) estilo = 'url:'+l[0].id;
