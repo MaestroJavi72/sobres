@@ -978,6 +978,8 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 
 /* 🎵 MÚSICA RELAJANTE para cuando trabajan: botón abajo a la izquierda en todas las páginas (comun/musica.js) */
 (function(){ var s = document.createElement('script'); s.src = BASE+'comun/musica.js'; s.async = true; document.head.appendChild(s); })();
+/* 🎃 DÍAS DE FIESTA (comun/fiesta.js): Halloween el 30/10/2026; solo ese día */
+(function(){ var s = document.createElement('script'); s.src = BASE+'comun/fiesta.js'; s.async = true; document.head.appendChild(s); })();
 /* 🚦 PANTALLA DIVIDIDA CON EL BAÑO en todas las páginas (comun/panel-bano.js) */
 (function(){ var s = document.createElement('script'); s.src = BASE+'comun/panel-bano.js'; s.async = true; document.head.appendChild(s); })();
 /* ⏳ TIEMPO PERDIDO siempre a mano en las páginas de EF (comun/medidor.js; él decide si la página es de EF) */
