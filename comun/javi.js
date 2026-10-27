@@ -766,23 +766,33 @@ function disfrazSVG(a, st){
   if(!hayHalloween() || !a) return '';
   var d = disfrazDe(a.n || a.nombre || ((a.colorPelo||'')+(a.piel||'')+(a.pelo||''))), OL = '#2b2230';
   st = st || ' stroke="'+OL+'" stroke-width="1.6" stroke-linejoin="round"';
-  if(d==='vampiro') return '<path d="M44 86 L18 128 L38 128 L47 100Z M76 86 L102 128 L82 128 L73 100Z" fill="#1c1426"'+st+'/>'+
-    '<path d="M44 86 L33 64 L52 79Z M76 86 L87 64 L68 79Z" fill="#b01c2e"'+st+'/>'+
-    '<path d="M56 65.6 L57.3 69.5 L58.6 65.8Z M61.4 65.8 L62.7 69.5 L64 65.6Z" fill="#fff" stroke="'+OL+'" stroke-width=".8"/>';
-  if(d==='esqueleto') return '<g stroke="#f4f0e6" stroke-width="2.6" stroke-linecap="round" fill="none"><path d="M60 86 V105"/><path d="M48 89 Q60 92 72 89"/><path d="M47 94.5 Q60 97.5 73 94.5"/><path d="M47 100 Q60 103 73 100"/></g>'+
-    '<path d="M57.4 59.6 L62.6 59.6 L60 64Z" fill="#1c1426"/>';
-  if(d==='gato') return '<g stroke="'+OL+'" stroke-width="1.4" stroke-linecap="round"><path d="M40 62 L27 58.5 M40 65 L27 66 M80 62 L93 58.5 M80 65 L93 66"/></g>'+
-    '<path d="M57.6 59.2 L62.4 59.2 L60 62.2Z" fill="#ff7f97" stroke="'+OL+'" stroke-width=".8"/>'+
-    '<path d="M77 114 Q101 112 99 92 Q98 85 103 83" fill="none" stroke="'+OL+'" stroke-width="6.5" stroke-linecap="round"/><path d="M77 114 Q101 112 99 92 Q98 85 103 83" fill="none" stroke="#3b3550" stroke-width="3.6" stroke-linecap="round"/>';
-  if(d==='calabaza') return '<path d="M15 108 Q24 92 33 106" fill="none" stroke="'+OL+'" stroke-width="1.6"/>'+
-    '<ellipse cx="24" cy="113" rx="11" ry="9.5" fill="#ff8a1f"'+st+'/><path d="M24 104 Q25 100 28 99" fill="none" stroke="#3a6b2a" stroke-width="2.4" stroke-linecap="round"/>'+
-    '<path d="M18 110 L21 107 L23 111Z M25 111 L27 107 L30 110Z M17 116 Q24 121 31 116 L28 118 L26 116 L24 118 L22 116 L20 118Z" fill="#3a1d00"/>';
-  if(d==='fantasma') return '<path d="M40 84 Q60 78 80 84 L88 122 Q83 128 78 122 Q73 128 68 122 Q63 128 58 122 Q53 128 48 122 Q43 128 38 122 Q34 128 32 122Z" fill="#f7f7fb" opacity=".96"'+st+'/>'+
-    '<ellipse cx="52" cy="100" rx="3" ry="4" fill="#1c1426"/><ellipse cx="68" cy="100" rx="3" ry="4" fill="#1c1426"/><ellipse cx="60" cy="110" rx="3.4" ry="4.2" fill="#1c1426"/>';
-  /* bruja o brujo: escoba */
-  return '<path d="M97 70 L88 124" stroke="'+OL+'" stroke-width="5" stroke-linecap="round"/><path d="M97 70 L88 124" stroke="#8a5a2b" stroke-width="3" stroke-linecap="round"/>'+
-    '<path d="M83 118 L95 120 L100 136 L78 134Z" fill="#d9a54a"'+st+'/><path d="M85 124 L83 133 M90 124 L90 134 M95 124 L97 134" stroke="#a87a2a" stroke-width="1.2"/>'+
-    '<path d="M84 120 L95 121.5" stroke="#7a2030" stroke-width="2.4"/>';
+  /* 27/10/2026 (Javi: «hazlos más grandes»): disfraces grandes que se reconocen de lejos en la pizarra */
+  if(d==='vampiro') return '<path d="M42 82 L4 136 L30 132 L40 138 L48 102Z M78 82 L116 136 L90 132 L80 138 L72 102Z" fill="#1c1426"'+st+'/>'+
+    '<path d="M43 84 L10 132 L28 129 Z M77 84 L110 132 L92 129Z" fill="#b01c2e" opacity=".9"/>'+
+    '<path d="M44 86 L24 54 L54 78Z M76 86 L96 54 L66 78Z" fill="#b01c2e"'+st+'/>'+
+    '<path d="M55 65 L57.2 71.5 L59.4 65.3Z M60.6 65.3 L62.8 71.5 L65 65Z" fill="#fff" stroke="'+OL+'" stroke-width=".9"/>'+
+    '<path d="M52 92 L60 99 L68 92 L60 104Z" fill="#e8c23a"'+st+'/>';
+  if(d==='esqueleto') return '<g stroke="#1c1426" stroke-width="6.4" stroke-linecap="round" fill="none" opacity=".55"><path d="M60 84 V118"/><path d="M45 89 Q60 93 75 89"/><path d="M44 96 Q60 100 76 96"/><path d="M44 103 Q60 107 76 103"/><path d="M46 110 Q60 113 74 110"/></g>'+
+    '<g stroke="#f7f3e8" stroke-width="3.8" stroke-linecap="round" fill="none"><path d="M60 84 V118"/><path d="M45 89 Q60 93 75 89"/><path d="M44 96 Q60 100 76 96"/><path d="M44 103 Q60 107 76 103"/><path d="M46 110 Q60 113 74 110"/><path d="M38 90 L33 112 M82 90 L87 112"/><path d="M52 122 V136 M68 122 V136"/></g>'+
+    '<path d="M56.5 58.8 L63.5 58.8 L60 64.5Z" fill="#1c1426"/>'+
+    '<path d="M50 70 L70 70" stroke="#1c1426" stroke-width="1.2"/><path d="M53 68 V72 M57 68 V72 M61 68 V72 M65 68 V72 M68 68.5 V71.5" stroke="#1c1426" stroke-width="1"/>';
+  if(d==='gato') return '<path d="M33 34 L30 4 L54 22Z M87 34 L90 4 L66 22Z" fill="#2e2a3e"'+st+'/><path d="M36 28 L34 11 L48 22Z M84 28 L86 11 L72 22Z" fill="#ff9fb2"/>'+
+    '<g stroke="'+OL+'" stroke-width="1.8" stroke-linecap="round"><path d="M41 61 L20 55 M41 64.5 L19 65 M41 68 L21 74 M79 61 L100 55 M79 64.5 L101 65 M79 68 L99 74"/></g>'+
+    '<path d="M56.6 59 L63.4 59 L60 63.2Z" fill="#ff7f97" stroke="'+OL+'" stroke-width="1"/>'+
+    '<path d="M76 116 Q108 114 106 88 Q105 76 113 72" fill="none" stroke="'+OL+'" stroke-width="10" stroke-linecap="round"/><path d="M76 116 Q108 114 106 88 Q105 76 113 72" fill="none" stroke="#3b3550" stroke-width="6.4" stroke-linecap="round"/>';
+  if(d==='calabaza') return '<path d="M4 104 Q20 76 36 102" fill="none" stroke="'+OL+'" stroke-width="2.4"/>'+
+    '<ellipse cx="20" cy="114" rx="18" ry="15.5" fill="#ff8a1f"'+st+'/><path d="M13 101 Q11 114 13 127 M27 101 Q29 114 27 127" fill="none" stroke="#d96a0a" stroke-width="1.4"/>'+
+    '<path d="M20 99 Q21 93 26 91" fill="none" stroke="#3a6b2a" stroke-width="3.4" stroke-linecap="round"/>'+
+    '<path d="M10 109 L14 104 L17 110Z M23 110 L26 104 L30 109Z M8 117 Q20 126 32 117 L28 121 L25 118 L22 122 L19 118 L16 122 L13 118 L11 120Z" fill="#3a1d00"/>';
+  if(d==='fantasma') return '<path d="M34 80 Q60 70 86 80 L96 128 Q90 136 84 128 Q78 136 72 128 Q66 136 60 128 Q54 136 48 128 Q42 136 36 128 Q30 136 24 128Z" fill="#f7f7fb" opacity=".97"'+st+'/>'+
+    '<ellipse cx="50" cy="98" rx="4.6" ry="6.4" fill="#1c1426"/><ellipse cx="70" cy="98" rx="4.6" ry="6.4" fill="#1c1426"/><ellipse cx="60" cy="113" rx="5.4" ry="7" fill="#1c1426"/>'+
+    '<path d="M34 92 Q22 96 18 108 M86 92 Q98 96 102 108" fill="none" stroke="#f7f7fb" stroke-width="7" stroke-linecap="round"/>';
+  /* bruja o brujo: escoba grande y sombrero de bruja con hebilla */
+  return '<path d="M108 48 L84 132" stroke="'+OL+'" stroke-width="8" stroke-linecap="round"/><path d="M108 48 L84 132" stroke="#8a5a2b" stroke-width="5" stroke-linecap="round"/>'+
+    '<path d="M77 122 L95 126 L102 146 L68 142Z" fill="#d9a54a"'+st+'/><path d="M78 130 L75 141 M85 130 L84 143 M92 131 L93 144 M98 132 L100 144" stroke="#a87a2a" stroke-width="1.6"/>'+
+    '<path d="M78 124 L95 128" stroke="#7a2030" stroke-width="3.4"/>'+
+    '<path d="M32 30 Q60 22 88 30 L84 34 Q60 28 36 34Z" fill="#2a1840"'+st+'/><path d="M40 30 Q48 6 60 -14 Q64 -4 74 4 Q66 6 76 29Z" fill="#3b2260"'+st+'/>'+
+    '<path d="M41 27 Q60 22 77 27 L77 31 Q60 26 41 31Z" fill="#6ac14a"/><rect x="55" y="23" width="9" height="8" rx="1.5" fill="none" stroke="#e8c23a" stroke-width="2"/>';
 }
 /* NOMBRE DEL APARTADO DE EF (decisión de Javi, 26/10/2026): cambia con el mundo del trimestre */
 function nombreEF(t){ var w = TEMAS[t || temaActual()] || TEMAS.hp; return { n:w.ef, ic:w.efIc }; }
