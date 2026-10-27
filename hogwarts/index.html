@@ -2019,6 +2019,14 @@ function limpiarPend(){
   guardarPend();
 }
 
+/* 27/10/2026 (Javi): con la pantalla dividida (🏰 a la derecha) los puntos que se dan allí se ven aquí al momento:
+   el otro marco escribe gringotts-pendientes y el navegador avisa con «storage» */
+window.addEventListener('storage', function(e){
+  if(e.key!==CLAVE_PEND) return;
+  leerPend(); pintarBanco();
+  if(pendiente) revisarSaldo();
+});
+
 function cargarBanco(){
   if(!galeonesActivos()) return Promise.resolve();
   $('bEstado').textContent = banco.cargado ? 'Actualizando…' : 'Cargando alumnos…';
