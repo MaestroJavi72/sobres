@@ -9,7 +9,10 @@ var FIESTAS = { '2026-10-30':'halloween' };   /* fecha (año-mes-día) → fiest
 var d = new Date(), hoy = d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
 var q = location.search.match(/[?&]fiesta=([a-z]+)/);
 if(/[?&]sinfiesta/.test(location.search)) return;
-var fiesta = q ? q[1] : FIESTAS[hoy];
+/* 27/10/2026 (Javi no puede cambiar el enlace en Google Sites): «🎃 Probar Halloween ahora» del 🎵 guarda
+   localStorage javi-fiesta-prueba = halloween en el aparato; vale hasta el 31/10/2026 */
+var prueba = null; try{ if(hoy <= '2026-10-31') prueba = localStorage.getItem('javi-fiesta-prueba'); }catch(e){}
+var fiesta = q ? q[1] : (FIESTAS[hoy] || prueba);
 if(fiesta!=='halloween') return;
 var tablet = /[?&](solo|alumno)\b/.test(location.search);   /* en las tablets y marcos, solo los colores */
 

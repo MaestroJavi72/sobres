@@ -14,6 +14,9 @@ function guardar(){ try{ localStorage.setItem(K, JSON.stringify({ on:on, estilo:
 var st = leer(), on = !!st.on, estilo = st.estilo || 'calma', vol = st.vol==null ? 0.35 : st.vol;
 var ESTILOS = { calma:'🌙 Calma', piano:'🎹 Piano', lluvia:'🌧️ Lluvia', halloween:'🎃 Halloween' };
 /* 🎃 HALLOWEEN (27/10/2026): el estilo solo sale los días de Halloween de comun/fiesta.js (o con ?fiesta=halloween) */
+function hoyISO(){ var d = new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function antesDeHalloween(){ return hoyISO() <= '2026-10-31'; }   /* el botón de prueba sale hasta el 31/10/2026 */
+function hwPrueba(){ try{ return localStorage.getItem('javi-fiesta-prueba')==='halloween'; }catch(e){ return false; } }
 function esHalloween(){ return document.documentElement.classList.contains('fiesta-halloween') || !!(window.JAVI_FIESTA && window.JAVI_FIESTA.fiesta==='halloween'); }
 
 /* ---------- motor de sonido ---------- */
@@ -312,6 +315,7 @@ caja.innerHTML = '<div class="panel" hidden><b>🥁 Efectos para la emoción</b>
   '<button type="button" class="efxPara" data-a="efxpara" hidden>⏹ Parar el efecto</button>'+
   '<b style="margin-top:6px">🎵 Música para trabajar</b>'+
   '<h4>Hecha por la web</h4><div class="est">'+Object.keys(ESTILOS).map(function(k){ return '<button type="button" data-e="'+k+'">'+ESTILOS[k]+'</button>'; }).join('')+'</div>'+
+  '<button type="button" class="acc" data-a="hwprueba" hidden></button>'+
   '<h4>🔗 Música por enlace (en todos los aparatos)</h4><div class="est" data-enl></div>'+
   '<div class="nuevo"><input type="text" data-urlmp3 placeholder="Enlace directo a un mp3 (Drive no sirve)"><button type="button" data-a="anadirenl">➕</button></div>'+
   '<h4>🎶 Tus mp3 (de este ordenador)</h4><div class="est" data-mp3></div>'+
@@ -352,6 +356,9 @@ function pintar(esperando){
   pintarLista(); pintarMp3(); pintarEnl();
   Array.prototype.forEach.call(caja.querySelectorAll('[data-e]'), function(b){ b.setAttribute('aria-pressed', on && b.dataset.e===estilo ? 'true' : 'false'); });
   var bh = caja.querySelector('[data-e="halloween"]'); if(bh) bh.hidden = !esHalloween();
+  var bp = caja.querySelector('[data-a="hwprueba"]'), pr = hwPrueba();
+  bp.hidden = !(antesDeHalloween() && (pr || !esHalloween()));
+  bp.textContent = pr ? '✖ Quitar el Halloween de prueba' : '🎃 Probar Halloween ahora';
   caja.querySelector('[data-v]').value = Math.round(vol*100);
   caja.querySelector('[data-a="onoff"]').textContent = on ? '⏹ Parar la música' : '▶ Poner música';
   caja.querySelector('[data-a="abrir"]').title = esperando ? 'Toca para que siga la música' : 'Música relajante';
@@ -386,6 +393,11 @@ caja.addEventListener('click', function(e){
   if(b.dataset.e){ estilo = b.dataset.e; st.elegida = true; on = true; arrancar(); try{ if(esHalloween()) sessionStorage.setItem('javi-musica-hw-elegida', '1'); }catch(err){} }
   else if(b.dataset.quitaenl){ if(confirm('¿Quitar esta música de la lista de todos los aparatos?')) quitarEnlace(b.dataset.quitaenl); return; }
   else if(b.dataset.a==='anadirenl'){ anadirEnlace(); return; }
+  else if(b.dataset.a==='hwprueba'){
+    try{ if(hwPrueba()) localStorage.removeItem('javi-fiesta-prueba'); else localStorage.setItem('javi-fiesta-prueba', 'halloween'); sessionStorage.removeItem('javi-musica-hw-elegida'); }catch(err){}
+    if(estilo==='halloween' && hwPrueba()===false) estilo = 'calma';
+    guardar(); location.reload(); return;
+  }
   else if(b.dataset.quitamp3){
     if(!confirm('¿Quitar esta música de este ordenador?')) return;
     if(estilo==='mp3:'+b.dataset.quitamp3){ on = false; estilo = 'calma'; }
