@@ -279,6 +279,27 @@ function sonarPuntos(n){
       g.gain.setValueAtTime(0.0001, t0+t); g.gain.exponentialRampToValueAtTime(vol, t0+t+0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0+t+dur);
       o.connect(g); g.connect(c.destination); o.start(t0+t); o.stop(t0+t+dur+0.05);
     }
+    /* 🎃 HALLOWEEN (comun/fiesta.js, 30/10/2026): sumar = órgano encantado + fantasma que sube; restar = puerta que cruje */
+    if(document.documentElement.classList.contains('fiesta-halloween')){
+      var vib = function(o, t, hz, cuanto){ var l = c.createOscillator(), lg = c.createGain(); l.frequency.value = hz; lg.gain.value = cuanto; l.connect(lg); lg.connect(o.frequency); l.start(t0+t); l.stop(t0+t+2); };
+      if(n>0){
+        var men = [440, 523.25, 659.25, 880, 1046.5], km = Math.min(men.length, 2+Math.min(3, Math.abs(n)-1));
+        for(var j=0;j<km;j++){ nota(men[j], j*0.11, 0.5, 'triangle', 0.13); nota(men[j]/2, j*0.11, 0.5, 'sine', 0.06); }
+        var fa = c.createOscillator(), fg = c.createGain(), tf = t0 + km*0.11;   /* «uuuuh» del fantasma */
+        fa.type = 'sine'; fa.frequency.setValueAtTime(700, tf); fa.frequency.exponentialRampToValueAtTime(1250, tf+0.9);
+        fg.gain.setValueAtTime(0.0001, tf); fg.gain.exponentialRampToValueAtTime(0.09, tf+0.15); fg.gain.exponentialRampToValueAtTime(0.0001, tf+1);
+        fa.connect(fg); fg.connect(c.destination); vib(fa, km*0.11, 6, 18); fa.start(tf); fa.stop(tf+1.05);
+      } else {
+        var pu = c.createOscillator(), pf = c.createBiquadFilter(), pg = c.createGain(), am = c.createOscillator(), amg = c.createGain();   /* puerta que cruje */
+        pu.type = 'sawtooth'; pu.frequency.setValueAtTime(140, t0); pu.frequency.linearRampToValueAtTime(95, t0+0.8);
+        pf.type = 'bandpass'; pf.frequency.value = 900; pf.Q.value = 4;
+        am.frequency.value = 22; amg.gain.value = 0.05; am.connect(amg); amg.connect(pg.gain);
+        pg.gain.setValueAtTime(0.06, t0); pg.gain.linearRampToValueAtTime(0.0001, t0+0.85);
+        pu.connect(pf); pf.connect(pg); pg.connect(c.destination); pu.start(t0); am.start(t0); pu.stop(t0+0.9); am.stop(t0+0.9);
+        nota(70, 0.82, 0.5, 'sine', 0.35, 40);   /* ¡pum! */
+      }
+      return;
+    }
     if(n>0){
       var esc = [784, 988, 1175, 1568, 1976], k = Math.min(esc.length, 2+Math.min(3, Math.abs(n)-1));
       for(var i=0;i<k;i++){ nota(esc[i], i*0.07, 0.35, 'triangle', 0.16); nota(esc[i]*2, i*0.07+0.02, 0.25, 'sine', 0.05); }
