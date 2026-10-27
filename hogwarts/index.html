@@ -2073,7 +2073,7 @@ function mezcla(a, b, t){
 function aspectoDe(nombre){
   var i = CONFIG.alumnos.indexOf(nombre); if(i<0) i = xmur3(nombre)() % 97;
   var chica = (G.chicas||[]).indexOf(nombre) >= 0;
-  var a = { chica:chica,
+  var a = { n:nombre, chica:chica,
             pelo: ESTILOS[chica?'chica':'chico'][Math.floor(i/2) % 3],
             colorPelo: PELOS[(i*5+1) % PELOS.length],
             piel: PIELES[(i*3) % PIELES.length],
@@ -2214,6 +2214,7 @@ function personajeSVG(a, lv, huevo){
                  '<path d="M20 97 h10 M20 101 h8" stroke="#e8c872" stroke-width="1.6"/>'+estrella(25, 106, 3, '#e8c872')+'</g>'+
                  '<circle cx="33" cy="106" r="5" fill="'+P+'"'+st+'/>';
   if(lv>=6) g += estrella(20, 22, 6, '#ffe9a6', st)+estrella(102, 28, 5, '#ffe9a6', st)+estrella(13, 60, 3.6, '#fff6cf')+estrella(106, 50, 3, '#fff6cf');
+  if(window.JAVI && JAVI.disfrazSVG) g += JAVI.disfrazSVG(a, st);   /* 🎃 disfraz de Halloween (solo ese día) */
   g += '</g>';
   return ini+defs+g+'</svg>';
 }

@@ -747,6 +747,34 @@ function temaDe(g){
   var b = BASE_ALUMNOS && BASE_ALUMNOS[g];
   return b && b.tema && TEMAS[b.tema] ? b.tema : temaActual();
 }
+/* 🎃 DISFRACES DE HALLOWEEN (27/10/2026): solo el día de la fiesta (comun/fiesta.js). Cada alumno, siempre el mismo
+   (según su nombre). Se dibuja encima del personaje (mismas coordenadas que personajeSVG: cabeza en 60,50 r29) sin taparle la cara.
+   Uso en personajeSVG: g += JAVI.disfrazSVG(a, st) antes de cerrar el grupo. a.n = nombre (lo pone aspectoDe). */
+var DISFRACES = ['vampiro','esqueleto','gato','calabaza','fantasma','bruja'];
+function hayHalloween(){ return document.documentElement.classList.contains('fiesta-halloween') || !!(window.JAVI_FIESTA && window.JAVI_FIESTA.fiesta==='halloween'); }
+function disfrazDe(nombre){ var h = 0, s = normal(nombre||''); for(var i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) >>> 0; return DISFRACES[h % DISFRACES.length]; }
+function disfrazSVG(a, st){
+  if(!hayHalloween() || !a) return '';
+  var d = disfrazDe(a.n || a.nombre || ((a.colorPelo||'')+(a.piel||'')+(a.pelo||''))), OL = '#2b2230';
+  st = st || ' stroke="'+OL+'" stroke-width="1.6" stroke-linejoin="round"';
+  if(d==='vampiro') return '<path d="M44 86 L18 128 L38 128 L47 100Z M76 86 L102 128 L82 128 L73 100Z" fill="#1c1426"'+st+'/>'+
+    '<path d="M44 86 L33 64 L52 79Z M76 86 L87 64 L68 79Z" fill="#b01c2e"'+st+'/>'+
+    '<path d="M56 65.6 L57.3 69.5 L58.6 65.8Z M61.4 65.8 L62.7 69.5 L64 65.6Z" fill="#fff" stroke="'+OL+'" stroke-width=".8"/>';
+  if(d==='esqueleto') return '<g stroke="#f4f0e6" stroke-width="2.6" stroke-linecap="round" fill="none"><path d="M60 86 V105"/><path d="M48 89 Q60 92 72 89"/><path d="M47 94.5 Q60 97.5 73 94.5"/><path d="M47 100 Q60 103 73 100"/></g>'+
+    '<path d="M57.4 59.6 L62.6 59.6 L60 64Z" fill="#1c1426"/>';
+  if(d==='gato') return '<g stroke="'+OL+'" stroke-width="1.4" stroke-linecap="round"><path d="M40 62 L27 58.5 M40 65 L27 66 M80 62 L93 58.5 M80 65 L93 66"/></g>'+
+    '<path d="M57.6 59.2 L62.4 59.2 L60 62.2Z" fill="#ff7f97" stroke="'+OL+'" stroke-width=".8"/>'+
+    '<path d="M77 114 Q101 112 99 92 Q98 85 103 83" fill="none" stroke="'+OL+'" stroke-width="6.5" stroke-linecap="round"/><path d="M77 114 Q101 112 99 92 Q98 85 103 83" fill="none" stroke="#3b3550" stroke-width="3.6" stroke-linecap="round"/>';
+  if(d==='calabaza') return '<path d="M15 108 Q24 92 33 106" fill="none" stroke="'+OL+'" stroke-width="1.6"/>'+
+    '<ellipse cx="24" cy="113" rx="11" ry="9.5" fill="#ff8a1f"'+st+'/><path d="M24 104 Q25 100 28 99" fill="none" stroke="#3a6b2a" stroke-width="2.4" stroke-linecap="round"/>'+
+    '<path d="M18 110 L21 107 L23 111Z M25 111 L27 107 L30 110Z M17 116 Q24 121 31 116 L28 118 L26 116 L24 118 L22 116 L20 118Z" fill="#3a1d00"/>';
+  if(d==='fantasma') return '<path d="M40 84 Q60 78 80 84 L88 122 Q83 128 78 122 Q73 128 68 122 Q63 128 58 122 Q53 128 48 122 Q43 128 38 122 Q34 128 32 122Z" fill="#f7f7fb" opacity=".96"'+st+'/>'+
+    '<ellipse cx="52" cy="100" rx="3" ry="4" fill="#1c1426"/><ellipse cx="68" cy="100" rx="3" ry="4" fill="#1c1426"/><ellipse cx="60" cy="110" rx="3.4" ry="4.2" fill="#1c1426"/>';
+  /* bruja o brujo: escoba */
+  return '<path d="M97 70 L88 124" stroke="'+OL+'" stroke-width="5" stroke-linecap="round"/><path d="M97 70 L88 124" stroke="#8a5a2b" stroke-width="3" stroke-linecap="round"/>'+
+    '<path d="M83 118 L95 120 L100 136 L78 134Z" fill="#d9a54a"'+st+'/><path d="M85 124 L83 133 M90 124 L90 134 M95 124 L97 134" stroke="#a87a2a" stroke-width="1.2"/>'+
+    '<path d="M84 120 L95 121.5" stroke="#7a2030" stroke-width="2.4"/>';
+}
 /* NOMBRE DEL APARTADO DE EF (decisión de Javi, 26/10/2026): cambia con el mundo del trimestre */
 function nombreEF(t){ var w = TEMAS[t || temaActual()] || TEMAS.hp; return { n:w.ef, ic:w.efIc }; }
 function aplicarTema(){
@@ -1038,7 +1066,7 @@ window.JAVI = {
   tiempoClase:tiempoClase, limiteBajar:limiteBajar, bajamos:bajamos, deshacerBajada:deshacerBajada, empezarAhora:empezarAhora, inicioDelHorario:inicioDelHorario,
   diarios:diarios, diarioDe:diarioDe, diarioAnterior:diarioAnterior, guardarDiario:guardarDiario, abrirDiario:abrirDiario, textoDiario:textoDiario,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, botonSonidoPuntos:botonSonidoPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
-  ajuste:ajuste, guardarAjuste:guardarAjuste, nombreEF:nombreEF, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
+  ajuste:ajuste, guardarAjuste:guardarAjuste, nombreEF:nombreEF, disfrazSVG:disfrazSVG, disfrazDe:disfrazDe, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,
   pantallaCompleta:pantallaCompleta, enMarco:enMarco, exportarCSV:exportarCSV, botonInicio:botonInicio, avisoPrueba:avisoPrueba,
   util:{ normal:normal, pad:pad, clave:clave, rnd:rnd, idMov:idMov, fechaFila:fechaFila, leerCSV:leerCSV }
 };
