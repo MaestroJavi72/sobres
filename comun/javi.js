@@ -751,7 +751,16 @@ function temaDe(g){
    (según su nombre). Se dibuja encima del personaje (mismas coordenadas que personajeSVG: cabeza en 60,50 r29) sin taparle la cara.
    Uso en personajeSVG: g += JAVI.disfrazSVG(a, st) antes de cerrar el grupo. a.n = nombre (lo pone aspectoDe). */
 var DISFRACES = ['vampiro','esqueleto','gato','calabaza','fantasma','bruja'];
-function hayHalloween(){ return document.documentElement.classList.contains('fiesta-halloween') || !!(window.JAVI_FIESTA && window.JAVI_FIESTA.fiesta==='halloween'); }
+/* fiesta.js se carga async y los personajes se dibujan antes: aquí se decide ya, con las mismas reglas que fiesta.js */
+var HALLOWEEN_YA = (function(){
+  var q = location.search, d = new Date(), hoy = d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+  if(/[?&]sinfiesta/.test(q)) return false;
+  var m = q.match(/[?&]fiesta=([a-z]+)/); if(m) return m[1]==='halloween';
+  if(hoy==='2026-10-30') return true;
+  try{ return hoy <= '2026-10-31' && localStorage.getItem('javi-fiesta-prueba')==='halloween'; }catch(e){ return false; }
+})();
+if(HALLOWEEN_YA) document.documentElement.classList.add('fiesta-halloween');
+function hayHalloween(){ return HALLOWEEN_YA || document.documentElement.classList.contains('fiesta-halloween') || !!(window.JAVI_FIESTA && window.JAVI_FIESTA.fiesta==='halloween'); }
 function disfrazDe(nombre){ var h = 0, s = normal(nombre||''); for(var i=0;i<s.length;i++) h = (h*31 + s.charCodeAt(i)) >>> 0; return DISFRACES[h % DISFRACES.length]; }
 function disfrazSVG(a, st){
   if(!hayHalloween() || !a) return '';
