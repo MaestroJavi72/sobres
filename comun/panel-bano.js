@@ -7,7 +7,7 @@
    No sale en el baño ni en Hogwarts, ni con ?solo / ?alumno (tablets), ni dentro de marcos, ni al imprimir. */
 (function(){
 'use strict';
-if(window.JAVI_PANEL_BANO || window.self!==window.top || /[?&](solo|alumno)\b/.test(location.search) || /\/(bano|hogwarts)\//.test(location.pathname)) return;
+if(window.JAVI_PANEL_BANO || window.self!==window.top || /[?&](solo|alumno)\b/.test(location.search) || /\/bano\//.test(location.pathname)) return;   /* 27/10/2026: en hogwarts/ sí (Javi: ver los puntos mientras está en El Mercader) */
 var yo = document.currentScript && document.currentScript.src || '';
 var BASE = yo.replace(/comun\/panel-bano\.js.*$/, '');
 if(!BASE) return;
