@@ -521,7 +521,7 @@ function vHouses(){const un=S.students.filter(s=>!s.house),has=S.students.length
   ${canPlay?`<div class="row"><button class="gold big" data-a="play">✨ ¡Que empiece el juego!</button></div>${has?'':'<p style="text-align:center">Sin listado también se puede jugar: responderán las casas en equipo.</p>'}`:
    `<div class="row"><button class="big" data-a="go" data-s="topics">📜 Elegir temas para jugar</button></div>`}</div>`}
 function vGame(){return `<div class="game"><header class="top"><div id="score"></div><div class="tools">
-  <button data-a="pause" title="Pausa">⏸</button><button data-a="skip" title="Saltar pregunta">⏭</button><button data-a="finish" title="Terminar">🏁</button></div></header><main id="stage"></main></div>`}
+  <button data-a="elim" title="Eliminar a un jugador por no cumplir las normas">🚫</button><button data-a="pause" title="Pausa">⏸</button><button data-a="skip" title="Saltar pregunta">⏭</button><button data-a="finish" title="Terminar">🏁</button></div></header><main id="stage"></main></div>`}
 function glass(h,r){const H=HOUSES[h],b=24*r,t=22*(1-r);
   return `<svg viewBox="0 0 40 64"><defs><clipPath id="cb${h}"><path d="M7 58 L33 58 L33 52 Q33 40 21 33 L19 33 Q7 40 7 52Z"/></clipPath><clipPath id="ct${h}"><path d="M7 6 L33 6 L33 12 Q33 24 21 31 L19 31 Q7 24 7 12Z"/></clipPath></defs>
   <rect x="3" y="1" width="34" height="5" rx="2" fill="#d9b25a"/><rect x="3" y="58" width="34" height="5" rx="2" fill="#d9b25a"/>
@@ -543,10 +543,11 @@ function vFinal(){const ss=S.session;if(!ss)return vHome();const rank=HK.slice()
   <details><summary>Copiar la lista como texto</summary><textarea rows="6" readonly>${esc(repaso)}</textarea></details>`:'<p>¡Ninguna! Pleno de aciertos. 🌟</p>'}</div>
   <div class="row"><button class="gold big" data-a="go" data-s="topics">🔁 Otra sesión (mismas casas)</button><button class="big" data-a="go" data-s="home">🏰 Inicio</button></div></div>`}
 /* galeones de Javificación: cada alumno de la casa recibe los suyos (solo con el código; sin los que faltan hoy) */
+function elimTxt(){const o=(S.session&&S.session.out)||{},l=Object.keys(o).map(k=>o[k].nom);return l.length?' ni los eliminados ('+l.map(esc).join(', ')+')':''}
 function galPanel(rank){const ss=S.session;if(!window.JAVI||!S.students.length)return'';
   if(ss.paid)return `<div class="parch pad"><h3>💰 Galeones entregados</h3><p>${esc(ss.paid)}</p></div>`;
   const def=[3,2,1];let pos=0,prev=null;
-  return `<div class="parch pad"><h3>💰 Galeones para 4ºA</h3><p>Cada alumno de la casa recibe estos galeones. Puedes cambiarlos (0 = ninguno). No cuentan quienes faltan hoy.</p>
+  return `<div class="parch pad"><h3>💰 Galeones para 4ºA</h3><p>Cada alumno de la casa recibe estos galeones. Puedes cambiarlos (0 = ninguno). No cuentan quienes faltan hoy${elimTxt()}.</p>
   <div class="row">${rank.map((h,i)=>{if(ss.pts[h]!==prev){pos=i;prev=ss.pts[h]}return `<label class="chk">${hb(h)} <input type="number" min="0" max="10" id="gal_${h}" value="${def[pos]||1}" style="width:4.5rem;font-size:1.3rem;text-align:center"></label>`}).join('')}</div>
   <div class="row"><button class="gold big" data-a="galdar">💰 Dar los galeones</button></div></div>`}
 function party(){SFX.fanfare();const c=$('#conf');if(!c)return;const col=['#eeba30','#ae0001','#2a4fd0','#2e8b45','#fff','#f0d000'];let h='';
@@ -755,7 +756,7 @@ function marcarUsada(q){if(!q)return;const u=usadas();u[q.id]=Date.now();try{loc
 function newSession(){const c=S.cfg,u=usadas();let qs=shuffle(S.questions.filter(q=>V.sel.has(gkey(q)))).sort((a,b)=>(u[a.id]||0)-(u[b.id]||0));if(c.maxQ>0)qs=qs.slice(0,c.maxQ);qs=shuffle(qs);
   const z=v=>({g:v,h:v,r:v,s:v,f:v}),j={};ALLH.forEach(h=>j[h]={help:c.jokers,fifty:c.jokers,time:c.jokers});
   S.session={queue:qs.map(q=>q.id),i:0,pts:z(0),ok:z(0),ko:z(0),failed:[],bag:{},turn:0,jok:j,goals:z(0),map:{pos:z(0),skip:z(false)},locks:z(0),round:null,lastGame:'',ended:false,mode:c.mode==='match'?'match':'mix',mgame:c.matchGame==='duelo'?'duelo':'quidditch',matches:[],match:null};save()}
-function peek(h){const ss=S.session,ids=S.students.filter(s=>s.house===h).map(s=>s.id);if(!ids.length)return null;
+function peek(h){const ss=S.session,out=ss.out||{},ids=S.students.filter(s=>s.house===h&&!out[s.id]).map(s=>s.id);if(!ids.length)return null;
   ss.bag[h]=(ss.bag[h]||[]).filter(id=>ids.includes(id));if(!ss.bag[h].length)ss.bag[h]=shuffle(ids);return ss.bag[h][ss.bag[h].length-1]}
 /* ============ COMPETICIÓN POR PARTIDOS ============
    Un partido enfrenta a dos casas con el mismo minijuego. En cada pregunta responden las dos a la vez:
@@ -1004,6 +1005,33 @@ const ACT={
     j[d.k]--;save();SFX.magic();jokers(h)},
   pts(d){const H=HOUSES[d.h],b=(n,t)=>`<button class="big" data-a="addp" data-h="${d.h}" data-n="${n}">${t||(n>0?'+':'')+n}</button>`;
     modal(`<h2>${H.e} Puntos para ${H.n}</h2><div class="grid3">${[1,5,10,-1,-5,-10].map(n=>b(n)).join('')}</div><div class="row">${b(5,'😇 Buen comportamiento +5')}${b(5,'🤝 Trabajo en equipo +5')}</div><button data-a="mno">Cerrar</button>`)},
+  /* 🚫 ELIMINAR (28/10/2026, Javi): por no cumplir las normas. Quita 1 o 2 galeones en Hogwarts (con el código), no vuelve a salir
+     a jugar y no recibe los galeones del final. ss.out = {id: {n, m, nom}}. Readmitir devuelve lo quitado («Anulado»). */
+  elim(){const ss=S.session;if(!ss)return;const out=ss.out||{};V.paused=true;
+    const fila=h=>{const st=S.students.filter(s=>s.house===h);if(!st.length)return'';
+      return `<div style="margin:.35rem 0">${hb(h)} ${st.map(s=>out[s.id]?`<button class="chip" data-a="elimvuelve" data-id="${s.id}" title="Readmitir" style="opacity:.6;text-decoration:line-through">🚫 ${esc(s.name)}</button>`:`<button class="chip" data-a="elimquien" data-id="${s.id}">${esc(s.name)}</button>`).join(' ')}</div>`};
+    if(!S.students.length)return modal(`<h2>🚫 Eliminar a un jugador</h2><p>Primero hay que poner a los alumnos en sus casas (Ceremonia del Sombrero).</p><button data-a="elimfin">Cerrar</button>`);
+    modal(`<h2>🚫 Eliminar a un jugador</h2><p>Toca a quien no ha cumplido las normas. Ya no saldrá a jugar y no recibirá los galeones del final. Los tachados están eliminados: tócalos para readmitirlos.</p>${HK.map(fila).join('')}<div class="row"><button data-a="elimfin">Cerrar</button></div>`,'wide')},
+  elimfin(){V.paused=false;closeModal()},
+  elimquien(d){const st=S.students.find(s=>s.id===d.id);if(!st)return;V.elimId=d.id;V.elimN=1;
+    const MOT=[['Hablar',1],['Interrumpir el turno de palabra',1],['No levantar la mano',1],['Burlarse / molestar',1],['Molestar',2],['Hacer trampas',2]];
+    modal(`<h2>🚫 Eliminar a ${esc(st.name)}</h2><p>¿Por qué? Se le quitan los galeones que pone cada botón.</p>
+      <div class="row" style="flex-wrap:wrap">${MOT.map(m=>`<button class="big" data-a="elimsi" data-m="${esc(m[0])}" data-n="${m[1]}">${esc(m[0])} · −${m[1]}</button>`).join('')}</div>
+      <div class="row"><button data-a="elimsi" data-m="No cumplir las normas" data-n="0">Eliminar sin quitar galeones</button><button data-a="elim">Volver</button></div>`,'wide')},
+  elimsi(d){const ss=S.session,st=S.students.find(s=>s.id===V.elimId);if(!ss||!st)return;const n=Math.max(0,Math.min(2,parseInt(d.n)||0));
+    const hecho=(txt)=>{ss.out=ss.out||{};ss.out[st.id]={n:quitado,m:d.m,nom:st.name};save();SFX.ko();V.paused=false;closeModal();toast('🚫 '+st.name+' eliminado/a'+txt)};
+    let quitado=0;
+    if(n>0&&window.JAVI){
+      if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para quitar galeones',texto:'Escribe el código y vuelve a tocar 🚫 para eliminar a '+st.name+'.'});
+      const g=JAVI.grupo('4ºA');
+      if(g&&g.nombres.includes(st.name)){JAVI.darPuntos('4ºA',st.name,-n,d.m,'La Copa de las Casas · eliminado/a');quitado=n;return hecho(' · −'+n+' galeones'+(JAVI.PRUEBA?' (modo prueba)':''))}
+      return hecho(' (no está en la lista de 4ºA: no se le quitan galeones)')}
+    hecho('')},
+  elimvuelve(d){const ss=S.session,o=(ss.out||{})[d.id];if(!o)return;
+    ask('¿Readmitir a '+esc(o.nom)+'?'+(o.n?' Se le devuelven los '+o.n+' galeones quitados.':''),()=>{
+      if(o.n&&window.JAVI){if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código',texto:'Escribe el código y vuelve a readmitir a '+o.nom+'.'});
+        JAVI.darPuntos('4ºA',o.nom,o.n,'Anulado','La Copa de las Casas · readmitido/a ('+o.m+')')}
+      delete ss.out[d.id];save();toast('↩ '+o.nom+' vuelve a jugar');V.paused=false})},
   addp(d){const n=+d.n;S.session.pts[d.h]+=n;save();updateScore(d.h);n>0?SFX.ok():SFX.click();closeModal();toast(`${n>0?'+':''}${n} puntos para ${HOUSES[d.h].n}`)},
   pause(){V.paused=true;modal(`<h2>⏸ Juego en pausa</h2><p>El tiempo está detenido.</p><div class="row"><button class="gold big" data-a="resume">▶ Seguir</button><button data-a="exit">🏰 Salir al inicio (se guarda)</button></div>`)},
   resume(){V.paused=false;closeModal()},exit(){closeModal();V.screen='home';render()},
@@ -1015,9 +1043,10 @@ const ACT={
     const vals={};HK.forEach(h=>vals[h]=Math.max(0,Math.min(10,parseInt(($('#gal_'+h)||{}).value)||0)));
     ask('¿Dar los galeones a los alumnos de cada casa?<br>'+HK.filter(h=>vals[h]>0).map(h=>HOUSES[h].n+' +'+vals[h]).join(' · '),()=>{
       const ss=S.session,res=[],fuera=[];let nf=0;
-      HK.forEach(h=>{const n=vals[h];let c=0;S.students.filter(s=>s.house===h).forEach(s=>{if(!g.nombres.includes(s.name))return fuera.push(s.name);if(falt.includes(s.name))return nf++;
+      const out=ss.out||{},elim=[];
+      HK.forEach(h=>{const n=vals[h];let c=0;S.students.filter(s=>s.house===h).forEach(s=>{if(out[s.id])return elim.push(s.name);if(!g.nombres.includes(s.name))return fuera.push(s.name);if(falt.includes(s.name))return nf++;
         if(n>0){JAVI.darPuntos('4ºA',s.name,n,'Acierto','La Copa de las Casas · '+HOUSES[h].n);c++}});if(n>0)res.push(HOUSES[h].n+': +'+n+' a '+c+' alumnos')});
-      ss.paid=res.join(' · ')+(nf?' · Sin galeones por faltar hoy: '+nf:'')+(fuera.length?' · No están en la lista de 4ºA: '+fuera.join(', '):'')+(JAVI.PRUEBA?' · (modo prueba: no se ha enviado nada)':'');
+      ss.paid=res.join(' · ')+(nf?' · Sin galeones por faltar hoy: '+nf:'')+(elim.length?' · 🚫 Sin galeones por eliminados: '+elim.join(', '):'')+(fuera.length?' · No están en la lista de 4ºA: '+fuera.join(', '):'')+(JAVI.PRUEBA?' · (modo prueba: no se ha enviado nada)':'');
       save();render();SFX.fanfare()})})},
   dev(){devEnter()},
   devname(d){V.dev.try=d.n;modal(`<h2>${esc(d.n)}</h2><p>Escribe tu número de lista:</p><input id="dpin" type="number" inputmode="numeric" min="1" max="40" style="font-size:2rem;width:7rem;text-align:center"><div id="dpe" class="err"></div><div class="row"><button data-a="mno">No soy yo</button><button class="gold big" data-a="devpin">Entrar</button></div>`);
