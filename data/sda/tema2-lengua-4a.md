@@ -77,10 +77,13 @@ Catorce sesiones según el horario de 4ºA: 60 min de lunes a viernes, salvo los
 | 10 | Vie 23 oct | 60' | Tónica y átona + el debate | Pág. 30 ej. 16 en clase (15'). Debate con moderador y observadores (45') | I-13 Cronómetro del debate (no puntúa) |
 | 11 | Lun 26 oct | 60' | Los cuentos | Pág. 32: las tres partes. Lectura de «El mamut». Pág. 33 ej. 17 | I-14 Ordena el cuento (puntúa) |
 | 12 | Mar 27 oct | 60' | Expresión escrita | Tirada de dados, plan del cuento en tres cajas y borrador | I-15 Dados de cuentos (no puntúa) |
-| 13 | Mié 28 oct | 60' | Expresión escrita | Revisión por parejas, versión final con dibujo y silla del autor | — |
-| 14 | Jue 29 oct | 90' | Cierre | Duelo de repaso del Tema 2 (30'). Control del Tema 2 (60') | I-16 Duelo de repaso del Tema 2 (puntúa) |
+| 13 | Mié 28 oct | 60' | Expresión escrita + repaso | Cuento de ayer: revisión por parejas y versión final con dibujo (30'). Repaso del Tema 2 (30') | I-11 ¿Sinónimo o antónimo? (puntúa), I-12 Lumos (repaso) |
+| 14 | Jue 29 oct | 90' | Prueba de expresión escrita | Un cuento con planteamiento, nudo y desenlace (rúbrica del cuento) | — |
+| 15 | Vie 30 oct | 60' | Repaso | Repaso del Tema 2 | I-7 Detective de errores (puntúa), I-9 Memory de sinónimos (puntúa) |
+| 16 | Mié 4 nov | 60' | Repaso | Repaso del Tema 2 (lunes 2 fiesta, martes 3 excursión) | I-16 Duelo de repaso del Tema 2 (puntúa) |
+| 17 | Jue 5 nov | 90' | Control del Tema 2 | Control (1 h 30) | — |
 
-El viernes 30 queda libre como colchón: cuentos pendientes de leer o inicio del Tema 3.
+Cambio de Javi (28/10/2026): el control pasa al jueves 5/11 (1 h 30); el 29/10 es la prueba de expresión escrita y hay repasos el 28/10, el 30/10 y el 4/11. El lunes 2/11 es fiesta y el martes 3/11 hay excursión.
 
 ## Actividades por bloque
 

@@ -112,18 +112,39 @@
      "interactivas": "I-15 Dados de cuentos (no puntúa)"
     },
     {
-     "titulo": "Expresión escrita",
-     "objetivo": "Revisión por parejas, versión final con dibujo y silla del autor",
+     "titulo": "Expresión escrita + repaso",
+     "objetivo": "Cuento de ayer: revisión por parejas con la lista de control y versión final con dibujo (30'). Repaso del Tema 2 (30')",
      "fecha": "2026-10-28",
      "duracion": "60'",
+     "interactivas": "I-11 ¿Sinónimo o antónimo? (puntúa), I-12 Lumos: ilumina la tónica (repaso)"
+    },
+    {
+     "titulo": "Prueba de expresión escrita",
+     "objetivo": "Prueba de expresión escrita: un cuento con planteamiento, nudo y desenlace (se evalúa con la rúbrica del cuento)",
+     "fecha": "2026-10-29",
+     "duracion": "90'",
      "interactivas": ""
     },
     {
-     "titulo": "Cierre",
-     "objetivo": "Duelo de repaso del Tema 2 (30'). Control del Tema 2 (60')",
-     "fecha": "2026-10-29",
-     "duracion": "90'",
+     "titulo": "Repaso",
+     "objetivo": "Repaso del Tema 2",
+     "fecha": "2026-10-30",
+     "duracion": "60'",
+     "interactivas": "I-7 Detective de errores (puntúa), I-9 Memory de sinónimos (puntúa)"
+    },
+    {
+     "titulo": "Repaso",
+     "objetivo": "Repaso del Tema 2 (el lunes 2 es fiesta y el martes 3 hay excursión)",
+     "fecha": "2026-11-04",
+     "duracion": "60'",
      "interactivas": "I-16 Duelo de repaso del Tema 2 (puntúa)"
+    },
+    {
+     "titulo": "Control del Tema 2",
+     "objetivo": "Control del Tema 2 (1 h 30)",
+     "fecha": "2026-11-05",
+     "duracion": "90'",
+     "interactivas": ""
     }
    ],
    "enlaces": {
@@ -187,7 +208,8 @@
      "sesiones": [
       9,
       10,
-      13
+      13,
+      14
      ]
     },
     {
