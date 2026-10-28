@@ -1,7 +1,7 @@
 {
  "_nota": "Horario de Javi (curso 2026-27). dia: 1 = lunes … 5 = viernes. asig: EF o LCL. Si cambia el horario, cambia solo este archivo.",
- "festivos": ["2026-11-02"],
- "_festivos": "Días sin clase fijos (se suman a los de Planificación → Días sin clase). 2/11/2026: festivo en Andalucía (1/11 cae en domingo).",
+ "festivos": ["2026-11-02", "2026-11-03"],
+ "_festivos": "Días sin clase fijos (se suman a los de Planificación → Días sin clase). 2/11/2026: festivo en Andalucía (1/11 cae en domingo). 3/11/2026: excursión de 4ºA con Javi, no hay clase en todo el día.",
  "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
  "franjas": [
   { "ini": "09:00", "fin": "09:30", "tipo": "reduccion" },
