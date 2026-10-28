@@ -1259,6 +1259,8 @@ function abrirFicha(n){
     if(x===n) return;
     var motivo = '', ult = co.ultimo[n];
     if(ult && ult.para===x) motivo = 'Se la diste la sesión pasada';
+    /* 28/10/2026 (Javi): si x le ha dado hoy una ficha a n, n no se la puede devolver hoy */
+    else if(co.hoy.some(function(r){ return r.de===x && r.para===n; })) motivo = 'Te la ha dado hoy: no se devuelve';
     else if((co.recibido[x]||0) >= EF.tope && (co.recibidoNeg[x]||0) >= EF.topeNeg) motivo = 'Ya no puede recibir más fichas hoy';
     var b = tarjeta(x, cs, motivo ? '' : '');
     if(motivo){ b.disabled = true; var e = document.createElement('span'); e.className = 'etiq'; e.textContent = motivo; b.appendChild(e); }
