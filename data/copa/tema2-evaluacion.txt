@@ -460,3 +460,666 @@ P: ¿Qué título le va mejor a esta historia?
 DIF: 2
 CRIT: 4.1
 EXP: La historia cuenta lo que Marta encontró.
+
+# Tema 2 | Sílabas
+TIPO: opcion
+P: ¿Qué palabra tiene MÁS sílabas?
+- caracol
+- ventana
+* refrigerador
+- tortuga
+DIF: 2
+CRIT: 9.1
+EXP: re-fri-ge-ra-dor tiene cinco sílabas.
+
+TIPO: opcion
+P: ¿En qué palabra hay dos vocales juntas que van en la MISMA sílaba?
+* cuerda
+- poeta
+- león
+- teatro
+DIF: 3
+CRIT: 9.1
+EXP: cuer-da: «ue» va junta. En po-e-ta, le-ón y te-a-tro las vocales se separan.
+
+TIPO: opcion
+P: ¿Cuál está bien separada en sílabas?
+- a-ire
+- ai-re-s
+* ai-re
+- a-i-re
+DIF: 2
+CRIT: 9.1
+EXP: ai-re: «ai» va en la misma sílaba.
+
+TIPO: vf
+P: «Poeta» tiene tres sílabas: po-e-ta.
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: La «o» y la «e» se separan: po-e-ta.
+
+TIPO: vf
+P: «Ciudad» es una palabra trisílaba.
+R: F
+DIF: 3
+CRIT: 9.1
+EXP: ciu-dad: dos sílabas. Es bisílaba.
+
+TIPO: completar
+P: «Mariposa» tiene ___ sílabas.
+R: 4|cuatro
+- 3
+- 5
+- 2
+CRIT: 9.1
+EXP: ma-ri-po-sa.
+
+TIPO: ordenar
+P: Ordena las sílabas para formar una palabra del tema.
+R: ya | ci | mien | to
+DIF: 2
+CRIT: 9.1
+EXP: ya-ci-mien-to.
+
+TIPO: ordenar
+P: Ordena las palabras de MENOS a MÁS sílabas.
+R: sol | casa | camisa | mariposa
+DIF: 2
+CRIT: 9.1
+EXP: sol (1) · ca-sa (2) · ca-mi-sa (3) · ma-ri-po-sa (4).
+
+TIPO: emparejar
+P: Une cada palabra con su tipo.
+R: luz = monosílaba | cueva = bisílaba | tortuga = trisílaba | dinosaurio = polisílaba
+DIF: 2
+CRIT: 9.1
+EXP: luz · cue-va · tor-tu-ga · di-no-sau-rio.
+
+TIPO: opcion
+P: Si a «sol» le añadimos «-da-do», ¿qué palabra sale y cuántas sílabas tiene?
+- soldado, 2 sílabas
+* soldado, 3 sílabas
+- soldados, 3 sílabas
+- solado, 3 sílabas
+DIF: 3
+CRIT: 9.1
+EXP: sol-da-do: tres sílabas.
+
+TIPO: opcion
+P: ¿Cuál es la palabra intrusa (la que NO tiene el mismo número de sílabas que las demás)?
+- pala
+- roca
+* montaña
+- tierra
+DIF: 1
+CRIT: 9.1
+EXP: mon-ta-ña tiene tres sílabas; pa-la, ro-ca y tie-rra tienen dos.
+
+# Tema 2 | El nombre
+TIPO: opcion
+P: ¿Cuál es el plural de «la nariz»?
+- las narizes
+* las narices
+- las nariz
+- los narices
+DIF: 2
+CRIT: 9.1
+EXP: Si acaba en z, cambia a c y añade -es: narices.
+
+TIPO: opcion
+P: ¿Qué nombre NO cambia en plural?
+- el mes
+* el lunes
+- el rey
+- el mar
+DIF: 3
+CRIT: 9.1
+EXP: el lunes → los lunes. Solo cambia el artículo.
+
+TIPO: completar
+P: El plural de «el disfraz» es «los ___».
+R: disfraces
+- disfrazes
+- disfraz
+- disfrazs
+DIF: 2
+CRIT: 9.1
+EXP: z → c + es: disfraces.
+
+TIPO: emparejar
+P: Une cada nombre masculino con su femenino.
+R: el caballo = la yegua | el toro = la vaca | el gallo = la gallina | el padre = la madre
+DIF: 2
+CRIT: 9.1
+EXP: Son femeninos con palabra distinta (o casi).
+
+TIPO: emparejar
+P: Une cada nombre con su femenino.
+R: el alcalde = la alcaldesa | el emperador = la emperatriz | el héroe = la heroína | el tigre = la tigresa
+DIF: 3
+CRIT: 9.1
+EXP: Terminaciones -esa, -triz, -ina.
+
+TIPO: opcion
+P: ¿En qué nombre el femenino se forma cambiando SOLO el artículo?
+- el niño
+* el artista
+- el conde
+- el gato
+DIF: 2
+CRIT: 9.1
+EXP: el artista → la artista. La palabra no cambia.
+
+TIPO: vf
+P: El femenino de «el príncipe» es «la princesa».
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: príncipe → princesa.
+
+TIPO: vf
+P: «Las ciudades» es un nombre masculino plural.
+R: F
+DIF: 2
+CRIT: 9.1
+EXP: «Ciudad» es femenino: las ciudades = femenino plural.
+
+TIPO: opcion
+P: ¿Qué grupo de palabras está bien escrito (concuerda)?
+- los cuevas oscuras
+- las cueva oscuras
+* las cuevas oscuras
+- la cuevas oscura
+DIF: 2
+CRIT: 9.2
+EXP: Artículo, nombre y adjetivo en femenino plural.
+
+TIPO: opcion
+P: ¿Qué oración tiene un error de concordancia?
+- Los niños encontraron un hueso.
+* La paleontóloga limpió unos dientes enorme.
+- Las rocas eran muy antiguas.
+- El museo tiene dos fósiles.
+DIF: 3
+CRIT: 9.2
+EXP: «unos dientes enormes»: el adjetivo también va en plural.
+
+TIPO: ordenar
+P: Ordena las palabras para formar un grupo que concuerde bien.
+R: unas | huellas | muy | profundas
+DIF: 2
+CRIT: 9.1
+EXP: unas huellas muy profundas: todo en femenino plural.
+
+TIPO: completar
+P: Completa: «___ fósiles que encontramos eran pequeños».
+R: Los
+- Las
+- La
+- El
+DIF: 1
+CRIT: 9.1
+EXP: «fósil» es masculino: los fósiles.
+
+# Tema 2 | Sinónimos y antónimos
+TIPO: opcion
+P: ¿Qué antónimo se forma con el prefijo «des-»?
+- incapaz
+- imposible
+* desconectar
+- inmóvil
+DIF: 2
+CRIT: 9.1
+EXP: conectar → desconectar.
+
+TIPO: opcion
+P: ¿Cuál es el antónimo de «perfecto»?
+- desperfecto
+* imperfecto
+- inperfecto
+- noperfecto
+DIF: 3
+CRIT: 9.1
+EXP: Delante de p y b usamos im-: imperfecto.
+
+TIPO: completar
+P: El antónimo de «agradable» es ___.
+R: desagradable
+- inagradable
+- imagradable
+- agradables
+DIF: 2
+CRIT: 9.1
+EXP: des- + agradable.
+
+TIPO: emparejar
+P: Une cada palabra con su antónimo formado con in-, im- o des-.
+R: justo = injusto | prudente = imprudente | cubrir = descubrir | correcto = incorrecto
+DIF: 2
+CRIT: 9.1
+EXP: in-, im- (antes de p y b) y des-.
+
+TIPO: opcion
+P: ¿Cuál es la palabra intrusa (la que NO es sinónima de las otras)?
+- bonito
+- hermoso
+* feo
+- precioso
+DIF: 1
+CRIT: 9.1
+EXP: «feo» es el antónimo; las demás son sinónimos.
+
+TIPO: opcion
+P: ¿Qué palabra puede sustituir a «dijo» en: «—¡Cuidado! —dijo Leo muy fuerte»?
+* gritó
+- susurró
+- preguntó
+- calló
+DIF: 2
+CRIT: 9.2
+EXP: Muy fuerte = gritó.
+
+TIPO: opcion
+P: ¿Qué palabra puede sustituir a «dijo» en: «—Es un secreto —dijo en voz bajita»?
+- gritó
+* susurró
+- chilló
+- cantó
+DIF: 2
+CRIT: 9.2
+EXP: En voz baja = susurró.
+
+TIPO: vf
+P: «Generoso» y «tacaño» son antónimos.
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: Tienen significados contrarios.
+
+TIPO: vf
+P: «Cima» y «cumbre» son antónimos.
+R: F
+DIF: 3
+CRIT: 9.1
+EXP: Son sinónimos: la parte más alta de una montaña.
+
+TIPO: vf
+P: El antónimo de «obedecer» es «inobedecer».
+R: F
+DIF: 2
+CRIT: 9.1
+EXP: Es «desobedecer».
+
+TIPO: opcion
+P: ¿Para qué sirven los sinónimos cuando escribimos?
+- Para escribir más largo
+* Para no repetir la misma palabra
+- Para decir lo contrario
+- Para hacer rimas
+DIF: 1
+CRIT: 9.2
+EXP: Así el texto queda mejor y no aburre.
+
+TIPO: completar
+P: «El camino era estrecho». Lo contrario: «El camino era ___».
+R: ancho
+- largo
+- corto
+- estrechísimo
+DIF: 1
+CRIT: 9.1
+EXP: estrecho ↔ ancho.
+
+TIPO: emparejar
+P: ¿Sinónimos? Une cada palabra con la que significa lo mismo.
+R: regalo = obsequio | cariño = afecto | asustado = miedoso | empezar = iniciar
+DIF: 2
+CRIT: 9.1
+EXP: Son parejas de sinónimos.
+
+# Tema 2 | Tónica y átona
+TIPO: opcion
+P: ¿En qué palabra la sílaba tónica es la PENÚLTIMA?
+- corazón
+* montaña
+- pirámide
+- reloj
+DIF: 2
+CRIT: 9.1
+EXP: mon-TA-ña.
+
+TIPO: opcion
+P: ¿En qué palabra la sílaba tónica es la ANTEPENÚLTIMA (la tercera empezando por el final)?
+- ratón
+- cuaderno
+* murciélago
+- sartén
+DIF: 3
+CRIT: 9.1
+EXP: mur-CIÉ-la-go.
+
+TIPO: emparejar
+P: Une cada palabra con su sílaba tónica.
+R: teléfono = lé | corazón = zón | cuaderno = der | lápiz = lá
+DIF: 2
+CRIT: 9.1
+EXP: te-LÉ-fo-no · co-ra-ZÓN · cua-DER-no · LÁ-piz.
+
+TIPO: opcion
+P: «Ayer mi abuelo ______ cinco kilómetros». ¿Qué palabra va?
+- camino
+* caminó
+DIF: 2
+CRIT: 9.1
+EXP: ca-mi-NÓ: pasó ayer. CA-MI-no es el sendero.
+
+TIPO: opcion
+P: «Este ______ lleva al yacimiento». ¿Qué palabra va?
+* camino
+- caminó
+DIF: 2
+CRIT: 9.1
+EXP: ca-MI-no: el sendero.
+
+TIPO: vf
+P: En «reloj», la sílaba tónica es la última.
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: re-LOJ.
+
+TIPO: vf
+P: Todas las palabras tienen una sílaba tónica y una átona.
+R: F
+DIF: 3
+CRIT: 9.1
+EXP: Tienen UNA tónica, pero pueden tener varias átonas (o ninguna, si son de una sílaba: «sol»).
+
+TIPO: ordenar
+P: Ordena: primero la palabra con la tónica en la ÚLTIMA sílaba, luego en la PENÚLTIMA y luego en la ANTEPENÚLTIMA.
+R: corazón | montaña | pirámide
+DIF: 3
+CRIT: 9.1
+EXP: co-ra-ZÓN · mon-TA-ña · pi-RÁ-mi-de.
+
+# Tema 2 | El cuento
+TIPO: opcion
+P: ¿En qué parte del cuento se presentan los personajes, el lugar y el tiempo?
+* Planteamiento
+- Nudo
+- Desenlace
+- Título
+DIF: 1
+CRIT: 8.1
+EXP: El planteamiento es el principio.
+
+TIPO: opcion
+P: ¿En qué parte del cuento aparece el problema?
+- Planteamiento
+* Nudo
+- Desenlace
+- Ilustración
+DIF: 1
+CRIT: 8.1
+EXP: En el nudo pasa algo que complica la historia.
+
+TIPO: opcion
+P: «Al final, el dragón y el caballero se hicieron amigos». ¿Qué parte es?
+- Planteamiento
+- Nudo
+* Desenlace
+DIF: 1
+CRIT: 4.2
+EXP: Se resuelve el problema: es el desenlace.
+
+TIPO: opcion
+P: «Había una vez una niña que vivía junto a un volcán». ¿Qué parte es?
+* Planteamiento
+- Nudo
+- Desenlace
+DIF: 1
+CRIT: 4.2
+EXP: Presenta al personaje y el lugar.
+
+TIPO: opcion
+P: «De repente, la tierra empezó a temblar y el volcán echó humo». ¿Qué parte es?
+- Planteamiento
+* Nudo
+- Desenlace
+DIF: 1
+CRIT: 4.2
+EXP: Aparece el problema: es el nudo.
+
+TIPO: ordenar
+P: Ordena las partes del cuento.
+R: Planteamiento | Nudo | Desenlace
+DIF: 1
+CRIT: 8.1
+EXP: Principio, problema y final.
+
+TIPO: ordenar
+P: Ordena este cuento.
+R: Una tarde, tres amigos entraron en una cueva. | De pronto, unas piedras taparon la entrada. | Ana notó aire fresco al fondo de la cueva. | Al final, salieron por otro agujero de la montaña.
+DIF: 2
+CRIT: 4.2
+EXP: Planteamiento, nudo (dos trozos) y desenlace.
+
+TIPO: vf
+P: Un cuento es una historia breve e imaginaria con pocos personajes.
+R: V
+DIF: 1
+CRIT: 8.1
+EXP: Así lo vimos con «El mamut».
+
+TIPO: vf
+P: El desenlace va siempre al principio del cuento.
+R: F
+DIF: 1
+CRIT: 8.1
+EXP: El desenlace es el final.
+
+TIPO: opcion
+P: ¿Qué expresión se usa mucho para EMPEZAR un cuento?
+* Érase una vez…
+- Y colorín colorado…
+- Por último…
+- Fin.
+DIF: 1
+CRIT: 8.1
+EXP: «Érase una vez» o «Había una vez».
+
+TIPO: emparejar
+P: Une cada expresión con la parte del cuento donde suele ir.
+R: Había una vez… = planteamiento | De repente… = nudo | Por fin… = desenlace
+DIF: 2
+CRIT: 8.1
+EXP: Son pistas para reconocer las partes.
+
+# Tema 2 | Vocabulario
+TIPO: opcion
+P: ¿Qué es un «fósil»?
+- Una piedra preciosa
+* El resto o la huella de un ser vivo de hace muchísimo tiempo que se ha convertido en piedra
+- Un hueso de un animal de hoy
+- Una herramienta para excavar
+DIF: 1
+CRIT: 6.1
+EXP: Mira el glosario: fósil.
+
+TIPO: opcion
+P: ¿Cómo se llama el lugar donde se encuentran enterrados fósiles?
+- Estrato
+* Yacimiento
+- Museo
+- Cantera de arena
+DIF: 1
+CRIT: 6.1
+EXP: Un yacimiento.
+
+TIPO: completar
+P: La persona que estudia los fósiles es el ___ o la paleontóloga.
+R: paleontólogo
+- geólogo
+- arqueólogo
+- dentista
+DIF: 2
+CRIT: 6.1
+EXP: Paleontólogo / paleontóloga.
+
+TIPO: emparejar
+P: Une cada palabra con su significado.
+R: estrato = capa de tierra o de roca | fauna = los animales de un lugar | casual = que pasa sin buscarlo | plagado = lleno de algo
+DIF: 3
+CRIT: 6.1
+EXP: Palabras del glosario.
+
+TIPO: vf
+P: Cuanto más profundo está un estrato, más antiguo es.
+R: V
+DIF: 2
+CRIT: 6.1
+EXP: Las capas de abajo se formaron antes.
+
+TIPO: opcion
+P: Los moluscos «bivalvos», como la almeja, tienen…
+- un caparazón con forma de espiral
+* dos conchas
+- ocho patas
+- alas
+DIF: 3
+CRIT: 6.1
+EXP: Bi- = dos: dos valvas o conchas.
+
+TIPO: opcion
+P: Si un hallazgo fue «casual», quiere decir que…
+- lo buscaban desde hacía años
+* lo encontraron sin buscarlo
+- era muy caro
+- estaba en casa
+DIF: 2
+CRIT: 6.1
+EXP: Casual = por casualidad.
+
+TIPO: opcion
+P: ¿Dónde buscas el significado de una palabra que no conoces?
+- En un atlas
+* En el diccionario
+- En un calendario
+- En un mapa
+DIF: 1
+CRIT: 6.1
+EXP: Como hicimos con el glosario.
+
+# Tema 2 | El debate
+TIPO: opcion
+P: En un debate, ¿quién da y quita el turno de palabra?
+- El que más grita
+* El moderador
+- El público
+- Nadie
+DIF: 1
+CRIT: 3.2
+EXP: El moderador organiza el debate.
+
+TIPO: opcion
+P: ¿Qué expresión sirve para dar tu opinión con respeto?
+* Yo creo que…
+- ¡Eso es una tontería!
+- Cállate.
+- No sabes nada.
+DIF: 1
+CRIT: 3.2
+EXP: «Yo creo que», «En mi opinión», «Pienso que».
+
+TIPO: vf
+P: En un debate hay que esperar el turno y escuchar a los demás.
+R: V
+DIF: 1
+CRIT: 10.2
+EXP: Escucha activa y respeto.
+
+TIPO: vf
+P: En un debate gana quien habla más fuerte.
+R: F
+DIF: 1
+CRIT: 10.2
+EXP: Cuentan los argumentos, no las voces.
+
+TIPO: opcion
+P: ¿Qué es un «argumento»?
+- Un insulto
+* Una razón para defender tu opinión
+- Una pregunta
+- Un chiste
+DIF: 2
+CRIT: 3.1
+EXP: Los argumentos explican por qué piensas algo.
+
+TIPO: ordenar
+P: Ordena los pasos de un debate.
+R: El moderador presenta el tema | Cada equipo da sus argumentos | Se responden por turnos | Se sacan conclusiones
+DIF: 2
+CRIT: 3.2
+EXP: Así lo hicimos en clase.
+
+# Tema 2 | Comprensión lectora
+TIPO: opcion
+TEXTO: Durante una excursión, Leo y su prima Marta acompañaron a su tía Carmen, que es geóloga. En una pared de roca rojiza, la tía señaló una piedra redonda del tamaño de un melón. «Es un huevo de dinosaurio fosilizado», susurró. Marta dijo que parecía una patata gigante, pero cuando miró con la lupa vio unos dibujos diminutos, como las celdas de un panal: era la cáscara. Esa tarde avisaron al museo. Una semana después, Marta fue la primera en llegar a la inauguración de la vitrina.
+P: ¿A qué se dedica la tía Carmen?
+- Es paleontóloga
+* Es geóloga
+- Es maestra
+- Es guía del museo
+DIF: 1
+CRIT: 4.1
+EXP: El texto dice «que es geóloga».
+
+TIPO: opcion
+TEXTO: Durante una excursión, Leo y su prima Marta acompañaron a su tía Carmen, que es geóloga. En una pared de roca rojiza, la tía señaló una piedra redonda del tamaño de un melón. «Es un huevo de dinosaurio fosilizado», susurró. Marta dijo que parecía una patata gigante, pero cuando miró con la lupa vio unos dibujos diminutos, como las celdas de un panal: era la cáscara. Esa tarde avisaron al museo. Una semana después, Marta fue la primera en llegar a la inauguración de la vitrina.
+P: ¿Por qué Marta fue la primera en llegar a la inauguración?
+- Porque vivía al lado del museo
+* Porque al final le encantó el hallazgo y cambió de opinión
+- Porque se lo mandó su tía
+- Porque quería ver otra vitrina
+DIF: 3
+CRIT: 4.1
+EXP: Es una inferencia: al ver la cáscara se convenció.
+
+TIPO: vf
+TEXTO: Durante una excursión, Leo y su prima Marta acompañaron a su tía Carmen, que es geóloga. En una pared de roca rojiza, la tía señaló una piedra redonda del tamaño de un melón. «Es un huevo de dinosaurio fosilizado», susurró. Marta dijo que parecía una patata gigante, pero cuando miró con la lupa vio unos dibujos diminutos, como las celdas de un panal: era la cáscara. Esa tarde avisaron al museo. Una semana después, Marta fue la primera en llegar a la inauguración de la vitrina.
+P: Al principio, Marta no se creía que fuera un huevo.
+R: V
+DIF: 2
+CRIT: 4.1
+EXP: Pensaba que era una patata gigante.
+
+TIPO: opcion
+TEXTO: Durante una excursión, Leo y su prima Marta acompañaron a su tía Carmen, que es geóloga. En una pared de roca rojiza, la tía señaló una piedra redonda del tamaño de un melón. «Es un huevo de dinosaurio fosilizado», susurró. Marta dijo que parecía una patata gigante, pero cuando miró con la lupa vio unos dibujos diminutos, como las celdas de un panal: era la cáscara. Esa tarde avisaron al museo. Una semana después, Marta fue la primera en llegar a la inauguración de la vitrina.
+P: En el texto, «diminutos» significa…
+* muy pequeños
+- muy bonitos
+- muy oscuros
+- muy grandes
+DIF: 2
+CRIT: 4.1
+EXP: Diminuto = muy pequeño.
+
+TIPO: completar
+TEXTO: Durante una excursión, Leo y su prima Marta acompañaron a su tía Carmen, que es geóloga. En una pared de roca rojiza, la tía señaló una piedra redonda del tamaño de un melón. «Es un huevo de dinosaurio fosilizado», susurró. Marta dijo que parecía una patata gigante, pero cuando miró con la lupa vio unos dibujos diminutos, como las celdas de un panal: era la cáscara. Esa tarde avisaron al museo. Una semana después, Marta fue la primera en llegar a la inauguración de la vitrina.
+P: Para ver la cáscara, Marta usó una ___.
+R: lupa
+- linterna
+- pala
+- regla
+DIF: 1
+CRIT: 4.1
+EXP: «Cuando miró con la lupa».
+
+TIPO: ordenar
+TEXTO: Durante una excursión, Leo y su prima Marta acompañaron a su tía Carmen, que es geóloga. En una pared de roca rojiza, la tía señaló una piedra redonda del tamaño de un melón. «Es un huevo de dinosaurio fosilizado», susurró. Marta dijo que parecía una patata gigante, pero cuando miró con la lupa vio unos dibujos diminutos, como las celdas de un panal: era la cáscara. Esa tarde avisaron al museo. Una semana después, Marta fue la primera en llegar a la inauguración de la vitrina.
+P: Ordena lo que pasó.
+R: La tía señaló una piedra redonda | Marta dijo que parecía una patata | Marta vio la cáscara con la lupa | Avisaron al museo
+DIF: 2
+CRIT: 4.1
+EXP: Es el orden del texto.

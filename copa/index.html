@@ -402,6 +402,14 @@ function load(){let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){
   const def=defState();if(!d||!Array.isArray(d.questions))return def;
   d.cfg=Object.assign(def.cfg,d.cfg||{});d.cfg.games=Object.assign(defState().cfg.games,d.cfg.games||{});d.students=d.students||[];return d}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+/* 28/10/2026 (Javi: «faltan cosas del Tema 2» y «se repiten»): al abrir, añade solas las preguntas nuevas del banco del Tema 2
+   (data/copa/tema2-evaluacion.txt) que este aparato aún no tenga; no toca las suyas ni vuelve a meter las que ya se le ofrecieron (S.bancoVistos) */
+function traerBancoT2(){if(!window.JAVI||!JAVI.BASE)return;const k=q=>[q.text,String(q.read||'').slice(0,40),JSON.stringify(q.options||q.items||q.pairs||''),String(q.answer)].join('|');
+  fetch(JAVI.BASE+'data/copa/tema2-evaluacion.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);if(!r.qs.length)return;
+    const tengo=new Set(S.questions.map(k)),vistos=new Set(S.bancoVistos||S.questions.filter(q=>q.subject==='Tema 2').map(k));
+    const nuevas=r.qs.filter(q=>!tengo.has(k(q))&&!vistos.has(k(q)));S.bancoVistos=r.qs.map(k);
+    if(nuevas.length){S.questions=S.questions.concat(nuevas);if(V.screen==='home'||V.screen==='setup')render();toast('📥 '+nuevas.length+' preguntas nuevas del Tema 2')}
+    save()}).catch(()=>{})}
 
 function setHK(){const n=S.cfg.nHouses===4?4:5;HK=ALLH.slice(0,n);document.body.style.setProperty("--nh",n);
   S.students.forEach(s=>{if(s.house&&!HK.includes(s.house))s.house=null});const ss=S.session;
@@ -740,7 +748,11 @@ function pickGame(q){const c=S.cfg;if(c.gameMode!=='random'&&compat(c.gameMode,q
   let l=Object.keys(GAMES).filter(k=>c.games[k]!==false&&compat(k,q));if(!l.length)l=['mapa','camara','quidditch'];
   if(q.type==='order'&&l.includes('pociones')&&Math.random()<.6)return'pociones';
   const l2=l.filter(k=>k!==S.session.lastGame);return pick(l2.length?l2:l)}
-function newSession(){const c=S.cfg;let qs=shuffle(S.questions.filter(q=>V.sel.has(gkey(q))));if(c.maxQ>0)qs=qs.slice(0,c.maxQ);
+/* 28/10/2026 (Javi: «juego por segunda vez y se repiten las preguntas»): primero las que nunca han salido en este aparato, luego las que salieron hace más tiempo */
+const K_USADAS='copa-usadas';
+function usadas(){try{return JSON.parse(localStorage.getItem(K_USADAS))||{}}catch(e){return{}}}
+function marcarUsada(q){if(!q)return;const u=usadas();u[q.id]=Date.now();try{localStorage.setItem(K_USADAS,JSON.stringify(u))}catch(e){}}
+function newSession(){const c=S.cfg,u=usadas();let qs=shuffle(S.questions.filter(q=>V.sel.has(gkey(q)))).sort((a,b)=>(u[a.id]||0)-(u[b.id]||0));if(c.maxQ>0)qs=qs.slice(0,c.maxQ);qs=shuffle(qs);
   const z=v=>({g:v,h:v,r:v,s:v,f:v}),j={};ALLH.forEach(h=>j[h]={help:c.jokers,fifty:c.jokers,time:c.jokers});
   S.session={queue:qs.map(q=>q.id),i:0,pts:z(0),ok:z(0),ko:z(0),failed:[],bag:{},turn:0,jok:j,goals:z(0),map:{pos:z(0),skip:z(false)},locks:z(0),round:null,lastGame:'',ended:false,mode:c.mode==='match'?'match':'mix',mgame:c.matchGame==='duelo'?'duelo':'quidditch',matches:[],match:null};save()}
 function peek(h){const ss=S.session,ids=S.students.filter(s=>s.house===h).map(s=>s.id);if(!ids.length)return null;
@@ -780,6 +792,7 @@ function matchSkin(){const ss=S.session,m=ss.match,un=ss.mgame==='duelo';
 function matchNext(){const ss=S.session,m=ss.match;stopTimer();cancelAnimationFrame(V.raf);
   if(!m){if(ss.i>=ss.queue.length)return endSession();return matchSetup()}
   let q;while(ss.i<ss.queue.length&&!(q=qById(ss.queue[ss.i])))ss.i++;
+  marcarUsada(q);
   const rem=m.n-m.q;let done=false;
   if(m.tb)done=m.ga!==m.gb;
   else if(Math.abs(m.ga-m.gb)>rem)done=true;
@@ -802,6 +815,7 @@ function nextRound(fg,ft){const ss=S.session;stopTimer();cancelAnimationFrame(V.
   if(ss.mode==='match')return matchNext();
   let q;while(ss.i<ss.queue.length&&!(q=qById(ss.queue[ss.i])))ss.i++;
   if(!q)return endSession();
+  marcarUsada(q);
   const hs=playHouses(),n=hs.length,game=fg&&compat(fg,q)?fg:pickGame(q);
   if(game==='mapa'){let k=0;while(ss.map.skip[hs[ss.turn%n]]&&k++<n){const h=hs[ss.turn%n];ss.map.skip[h]=false;toast(`🍫 ${HOUSES[h].n} se recupera del dementor con chocolate y pasa el turno`);ss.turn++}}
   const h1=hs[ss.turn%n],houses=game==='duelo'?[h1,hs[(ss.turn+1)%n]]:[h1];
@@ -1063,7 +1077,7 @@ const CH={
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t||t.disabled)return;const f=ACT[t.dataset.a];if(f){if(t.dataset.a!=='mute')SFX.click();f(t.dataset,t)}});
 document.addEventListener('change',e=>{const t=e.target.closest('[data-c]');if(t&&CH[t.dataset.c])CH[t.dataset.c](t)});
-S=load();setHK();applyMute();if(window.JAVI&&/mision/.test(location.hash))V.screen='dev';render();
+S=load();setHK();applyMute();traerBancoT2();if(window.JAVI&&/mision/.test(location.hash))V.screen='dev';render();
 </script>
 </body>
 </html>
