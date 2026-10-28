@@ -838,7 +838,16 @@ function endSession(){const ss=S.session;stopTimer();cancelAnimationFrame(V.raf)
   V.screen='final';render()}
 /* temporizador */
 const T={id:null,left:0,total:1,cb:null};
-function timeFor(q){if(q.time)return q.time;return q.type==='open'?0:S.cfg.defTime}
+/* 28/10/2026 (Javi: «unas preguntas necesitan más tiempo y otras menos»): sin T: propio, el tiempo sale del tipo y de lo que hay que leer.
+   «Tiempo por pregunta» de los Ajustes sigue mandando como escala (40 = normal, 60 = todo más largo, 0 = sin límite). */
+function timeFor(q){if(q.time)return q.time;if(q.type==='open'||!S.cfg.defTime)return 0;
+  const pal=t=>String(t||'').split(/\s+/).filter(Boolean).length,largo=l=>(l||[]).some(x=>String(x).length>18);
+  let t={tf:15,mc:20,fill:25}[q.type]||20;
+  if(q.type==='mc'&&largo(q.options))t+=10;
+  if(q.type==='order')t=12+6*q.items.length+(largo(q.items)?4*q.items.length:0);
+  if(q.type==='match')t=12+8*q.pairs.length+(q.pairs.some(x=>String(x[1]).length>18)?3*q.pairs.length:0);
+  t+=Math.max(0,pal(q.text)-12);if(q.read)t+=Math.round(pal(q.read)/3);t+=5*((q.difficulty||1)-1);
+  t=Math.round(t*S.cfg.defTime/40/5)*5;return Math.max(10,Math.min(150,t))}
 function startTimer(sec,cb){stopTimer();const el=$('#timer');if(!sec){if(el)el.innerHTML='';return}
   T.left=T.total=sec;T.cb=cb;drawTimer();
   T.id=setInterval(()=>{if(V.paused)return;T.left--;if(T.left<=5&&T.left>0)SFX.tick();drawTimer();if(T.left<=0){stopTimer();cb&&cb()}},1000)}

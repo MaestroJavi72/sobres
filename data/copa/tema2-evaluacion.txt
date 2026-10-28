@@ -1123,3 +1123,903 @@ R: La tía señaló una piedra redonda | Marta dijo que parecía una patata | Ma
 DIF: 2
 CRIT: 4.1
 EXP: Es el orden del texto.
+
+# Tema 2 | Sílabas
+TIPO: opcion
+P: ¿Cuántas sílabas tiene «helicóptero»?
+- 4
+- 3
+* 5
+- 6
+DIF: 2
+CRIT: 9.1
+EXP: he-li-cóp-te-ro: cinco sílabas.
+
+TIPO: opcion
+P: ¿Qué palabra es monosílaba?
+- árbol
+* mar
+- agua
+- piedra
+DIF: 1
+CRIT: 9.1
+EXP: «mar» tiene una sola sílaba.
+
+TIPO: opcion
+P: ¿Cuál está bien separada?
+* pie-dra
+- pi-e-dra
+- pied-ra
+- p-ie-dra
+DIF: 2
+CRIT: 9.1
+EXP: pie-dra: «ie» va en la misma sílaba.
+
+TIPO: opcion
+P: ¿Cuál está bien separada?
+- te-a-tr-o
+* te-a-tro
+- tea-tro
+- te-at-ro
+DIF: 3
+CRIT: 9.1
+EXP: te-a-tro: la «e» y la «a» se separan.
+
+TIPO: vf
+P: «Huevo» tiene dos sílabas: hue-vo.
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: «ue» va junta: hue-vo.
+
+TIPO: vf
+P: «Sol» y «pan» son bisílabas.
+R: F
+DIF: 1
+CRIT: 9.1
+EXP: Son monosílabas: una sola sílaba.
+
+TIPO: vf
+P: «Camaleón» tiene cuatro sílabas.
+R: V
+DIF: 3
+CRIT: 9.1
+EXP: ca-ma-le-ón: la «e» y la «o» se separan.
+
+TIPO: completar
+P: La palabra «calabaza» tiene ___ sílabas.
+R: 4|cuatro
+- 3
+- 5
+- 2
+DIF: 1
+CRIT: 9.1
+EXP: ca-la-ba-za.
+
+TIPO: ordenar
+P: Ordena las sílabas para formar una palabra.
+R: pa | le | on | tó | lo | go
+DIF: 3
+CRIT: 9.1
+EXP: pa-le-on-tó-lo-go.
+
+TIPO: ordenar
+P: Ordena las sílabas para formar el nombre de un animal.
+R: co | co | dri | lo
+DIF: 2
+CRIT: 9.1
+EXP: co-co-dri-lo.
+
+TIPO: ordenar
+P: Ordena de MÁS a MENOS sílabas.
+R: murciélago | escoba | bruja | luz
+DIF: 2
+CRIT: 9.1
+EXP: mur-cié-la-go (4) · es-co-ba (3) · bru-ja (2) · luz (1).
+
+TIPO: emparejar
+P: Une cada palabra con su número de sílabas.
+R: flor = 1 | lápiz = 2 | pelota = 3 | escalera = 4
+DIF: 1
+CRIT: 9.1
+EXP: flor · lá-piz · pe-lo-ta · es-ca-le-ra.
+
+TIPO: opcion
+P: ¿Qué grupo tiene SOLO palabras trisílabas?
+- casa, mesa, silla
+* zapato, camisa, pelota
+- sol, mar, pez
+- mariposa, elefante, bicicleta
+DIF: 2
+CRIT: 9.1
+EXP: za-pa-to, ca-mi-sa, pe-lo-ta: tres sílabas cada una.
+
+TIPO: opcion
+P: Si quitamos la primera sílaba a «camino», ¿qué palabra queda?
+- cami
+* mino
+- ino
+- camo
+DIF: 2
+CRIT: 9.1
+EXP: ca-mi-no → mi-no.
+
+# Tema 2 | El nombre
+TIPO: opcion
+P: ¿Cuál es el plural de «el antifaz»?
+- los antifazes
+* los antifaces
+- los antifaz
+- las antifaces
+DIF: 2
+CRIT: 9.1
+EXP: z → c + es: antifaces.
+
+TIPO: opcion
+P: ¿Cuál es el plural de «la cruz»?
+- las cruzes
+- las cruz
+* las cruces
+- los cruces
+DIF: 1
+CRIT: 9.1
+EXP: z → c + es.
+
+TIPO: opcion
+P: ¿Cuál es el plural de «el reloj»?
+- los reloj
+* los relojes
+- los relojs
+- las relojes
+DIF: 2
+CRIT: 9.1
+EXP: Acaba en consonante: + es.
+
+TIPO: opcion
+P: ¿Cuál es el femenino de «el duque»?
+- la duqua
+* la duquesa
+- la duquisa
+- la duque
+DIF: 2
+CRIT: 9.1
+EXP: Terminación -esa: duquesa.
+
+TIPO: opcion
+P: ¿Cuál es el masculino de «la gallina»?
+- el gallino
+* el gallo
+- el pollo
+- el gallín
+DIF: 1
+CRIT: 9.1
+EXP: gallina → gallo.
+
+TIPO: opcion
+P: ¿Cuál es el masculino de «la nuera»?
+- el nuero
+- el suegro
+* el yerno
+- el cuñado
+DIF: 3
+CRIT: 9.1
+EXP: yerno / nuera: palabra distinta.
+
+TIPO: vf
+P: El femenino de «el pianista» es «la pianista».
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: Solo cambia el artículo.
+
+TIPO: vf
+P: «El sofá» en plural es «los sofás».
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: Acaba en vocal: + s.
+
+TIPO: vf
+P: «Las crisis» es el plural de «la crisis».
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: Algunas palabras no cambian en plural, solo el artículo.
+
+TIPO: completar
+P: La hembra del toro es la ___.
+R: vaca
+- tora
+- yegua
+- oveja
+DIF: 1
+CRIT: 9.1
+EXP: toro → vaca.
+
+TIPO: completar
+P: El plural de «el rey» es «los ___».
+R: reyes
+- reys
+- reies
+- rey
+DIF: 2
+CRIT: 9.1
+EXP: rey → reyes.
+
+TIPO: emparejar
+P: Une cada singular con su plural.
+R: el mar = los mares | la voz = las voces | el mes = los meses | el café = los cafés
+DIF: 2
+CRIT: 9.1
+EXP: + es, z → c + es, + es, + s.
+
+TIPO: emparejar
+P: Une cada nombre con su género.
+R: la montaña = femenino | el volcán = masculino | la roca = femenino | el desierto = masculino
+DIF: 1
+CRIT: 9.1
+EXP: Nos lo dice el artículo: la (femenino) / el (masculino).
+
+TIPO: opcion
+P: ¿Qué nombre es masculino y plural?
+- las huellas
+* los huesos
+- la cueva
+- el diente
+DIF: 1
+CRIT: 9.1
+EXP: «los huesos»: masculino plural.
+
+TIPO: opcion
+P: ¿Qué nombre es femenino y singular?
+- los fósiles
+- el museo
+* la vitrina
+- las rocas
+DIF: 1
+CRIT: 9.1
+EXP: «la vitrina»: femenino singular.
+
+TIPO: ordenar
+P: Ordena: singular masculino, singular femenino, plural masculino, plural femenino.
+R: el gato | la gata | los gatos | las gatas
+DIF: 2
+CRIT: 9.1
+EXP: el gato · la gata · los gatos · las gatas.
+
+# Tema 2 | Concordancia
+TIPO: opcion
+P: ¿Qué oración está BIEN escrita?
+- El dinosaurios era enorme.
+- La cueva estaban oscura.
+* Los niños miraban los huesos.
+- Las rocas era antiguas.
+DIF: 2
+CRIT: 9.2
+EXP: «Los niños miraban los huesos»: todo concuerda.
+
+TIPO: opcion
+P: Corrige: «Encontramos unos piedra brillantes». ¿Cómo queda?
+- Encontramos unos piedras brillantes.
+* Encontramos unas piedras brillantes.
+- Encontramos una piedras brillante.
+- Encontramos unas piedra brillante.
+DIF: 2
+CRIT: 9.2
+EXP: «piedra» es femenino: unas piedras brillantes.
+
+TIPO: completar
+P: Completa: «Las huellas eran muy ___».
+R: profundas
+- profundo
+- profunda
+- profundos
+DIF: 2
+CRIT: 9.1
+EXP: Femenino plural: profundas.
+
+TIPO: completar
+P: Completa: «El paleontólogo tenía unas gafas muy ___».
+R: pequeñas
+- pequeño
+- pequeña
+- pequeños
+DIF: 2
+CRIT: 9.1
+EXP: «gafas» es femenino plural: pequeñas.
+
+TIPO: vf
+P: «Un fósiles» está bien dicho.
+R: F
+DIF: 1
+CRIT: 9.2
+EXP: Es «un fósil» o «unos fósiles».
+
+TIPO: emparejar
+P: Une para que concuerden.
+R: el = museo | la = excursión | los = dientes | las = huellas
+DIF: 2
+CRIT: 9.1
+EXP: el museo · la excursión · los dientes · las huellas.
+
+# Tema 2 | Sinónimos y antónimos
+TIPO: opcion
+P: ¿Qué palabra es sinónimo de «escuchar»?
+- hablar
+* oír
+- callar
+- leer
+DIF: 1
+CRIT: 9.1
+EXP: Escuchar = oír con atención.
+
+TIPO: opcion
+P: ¿Qué palabra es sinónimo de «hallazgo»?
+- pérdida
+* descubrimiento
+- excursión
+- regalo
+DIF: 2
+CRIT: 9.1
+EXP: Un hallazgo es algo que se descubre.
+
+TIPO: opcion
+P: ¿Qué palabra es sinónimo de «enfadado»?
+- tranquilo
+* enojado
+- contento
+- dormido
+DIF: 1
+CRIT: 9.1
+EXP: enfadado = enojado.
+
+TIPO: opcion
+P: ¿Qué palabra es antónimo de «valiente»?
+- fuerte
+* cobarde
+- listo
+- alegre
+DIF: 1
+CRIT: 9.1
+EXP: valiente ↔ cobarde.
+
+TIPO: opcion
+P: ¿Qué palabra es antónimo de «aparecer»?
+- reaparecer
+* desaparecer
+- inaparecer
+- imaparecer
+DIF: 2
+CRIT: 9.1
+EXP: des- + aparecer.
+
+TIPO: opcion
+P: ¿Qué antónimo está MAL formado?
+- incapaz
+- desatento
+* inprudente
+- imperfecto
+DIF: 3
+CRIT: 9.1
+EXP: Delante de p se escribe im-: imprudente.
+
+TIPO: opcion
+P: ¿Cuál de estas parejas son SINÓNIMOS?
+- alto / bajo
+* hablar / charlar
+- día / noche
+- subir / bajar
+DIF: 1
+CRIT: 9.1
+EXP: hablar y charlar significan lo mismo.
+
+TIPO: opcion
+P: ¿Cuál de estas parejas son ANTÓNIMOS?
+- bonito / precioso
+- cara / rostro
+* entrar / salir
+- coche / automóvil
+DIF: 1
+CRIT: 9.1
+EXP: entrar ↔ salir.
+
+TIPO: vf
+P: «Tranquilo» y «sereno» son sinónimos.
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: Los dos significan calmado.
+
+TIPO: vf
+P: «Pesado» y «ligero» son sinónimos.
+R: F
+DIF: 1
+CRIT: 9.1
+EXP: Son antónimos.
+
+TIPO: vf
+P: El antónimo de «tapar» es «destapar».
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: des- + tapar.
+
+TIPO: completar
+P: Lo contrario de «subir» es ___.
+R: bajar
+- dessubir
+- trepar
+- saltar
+DIF: 1
+CRIT: 9.1
+EXP: subir ↔ bajar.
+
+TIPO: completar
+P: Lo contrario de «puro» es ___.
+R: impuro
+- inpuro
+- despuro
+- puros
+DIF: 2
+CRIT: 9.1
+EXP: im- delante de p.
+
+TIPO: completar
+P: «El perro estaba muy cansado». Un sinónimo de «cansado» es ___.
+R: agotado
+- descansado
+- contento
+- dormido
+DIF: 2
+CRIT: 9.1
+EXP: cansado = agotado.
+
+TIPO: emparejar
+P: Une cada palabra con su sinónimo.
+R: veloz = rápido | sendero = camino | cabello = pelo | sencillo = fácil
+DIF: 2
+CRIT: 9.1
+EXP: Son parejas de sinónimos.
+
+TIPO: emparejar
+P: Une cada palabra con su antónimo.
+R: ganar = perder | lleno = vacío | mojado = seco | dulce = salado
+DIF: 1
+CRIT: 9.1
+EXP: Son parejas de antónimos.
+
+TIPO: opcion
+P: «El volcán era grande y tenía un cráter grande». ¿Cómo lo mejoras?
+- El volcán era grande y tenía un cráter grande.
+* El volcán era enorme y tenía un cráter gigantesco.
+- El volcán era pequeño y tenía un cráter grande.
+- El volcán grande grande tenía un cráter.
+DIF: 2
+CRIT: 9.2
+EXP: Con sinónimos no repetimos «grande».
+
+TIPO: opcion
+P: ¿Qué palabra NO tiene antónimo con prefijo (in-, im-, des-)?
+- feliz
+- hacer
+* mesa
+- justo
+DIF: 3
+CRIT: 9.1
+EXP: infeliz, deshacer, injusto… pero «mesa» no tiene antónimo.
+
+# Tema 2 | Tónica y átona
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «pelota»?
+- pe
+* lo
+- ta
+DIF: 1
+CRIT: 9.1
+EXP: pe-LO-ta.
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «árbol»?
+* ár
+- bol
+DIF: 1
+CRIT: 9.1
+EXP: ÁR-bol.
+
+TIPO: opcion
+P: ¿En qué palabra la tónica es la ÚLTIMA sílaba?
+- casa
+- lápiz
+* jabón
+- pájaro
+DIF: 2
+CRIT: 9.1
+EXP: ja-BÓN.
+
+TIPO: opcion
+P: ¿Qué palabra tiene la tónica en la ANTEPENÚLTIMA sílaba?
+* pájaro
+- ventana
+- jabón
+- tortuga
+DIF: 2
+CRIT: 9.1
+EXP: PÁ-ja-ro.
+
+TIPO: vf
+P: En «calabaza», la sílaba tónica es «ba».
+R: V
+DIF: 2
+CRIT: 9.1
+EXP: ca-la-BA-za.
+
+TIPO: vf
+P: En «sartén», la sílaba tónica es «sar».
+R: F
+DIF: 2
+CRIT: 9.1
+EXP: sar-TÉN: la tónica es la última.
+
+TIPO: vf
+P: Las sílabas átonas son las que se pronuncian con menos fuerza.
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: Las átonas suenan más flojo que la tónica.
+
+TIPO: emparejar
+P: Une cada palabra con el lugar de su sílaba tónica.
+R: ratón = última | mesa = penúltima | música = antepenúltima
+DIF: 3
+CRIT: 9.1
+EXP: ra-TÓN · ME-sa · MÚ-si-ca.
+
+TIPO: emparejar
+P: Une cada palabra con su sílaba tónica.
+R: tortuga = tu | escoba = co | reloj = loj | pirámide = rá
+DIF: 2
+CRIT: 9.1
+EXP: tor-TU-ga · es-CO-ba · re-LOJ · pi-RÁ-mi-de.
+
+TIPO: opcion
+P: «Mi hermana ______ la noticia ayer». ¿Qué palabra va?
+- público
+- publico
+* publicó
+DIF: 3
+CRIT: 9.1
+EXP: pu-bli-CÓ: pasó ayer.
+
+TIPO: opcion
+P: «El ______ aplaudió al final». ¿Qué palabra va?
+* público
+- publico
+- publicó
+DIF: 3
+CRIT: 9.1
+EXP: PÚ-bli-co: la gente que mira.
+
+TIPO: completar
+P: En «ballena», la sílaba tónica es «___».
+R: lle
+- ba
+- na
+DIF: 1
+CRIT: 9.1
+EXP: ba-LLE-na.
+
+# Tema 2 | Comprensión lectora
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Quién era Inés?
+- Una alumna de 4.º
+* La guía, una paleontóloga
+- La maestra
+- La madre de Hugo
+DIF: 1
+CRIT: 4.1
+EXP: «La guía, una paleontóloga llamada Inés».
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Qué vieron en la roca?
+- Un huevo
+- Un diente
+* Huellas de dinosaurio
+- Conchas
+DIF: 1
+CRIT: 4.1
+EXP: «Unas huellas enormes marcadas en la roca».
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Qué había en ese lugar hace millones de años?
+- Un bosque
+* Una playa
+- Una ciudad
+- Un río helado
+DIF: 2
+CRIT: 4.1
+EXP: «Cuando esto era una playa».
+
+TIPO: vf
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: Lucía midió una huella con su regla.
+R: F
+DIF: 2
+CRIT: 4.1
+EXP: La midió Hugo. Lucía hizo una pregunta.
+
+TIPO: completar
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: La huella era más larga que el ___ de Hugo.
+R: brazo
+- pie
+- dedo
+- cuaderno
+DIF: 1
+CRIT: 4.1
+EXP: «¡Era más larga que su brazo!».
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Por qué no se borraron las huellas?
+- Porque nadie pasó por allí
+* Porque el barro se secó, se tapó con arena y se convirtió en piedra
+- Porque las pintaron
+- Porque las protegió un cristal
+DIF: 2
+CRIT: 4.1
+EXP: Es lo que explica Inés.
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Por qué prometieron no pisar las huellas?
+- Porque estaban sucias
+- Porque quemaban
+* Para cuidarlas y que no se estropeen
+- Porque se lo mandó Hugo
+DIF: 2
+CRIT: 4.1
+EXP: «Para cuidarlas»: son patrimonio de todos.
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Cómo crees que era el dinosaurio?
+- Muy pequeño, como un gato
+* Muy grande
+- No tenía patas
+- Volaba siempre
+DIF: 3
+CRIT: 4.1
+EXP: Inferencia: si la huella era más larga que un brazo, el dinosaurio era enorme.
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: En el texto, ¿qué palabra es sinónimo de «gigantes»?
+- marcadas
+* enormes
+- largas
+- secas
+DIF: 2
+CRIT: 4.1
+EXP: «unas huellas enormes».
+
+TIPO: ordenar
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: Ordena lo que pasó en la excursión.
+R: Inés enseñó las huellas | Hugo midió una huella | Lucía hizo una pregunta | Prometieron no pisar las huellas
+DIF: 2
+CRIT: 4.1
+EXP: Es el orden del texto.
+
+TIPO: opcion
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: ¿Qué título le va mejor al texto?
+- El cumpleaños de Hugo
+* Las huellas de la sierra
+- Un día de playa
+- La regla perdida
+DIF: 1
+CRIT: 4.1
+EXP: Habla de las huellas que vieron en la sierra.
+
+TIPO: vf
+TEXTO: El sábado, la clase de 4.º visitó un yacimiento en la sierra. La guía, una paleontóloga llamada Inés, les enseñó unas huellas enormes marcadas en la roca. «Las dejó un dinosaurio que caminaba por aquí cuando esto era una playa», explicó. Hugo midió una huella con su regla: ¡era más larga que su brazo! Lucía preguntó por qué las huellas no se habían borrado. Inés contestó que el barro se secó, quedó tapado por arena y, con millones de años, se convirtió en piedra. Antes de irse, todos prometieron no pisar las huellas para cuidarlas.
+P: La excursión fue un sábado.
+R: V
+DIF: 1
+CRIT: 4.1
+EXP: «El sábado, la clase de 4.º visitó…».
+
+# Tema 2 | El cuento
+TIPO: opcion
+P: ¿Qué parte del cuento responde a «¿cómo se resuelve el problema?»?
+- Planteamiento
+- Nudo
+* Desenlace
+DIF: 1
+CRIT: 8.1
+EXP: En el desenlace se resuelve todo.
+
+TIPO: opcion
+P: «Un día, el mamut se perdió en la nieve y no encontraba a su manada». ¿Qué parte es?
+- Planteamiento
+* Nudo
+- Desenlace
+DIF: 1
+CRIT: 4.2
+EXP: Aparece un problema: nudo.
+
+TIPO: opcion
+P: «Hace miles de años, en un valle helado, vivía un mamut muy curioso». ¿Qué parte es?
+* Planteamiento
+- Nudo
+- Desenlace
+DIF: 1
+CRIT: 4.2
+EXP: Presenta personaje, lugar y tiempo.
+
+TIPO: opcion
+P: «Por fin, siguió las huellas de su madre y volvió con su manada». ¿Qué parte es?
+- Planteamiento
+- Nudo
+* Desenlace
+DIF: 1
+CRIT: 4.2
+EXP: Se resuelve el problema.
+
+TIPO: opcion
+P: ¿Qué NO es necesario en un cuento?
+- Personajes
+- Un problema
+* Que sea una historia real
+- Un final
+DIF: 2
+CRIT: 8.1
+EXP: Los cuentos son imaginarios.
+
+TIPO: vf
+P: En el planteamiento se cuenta quién, dónde y cuándo.
+R: V
+DIF: 1
+CRIT: 8.1
+EXP: Así empieza el cuento.
+
+TIPO: vf
+P: El nudo es la parte donde se resuelve el problema.
+R: F
+DIF: 1
+CRIT: 8.1
+EXP: En el nudo aparece el problema; se resuelve en el desenlace.
+
+TIPO: emparejar
+P: Une cada pregunta con su parte del cuento.
+R: ¿Quién, dónde y cuándo? = planteamiento | ¿Qué problema aparece? = nudo | ¿Cómo termina? = desenlace
+DIF: 1
+CRIT: 8.1
+EXP: Las tres partes del cuento.
+
+TIPO: ordenar
+P: Ordena este cuento.
+R: Había una vez una bruja que no sabía volar. | Un día, su escoba se rompió en mitad del bosque. | Un búho le enseñó a arreglarla con ramas. | Desde entonces, vuela más alto que nadie.
+DIF: 2
+CRIT: 4.2
+EXP: Planteamiento, nudo (dos trozos) y desenlace.
+
+TIPO: opcion
+P: ¿Qué expresión suele servir para TERMINAR un cuento?
+- Érase una vez…
+- De repente…
+* Y colorín colorado, este cuento se ha acabado.
+- Un día…
+DIF: 1
+CRIT: 8.1
+EXP: Es una fórmula de final.
+
+# Tema 2 | Vocabulario
+TIPO: opcion
+P: ¿Qué es la «fauna» de un lugar?
+- Sus plantas
+* Sus animales
+- Sus rocas
+- Su clima
+DIF: 1
+CRIT: 6.1
+EXP: Fauna = animales.
+
+TIPO: opcion
+P: ¿Qué es una «cantera»?
+- Un lugar para cantar
+* Un lugar de donde se sacan piedras
+- Una tienda de fósiles
+- Un río pequeño
+DIF: 2
+CRIT: 6.1
+EXP: De la cantera se saca piedra.
+
+TIPO: opcion
+P: Un lugar «plagado» de fósiles es un lugar…
+- sin ningún fósil
+* lleno de fósiles
+- con un solo fósil
+- donde están prohibidos
+DIF: 2
+CRIT: 6.1
+EXP: Plagado = lleno.
+
+TIPO: opcion
+P: La «desertización» es cuando una tierra…
+* se va convirtiendo en desierto
+- se llena de agua
+- se convierte en ciudad
+- se llena de árboles
+DIF: 3
+CRIT: 6.1
+EXP: Desierto → desertización.
+
+TIPO: vf
+P: Los moluscos, como los caracoles y las almejas, tienen el cuerpo blando.
+R: V
+DIF: 2
+CRIT: 6.1
+EXP: Por eso muchos tienen concha para protegerse.
+
+TIPO: vf
+P: Algo «orgánico» viene de un ser vivo.
+R: V
+DIF: 3
+CRIT: 6.1
+EXP: Orgánico = de los seres vivos.
+
+TIPO: completar
+P: Cada capa de tierra o de roca se llama ___.
+R: estrato
+- fósil
+- yacimiento
+- cantera
+DIF: 2
+CRIT: 6.1
+EXP: Palabra del glosario.
+
+TIPO: emparejar
+P: Une cada palabra con su significado.
+R: reconstrucción = volver a montar algo | patrimonial = que es de todos y hay que cuidar | Triásico = época muy antigua de los dinosaurios
+DIF: 3
+CRIT: 6.1
+EXP: Palabras del glosario.
+
+# Tema 2 | El debate
+TIPO: opcion
+P: ¿Qué debes hacer mientras habla un compañero en el debate?
+- Preparar lo que vas a gritar
+* Escuchar y mirarle
+- Hablar con el de al lado
+- Levantarte
+DIF: 1
+CRIT: 10.2
+EXP: Escucha activa.
+
+TIPO: opcion
+P: ¿Qué expresión sirve para NO estar de acuerdo con respeto?
+- ¡Qué tontería!
+* No estoy de acuerdo porque…
+- Tú siempre te equivocas.
+- Eso no vale.
+DIF: 1
+CRIT: 3.2
+EXP: Se da la razón de por qué no estás de acuerdo.
+
+TIPO: vf
+P: El moderador también da su opinión y gana el debate.
+R: F
+DIF: 2
+CRIT: 3.2
+EXP: El moderador organiza los turnos, no compite.
+
+TIPO: emparejar
+P: Une cada rol del debate con lo que hace.
+R: moderador = da el turno de palabra | equipo = defiende una opinión | observador = se fija en cómo se respeta el turno
+DIF: 2
+CRIT: 3.2
+EXP: Así nos repartimos en clase.
