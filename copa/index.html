@@ -733,9 +733,9 @@ function finDeNivel(d){const m=d.m;if(!m.niv||d.end)return false;const nv=nivelD
   if(ok/nv.n<paseDe(m)-1e-9){d.nvFin=nv.k;d.end=true;return false}
   if(nv.k===m.niv.length-1)return false;
   const g=m.gal&&m.gal[nv.k];
-  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(nv.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${nv.n}.${g?` <b>+${g} galeón${g>1?'es':''}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:''}</p><p style="font-size:1.2rem">Ahora viene el <b>${nivNom(nv.k+1)}</b>: ${m.niv[nv.k+1]} preguntas${m.tniv?' en '+Math.round(m.tniv[nv.k+1]/60)+' minutos':''}.</p><button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
+  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(nv.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${nv.n}.${g?` <b>+${g} ${g>1?'galeones':'galeón'}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:''}</p><p style="font-size:1.2rem">Ahora viene el <b>${nivNom(nv.k+1)}</b>: ${m.niv[nv.k+1]} preguntas${m.tniv?' en '+Math.round(m.tniv[nv.k+1]/60)+' minutos':''}.</p><button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
 function finTitulo(d){const m=d.m;const pre=d.sinTiempo?'⏳ ¡Se acabó el tiempo! ':'';if(!m.niv)return pre||'¡Misión cumplida!';const c=nivelAlcanzado(d),g=galHasta(m,c);
-  return pre+(c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+nivNom(c):'💪 Sigue practicando el '+nivNom(0))+(g?' · 💰 '+g+' galeón'+(g>1?'es':''):'')}
+  return pre+(c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+nivNom(c):'💪 Sigue practicando el '+nivNom(0))+(g?' · 💰 '+g+' '+(g>1?'galeones':'galeón'):'')}
 function insignias(m){return (m.niv?' · 🧗 '+m.niv.length+' niveles':'')+(m.tniv?' · ⏳ por nivel':m.tiempo==='q'?' · ⏱️ reloj':m.tiempo?' · ⏳ '+Math.round(m.tiempo/60)+' min':'')}
 /* reloj de la misión: por pregunta, total, o (5 niveles) el de cada nivel */
 let RELOJ=null;
@@ -744,7 +744,7 @@ function relojMision(){clearInterval(RELOJ);const d=V.dev,m=d.m;if(!m.tiempo&&!m
   let fin,nv=null;
   if(m.tniv){nv=nivelDe(m,d.i);if(!nv)return;const k='copa-nivt|'+m.id+'|'+d.who.id+'|'+nv.k;let t0=0;try{t0=+localStorage.getItem(k);if(!t0||Date.now()-t0>36e5){t0=Date.now();localStorage.setItem(k,String(t0))}}catch(e){t0=Date.now()}fin=t0+m.tniv[nv.k]*1000}
   else fin=d.t0+m.tiempo*1000;
-  const pinta=()=>{if(V.screen!=='dev'||V.dev.m!==m||d.end){clearInterval(RELOJ);return}const el=$('#timer');const left=Math.max(0,Math.round((fin-Date.now())/1000));
+  const pinta=()=>{if(V.screen!=='dev'||V.dev!==d||V.dev.m!==m||d.end){clearInterval(RELOJ);return}const el=$('#timer');const left=Math.max(0,Math.round((fin-Date.now())/1000));
     if(el)el.innerHTML=`<b>⏳ ${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b>`;
     if(left<=0){clearInterval(RELOJ);closeModal();d.sinTiempo=true;
       if(nv){while(d.res.length<nv.ini+nv.n)d.res.push(0);d.i=nv.ini+nv.n-1;ACT.devnext();return}
