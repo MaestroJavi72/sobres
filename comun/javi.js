@@ -1107,7 +1107,7 @@ function listo(fn){
 window.JAVI = {
   BASE:BASE, PRUEBA:PRUEBA, PRUEBA_FIJA:PRUEBA_FIJA, DEMO:DEMO, ES_PROFE:ES_PROFE, REGISTRO:REGISTRO, TEMAS:TEMAS,
   pedirCodigo:pedirCodigo, fijarCodigo:fijarCodigo, protegerClase:protegerClase, claseAbierta:claseAbierta, hayCodigo:hayCodigo, bloquear:bloquear, minutosLlave:function(){ var t = llave(); return t ? Math.ceil((t + DURACION_LLAVE - Date.now())/60000) : 0; },
-  listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, escribirLibre:function(d){ return escribir(d, { libre:true }); }, llaveAbierta:function(){ return !!llave() || (PRUEBA_FIJA && !PROBAR_CANDADO); }, horaHoja:function(){ return horaCSV; },
+  listo:listo, leerHoja:leerHoja, filas:filas, escribir:escribir, escribirLibre:function(d){ return escribir(d, { libre:true }); }, enviarDeVerdad:enviarDeVerdad, llaveAbierta:function(){ return !!llave() || (PRUEBA_FIJA && !PROBAR_CANDADO); }, horaHoja:function(){ return horaCSV; },
   grupo:grupo, grupos:grupos, gruposVisibles:gruposVisibles, AMBITO:AMBITO, conAmbito:conAmbito, volver:volver, destinoVolver:destinoVolver, grupoCompleto:grupoCompleto, cambiarAlumno:cambiarAlumno,
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,

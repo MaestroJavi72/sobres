@@ -234,7 +234,7 @@ pre{background:#fffaf0;border:1px solid #b08a45;border-radius:.5rem;padding:.6re
 #conf i{position:absolute;top:-2rem;width:.7rem;height:1.1rem;animation:fall linear infinite}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .avance{display:flex;gap:3px;margin:.2rem 0 .6rem;flex-wrap:wrap;align-items:center}.avance i{flex:1 1 0;min-width:8px;height:12px;border-radius:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25)}.avance i.ok{background:#3fbf5f}.avance i.ko{background:#e0484f}.avance i.ya{outline:3px solid var(--gold);outline-offset:1px}.avance b{font-size:.9rem;margin:0 .2rem 0 .5rem;white-space:nowrap}.avance b:first-child{margin-left:0}
-#mipj{position:fixed;right:10px;top:64px;width:160px;height:215px;z-index:40;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)}#mipj iframe{width:100%;height:100%;border:0;background:transparent}#mipj button{position:absolute;right:4px;bottom:4px;padding:0 .4rem;font-size:.9rem;min-height:0;opacity:.75}#mipj.mini{width:84px;height:112px}@media (min-width:701px){body.con-pj .wrap{padding-right:180px}}@media (max-width:700px){#mipj{width:110px;height:150px;top:auto;bottom:10px}}
+#mipj{position:fixed;right:10px;top:64px;width:160px;height:215px;z-index:40;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)}#mipj iframe{width:100%;height:100%;border:0;background:transparent}#mipj button{position:absolute;bottom:4px;padding:0 .4rem;font-size:.85rem;min-height:0;opacity:.85}#mipj .tam{right:4px}#mipj .tienda{left:4px}#mipj.mini .tienda{display:none}#mipj{height:240px}#mitienda{position:fixed;inset:0;z-index:60;background:#120d1e}#mitienda iframe{width:100%;height:100%;border:0}#mitienda button{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:61}#mipj.mini{width:84px;height:112px}@media (min-width:701px){body.con-pj .wrap{padding-right:180px}}@media (max-width:700px){#mipj{width:110px;height:150px;top:auto;bottom:10px}}
 </style>
 </head>
 <body>
@@ -759,8 +759,13 @@ function miPersonaje(){const d=V.dev,yo=V.screen==='dev'&&d&&d.who&&d.who.id[0]=
   document.body.classList.toggle('con-pj',!!yo);if(!yo){if(c)c.remove();return}
   if(c&&c.dataset.n===yo)return;if(c)c.remove();
   c=document.createElement('div');c.id='mipj';c.dataset.n=yo;
-  c.innerHTML='<iframe title="Mi personaje" allowtransparency="true" src="'+JAVI.BASE+'hogwarts/?solo&panel&uno='+encodeURIComponent(yo)+'#hogwarts"></iframe><button type="button" title="Más pequeño o más grande">↕</button>';
-  c.querySelector('button').onclick=()=>c.classList.toggle('mini');document.body.appendChild(c)}
+  c.innerHTML='<iframe title="Mi personaje" allowtransparency="true" src="'+JAVI.BASE+'hogwarts/?solo&panel&uno='+encodeURIComponent(yo)+'#hogwarts"></iframe><button type="button" class="tam" title="Más pequeño o más grande">↕</button><button type="button" class="tienda" title="Comprar en el Mercader">🛒 Mercader</button>';
+  c.querySelector('.tam').onclick=()=>c.classList.toggle('mini');c.querySelector('.tienda').onclick=()=>abrirTienda(yo);document.body.appendChild(c)}
+/* 🛒 el Mercader para PEDIR (hogwarts/?solo&pedir=Nombre): el profe aprueba desde Hogwarts y aquí se abren los sobres */
+function abrirTienda(yo){let t=document.getElementById('mitienda');if(t)t.remove();
+  t=document.createElement('div');t.id='mitienda';
+  t.innerHTML='<iframe title="Mercader" src="'+JAVI.BASE+'hogwarts/?solo&pedir='+encodeURIComponent(yo)+'"></iframe><button type="button">✕ Volver a las misiones</button>';
+  t.querySelector('button').onclick=()=>{t.remove();const f=document.querySelector('#mipj iframe');if(f)f.src=f.src};document.body.appendChild(t)}
 function devAnswered(ok){stopTimer();const d=V.dev,q=qAct(d);d.res.push(ok?1:0);
   if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord}))}catch(e){}ok?SFX.ok():SFX.ko();
   modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2><div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}

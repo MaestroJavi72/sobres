@@ -538,6 +538,15 @@ html.panel #tabs,html.panel .banco h2.sec,html.panel #subTabs,html.panel .banco 
 html.panel .banco .shop-in{padding-top:6px}
 /* ?uno=Nombre (30/10/2026, Javi: en las misiones de La Copa cada alumno ve SU personaje con sus galeones y su nivel, y se actualiza
    cuando el profe le da galeones): solo su tarjeta, sin tocar nada, releyendo la Hoja cada 20 s */
+/* ?pedir=Nombre: el Mercader para pedir desde el ordenador del alumno (sin pestañas, sin elegir alumno ni caja) */
+html.pedir #tabs,html.pedir #mAlumnoWrap,html.pedir label[for=mQuien],html.pedir #mQuien,html.pedir #cajaBtn,html.pedir #alumnoBar{display:none!important}
+#pedAviso{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9000;max-width:92vw;background:#1d1830;color:#f3e6c4;border:2px solid #c9a34a;border-radius:14px;padding:12px 18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.6);font-size:17px;line-height:1.4}
+#pedAviso button{margin-top:8px}
+#pedidos{border:2px solid #c9a34a;border-radius:12px;padding:8px 12px;margin:6px 0 10px;background:rgba(201,163,74,.12)}
+#pedidos h3{margin:0 0 6px;font-size:16px}
+#pedidos .ped{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-top:1px dashed rgba(201,163,74,.4)}
+#pedidos .ped span{flex:1;min-width:200px}
+#pedidos .neg{color:#ff8a8a}
 html.uno body{background:transparent!important}
 html.uno body *{visibility:hidden}
 html.uno #bAlumnos,html.uno #bAlumnos *,html.uno .jv-cierre,html.uno .jv-cierre *{visibility:visible}
@@ -547,7 +556,8 @@ html.uno .cam .mas{position:absolute;left:50%;top:38%;transform:translateX(-50%)
 @keyframes unoMas{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px)}}
 </style>
 <script>if(/[?&]panel/.test(location.search)) document.documentElement.classList.add('panel');
-var UNO = (location.search.match(/[?&]uno=([^&#]+)/)||[])[1]; UNO = UNO ? decodeURIComponent(UNO.replace(/\+/g,' ')) : ''; if(UNO) document.documentElement.classList.add('uno');</script>
+var UNO = (location.search.match(/[?&]uno=([^&#]+)/)||[])[1]; UNO = UNO ? decodeURIComponent(UNO.replace(/\+/g,' ')) : ''; if(UNO) document.documentElement.classList.add('uno');
+if(/[?&]pedir=/.test(location.search)) document.documentElement.classList.add('pedir');</script>
 </head>
 <body>
 <div class="app" id="app" data-vista="tienda">
@@ -1257,7 +1267,8 @@ function registroListo(){
 }
 function enviarForm(datos){
   if(!registroListo()) return;
-  if(window.JAVI && JAVI.PRUEBA){ console.info('[modo prueba] no se envía', datos); return; }
+  var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if(window.JAVI && JAVI.PRUEBA && !(JAVI.enviarDeVerdad && JAVI.enviarDeVerdad()) && !(ENVIO_LIBRE && !local)){ console.info('[modo prueba] no se envía', datos); return; }
   var e = CONFIG.registro.entradas, body = new URLSearchParams();
   body.set(e.alumno, datos.alumno);
   body.set(e.accion, datos.accion);
@@ -1793,6 +1804,7 @@ $('cartaCerrar').addEventListener('click', cerrarModales);
 $('mQuien').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); $('mSi').click(); } });
 $('mSi').addEventListener('click', function(){
   if(!pendiente || $('mSi').disabled) return;
+  if(PEDIR){ var vp = pendiente; cerrarModales(); if(pedidoActual){ esperarPedido(); return; } pedir(vp); return; }
   var v = pendiente;
   alumnoActual = $('mAlumno').value;
   var premio = esPremio(), motivoP = $('mPremioMotivo').value;
@@ -1806,6 +1818,88 @@ $('mSi').addEventListener('click', function(){
   cerrarModales(); gracias=false; pintarBurbuja(); actualizarCajaBtn();
   iniciarCompra(v.p, v.q);
 });
+
+/* ============================================================
+   🛒 PEDIDOS DESDE LOS ORDENADORES (30/10/2026, Javi: «que desde ahí puedan comprar cartas… piden y tú apruebas»)
+   hogwarts/?solo&pedir=Nombre (lo abre La Copa desde «Mi personaje»): el Mercader de siempre, pero «Confirmar» envía una
+   PETICIÓN sin código (JAVI.escribirLibre): Alumno «PEDIDOS · 4ºA», Acción «Pedido», CartaId = id, Tipo = nombre,
+   Carta = {p, q, of, pagas, det}. El profe la ve en Hogwarts → Alumnos (y en el panel 🏰) con ✅/❌ (con su código):
+   ✅ resta los galeones (Compra «Mercader», detalle «… · pedido») y escribe «PedidoOk»; ❌ escribe «PedidoNo».
+   El ordenador del alumno relee la Hoja cada 15 s: con «PedidoOk» abre sus sobres (las cartas se apuntan con Registro aunque
+   no haya código: ENVIO_LIBRE); con «PedidoNo» lo dice. El pedido en curso se recuerda (localStorage pedido|Nombre).
+   ============================================================ */
+var PEDIR = (location.search.match(/[?&]pedir=([^&#]+)/)||[])[1]; PEDIR = PEDIR ? decodeURIComponent(PEDIR.replace(/\+/g,' ')) : '';
+var TAG_PED = 'PEDIDOS · 4ºA', ENVIO_LIBRE = false, pedidoActual = null, pedResueltos = {};
+function filasPed(acc){ return banco.filas.filter(function(f){ return f[1]===TAG_PED && f[2]===acc; }); }
+function jsonDe(t){ var i = String(t||'').indexOf('{'); if(i<0) return null; try{ return JSON.parse(String(t).slice(i)); }catch(e){ return null; } }
+function respuestaPedido(id){
+  if(filasPed('PedidoOk').some(function(f){ return f[3]===id; })) return 'ok';
+  if(filasPed('PedidoNo').some(function(f){ return f[3]===id; })) return 'no';
+  return '';
+}
+/* --- lado del alumno --- */
+function guardarPedido(){ try{ if(pedidoActual) localStorage.setItem('pedido|'+PEDIR, JSON.stringify(pedidoActual)); else localStorage.removeItem('pedido|'+PEDIR); }catch(e){} }
+function avisoPedido(html){
+  var a = $('pedAviso');
+  if(!a){ a = document.createElement('div'); a.id = 'pedAviso'; document.body.appendChild(a); }
+  a.innerHTML = html; a.hidden = !html;
+  var b = a.querySelector('button'); if(b) b.onclick = function(){ avisoPedido(''); };
+}
+function pedir(v){
+  var id = 'p'+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36);
+  var det = v.q+' × '+v.p.nombre+(v.of ? ' ('+etiqueta(v.of)+')' : '');
+  pedidoActual = { id:id, p:v.p.id, q:v.q, pagas:v.c.pagas, det:det, t:Date.now() };
+  JAVI.escribirLibre({ alumno:TAG_PED, accion:'Pedido', cartaId:id, tipo:PEDIR, carta:JSON.stringify({ p:v.p.id, q:v.q, of:v.of?etiqueta(v.of):'', pagas:v.c.pagas, det:det }) });
+  guardarPedido(); esperarPedido();
+}
+function esperarPedido(){
+  if(!pedidoActual) return;
+  var r = respuestaPedido(pedidoActual.id);
+  if(r==='ok'){
+    var p = PROD[pedidoActual.p], q = pedidoActual.q; pedidoActual = null; guardarPedido();
+    avisoPedido(''); ENVIO_LIBRE = true; alumnoActual = PEDIR;
+    try{ JAVI.sonarPuntos(1); }catch(e){}
+    if(p) iniciarCompra(p, q);
+    return;
+  }
+  if(r==='no'){
+    var d = pedidoActual.det; pedidoActual = null; guardarPedido();
+    avisoPedido('<b>❌ El profe no ha aprobado tu pedido</b><br>'+d+'<br><button type="button">Vale</button>');
+    return;
+  }
+  avisoPedido('<b>⏳ Pedido enviado</b><br>'+pedidoActual.det+' · '+pedidoActual.pagas+' galeones<br><small>Espera a que el profe lo apruebe. Cuando lo haga, se abrirán tus sobres aquí.</small>');
+}
+/* --- lado del profe --- */
+function pedidosPendientes(){
+  var hoyK = clave(new Date());
+  return filasPed('Pedido').filter(function(f){ return fechaFila(f[0])===hoyK && !respuestaPedido(f[3]) && !pedResueltos[f[3]]; })
+    .map(function(f){ var j = jsonDe(f[5]) || {}; return { id:f[3], nombre:f[4], det:j.det||'', pagas:+j.pagas||0 }; });
+}
+function pintarPedidos(){
+  if(PEDIR || UNO || !esProfe) return;
+  var box = $('pedidos');
+  if(!box){ box = document.createElement('div'); box.id = 'pedidos'; var est = $('bEstado'); est.parentNode.insertBefore(box, est); }
+  var l = pedidosPendientes(), cs = cuentas();
+  box.hidden = !l.length;
+  box.innerHTML = l.length ? '<h3>🛒 Pedidos desde los ordenadores</h3>'+l.map(function(x){
+    var s = cs[x.nombre] ? cs[x.nombre].saldo : 0, falta = s < x.pagas;
+    return '<div class="ped"><span><b>'+x.nombre+'</b> · '+x.det+' · '+x.pagas+' galeones <small>(tiene '+s+')</small>'+(falta ? ' <b class="neg">no le llega</b>' : '')+'</span>'+
+      '<button type="button" class="ok" data-ok="'+x.id+'"'+(falta?' disabled':'')+'>✅ Aprobar</button><button type="button" class="no" data-no="'+x.id+'">❌</button></div>';
+  }).join('') : '';
+  Array.prototype.forEach.call(box.querySelectorAll('button'), function(b){
+    b.onclick = function(){ resolverPedido(b.dataset.ok || b.dataset.no, !!b.dataset.ok); };
+  });
+}
+function resolverPedido(id, ok){
+  var x = pedidosPendientes().filter(function(p){ return p.id===id; })[0]; if(!x) return;
+  if(!JAVI.llaveAbierta()) return JAVI.pedirCodigo({ titulo:'🔐 Código para aprobar pedidos', texto:'Escribe el código y vuelve a pulsar ✅ o ❌.' });
+  if(ok){
+    var s = cuentas()[x.nombre]; if(!s || s.saldo < x.pagas){ alert(x.nombre+' no tiene galeones suficientes.'); return; }
+    enviarMovimiento(x.nombre, 'Compra', x.pagas, 'Mercader', x.det+' · pedido');
+  }
+  JAVI.escribir({ alumno:TAG_PED, accion: ok ? 'PedidoOk' : 'PedidoNo', cartaId:id, tipo:x.nombre });
+  pedResueltos[id] = 1; pintarPedidos(); pintarBanco();
+}
 
 /* ---------- caja ---------- */
 function actualizarCajaBtn(){
@@ -2340,6 +2434,7 @@ function pintarBanco(){
     grid.appendChild(b);
   });
 
+  try{ pintarPedidos(); }catch(e){}
   var gp = gastoPrevio(), ini = G.inicio || {};
   $('bDesde').textContent = G.desde ? G.desde.split('-').reverse().join('/') : 'inicio';
   var filasT = '<tr><th>Alumno</th><th>ClassDojo</th><th>Cartas</th><th>Gastado</th><th>Acumulados</th></tr>';
@@ -3084,6 +3179,13 @@ function iniciarGaleones(){
   }
   cargarBanco();
   if(UNO) setInterval(function(){ if(!document.hidden) cargarBanco(); }, 20000);
+  if(PEDIR){
+    alumnoActual = PEDIR; $('mSi').textContent = '🛒 Pedírselo al profe';
+    try{ pedidoActual = JSON.parse(localStorage.getItem('pedido|'+PEDIR)||'null'); }catch(e){}
+    if(pedidoActual) avisoPedido('<b>⏳ Pedido enviado</b><br>'+pedidoActual.det);
+    setInterval(function(){ if(pedidoActual && !document.hidden) cargarBanco().then(esperarPedido); }, 15000);
+    cargarBanco().then(esperarPedido);
+  } else if(esProfe && !UNO) setInterval(function(){ if(!document.hidden) cargarBanco(); }, 30000);
 }
 
 window.MERCADER = { elegirTipo:elegirTipo, calcular:calcular, ofertasDe:ofertasDe, clave:clave, precioBase:precioBase };
