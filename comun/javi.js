@@ -1066,7 +1066,11 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 (function(){
   var d = new Date(), q = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && location.search.match(/[?&]hora=(\d{1,2})/);
   if(q) d.setHours(+q[1], 0, 0, 0);
-  var dentro = d.getDay()>=1 && d.getDay()<=5 && d.getHours()>=8 && d.getHours()<14, llave = false;
+  var fq = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && location.search.match(/[?&]fecha=(\d{4})-(\d{2})-(\d{2})/);
+  if(fq) d = new Date(+fq[1], +fq[2]-1, +fq[3], d.getHours(), d.getMinutes());
+  var hoyK = d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2), fes = [];
+  try{ fes = JSON.parse(localStorage.getItem('javi-festivos-cache'))||[]; }catch(e){}   /* días sin clase (los guarda cierre.js) */
+  var dentro = d.getDay()>=1 && d.getDay()<=5 && d.getHours()>=8 && d.getHours()<14 && fes.indexOf(hoyK)<0, llave = false;
   try{ llave = Date.now() < (+localStorage.getItem('javi-cierre-hasta') || 0); }catch(e){}
   if(!dentro && !llave){
     var st = document.createElement('style'); st.textContent = 'html.jv-cerrada body{visibility:hidden}html.jv-cerrada .jv-cierre{visibility:visible}';

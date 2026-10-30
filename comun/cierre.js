@@ -14,11 +14,18 @@ var K = 'javi-cierre-hasta';
 var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
 
 function ahora(){
-  var d = new Date(), m = local && location.search.match(/[?&]hora=(\d{1,2})/);
+  var d = new Date(), m = local && location.search.match(/[?&]hora=(\d{1,2})/), f = local && location.search.match(/[?&]fecha=(\d{4})-(\d{2})-(\d{2})/);
+  if(f){ d = new Date(+f[1], +f[2]-1, +f[3], d.getHours(), d.getMinutes()); }
   if(m){ d.setHours(+m[1], 0, 0, 0); }
   return d;
 }
-function enHorario(){ var d = ahora(), dia = d.getDay(), h = d.getHours(); return dia>=1 && dia<=5 && h>=ABRE && h<CIERRA; }
+/* 30/10/2026 (Javi): también cerrada los DÍAS SIN CLASE (festivos y excursiones: data/horario.json → festivos + Planificación → Días sin clase).
+   La lista se guarda en el aparato (javi-festivos-cache) para que javi.js tape la página al instante la próxima vez. */
+var KF = 'javi-festivos-cache';
+function clave(d){ return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
+function festivos(){ try{ return JSON.parse(localStorage.getItem(KF))||[]; }catch(e){ return []; } }
+function esFestivo(){ return festivos().indexOf(clave(ahora()))>=0; }
+function enHorario(){ var d = ahora(), dia = d.getDay(), h = d.getHours(); return dia>=1 && dia<=5 && h>=ABRE && h<CIERRA && !esFestivo(); }
 function abiertoConClave(){ try{ return Date.now() < (+localStorage.getItem(K) || 0); }catch(e){ return false; } }
 function proximaApertura(){ var d = new Date(); if(d.getHours() >= ABRE) d.setDate(d.getDate()+1); d.setHours(ABRE, 0, 0, 0); return d.getTime(); }
 function hace(){ return !enHorario() && !abiertoConClave(); }
@@ -40,7 +47,7 @@ function tapar(){
   document.head.appendChild(css);
   capa = document.createElement('div'); capa.className = 'jv-cierre'; capa.setAttribute('role', 'dialog'); capa.setAttribute('aria-modal', 'true');
   capa.innerHTML = '<form class="caja"><div class="ic">🔒</div><h2>Javificación está cerrada</h2>'+
-    '<p>Solo se puede usar de lunes a viernes de '+ABRE+':00 a '+CIERRA+':00. Fuera de ese horario hace falta la contraseña.</p>'+
+    (esFestivo() ? '<p>Hoy no hay clase (fiesta o excursión). Hace falta la contraseña.</p>' : '<p>Solo se puede usar de lunes a viernes de '+ABRE+':00 a '+CIERRA+':00. Fuera de ese horario hace falta la contraseña.</p>')+
     '<input type="password" autocomplete="off" placeholder="Contraseña" aria-label="Contraseña">'+
     '<div class="err" aria-live="polite"></div><button type="submit">Entrar</button></form>';
   document.documentElement.classList.add('jv-cerrada');
@@ -66,5 +73,10 @@ function huella(t){
 function revisar(){ if(hace()) tapar(); else destapar(); }
 if(hace()){ if(document.body) tapar(); else document.addEventListener('DOMContentLoaded', tapar); }
 setInterval(revisar, 60000);
+/* lista de días sin clase: con javi.js, la de JAVI.festivos() (horario + Hoja); en las fichas, la de data/horario.json */
+function guardarFestivos(l){ try{ localStorage.setItem(KF, JSON.stringify((l||[]).filter(function(x){ return /^\d{4}-\d{2}-\d{2}$/.test(x); }))); }catch(e){} revisar(); }
+var yoCierre = (document.currentScript && document.currentScript.src) || '';
+if(window.JAVI && JAVI.listo && JAVI.festivos) JAVI.listo(function(){ guardarFestivos(JAVI.festivos()); });
+else if(yoCierre) fetch(yoCierre.replace(/comun\/cierre\.js.*$/, 'data/horario.json'), { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(h){ var l = festivos(); (h.festivos||[]).forEach(function(f){ if(l.indexOf(f)<0) l.push(f); }); guardarFestivos(l); })   /* sin javi.js no se leen los de la Hoja: se suman a los ya guardados */.catch(function(){});
 window.addEventListener('storage', function(e){ if(e.key===K) revisar(); });
 })();
