@@ -1044,6 +1044,19 @@ function ponerInicio(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', ponerInicio); else ponerInicio();
 
+/* 🔒 CIERRE FUERA DEL HORARIO (comun/cierre.js, 30/10/2026): L–V de 8:00 a 14:00 abierta; fuera, contraseña.
+   Aquí solo se oculta la página ya (sin esperar a cierre.js) con las mismas reglas; cierre.js pone la ventana de la contraseña. */
+(function(){
+  var d = new Date(), q = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && location.search.match(/[?&]hora=(\d{1,2})/);
+  if(q) d.setHours(+q[1], 0, 0, 0);
+  var dentro = d.getDay()>=1 && d.getDay()<=5 && d.getHours()>=8 && d.getHours()<14, llave = false;
+  try{ llave = Date.now() < (+localStorage.getItem('javi-cierre-hasta') || 0); }catch(e){}
+  if(!dentro && !llave){
+    var st = document.createElement('style'); st.textContent = 'html.jv-cerrada body{visibility:hidden}html.jv-cerrada .jv-cierre{visibility:visible}';
+    document.head.appendChild(st); document.documentElement.classList.add('jv-cerrada');
+  }
+  var s = document.createElement('script'); s.src = BASE+'comun/cierre.js'; document.head.appendChild(s);
+})();
 /* 🎵 MÚSICA RELAJANTE para cuando trabajan: botón abajo a la izquierda en todas las páginas (comun/musica.js) */
 (function(){ var s = document.createElement('script'); s.src = BASE+'comun/musica.js'; s.async = true; document.head.appendChild(s); })();
 /* 🎃 DÍAS DE FIESTA (comun/fiesta.js): Halloween el 30/10/2026; solo ese día */

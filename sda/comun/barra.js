@@ -14,6 +14,12 @@ var DIAS = ['dom','lun','mar','mié','jue','vie','sáb'], MESES = ['ene','feb','
   var s = document.createElement('script'); s.src = (document.currentScript && document.currentScript.src || '').replace(/sda\/comun\/barra\.js.*$/, 'comun/panel-bano.js'); s.async = true; document.head.appendChild(s);
 })();
 
+/* 🔒 cierre fuera del horario (comun/cierre.js) también en las fichas */
+(function(){
+  if(window.JAVI) return;   /* javi.js ya lo carga */
+  var s = document.createElement('script'); s.src = (document.currentScript && document.currentScript.src || '').replace(/sda\/comun\/barra\.js.*$/, 'comun/cierre.js'); document.head.appendChild(s);
+})();
+
 /* 🏠 Inicio junto a «← Volver» en las fichas (no cargan comun/javi.js, que lo pone en las demás páginas) */
 (function(){
   if(document.querySelector('.jv-inicio') || window.JAVI) return;
