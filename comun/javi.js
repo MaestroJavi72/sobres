@@ -96,11 +96,25 @@ function guardarPend(){ guardarLocal(CLAVE_PEND, JSON.stringify(pendientes)); }
 
 var filasCSV = [], horaCSV = null, promesaCSV = null;
 
-function leerHoja(){
-  promesaCSV = fetch(REGISTRO.csvUrl+'&t='+Date.now(), { cache:'no-store' })
+/* 30/10/2026: Google sirve a veces una copia ANTIGUA de la Hoja publicada (una misión de La Copa aparecía y desaparecía).
+   Si llega una copia con menos filas que la mejor vista en este aparato, se vuelve a pedir (hasta 4 veces) y nunca se cambia
+   lo que ya se tiene por algo más viejo (localStorage javi-hoja-filas). */
+function pedirCSV(intento){
+  return fetch(REGISTRO.csvUrl+'&t='+Date.now()+'-'+intento, { cache:'no-store' })
     .then(function(r){ if(!r.ok) throw new Error('Hoja '+r.status); return r.text(); })
     .then(function(t){
-      filasCSV = leerCSV(t).slice(1); horaCSV = new Date();
+      var f = leerCSV(t).slice(1), max = Math.max(filasCSV.length, +(leerLocal('javi-hoja-filas')||0));
+      if(f.length < max && intento < 4) return new Promise(function(ok){ setTimeout(ok, 700); }).then(function(){ return pedirCSV(intento+1); });
+      if(f.length < filasCSV.length) return null;   /* sigue siendo vieja: nos quedamos con la que había */
+      if(f.length > +(leerLocal('javi-hoja-filas')||0)) guardarLocal('javi-hoja-filas', String(f.length));
+      return f;
+    });
+}
+function leerHoja(){
+  promesaCSV = pedirCSV(0)
+    .then(function(f){
+      if(!f) return filasCSV;
+      filasCSV = f; horaCSV = new Date();
       var vistos = {};
       filasCSV.forEach(function(f){ var m = String(f[5]||'').match(/#g[a-z0-9]+/); if(m) vistos[m[0]] = 1; });
       var ahora = Date.now();
