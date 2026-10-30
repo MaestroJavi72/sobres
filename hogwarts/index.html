@@ -548,6 +548,12 @@ html.pedir #tabs,html.pedir #mAlumnoWrap,html.pedir label[for=mQuien],html.pedir
 #pedidos .ped span{flex:1;min-width:200px}
 #pedidos .neg{color:#ff8a8a}
 #pedidos .hechos{margin:0 0 4px;font-size:14px;opacity:.9}
+html.mis1 #tabs,html.mis1 .misForm,html.mis1 .usarBtn{display:none!important}
+html.mis1 #misLista{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+html.mis1 #misLista li{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;text-align:center}
+html.mis1 #misLista .cartaInfo{display:flex;flex-direction:column;align-items:center;gap:6px}
+html.mis1 #misLista .thumb{width:140px;height:196px;border-radius:10px}
+html.mis1 #misAviso{font-size:20px}
 html.uno body{background:transparent!important}
 html.uno body *{visibility:hidden}
 html.uno #bAlumnos,html.uno #bAlumnos *,html.uno .jv-cierre,html.uno .jv-cierre *{visibility:visible}
@@ -558,7 +564,9 @@ html.uno .cam .mas{position:absolute;left:50%;top:38%;transform:translateX(-50%)
 </style>
 <script>if(/[?&]panel/.test(location.search)) document.documentElement.classList.add('panel');
 var UNO = (location.search.match(/[?&]uno=([^&#]+)/)||[])[1]; UNO = UNO ? decodeURIComponent(UNO.replace(/\+/g,' ')) : ''; if(UNO) document.documentElement.classList.add('uno');
-if(/[?&]pedir=/.test(location.search)) document.documentElement.classList.add('pedir');</script>
+if(/[?&]pedir=/.test(location.search)) document.documentElement.classList.add('pedir');
+/* ?mis=Nombre (30/10/2026, Javi: «que cada alumno vea todas las cartas que tiene para usar»): solo SUS cartas por usar, en grande, sin poder marcarlas */
+var MIS = (location.search.match(/[?&]mis=([^&#]+)/)||[])[1]; MIS = MIS ? decodeURIComponent(MIS.replace(/\+/g,' ')) : ''; if(MIS) document.documentElement.classList.add('mis1');</script>
 </head>
 <body>
 <div class="app" id="app" data-vista="tienda">
@@ -1422,6 +1430,7 @@ function aplicarLibre(){
   Array.prototype.forEach.call(packsEl.children, function(b){ b.setAttribute('aria-pressed', b.dataset.id===pack?'true':'false'); });
 }
 function vistaInicial(){
+  if(MIS) return 'mis';
   var h = (location.hash||'').replace('#','').toLowerCase();
   if(h==='sobres' || h==='mis' || h==='premio') return h;
   if((h==='hogwarts' || h==='banco' || h==='marcador') && esProfe) return 'banco';
@@ -1998,14 +2007,16 @@ function construirRegistro(filas){
 function pintarMisCartas(lista){
   var ul=$('misLista'), aviso=$('misAviso');
   ul.innerHTML='';
+  if(MIS){ lista = lista.filter(function(c){ return c.estado!=='Usada'; });
+    if(!lista.length){ aviso.textContent='No tienes cartas para usar. ¡Consigue galeones y pídelas en el Mercader!'; return; } }
   if(!lista.length){ aviso.textContent='Todavía no tienes ninguna carta registrada.'; return; }
-  aviso.textContent = lista.length+(lista.length===1?' carta registrada.':' cartas registradas.');
+  aviso.textContent = MIS ? '🃏 '+MIS+', tienes '+lista.length+(lista.length===1?' carta para usar.':' cartas para usar.')+' Toca una para verla en grande.' : lista.length+(lista.length===1?' carta registrada.':' cartas registradas.');
   lista.forEach(function(c){
     var li=document.createElement('li'), usada = c.estado==='Usada';
     var ref = cartasPorId[Number(c.cartaId)];
     var thumb = ref ? '<img class="thumb" src="'+ref.src+'" alt="Ver carta" loading="lazy">' : '';
     li.innerHTML = '<span class="cartaInfo">'+thumb+'<span>'+(c.carta||c.tipo)+'</span></span>'+
-      '<span class="estado '+(usada?'usada':'pend')+'">'+(usada?'Usada':'Pendiente')+'</span>'+
+      '<span class="estado '+(usada?'usada':'pend')+'">'+(usada?'Usada':(MIS?'Para usar':'Pendiente'))+'</span>'+
       (usada?'':'<button type="button" class="usarBtn">Marcar como usada</button>');
     if(ref){ li.querySelector('.thumb').addEventListener('click', function(){ verCarta(ref); }); }
     if(!usada){ li.querySelector('.usarBtn').addEventListener('click', function(){ marcarUsada(c, li); }); }
@@ -3201,6 +3212,7 @@ if(typeof IMG_HERO!=='undefined'){ $('hero').src = IMG_HERO; }
 iniciarGaleones();
 pintarTienda();
 setVista(vistaInicial());
+if(MIS){ $('miNombre').value = MIS; consultarMisCartas(); }
 if(window.JAVI){ JAVI.avisoPrueba(); }
 $('tabInicio').setAttribute('data-volver', '../'+(esProfe ? '?profe' : '')+'#tutoria');
 if(/[?&]solo/.test(location.search)) $('tabInicio').hidden = true;
