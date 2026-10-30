@@ -684,6 +684,14 @@ function devEnter(){V.screen='dev';V.dev=V.dev||{};document.body.classList.remov
   $('#app').innerHTML='<div class="wrap home"><h1 class="title" style="font-size:2.2rem">✨ Preparando la misión… ✨</h1></div>';
   JAVI.listo(()=>JAVI.protegerClase('4ºA',{alAbrir(){loadLista().then(()=>{V.dev.open=true;render()}).catch(()=>toast('❌ No he podido leer la lista de clase'))}}))}
 function hecha(id,who){let l=null;try{l=JSON.parse(localStorage.getItem('copa-hecha|'+id+'|'+who)||'null')}catch(e){}return l||respuestas(id).get(who)||null}
+/* 🏅 PREMIO DE LA MISIÓN (30/10/2026, Javi: «si consiguen un resultado potente, darle un galeón»): +1 galeón en Hogwarts a quien
+   acierte el 90 % o más (nota 9 o más). Solo respuestas individuales (#nº de lista), con el código, una vez por alumno y misión
+   (localStorage copa-premio|id en este aparato). */
+const PREMIO_MIN=0.9,K_PREMIO=id=>'copa-premio|'+id;
+function premiados(id){try{return JSON.parse(localStorage.getItem(K_PREMIO(id)))||[]}catch(e){return[]}}
+function candidatosPremio(m,rs,inv){const ya=premiados(m.id);return [...rs.entries()].filter(([w,x])=>w[0]==='#'&&inv[w]&&x.length&&sum(x)/x.length>=PREMIO_MIN).map(([w,x])=>({n:inv[w],ok:sum(x),de:x.length,ya:ya.includes(inv[w])}))}
+function premioHTML(m,rs,inv){if(!window.JAVI||!rs.size)return'';const c=candidatosPremio(m,rs,inv),nuevos=c.filter(x=>!x.ya),ya=c.filter(x=>x.ya);
+  return `<p>🏅 <b>Resultado potente</b> (9 o más sobre 10): ${c.length?c.map(x=>esc(x.n)+' '+x.ok+'/'+x.de+(x.ya?' ✅':'')).join(' · '):'nadie todavía'}</p>${nuevos.length?`<div class="row"><button class="gold" data-a="devpremio" data-id="${esc(m.id)}">🏅 Dar +1 galeón a ${nuevos.length===1?esc(nuevos[0].n):nuevos.length+' alumnos'}</button></div>`:''}${ya.length?'<p><small>✅ = ya tiene su galeón de esta misión.</small></p>':''}`}
 function vDev(){const d=V.dev;
   if(!d.who){const g=JAVI.grupo('4ºA');return `<div class="wrap"><div class="bar"><h1>📱 ¿Quién juega?</h1></div>
     <div class="parch pad"><h3>🧙 Yo solo: toca tu nombre</h3><div class="row">${g.nombres.map(n=>`<button class="stu" style="font-size:1.25rem;padding:.6rem 1.1rem" data-a="devname" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
@@ -712,7 +720,7 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
     const peores=fallos.map((f,i)=>({f,i})).filter(x=>x.f>0).sort((a,b)=>b.f-a.f).slice(0,5);
     return `<div style="border:2px solid #b08a45;border-radius:.6rem;padding:.6rem;margin:.6rem 0;${m.cerrada?'opacity:.6':''}"><div class="row" style="justify-content:space-between"><b>${esc(m.titulo)}</b><small>${m.dia} · ${n} preguntas · ${rs.size} respuestas${m.cerrada?' · cerrada':''}</small>${m.cerrada?'':`<button data-a="devclose" data-id="${esc(m.id)}">🔒 Cerrar</button>`}</div>
     ${rs.size?`<table class="stand"><tr><th>Quién</th><th>Aciertos</th><th>Falló las preguntas</th></tr>${filas.map(([w,r])=>`<tr><td>${w[0]==='#'?esc(w.slice(1)+' · '+(inv[w]||'?')):esc(w)}</td><td><b>${sum(r)}</b> de ${r.length}</td><td>${r.map((x,i)=>x?'':i+1).filter(Boolean).join(', ')||'—'}</td></tr>`).join('')}</table>
-    ${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
+    ${premioHTML(m,rs,inv)}${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
   return `<h3>📤 Enviar una misión a los dispositivos</h3>
   <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${subs.map(x=>`<option value="s:${esc(x)}">Todo «${esc(x)}» (${S.questions.filter(q=>q.subject===x&&q.type!=='open').length})</option>`).join('')}${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
   <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="30">30</option><option value="0">Todas</option></select></label>
@@ -1083,6 +1091,12 @@ const ACT={
     S.questions.some(q=>q.subject==='Tema 2')?ask('Ya tienes preguntas de «Tema 2». ¿Sustituirlas por el banco original?',go):go()},
   devcsv(){const ms=misiones(),sel=V.dvm&&ms.some(m=>m.id===V.dvm)?ms.filter(m=>m.id===V.dvm):ms,t=notasTabla(sel);if(!t.filas.length)return toast('Todavía no hay notas que exportar');
     JAVI.exportarCSV('notas-copa-4A-'+JAVI.util.clave(new Date()),[t.cab].concat(t.filas))},
+  devpremio(d){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para dar galeones',texto:'Escribe el código y vuelve a pulsar «Dar +1 galeón».'});
+    const m=misiones().find(x=>x.id===d.id);if(!m)return;const inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
+    const c=candidatosPremio(m,respuestas(m.id),inv).filter(x=>!x.ya);if(!c.length)return toast('No hay nadie nuevo para premiar');
+    ask('¿Dar +1 galeón a '+c.map(x=>esc(x.n)+' ('+x.ok+'/'+x.de+')').join(', ')+'?',()=>{const ya=premiados(m.id);
+      c.forEach(x=>{JAVI.darPuntos('4ºA',x.n,1,'Acierto','La Copa · misión «'+m.titulo+'» ('+x.ok+'/'+x.de+')');ya.push(x.n)});
+      try{localStorage.setItem(K_PREMIO(m.id),JSON.stringify(ya))}catch(e){}SFX.fanfare();toast('🏅 +1 galeón para '+c.length+(c.length===1?' alumno':' alumnos')+(JAVI.PRUEBA?' (modo prueba)':''));render()})})},
   devclose(d){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo();ask('¿Cerrar esta misión? Dejará de salir en los aparatos (los resultados se conservan).',()=>{JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:d.id,tipo:'cerrada',carta:''});render()})})},
   /* libro */
   qnew(){editor(null)},qed(d){editor(qById(d.id))},
