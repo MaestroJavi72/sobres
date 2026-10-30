@@ -234,7 +234,7 @@ pre{background:#fffaf0;border:1px solid #b08a45;border-radius:.5rem;padding:.6re
 #conf i{position:absolute;top:-2rem;width:.7rem;height:1.1rem;animation:fall linear infinite}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .avance{display:flex;gap:3px;margin:.2rem 0 .6rem;flex-wrap:wrap;align-items:center}.avance i{flex:1 1 0;min-width:8px;height:12px;border-radius:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25)}.avance i.ok{background:#3fbf5f}.avance i.ko{background:#e0484f}.avance i.ya{outline:3px solid var(--gold);outline-offset:1px}.avance b{font-size:.9rem;margin:0 .2rem 0 .5rem;white-space:nowrap}.avance b:first-child{margin-left:0}
-#mipj{position:fixed;right:10px;top:64px;width:160px;height:215px;z-index:40;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)}#mipj iframe{width:100%;height:100%;border:0;background:transparent}#mipj button{position:absolute;bottom:4px;padding:0 .4rem;font-size:.85rem;min-height:0;opacity:.85}#mipj .tam{right:4px}#mipj .tienda{left:4px;bottom:32px}#mipj .cartas{left:4px}#mipj.mini .tienda,#mipj.mini .cartas{display:none}#mipj{height:270px}#mitienda{position:fixed;inset:0;z-index:60;background:#120d1e}#mitienda iframe{width:100%;height:100%;border:0}#mitienda button{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:61}#mipj.mini{width:84px;height:112px}@media (min-width:701px){body.con-pj .wrap{padding-right:180px}}@media (max-width:700px){#mipj{width:110px;height:150px;top:auto;bottom:10px}}
+#mipj{position:fixed;right:10px;top:64px;width:160px;height:215px;z-index:40;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)}#mipj iframe{width:100%;height:100%;border:0;background:transparent}#mipj button{position:absolute;bottom:4px;padding:0 .4rem;font-size:.85rem;min-height:0;opacity:.85}#mipj .tam{right:4px}#mipj .tienda{left:4px;bottom:32px}#mipj .cartas{left:4px}#mipj.mini .tienda,#mipj.mini .cartas{display:none}#mipj{height:270px}#mitienda{position:fixed;inset:0;z-index:60;background:#120d1e}#mitienda iframe{width:100%;height:100%;border:0}#mitienda button{position:fixed;top:10px;right:12px;z-index:61}#mipj.mini{width:84px;height:112px}@media (min-width:701px){body.con-pj .wrap{padding-right:180px}}@media (max-width:700px){#mipj{width:110px;height:150px;top:auto;bottom:10px}}
 </style>
 </head>
 <body>
@@ -797,9 +797,11 @@ function miPersonaje(){const d=V.dev,yo=V.screen==='dev'&&d&&d.who&&d.who.id[0]=
   c.innerHTML='<iframe title="Mi personaje" allowtransparency="true" src="'+JAVI.BASE+'hogwarts/?solo&panel&uno='+encodeURIComponent(yo)+'#hogwarts"></iframe><button type="button" class="tam" title="Más pequeño o más grande">↕</button><button type="button" class="tienda" title="Comprar en el Mercader">🛒 Mercader</button><button type="button" class="cartas" title="Las cartas que tengo para usar">🃏 Mis cartas</button>';
   c.querySelector('.tam').onclick=()=>c.classList.toggle('mini');c.querySelector('.tienda').onclick=()=>abrirTienda(yo);c.querySelector('.cartas').onclick=()=>abrirTienda(yo,'mis');document.body.appendChild(c)}
 /* 🛒 el Mercader para PEDIR (hogwarts/?solo&pedir=Nombre): el profe aprueba desde Hogwarts y aquí se abren los sobres */
-function abrirTienda(yo,modo){let t=document.getElementById('mitienda');if(t)t.remove();
+/* 🧩 el rincón del que acaba (sda/tema2-lengua-4a/rincon.html) en el mismo marco grande */
+function abrirMarco(url){abrirTienda('', '', url)}
+function abrirTienda(yo,modo,url){let t=document.getElementById('mitienda');if(t)t.remove();
   t=document.createElement('div');t.id='mitienda';
-  t.innerHTML='<iframe title="Mercader" src="'+JAVI.BASE+'hogwarts/?solo&'+(modo==='mis'?'mis':'pedir')+'='+encodeURIComponent(yo)+'"></iframe><button type="button">✕ Volver a las misiones</button>';
+  t.innerHTML='<iframe title="Mercader" src="'+(url||JAVI.BASE+'hogwarts/?solo&'+(modo==='mis'?'mis':'pedir')+'='+encodeURIComponent(yo))+'"></iframe><button type="button">✕ Volver a las misiones</button>';
   t.querySelector('button').onclick=()=>{t.remove();const f=document.querySelector('#mipj iframe');if(f)f.src=f.src};document.body.appendChild(t)}
 /* 🎯 ENTRENAR y ⚔️ RETOS (30/10/2026, Javi: «¿se podrían retar entre dos compañeros? … que ellos elijan la parte a reforzar»).
    Solo para quien entra con su nombre. Entrenar: elige un tema del banco y juega 10 preguntas (primero las que no ha visto en ese
@@ -826,7 +828,7 @@ function zonaAlumno(d){if(d.who.id[0]!=='#')return'';const yo=d.who.id,ts=temasE
   const comp=Object.keys(LISTA||{}).filter(n=>n!==d.who.label).sort((a,b)=>a.localeCompare(b,'es'));
   const hace3=Date.now()-3*864e5,rs=retosTodos().filter(r=>(r.deId===yo||r.para===yo)&&(!r.dia||new Date(r.dia).getTime()>=hace3));
   const paraMi=rs.filter(r=>r.para===yo&&!retoRes(r.id).get(yo)&&!hechaLocal(r.id,yo));
-  return `<div class="parch pad" style="margin-bottom:.8rem"><h3>🎯 Entrenar: elige lo que quieres reforzar</h3><div class="row"><select id="en_t" style="font-size:1.1rem">${opT}</select><button class="gold big" data-a="entrenar">🎯 ¡Entrenar! (10 preguntas)</button></div>
+  return `<div class="row" style="margin-bottom:.6rem"><button class="gold big" data-a="rincon">🧩 ¿Has acabado? El rincón del que acaba: sopas de letras, lecturas, ahorcado…</button></div><div class="parch pad" style="margin-bottom:.8rem"><h3>🎯 Entrenar: elige lo que quieres reforzar</h3><div class="row"><select id="en_t" style="font-size:1.1rem">${opT}</select><button class="gold big" data-a="entrenar">🎯 ¡Entrenar! (10 preguntas)</button></div>
     <h3 style="margin-top:.8rem">⚔️ Retar a un compañero</h3><div class="row"><select id="re_t" style="font-size:1.1rem">${opT}</select><select id="re_p" style="font-size:1.1rem"><option value="">— ¿A quién? —</option>${comp.map(n=>`<option>${esc(n)}</option>`).join('')}</select><button class="gold big" data-a="retar">⚔️ ¡Retar!</button></div>
     ${paraMi.length?`<h3 style="margin-top:.8rem">📨 ¡Te han retado!</h3>${paraMi.map(r=>`<div class="qrow"><span class="ty">⚔️</span><div class="qt"><b>${esc(r.de)} te reta</b><small>${esc(nomTema(r.tema))} · ${r.k.length} preguntas</small></div><button class="gold big" data-a="retojugar" data-id="${esc(r.id)}">¡Acepto!</button></div>`).join('')}`:''}
     ${rs.length?`<h3 style="margin-top:.8rem">🏟️ Mis retos</h3>${rs.slice().reverse().slice(0,8).map(r=>`<div class="qrow"><span class="ty">⚔️</span><div class="qt"><b>${r.deId===yo?'Tú → '+esc(r.paraN):esc(r.de)+' → tú'}</b><small>${esc(nomTema(r.tema))}</small></div><span>${estadoReto(r,yo)}</span></div>`).join('')}`:''}</div>`}
@@ -1215,6 +1217,7 @@ const ACT={
     render()},
   /* 👀 PROBAR (30/10/2026, Javi: «quiero ver cómo funciona la misión que he mandado»): el profe la juega como un alumno; no se guarda nada */
   devprobar(d){V.screen='dev';V.dev={open:true,who:{id:'Profe',label:'👀 Profe (prueba, no se guarda)'}};ACT.devplay({id:d.id});V.dev.repaso=true;V.dev.res=[];V.dev.i=0;try{Object.keys(localStorage).filter(k=>/^copa-(nivt|inicio)\|/.test(k)&&k.indexOf('|Profe')>0).forEach(k=>localStorage.removeItem(k))}catch(e){}V.dev.t0=Date.now();render()},
+  rincon(){abrirMarco(JAVI.BASE+'sda/tema2-lengua-4a/rincon.html')},
   devsigue(){closeModal();render()},
   entrenar(){const t=$('#en_t').value,qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
     ACT.devplay({m:{id:'pr'+Date.now().toString(36),titulo:'🎯 Entrenar · '+nomTema(t),qs,practica:true,tema:t}})},

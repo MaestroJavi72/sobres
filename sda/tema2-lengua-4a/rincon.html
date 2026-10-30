@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rincón del que acaba · Tema 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Andika:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Rincón del que acaba (30/10/2026, Javi: «para alguien que acabe… sopa de letras de antónimos, comprensión lectora… dale una vuelta»).
+   Actividades para hacer solo en el ordenador cuando se termina: sopa de letras (antónimos, sinónimos, vocabulario), lecturas con preguntas,
+   el ahorcado del glosario y ordena la frase. Todo inventado para 4.º (no es del libro). No guarda nada ni da galeones.
+   Lo abre La Copa (pantalla del alumno) y está en la SA del Tema 2. Carga comun/cierre.js (cerrado fuera de horario). */
+:root{--fondo:#120d1e;--panel:#1f1733;--borde:#c9a34a;--oro:#f3d27a;--tinta:#f3e6c4;--suave:#c9bc9a;--ok:#3fbf5f;--ko:#e0484f;--sel:#6a5acd}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% 0%,#2b2050,var(--fondo) 70%) fixed;color:var(--tinta);font-family:'Andika',system-ui,sans-serif;min-height:100vh}
+header{padding:14px 16px 4px;text-align:center}
+h1{font-family:'Cinzel',serif;color:var(--oro);margin:0;font-size:clamp(22px,4vw,34px)}
+.sub{color:var(--suave);margin:4px 0 10px}
+nav{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:6px 12px 12px}
+nav button,.btn{font:700 16px 'Andika',sans-serif;padding:9px 16px;border-radius:999px;border:2px solid var(--borde);background:transparent;color:var(--oro);cursor:pointer}
+nav button[aria-pressed=true],.btn.oro{background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05}
+main{max-width:980px;margin:0 auto;padding:0 14px 40px}
+.panel{background:var(--panel);border:2px solid rgba(201,163,74,.5);border-radius:16px;padding:16px;margin-bottom:14px}
+.panel h2{font-family:'Cinzel',serif;color:var(--oro);margin:0 0 8px;font-size:22px}
+.fila{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.marcador{font-size:18px;color:var(--oro);font-weight:700}
+.aviso{min-height:1.5em;font-size:18px;font-weight:700;margin:8px 0}
+.aviso.ok{color:var(--ok)}.aviso.ko{color:var(--ko)}
+[hidden]{display:none!important}
+/* sopa */
+.sopa{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.rejilla{display:grid;gap:3px;user-select:none;touch-action:none}
+.rejilla button{width:clamp(24px,5.6vw,38px);height:clamp(24px,5.6vw,38px);font:700 clamp(14px,2.6vw,20px) 'Andika',sans-serif;border:0;border-radius:6px;background:#fffaf0;color:#2b2116;cursor:pointer;padding:0}
+.rejilla button.ini{background:#ffd34d}
+.rejilla button.hall{background:#8be29a}
+.pistas{flex:1;min-width:220px;list-style:none;padding:0;margin:0;font-size:18px}
+.pistas li{padding:5px 0;border-bottom:1px dashed rgba(201,163,74,.35)}
+.pistas li.hecho{color:var(--ok)}
+.pistas li.hecho b{text-decoration:line-through}
+/* lecturas */
+.texto{background:#fffaf0;color:#2b2116;border-radius:12px;padding:14px 18px;font-size:19px;line-height:1.6}
+.texto h3{font-family:'Cinzel',serif;color:#7a2030;text-align:center;margin:0 0 6px}
+.preg{margin:14px 0}
+.preg p{font-size:19px;font-weight:700;margin:0 0 6px}
+.preg .ops{display:flex;flex-wrap:wrap;gap:8px}
+.preg .ops button{font:17px 'Andika',sans-serif;padding:8px 14px;border-radius:12px;border:2px solid var(--borde);background:#2b2147;color:var(--tinta);cursor:pointer;text-align:left}
+.preg .ops button.ok{background:var(--ok);color:#06210d;border-color:var(--ok)}
+.preg .ops button.ko{background:var(--ko);border-color:var(--ko)}
+.preg .exp{color:var(--suave);font-size:16px;margin-top:4px}
+/* ahorcado */
+.def{font-size:20px;line-height:1.5;margin:6px 0 10px}
+.palabra{font:700 clamp(26px,6vw,40px) 'Andika',sans-serif;letter-spacing:.35em;margin:8px 0;color:var(--oro);word-break:break-all}
+.teclas{display:flex;flex-wrap:wrap;gap:6px;max-width:640px}
+.teclas button{width:42px;height:42px;font:700 18px 'Andika',sans-serif;border-radius:8px;border:2px solid var(--borde);background:#2b2147;color:var(--tinta);cursor:pointer}
+.teclas button:disabled{opacity:.35;cursor:default}
+.vidas{font-size:24px}
+/* ordena */
+.hueco,.piezas{display:flex;flex-wrap:wrap;gap:8px;min-height:54px;padding:8px;border-radius:12px}
+.hueco{border:2px dashed var(--borde);background:rgba(255,255,255,.04)}
+.piezas button,.hueco button{font:700 19px 'Andika',sans-serif;padding:8px 14px;border-radius:10px;border:2px solid var(--borde);background:#fffaf0;color:#2b2116;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧩 El rincón del que acaba</h1>
+  <p class="sub">¿Has terminado? ¡Sigue practicando el Tema 2!</p>
+</header>
+<nav id="nav">
+  <button type="button" data-v="sopa" aria-pressed="true">🔤 Sopa de letras</button>
+  <button type="button" data-v="lect" aria-pressed="false">📖 Lecturas</button>
+  <button type="button" data-v="ahor" aria-pressed="false">🪢 El ahorcado</button>
+  <button type="button" data-v="orden" aria-pressed="false">🔀 Ordena la frase</button>
+</nav>
+<main>
+  <!-- SOPA DE LETRAS -->
+  <section class="panel" id="v_sopa">
+    <h2>🔤 Sopa de letras</h2>
+    <div class="fila" style="margin-bottom:10px">
+      <button class="btn oro" type="button" data-sopa="ant">Antónimos</button>
+      <button class="btn" type="button" data-sopa="sin">Sinónimos</button>
+      <button class="btn" type="button" data-sopa="voc">Vocabulario</button>
+      <span class="marcador" id="sopaMarc"></span>
+    </div>
+    <p id="sopaInstr" style="margin:0 0 10px;font-size:17px"></p>
+    <div class="sopa"><div class="rejilla" id="rejilla"></div><ul class="pistas" id="pistas"></ul></div>
+    <p class="aviso" id="sopaAviso"></p>
+    <button class="btn" type="button" id="sopaOtra">🔄 Otra sopa</button>
+  </section>
+
+  <!-- LECTURAS -->
+  <section class="panel" id="v_lect" hidden>
+    <h2>📖 Lecturas</h2>
+    <div class="fila" style="margin-bottom:10px" id="lectBotones"></div>
+    <div class="texto" id="lectTexto"></div>
+    <div id="lectPregs"></div>
+    <p class="aviso" id="lectAviso"></p>
+  </section>
+
+  <!-- AHORCADO -->
+  <section class="panel" id="v_ahor" hidden>
+    <h2>🪢 El ahorcado del glosario</h2>
+    <p class="def" id="ahDef"></p>
+    <div class="palabra" id="ahPal"></div>
+    <p class="vidas" id="ahVidas"></p>
+    <div class="teclas" id="ahTeclas"></div>
+    <p class="aviso" id="ahAviso"></p>
+    <div class="fila"><button class="btn" type="button" id="ahOtra">🔄 Otra palabra</button><span class="marcador" id="ahMarc"></span></div>
+  </section>
+
+  <!-- ORDENA LA FRASE -->
+  <section class="panel" id="v_orden" hidden>
+    <h2>🔀 Ordena la frase</h2>
+    <p style="font-size:17px;margin:0 0 8px">Toca las palabras en orden para formar una oración que tenga sentido y en la que todo concuerde. Tócala otra vez arriba para quitarla.</p>
+    <div class="hueco" id="orHueco"></div>
+    <div class="piezas" id="orPiezas"></div>
+    <p class="aviso" id="orAviso"></p>
+    <div class="fila"><button class="btn oro" type="button" id="orComprobar">✔ Comprobar</button><button class="btn" type="button" id="orOtra">🔄 Otra frase</button><span class="marcador" id="orMarc"></span></div>
+  </section>
+</main>
+<script>
+(function(){
+'use strict';
+function $(id){ return document.getElementById(id); }
+function mezcla(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){ var j = Math.floor(Math.random()*(i+1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+function sinTildes(s){ return s.normalize('NFD').replace(/[́̈]/g,'').normalize('NFC').toUpperCase(); }   /* quita tildes pero deja la Ñ */
+function sonido(ok){ try{ var C = window.AudioContext||window.webkitAudioContext; if(!C) return; var c = sonido.c || (sonido.c = new C()), o = c.createOscillator(), g = c.createGain(), t = c.currentTime;
+  o.type = 'triangle'; o.frequency.setValueAtTime(ok ? 660 : 220, t); if(ok) o.frequency.linearRampToValueAtTime(990, t+.15);
+  g.gain.setValueAtTime(.18, t); g.gain.exponentialRampToValueAtTime(.001, t+.3); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.32); }catch(e){} }
+
+/* ---------- pestañas ---------- */
+Array.prototype.forEach.call(document.querySelectorAll('#nav button'), function(b){
+  b.addEventListener('click', function(){
+    Array.prototype.forEach.call(document.querySelectorAll('#nav button'), function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); });
+    ['sopa','lect','ahor','orden'].forEach(function(v){ $('v_'+v).hidden = v!==b.dataset.v; });
+  });
+});
+
+/* ============ SOPA DE LETRAS ============ */
+var SOPAS = {
+  ant: { instr:'Busca en la sopa el ANTÓNIMO (lo contrario) de cada palabra.', pares:[
+    ['frío','calor'],['subir','bajar'],['día','noche'],['lleno','vacío'],['ganar','perder'],['alto','bajo'],['abrir','cerrar'],['entrar','salir'],
+    ['valiente','cobarde'],['ancho','estrecho'],['rápido','lento'],['dulce','salado'],['mojado','seco'],['amigo','enemigo'],['tarde','temprano'],
+    ['feliz','infeliz'],['hacer','deshacer'],['encima','debajo'],['cubrir','descubrir'],['justo','injusto'],['ordenar','desordenar'],['nuevo','viejo'],['fuerte','débil']] },
+  sin: { instr:'Busca en la sopa un SINÓNIMO (que significa lo mismo) de cada palabra.', pares:[
+    ['rápido','veloz'],['acabar','terminar'],['pelo','cabello'],['camino','sendero'],['bonito','precioso'],['coche','automóvil'],['listo','inteligente'],
+    ['hablar','charlar'],['enorme','gigante'],['regalo','obsequio'],['cima','cumbre'],['hogar','casa'],['asustado','miedoso'],['hallazgo','descubrimiento'],
+    ['antiguo','viejo'],['tranquilo','sereno'],['escuchar','oír'],['cariño','afecto'],['fácil','sencillo']] },
+  voc: { instr:'Lee la definición y busca la palabra del glosario en la sopa.', pares:[
+    ['Resto de un ser vivo antiguo convertido en piedra','fósil'],['Lugar donde se encuentran restos antiguos enterrados','yacimiento'],
+    ['Cada capa de tierra o de roca','estrato'],['Animales de cuerpo blando; muchos tienen concha','moluscos'],['Moluscos con concha de dos partes','bivalvos'],
+    ['Que procede de un ser vivo','orgánico'],['Que ocurre por casualidad','casual'],['Lleno de algo','plagado'],['Lugar del que se sacan piedras','cantera'],
+    ['Conjunto de animales de un lugar o una época','fauna'],['Periodo en que aparecieron los primeros dinosaurios','triásico'],['Periodo con muchos mamíferos y animales marinos','mioceno']] }
+};
+var TAM = 12, sopa = null, tipoSopa = 'ant', sel = null, hechas = 0;
+var DIRS = [[0,1],[1,0],[1,1]];   /* derecha, abajo y diagonal */
+function crearSopa(){
+  var S = SOPAS[tipoSopa], elegidos = mezcla(S.pares).filter(function(p){ return sinTildes(p[1]).length<=TAM; }).slice(0, 8);
+  var g = [], i, j; for(i=0;i<TAM;i++){ g.push([]); for(j=0;j<TAM;j++) g[i].push(''); }
+  var colocadas = [];
+  elegidos.sort(function(a,b){ return b[1].length-a[1].length; }).forEach(function(p){
+    var w = sinTildes(p[1]);
+    for(var t=0;t<300;t++){
+      var d = DIRS[Math.floor(Math.random()*DIRS.length)], r = Math.floor(Math.random()*(TAM-(d[0]?w.length-1:0))), c = Math.floor(Math.random()*(TAM-(d[1]?w.length-1:0))), ok = true, k;
+      for(k=0;k<w.length;k++){ var x = g[r+d[0]*k][c+d[1]*k]; if(x && x!==w[k]){ ok = false; break; } }
+      if(!ok) continue;
+      var celdas = []; for(k=0;k<w.length;k++){ g[r+d[0]*k][c+d[1]*k] = w[k]; celdas.push((r+d[0]*k)+','+(c+d[1]*k)); }
+      colocadas.push({ pista:p[0], sol:p[1], w:w, celdas:celdas, hecha:false }); break;
+    }
+  });
+  var LET = 'AAABCDEEEFGHIIJLLMNNOOOPRRSSTTUUVZÑ';
+  for(i=0;i<TAM;i++) for(j=0;j<TAM;j++) if(!g[i][j]) g[i][j] = LET[Math.floor(Math.random()*LET.length)];
+  sopa = { g:g, palabras:colocadas.sort(function(){ return Math.random()-.5; }) }; sel = null; pintarSopa();
+  $('sopaInstr').textContent = S.instr; $('sopaAviso').textContent = ''; $('sopaAviso').className = 'aviso';
+}
+function pintarSopa(){
+  var rj = $('rejilla'); rj.style.gridTemplateColumns = 'repeat('+TAM+',auto)'; rj.innerHTML = '';
+  var hall = {}; sopa.palabras.forEach(function(p){ if(p.hecha) p.celdas.forEach(function(c){ hall[c] = 1; }); });
+  for(var i=0;i<TAM;i++) for(var j=0;j<TAM;j++){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = sopa.g[i][j]; b.dataset.rc = i+','+j;
+    if(hall[i+','+j]) b.className = 'hall'; if(sel===i+','+j) b.className = 'ini';
+    rj.appendChild(b);
+  }
+  $('pistas').innerHTML = sopa.palabras.map(function(p){ return '<li class="'+(p.hecha?'hecho':'')+'">'+(tipoSopa==='voc' ? p.pista+(p.hecha ? ' → <b>'+p.sol+'</b>' : '') : '<b>'+p.pista+'</b> → '+(p.hecha ? p.sol : '❓'))+'</li>'; }).join('');
+  var n = sopa.palabras.filter(function(p){ return p.hecha; }).length;
+  $('sopaMarc').textContent = n+' de '+sopa.palabras.length+(hechas ? ' · sopas completas: '+hechas : '');
+}
+$('rejilla').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  if(!sel){ sel = b.dataset.rc; pintarSopa(); return; }
+  var a = sel.split(',').map(Number), z = b.dataset.rc.split(',').map(Number); sel = null;
+  var dr = Math.sign(z[0]-a[0]), dc = Math.sign(z[1]-a[1]), len = Math.max(Math.abs(z[0]-a[0]), Math.abs(z[1]-a[1]))+1;
+  var recta = (a[0]===z[0] || a[1]===z[1] || Math.abs(z[0]-a[0])===Math.abs(z[1]-a[1]));
+  var celdas = []; if(recta) for(var k=0;k<len;k++) celdas.push((a[0]+dr*k)+','+(a[1]+dc*k));
+  var txt = celdas.map(function(c){ var p = c.split(','); return sopa.g[+p[0]][+p[1]]; }).join('');
+  var p = sopa.palabras.filter(function(x){ return !x.hecha && (x.w===txt || x.w===txt.split('').reverse().join('')); })[0];
+  if(p){ p.hecha = true; p.celdas = celdas; sonido(true); $('sopaAviso').textContent = '✅ ¡'+p.sol+'!'; $('sopaAviso').className = 'aviso ok';
+    if(sopa.palabras.every(function(x){ return x.hecha; })){ hechas++; $('sopaAviso').textContent = '🏆 ¡Sopa completa! Pulsa «Otra sopa».'; }
+  } else if(len>1){ sonido(false); $('sopaAviso').textContent = 'Esa no es. Toca la primera y la última letra de la palabra.'; $('sopaAviso').className = 'aviso ko'; }
+  pintarSopa();
+});
+Array.prototype.forEach.call(document.querySelectorAll('[data-sopa]'), function(b){
+  b.addEventListener('click', function(){ tipoSopa = b.dataset.sopa; Array.prototype.forEach.call(document.querySelectorAll('[data-sopa]'), function(x){ x.classList.toggle('oro', x===b); }); crearSopa(); });
+});
+$('sopaOtra').addEventListener('click', crearSopa);
+crearSopa();
+
+/* ============ LECTURAS (textos originales) ============ */
+var LECTURAS = [
+  { t:'La cueva de las manos', x:'Durante una excursión al campo, Irene y su hermano Pablo se refugiaron de la lluvia en una cueva. Con la linterna del móvil, Irene vio algo extraño en la pared: decenas de manos pintadas de color rojo. Algunas eran grandes y otras, muy pequeñas. «¡Parecen manos de niños!», dijo Pablo. Al día siguiente lo contaron en el museo del pueblo. La directora les explicó que aquellas pinturas tenían miles de años y que las hicieron soplando polvo de colores sobre la mano apoyada en la roca. Desde entonces, la cueva tiene una puerta para protegerla y un cartel con los nombres de Irene y Pablo.',
+    q:[ ['¿Por qué entraron Irene y Pablo en la cueva?', ['Para refugiarse de la lluvia','Para buscar fósiles','Porque se perdieron','Para jugar al escondite'], 0, 'El texto dice que se refugiaron de la lluvia.'],
+        ['¿De qué color eran las manos pintadas?', ['Azules','Rojas','Negras','Blancas'], 1, '«Manos pintadas de color rojo».'],
+        ['¿Cómo se hicieron las pinturas?', ['Con pinceles','Soplando polvo de colores sobre la mano','Con lápices de cera','Grabándolas con piedras'], 1, 'La directora lo explica en el museo.'],
+        ['¿Por qué crees que pusieron una puerta en la cueva?', ['Para cobrar entrada','Para que no entre la lluvia','Para proteger las pinturas','Para que no se escapen los murciélagos'], 2, 'El texto dice «para protegerla»: son muy antiguas y valiosas.'],
+        ['Verdadero o falso: todas las manos eran del mismo tamaño.', ['Verdadero','Falso'], 1, 'Algunas eran grandes y otras muy pequeñas.'] ] },
+  { t:'El pingüino que no sabía nadar', x:'En una isla helada vivía Pico, un pingüino pequeño y muy curioso. Todos sus amigos nadaban como flechas, pero Pico tenía miedo al agua y siempre se quedaba en la orilla. Un día, una ola enorme arrastró al mar a Nieve, su mejor amiga, que se había hecho daño en un ala. Nieve no podía volver sola y nadie más la había visto. Pico respiró hondo, cerró los ojos y saltó. Movió las alas con todas sus fuerzas y llegó hasta ella. Juntos volvieron a la orilla. Desde aquel día, Pico es el primero en lanzarse al agua por las mañanas.',
+    q:[ ['¿Qué le pasaba a Pico al principio?', ['No sabía volar','Tenía miedo al agua','Estaba enfermo','No tenía amigos'], 1, 'Se quedaba siempre en la orilla porque tenía miedo.'],
+        ['¿Cuál es el NUDO del cuento?', ['Pico vivía en una isla helada','Una ola arrastra a Nieve al mar','Pico se lanza al agua cada mañana','Los pingüinos nadan como flechas'], 1, 'El nudo es el problema: Nieve está en peligro.'],
+        ['¿Cuál es el DESENLACE?', ['Pico vence su miedo, salva a Nieve y ahora nada cada mañana','Nieve se hace daño en un ala','Pico tiene miedo','Una ola enorme llega a la isla'], 0, 'El desenlace es cómo se resuelve y cómo termina.'],
+        ['¿Qué quiere decir «nadaban como flechas»?', ['Que nadaban muy rápido','Que nadaban mal','Que tenían flechas','Que nadaban de lado'], 0, 'Es una comparación: rápidos como una flecha.'],
+        ['¿Cómo crees que se sintió Pico al llegar a la orilla con Nieve?', ['Triste','Orgulloso y feliz','Enfadado','Aburrido'], 1, 'Había vencido su miedo y salvado a su amiga.'] ] },
+  { t:'¿Cómo se forma un fósil?', x:'Hace millones de años, un pez murió y cayó al fondo de un lago. Primero, el barro y la arena lo cubrieron poco a poco, y las partes blandas de su cuerpo desaparecieron. Después, con el paso del tiempo, se fueron formando encima muchas capas de tierra, llamadas estratos. El agua que se colaba entre ellas llevaba minerales que ocuparon el lugar de los huesos, hasta convertirlos en piedra. Por último, el lago se secó y la tierra se movió. Hoy, el fósil del pez ha salido a la superficie y unos paleontólogos lo estudian con cuidado.',
+    q:[ ['¿Qué pasó PRIMERO con el pez?', ['Lo estudiaron','El barro y la arena lo cubrieron','El lago se secó','Se convirtió en piedra'], 1, 'El texto usa «Primero…».'],
+        ['¿Qué partes del pez desaparecieron?', ['Los huesos','Las partes blandas','La cabeza','Las escamas duras'], 1, 'Las partes blandas desaparecieron; los huesos se hicieron piedra.'],
+        ['¿Cómo se llaman las capas de tierra?', ['Fósiles','Estratos','Yacimientos','Moluscos'], 1, 'Es una palabra del glosario.'],
+        ['¿Qué palabras ayudan a ordenar los pasos del texto?', ['Primero, después, por último','Había una vez, colorín colorado','Sí, no, quizá','Grande, pequeño, mediano'], 0, 'Son conectores de orden.'],
+        ['Verdadero o falso: el fósil se formó en pocos días.', ['Verdadero','Falso'], 1, 'Se formó a lo largo de millones de años.'] ] },
+  { t:'La biblioteca encantada', x:'En el colegio de Lucas hay una biblioteca pequeña, con estanterías de madera y una alfombra azul. Un viernes, la maestra propuso un reto: quien leyera tres libros en un mes recibiría el carné de «Lector de oro». Lucas pensó que era imposible, porque leer le parecía aburrido. Sin embargo, eligió un libro de dragones y no pudo parar hasta la última página. Luego leyó uno de piratas y otro de detectives. A final de mes, no solo tenía su carné: había descubierto que los libros eran puertas a mundos nuevos. Ahora es él quien recomienda libros a sus compañeros.',
+    q:[ ['¿Qué había que hacer para conseguir el carné de «Lector de oro»?', ['Leer tres libros en un mes','Ordenar la biblioteca','Escribir un cuento','Leer un libro en un día'], 0, 'Es el reto de la maestra.'],
+        ['¿Qué pensaba Lucas al principio de leer?', ['Que era divertido','Que era aburrido','Que era fácil','Que era peligroso'], 1, '«Leer le parecía aburrido».'],
+        ['¿Cuál fue el primer libro que leyó?', ['De piratas','De detectives','De dragones','De animales'], 2, 'Primero eligió uno de dragones.'],
+        ['¿Qué quiere decir que «los libros eran puertas a mundos nuevos»?', ['Que los libros tienen puertas','Que leyendo conoces lugares e historias nuevas','Que los libros pesan mucho','Que la biblioteca tiene muchas puertas'], 1, 'Es una forma bonita de decirlo (lenguaje figurado).'],
+        ['Un antónimo de «aburrido» que aparece en la idea del texto es…', ['divertido','cansado','largo','pequeño'], 0, 'aburrido ↔ divertido.'] ] }
+];
+var lectAct = 0, lectBien = {};
+function pintarLectura(){
+  var L = LECTURAS[lectAct];
+  $('lectBotones').innerHTML = LECTURAS.map(function(x,i){ return '<button class="btn'+(i===lectAct?' oro':'')+'" type="button" data-l="'+i+'">'+(i+1)+'. '+x.t+(lectBien[i]!=null?' · '+lectBien[i]+'/'+x.q.length:'')+'</button>'; }).join('');
+  $('lectTexto').innerHTML = '<h3>'+L.t+'</h3>'+L.x;
+  var cont = 0, ok = 0;
+  $('lectPregs').innerHTML = L.q.map(function(q,i){ return '<div class="preg" data-q="'+i+'"><p>'+(i+1)+'. '+q[0]+'</p><div class="ops">'+q[1].map(function(o,j){ return '<button type="button" data-j="'+j+'">'+o+'</button>'; }).join('')+'</div><div class="exp" hidden></div></div>'; }).join('');
+  $('lectAviso').textContent = ''; $('lectAviso').className = 'aviso';
+  Array.prototype.forEach.call($('lectPregs').querySelectorAll('.preg'), function(div){
+    var q = L.q[+div.dataset.q];
+    div.querySelector('.ops').addEventListener('click', function(e){
+      var b = e.target.closest('button'); if(!b || div.dataset.hecha) return; div.dataset.hecha = 1;
+      var bien = +b.dataset.j===q[2]; b.classList.add(bien ? 'ok' : 'ko'); if(!bien) div.querySelectorAll('button')[q[2]].classList.add('ok');
+      sonido(bien); var ex = div.querySelector('.exp'); ex.hidden = false; ex.textContent = (bien ? '✅ ' : '❌ ')+q[3];
+      cont++; if(bien) ok++;
+      if(cont===L.q.length){ lectBien[lectAct] = ok; $('lectAviso').textContent = (ok===L.q.length ? '🏆 ¡Perfecto! ' : '👍 ')+ok+' de '+L.q.length+'. ¡Prueba otra lectura!'; $('lectAviso').className = 'aviso ok';
+        Array.prototype.forEach.call($('lectBotones').querySelectorAll('button'), function(x,i){ x.textContent = (i+1)+'. '+LECTURAS[i].t+(lectBien[i]!=null?' · '+lectBien[i]+'/'+LECTURAS[i].q.length:''); }); }
+    });
+  });
+}
+$('lectBotones').addEventListener('click', function(e){ var b = e.target.closest('button'); if(!b) return; lectAct = +b.dataset.l; pintarLectura(); window.scrollTo(0,0); });
+pintarLectura();
+
+/* ============ AHORCADO DEL GLOSARIO ============ */
+var GLOS = [
+  ['fósil','Resto de un animal o de una planta que vivió hace muchísimo tiempo y que se ha convertido en piedra.'],
+  ['yacimiento','Lugar donde se encuentran enterrados restos antiguos, como fósiles o minerales.'],
+  ['estrato','Cada una de las capas de tierra o de roca que se forman unas encima de otras.'],
+  ['moluscos','Animales de cuerpo blando; muchos tienen concha, como los caracoles o las almejas.'],
+  ['bivalvos','Moluscos con una concha de dos partes que se abren y se cierran, como los mejillones.'],
+  ['paleontóloga','Mujer que estudia los fósiles para saber cómo eran los seres vivos del pasado.'],
+  ['orgánico','Que procede de un ser vivo, animal o planta.'],
+  ['casual','Que ocurre por casualidad, sin buscarlo ni planearlo.'],
+  ['patrimonial','Que forma parte de lo que tiene valor para todos y hay que cuidar.'],
+  ['plagado','Lleno de algo; que tiene muchísima cantidad de una cosa.'],
+  ['cantera','Lugar del que se sacan piedras para construir.'],
+  ['desertización','Proceso por el que una zona se va convirtiendo en desierto.'],
+  ['reconstrucción','Acción de volver a montar algo, como el esqueleto de un animal con sus fósiles.'],
+  ['fauna','Conjunto de animales que viven en un lugar o en una época.']
+];
+var ah = null, ahGanadas = 0, VIDAS = 7;
+function nuevaAh(){
+  var p = GLOS[Math.floor(Math.random()*GLOS.length)]; if(ah && GLOS.length>1) while(p[0]===ah.p) p = GLOS[Math.floor(Math.random()*GLOS.length)];
+  ah = { p:p[0], w:sinTildes(p[0]), def:p[1], dichas:{}, fallos:0, fin:false };
+  $('ahDef').textContent = '📜 '+ah.def;
+  var tec = $('ahTeclas'); tec.innerHTML = '';
+  'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('').forEach(function(l){ var b = document.createElement('button'); b.type = 'button'; b.textContent = l; b.addEventListener('click', function(){ letra(l, b); }); tec.appendChild(b); });
+  $('ahAviso').textContent = ''; $('ahAviso').className = 'aviso'; pintarAh();
+}
+function pintarAh(){
+  $('ahPal').textContent = ah.w.split('').map(function(c){ return ah.dichas[c] || ah.fin ? c : '_'; }).join('');
+  $('ahVidas').textContent = '❤️'.repeat(VIDAS-ah.fallos)+'🖤'.repeat(ah.fallos);
+  $('ahMarc').textContent = ahGanadas ? '⭐ Palabras adivinadas: '+ahGanadas : '';
+}
+function letra(l, b){
+  if(ah.fin) return; b.disabled = true; ah.dichas[l] = 1;
+  if(ah.w.indexOf(l)<0){ ah.fallos++; sonido(false); } else sonido(true);
+  var gan = ah.w.split('').every(function(c){ return ah.dichas[c]; });
+  if(gan){ ah.fin = true; ahGanadas++; $('ahAviso').textContent = '🏆 ¡Muy bien! Era «'+ah.p+'».'; $('ahAviso').className = 'aviso ok'; }
+  else if(ah.fallos>=VIDAS){ ah.fin = true; $('ahAviso').textContent = '😅 Era «'+ah.p+'». ¡Prueba con otra!'; $('ahAviso').className = 'aviso ko'; }
+  pintarAh();
+}
+$('ahOtra').addEventListener('click', nuevaAh);
+nuevaAh();
+
+/* ============ ORDENA LA FRASE (concordancia) ============ */
+/* cada frase: texto o [texto, otras formas que también valen] */
+var FRASES = [
+  ['Los paleontólogos limpian los huesos con cuidado.','Los paleontólogos limpian con cuidado los huesos.'],
+  'La cueva oscura tenía unas pinturas muy antiguas.',
+  ['Mi abuela encontró una concha fosilizada en la playa.','Mi abuela encontró en la playa una concha fosilizada.'],
+  'Las niñas de cuarto visitaron el museo de ciencias.',
+  ['Un dinosaurio enorme dejó sus huellas en el barro.','Un dinosaurio enorme dejó en el barro sus huellas.'],
+  'Los alumnos escribieron unos cuentos muy divertidos.',
+  'La maestra leyó una historia de piratas valientes.',
+  'Unos peces pequeños nadaban junto a las rocas.',
+  'El perro de mi vecino ladra por las noches.',
+  'Las estrellas brillan en el cielo despejado.',
+  'Mi hermano pequeño perdió sus zapatillas nuevas.',
+  'Los pingüinos viven en lugares muy fríos.'
+];
+var orF = '', orVale = [], orBien = 0, orUsadas = [];
+function nuevaOr(){
+  var pool = FRASES.filter(function(f){ return orUsadas.indexOf(f)<0; }); if(!pool.length){ orUsadas = []; pool = FRASES.slice(); }
+  var e = pool[Math.floor(Math.random()*pool.length)]; orUsadas.push(e); orVale = [].concat(e); orF = orVale[0];
+  var pal = orF.replace(/\.$/,'').split(' '), desorden = mezcla(pal); for(var t=0;t<5 && desorden.join(' ')===pal.join(' ');t++) desorden = mezcla(pal);
+  $('orHueco').innerHTML = ''; $('orPiezas').innerHTML = '';
+  desorden.forEach(function(w){ var b = document.createElement('button'); b.type = 'button'; b.textContent = w; $('orPiezas').appendChild(b); });
+  $('orAviso').textContent = ''; $('orAviso').className = 'aviso'; $('orMarc').textContent = orBien ? '⭐ Frases bien: '+orBien : '';
+}
+$('orPiezas').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) $('orHueco').appendChild(b); });
+$('orHueco').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) $('orPiezas').appendChild(b); });
+$('orComprobar').addEventListener('click', function(){
+  if($('orPiezas').children.length){ $('orAviso').textContent = 'Te faltan palabras por colocar.'; $('orAviso').className = 'aviso ko'; return; }
+  var hecha = Array.prototype.map.call($('orHueco').children, function(b){ return b.textContent; }).join(' ')+'.';
+  if(orVale.indexOf(hecha)>=0){ orBien++; sonido(true); $('orAviso').textContent = '🏆 ¡Correcto! '+hecha; $('orAviso').className = 'aviso ok'; $('orMarc').textContent = '⭐ Frases bien: '+orBien; }
+  else { sonido(false); $('orAviso').textContent = 'Casi. Revisa el orden: ¿empieza por mayúscula? ¿concuerda todo?'; $('orAviso').className = 'aviso ko'; }
+});
+$('orOtra').addEventListener('click', nuevaOr);
+nuevaOr();
+})();
+</script>
+<script src="../../comun/cierre.js"></script>
+</body>
+</html>
