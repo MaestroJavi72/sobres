@@ -49,6 +49,9 @@ var PRUEBA_FIJA = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) |
 var LLAVE = 'javi-llave', DURACION_LLAVE = 30*60*1000;
 function llave(){ var t = +(leerLocal(LLAVE)||0); return t && Date.now()-t >= 0 && Date.now()-t < DURACION_LLAVE ? t : 0; }
 var PRUEBA = PRUEBA_FIJA || !llave();
+/* 30/10/2026: si el código se escribe en otra pestaña después de abrir esta, esta página tiene PRUEBA = true desde el principio.
+   Para no perder nada sin avisar (le pasó a Javi con una misión de La Copa), al enviar se mira la llave en ese momento. */
+function enviarDeVerdad(){ return !PRUEBA_FIJA && !!llave(); }
 /* ?candado en el ordenador: enseña el candado para probarlo, sin enviar nada nunca */
 var PROBAR_CANDADO = PRUEBA_FIJA && /[?&]candado/.test(location.search);
 var DEMO = PROBAR_CANDADO ? !llave() : (!PRUEBA_FIJA && PRUEBA);
@@ -127,7 +130,7 @@ function escribir(d, opc){
   var p = { id:idMov(), alumno:d.alumno, accion:d.accion, cartaId:d.cartaId==null ? '' : String(d.cartaId), tipo:d.tipo||'', carta:d.carta||'', t:Date.now() };
   pendientes.push(p); guardarPend();
   /* opc.libre: se guarda aunque no se haya escrito el código (el farol del baño); nunca en el ordenador de pruebas */
-  if(!PRUEBA || (opc && opc.libre && !PRUEBA_FIJA)){
+  if(enviarDeVerdad() || (opc && opc.libre && !PRUEBA_FIJA)){
     var e = REGISTRO.entradas, body = new URLSearchParams();
     body.set(e.alumno, p.alumno); body.set(e.accion, p.accion); body.set(e.cartaId, p.cartaId); body.set(e.tipo, p.tipo);
     body.set(e.carta, p.id+(p.carta ? ' · '+p.carta : ''));
@@ -241,10 +244,10 @@ function multiplicadorEF(g, nombre){
 function darPuntos(g, nombre, n, motivo, detalle){
   var sis = sistemaDe(g), mult = sis==='ef' && n>0 ? multiplicadorEF(g, nombre) : 1;
   var p = { id:idMov(), alumno:claveAlumno(g, nombre), accion:'Galeones', n:n*mult, motivo:(motivo||'')+(mult>1 ? ' (×'+mult+')' : ''), extra:detalle||'', cartaId:'', t:Date.now() };
-  var key = (PRUEBA ? 'prueba-' : '')+PEND_APP[sis], lista = [];
+  var real = enviarDeVerdad(), key = (real ? '' : 'prueba-')+PEND_APP[sis], lista = [];
   try{ lista = JSON.parse(leerLocal(key)||'[]') || []; }catch(e){ lista = []; }
   lista.push(p); guardarLocal(key, JSON.stringify(lista));
-  if(!PRUEBA){
+  if(real){
     var e = REGISTRO.entradas, body = new URLSearchParams();
     body.set(e.alumno, p.alumno); body.set(e.accion, p.accion); body.set(e.cartaId, String(p.n)); body.set(e.tipo, p.motivo);
     body.set(e.carta, p.id+(p.extra ? ' · '+p.extra : ''));
