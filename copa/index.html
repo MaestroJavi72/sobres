@@ -715,7 +715,7 @@ function vDev(){const d=V.dev;
    m.tiempo = 'q' (reloj en cada pregunta, timeFor; si se acaba, cuenta como fallo) o segundos en total (al acabar, se termina la misión). */
 const NIVN=['🟢 Nivel 1','🟡 Nivel 2','🔴 Nivel 3'],PASE=0.7;
 function porNiveles(qs,n){const por=[1,2,3].map(k=>shuffle(qs.filter(q=>(q.difficulty||1)===k)));
-  const cada=n>0?Math.max(2,Math.round(n/3)):Math.max(...por.map(x=>x.length));const out=[],niv=[];
+  const cada=n>0?Math.max(2,Math.round(n/3)):10;   /* «Todas» en niveles = 10 por nivel (si no, salían más de 100 en el nivel 1) */const out=[],niv=[];
   for(let k=0;k<3;k++){let l=por[k].splice(0,cada);
     for(const j of [k-1,k+1,k-2,k+2])if(l.length<cada&&por[j])l=l.concat(por[j].splice(0,cada-l.length));   /* si faltan, de la dificultad de al lado */
     if(l.length){out.push(...l);niv.push(l.length)}}
