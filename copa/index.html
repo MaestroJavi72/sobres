@@ -1133,8 +1133,8 @@ const ACT={
     if(tipo==='niv'){const r=porNiveles(qs,n);qs=r.qs;niv=r.niv}else if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
     if(!qs.length)return toast('No hay preguntas para enviar en ese grupo');
     const titulo=($('#dv_t').value.trim()||(g.replace(/^s:/,'')||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    const limpias=qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;delete o.points;return o}),id='m'+Date.now().toString(36),of=Math.ceil(limpias.length/12);
-    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify(Object.assign({p,of,qs:limpias.slice((p-1)*12,p*12)},p===1&&niv?{niv}:{},p===1&&tiempo?{tiempo:tiempo==='q'?'q':+tiempo}:{}))});
+    const limpias=qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;delete o.points;return o}),id='m'+Date.now().toString(36),of=Math.ceil(limpias.length/6);
+    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify(Object.assign({p,of,qs:limpias.slice((p-1)*6,p*6)},p===1&&niv?{niv}:{},p===1&&tiempo?{tiempo:tiempo==='q'?'q':+tiempo}:{}))});
     render();toast('📤 Misión enviada: '+qs.length+' preguntas'+(niv?' en '+niv.length+' niveles':'')+'. Tarda unos minutos en llegar a los aparatos.')})},
   devbank(){const go=()=>fetch(JAVI.BASE+'data/copa/tema2-evaluacion.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);S.questions=S.questions.filter(q=>q.subject!=='Tema 2').concat(r.qs);V.sel=null;save();render();toast('📥 '+r.qs.length+' preguntas del Tema 2 cargadas'+(r.errs.length?' ('+r.errs.length+' con problemas)':''))}).catch(()=>toast('❌ No he podido leer el banco del Tema 2'));
     S.questions.some(q=>q.subject==='Tema 2')?ask('Ya tienes preguntas de «Tema 2». ¿Sustituirlas por el banco original?',go):go()},
