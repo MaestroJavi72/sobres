@@ -708,7 +708,7 @@ function vDev(){const d=V.dev;
   if(d.m){const q=qAct(d),nv=nivelDe(d.m,d.i);return `<div class="wrap">${top}<div class="phead"><span class="gname">${nv?nivNom(nv.k)+' · pregunta '+(d.i-nv.ini+1)+' de '+nv.n:'Pregunta '+(d.i+1)+' de '+d.m.qs.length}</span><span>${'⭐'.repeat(sum(d.res))}</span><span id="timer"></span></div>${avanceHTML(d)}
     ${readBox(q)}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div></div>`}
   const ms=misiones().filter(m=>!m.cerrada);
-  return `<div class="wrap">${top}<div class="parch pad">${ms.map(m=>{const h=hecha(m.id,d.who.id);return `<div class="qrow"><span class="ty">${h?'✅':'📜'}</span><div class="qt"><b>${esc(m.titulo)}</b><small>${m.qs.length} preguntas${insignias(m)}${h?' · hecha: '+sum(h)+' de '+cnt(h)+(h.nv!=null&&m.niv?' · '+(h.nv>=m.niv.length?'🏆 todos los niveles':'nivel '+(h.nv+1)):''):''}</small></div><button class="${h?'':'gold big'}" data-a="devplay" data-id="${esc(m.id)}">${h?'🔁 Repasar':'✨ ¡Jugar!'}</button></div>`}).join('')||'<p style="font-size:1.2rem">Todavía no hay misiones. Cuando el profe envíe una, tarda unos minutos en llegar.</p>'}
+  return `<div class="wrap">${top}${zonaAlumno(d)}<div class="parch pad"><h3>📜 Misiones del profe</h3>${ms.map(m=>{const h=hecha(m.id,d.who.id);return `<div class="qrow"><span class="ty">${h?'✅':'📜'}</span><div class="qt"><b>${esc(m.titulo)}</b><small>${m.qs.length} preguntas${insignias(m)}${h?' · hecha: '+sum(h)+' de '+cnt(h)+(h.nv!=null&&m.niv?' · '+(h.nv>=m.niv.length?'🏆 todos los niveles':'nivel '+(h.nv+1)):''):''}</small></div><button class="${h?'':'gold big'}" data-a="devplay" data-id="${esc(m.id)}">${h?'🔁 Repasar':'✨ ¡Jugar!'}</button></div>`}).join('')||'<p style="font-size:1.2rem">Todavía no hay misiones. Cuando el profe envíe una, tarda unos minutos en llegar.</p>'}
   <div class="row"><button data-a="devref">🔄 Buscar misiones nuevas</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div></div>`}
 /* 🧗 MISIONES POR NIVELES (30/10/2026, Javi). Desde la tarde del 30/10: 5 NIVELES FIJOS (decisión de Javi):
    nivel 1 = 3 preguntas · 2 min · 1 galeón; 2 = 5 · 3 min · 1; 3 = 8 · 4 min · 2; 4 = 10 · 5 min · 3; 5 = 15 · 8 min · 4.
@@ -780,6 +780,43 @@ function abrirTienda(yo,modo){let t=document.getElementById('mitienda');if(t)t.r
   t=document.createElement('div');t.id='mitienda';
   t.innerHTML='<iframe title="Mercader" src="'+JAVI.BASE+'hogwarts/?solo&'+(modo==='mis'?'mis':'pedir')+'='+encodeURIComponent(yo)+'"></iframe><button type="button">✕ Volver a las misiones</button>';
   t.querySelector('button').onclick=()=>{t.remove();const f=document.querySelector('#mipj iframe');if(f)f.src=f.src};document.body.appendChild(t)}
+/* 🎯 ENTRENAR y ⚔️ RETOS (30/10/2026, Javi: «¿se podrían retar entre dos compañeros? … que ellos elijan la parte a reforzar»).
+   Solo para quien entra con su nombre. Entrenar: elige un tema del banco y juega 10 preguntas (primero las que no ha visto en ese
+   aparato); se guarda una fila «Practica» (CartaId = tema, Tipo = #nº, Carta = {r,o,s,t}) para que el profe lo vea.
+   Retar: elige tema y compañero; juega 10 preguntas y se guarda «Reto» (CartaId = id, Tipo = #nº, Carta = {de, para, paraN, tema, k})
+   con las claves de las preguntas (k), para que el compañero juegue LAS MISMAS. Cada resultado va en «RetoRes» (CartaId = id del reto).
+   Gana quien acierta más; si empatan, quien tarda menos. Todo sin código (escribirLibre). No da galeones. */
+const TEMA_TODO='s:Tema 2';
+function claveQ(q){return [q.text,String(q.read||'').slice(0,30),JSON.stringify(q.options||q.items||q.pairs||'').slice(0,80)].join('|')}
+function temasEntreno(){const t=[...new Set(S.questions.filter(q=>q.subject==='Tema 2'&&q.type!=='open').map(q=>gkey(q)))];return [[TEMA_TODO,'📚 Todo el Tema 2']].concat(t.map(k=>[k,k.replace(/^Tema 2 - /,'')]))}
+const nomTema=k=>(temasEntreno().find(x=>x[0]===k)||[k,k])[1];
+function preguntasDe(tema,n){const u=usadas(),pool=shuffle(S.questions.filter(q=>q.type!=='open'&&(tema===TEMA_TODO?q.subject==='Tema 2':gkey(q)===tema))).sort((a,b)=>(u[a.id]||0)-(u[b.id]||0));
+  const qs=pool.slice(0,n);qs.forEach(marcarUsada);return qs}
+function retosTodos(){const out=[];rowsC('reto').forEach(f=>{const j=jrow(f);if(j&&j.para)out.push(Object.assign({id:f.cartaId,deId:f.tipo,dia:f.dia},j))});
+  let mios=[];try{mios=JSON.parse(localStorage.getItem('copa-retos-mios')||'[]')}catch(e){}
+  mios.forEach(r=>{if(!out.some(x=>x.id===r.id))out.push(r)});return out}
+function retoRes(id){const m=new Map();rowsC('retores').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r)m.set(f.tipo,{ok:sum(j.r),n:j.r.length,s:j.s||0})});return m}
+function estadoReto(r,yo){const res=retoRes(r.id),a=res.get(r.deId),b=res.get(r.para),otroN=yo===r.deId?r.paraN:r.de,mio=yo===r.deId?a:b,suyo=yo===r.deId?b:a;
+  if(!mio)return '⏳ Te toca jugar';if(!suyo)return '⏳ Esperando a '+esc(otroN);
+  const gano=mio.ok>suyo.ok||(mio.ok===suyo.ok&&mio.s<suyo.s),emp=mio.ok===suyo.ok&&mio.s===suyo.s;
+  return (emp?'🤝 Empate':gano?'🏆 ¡Has ganado!':'😅 Ha ganado '+esc(otroN))+' · '+mio.ok+' a '+suyo.ok}
+function zonaAlumno(d){if(d.who.id[0]!=='#')return'';const yo=d.who.id,ts=temasEntreno(),inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
+  const opT=ts.map(([k,n])=>`<option value="${esc(k)}">${esc(n)}</option>`).join('');
+  const comp=Object.keys(LISTA||{}).filter(n=>n!==d.who.label).sort((a,b)=>a.localeCompare(b,'es'));
+  const hace3=Date.now()-3*864e5,rs=retosTodos().filter(r=>(r.deId===yo||r.para===yo)&&(!r.dia||new Date(r.dia).getTime()>=hace3));
+  const paraMi=rs.filter(r=>r.para===yo&&!retoRes(r.id).get(yo)&&!hechaLocal(r.id,yo));
+  return `<div class="parch pad" style="margin-bottom:.8rem"><h3>🎯 Entrenar: elige lo que quieres reforzar</h3><div class="row"><select id="en_t" style="font-size:1.1rem">${opT}</select><button class="gold big" data-a="entrenar">🎯 ¡Entrenar! (10 preguntas)</button></div>
+    <h3 style="margin-top:.8rem">⚔️ Retar a un compañero</h3><div class="row"><select id="re_t" style="font-size:1.1rem">${opT}</select><select id="re_p" style="font-size:1.1rem"><option value="">— ¿A quién? —</option>${comp.map(n=>`<option>${esc(n)}</option>`).join('')}</select><button class="gold big" data-a="retar">⚔️ ¡Retar!</button></div>
+    ${paraMi.length?`<h3 style="margin-top:.8rem">📨 ¡Te han retado!</h3>${paraMi.map(r=>`<div class="qrow"><span class="ty">⚔️</span><div class="qt"><b>${esc(r.de)} te reta</b><small>${esc(nomTema(r.tema))} · ${r.k.length} preguntas</small></div><button class="gold big" data-a="retojugar" data-id="${esc(r.id)}">¡Acepto!</button></div>`).join('')}`:''}
+    ${rs.length?`<h3 style="margin-top:.8rem">🏟️ Mis retos</h3>${rs.slice().reverse().slice(0,8).map(r=>`<div class="qrow"><span class="ty">⚔️</span><div class="qt"><b>${r.deId===yo?'Tú → '+esc(r.paraN):esc(r.de)+' → tú'}</b><small>${esc(nomTema(r.tema))}</small></div><span>${estadoReto(r,yo)}</span></div>`).join('')}`:''}</div>`}
+function hechaLocal(id,who){try{return !!localStorage.getItem('copa-hecha|'+id+'|'+who)}catch(e){return false}}
+/* para el profe: lo de hoy */
+function retosProfeHTML(){const hoy=JAVI.util.clave(new Date()),inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
+  const rs=rowsC('reto').filter(f=>f.dia===hoy).map(f=>Object.assign({id:f.cartaId,deId:f.tipo},jrow(f)||{}));
+  const pr=rowsC('practica').filter(f=>f.dia===hoy).map(f=>{const j=jrow(f)||{};return (inv[f.tipo]||f.tipo)+' · '+nomTema(f.cartaId)+' · '+sum(j.r||[])+'/'+((j.r||[]).length)});
+  if(!rs.length&&!pr.length)return '<p>Hoy todavía nadie ha entrenado ni retado.</p>';
+  return (rs.length?`<p><b>⚔️ Retos:</b><br>${rs.map(r=>{const res=retoRes(r.id),a=res.get(r.deId),b=res.get(r.para);return esc(r.de||'?')+' '+(a?a.ok+'/'+a.n:'…')+' vs '+esc(r.paraN||'?')+' '+(b?b.ok+'/'+b.n:'…')+' · '+esc(nomTema(r.tema))}).join('<br>')}</p>`:'')+
+    (pr.length?`<p><b>🎯 Entrenamientos:</b><br>${pr.map(esc).join('<br>')}</p>`:'')}
 function devAnswered(ok){stopTimer();const d=V.dev,q=qAct(d);d.res.push(ok?1:0);
   if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord}))}catch(e){}ok?SFX.ok():SFX.ko();
   modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2><div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}
@@ -805,6 +842,7 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
   <h3>🎓 Notas por criterio <button data-a="devcsv">⬇️ Exportar a Excel</button></h3>
   <p><label>Con las respuestas de <select data-c="dvm"><option value="">todas las misiones</option>${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===msel?'selected':''}>${esc(m.titulo)}</option>`).join('')}</select></label> · Solo cuentan los alumnos que entran con su nombre (no las casas). Nota del 1 al 10 según los aciertos en las preguntas de cada criterio.</p>
   ${(()=>{const t=notasTabla(msel?ms.filter(m=>m.id===msel):ms);return t.filas.length?`<div style="overflow:auto"><table class="stand"><tr>${t.cab.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.filas.map(f=>`<tr>${f.map((c,i)=>`<td>${i>1&&i%2===0?'<b>'+esc(c)+'</b>':esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`:'<p>Todavía no hay respuestas individuales.</p>'})()}
+  <h3>⚔️ Retos y 🎯 entrenamientos de hoy</h3>${retosProfeHTML()}
   <h3>📊 Resultados <button data-a="devref">🔄 Actualizar</button></h3>${ms.map(res).join('')||'<p>Aún no has enviado ninguna misión.</p>'}`}
 /* ============ CEREMONIA ============ */
 function balanced(){const st=shuffle(S.students),hs=shuffle(HK);return st.map((s,i)=>({id:s.id,name:s.name,h:hs[i%hs.length]}))}
@@ -1149,12 +1187,22 @@ const ACT={
   devout(){V.dev={open:true};render()},
   devback(){const d=V.dev;d.m=null;d.end=false;render()},
   devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
-  devplay(d){const v=V.dev,m=misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.ord=ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
+  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.ord=ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
     if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<m.qs.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
     render()},
   devsigue(){closeModal();render()},
+  entrenar(){const t=$('#en_t').value,qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
+    ACT.devplay({m:{id:'pr'+Date.now().toString(36),titulo:'🎯 Entrenar · '+nomTema(t),qs,practica:true,tema:t}})},
+  retar(){const v=V.dev,t=$('#re_t').value,para=$('#re_p').value;if(!para)return toast('Elige a quién quieres retar');if(!LISTA||!LISTA[para])return toast('No encuentro a '+para);
+    const qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
+    const id='r'+Date.now().toString(36)+Math.floor(Math.random()*1e3).toString(36),j={de:v.who.label,para:'#'+LISTA[para],paraN:para,tema:t,k:qs.map(claveQ)};
+    JAVI.escribirLibre({alumno:TAGC,accion:'Reto',cartaId:id,tipo:v.who.id,carta:JSON.stringify(j)});
+    try{const l=JSON.parse(localStorage.getItem('copa-retos-mios')||'[]');l.push(Object.assign({id,deId:v.who.id,dia:JAVI.util.clave(new Date())},j));localStorage.setItem('copa-retos-mios',JSON.stringify(l.slice(-20)))}catch(e){}
+    toast('⚔️ Reto enviado a '+para+'. ¡Ahora te toca a ti!');ACT.devplay({m:{id,titulo:'⚔️ Reto a '+para+' · '+nomTema(t),qs,reto:id}})},
+  retojugar(d){const r=retosTodos().find(x=>x.id===d.id);if(!r)return;const qs=r.k.map(k=>S.questions.find(q=>claveQ(q)===k)).filter(Boolean);
+    if(!qs.length)return toast('No encuentro las preguntas de este reto. Recarga la página.');ACT.devplay({m:{id:r.id,titulo:'⚔️ Reto de '+r.de+' · '+nomTema(r.tema),qs,reto:r.id}})},
   devnext(){closeModal();const d=V.dev;d.i++;if(finDeNivel(d))return;if(d.i>=d.m.qs.length||d.end){d.end=true;SFX.fanfare();
-      if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:'Respuesta',cartaId:d.m.id,tipo:d.who.id,carta:JSON.stringify(Object.assign({r:d.res,o:d.ord,s:Math.round((Date.now()-d.t0)/1000)},d.m.niv?{nv:nivelAlcanzado(d)}:{}))});
+      if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:d.m.practica?'Practica':d.m.reto?'RetoRes':'Respuesta',cartaId:d.m.practica?d.m.tema:d.m.id,tipo:d.who.id,carta:JSON.stringify(Object.assign({r:d.res,o:d.ord,s:Math.round((Date.now()-d.t0)/1000)},d.m.practica||d.m.reto?{t:d.m.titulo}:{},d.m.niv?{nv:nivelAlcanzado(d)}:{}))});
         try{localStorage.setItem('copa-hecha|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res));localStorage.removeItem('copa-curso|'+d.m.id+'|'+d.who.id)}catch(e){}}}
     render()},
   devsend(){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para enviar la misión',texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Enviar misión».'});
