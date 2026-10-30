@@ -536,8 +536,18 @@ h2.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba
 /* ?panel: dentro de la pantalla dividida (comun/panel-bano.js, 26/10/2026): solo grupos de trabajo y alumnos con sus puntos */
 html.panel #tabs,html.panel .banco h2.sec,html.panel #subTabs,html.panel .banco .atajos,html.panel .bHerr,html.panel #bVista{display:none!important}
 html.panel .banco .shop-in{padding-top:6px}
+/* ?uno=Nombre (30/10/2026, Javi: en las misiones de La Copa cada alumno ve SU personaje con sus galeones y su nivel, y se actualiza
+   cuando el profe le da galeones): solo su tarjeta, sin tocar nada, releyendo la Hoja cada 20 s */
+html.uno body{background:transparent!important}
+html.uno body *{visibility:hidden}
+html.uno #bAlumnos,html.uno #bAlumnos *,html.uno .jv-cierre,html.uno .jv-cierre *{visibility:visible}
+html.uno #bAlumnos{position:fixed;inset:0;margin:0;padding:3px;display:block;z-index:9999}
+html.uno #bAlumnos .cam{width:100%;height:100%;cursor:default;margin:0}
+html.uno .cam .mas{position:absolute;left:50%;top:38%;transform:translateX(-50%);font:900 26px/1 Cinzel,serif;color:#ffe27a;text-shadow:0 2px 8px #000;animation:unoMas 2.4s ease forwards}
+@keyframes unoMas{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px)}}
 </style>
-<script>if(/[?&]panel/.test(location.search)) document.documentElement.classList.add('panel');</script>
+<script>if(/[?&]panel/.test(location.search)) document.documentElement.classList.add('panel');
+var UNO = (location.search.match(/[?&]uno=([^&#]+)/)||[])[1]; UNO = UNO ? decodeURIComponent(UNO.replace(/\+/g,' ')) : ''; if(UNO) document.documentElement.classList.add('uno');</script>
 </head>
 <body>
 <div class="app" id="app" data-vista="tienda">
@@ -2033,7 +2043,8 @@ function cargarBanco(){
   return fetch(CONFIG.registro.csvUrl, { cache:'no-store' })
     .then(function(r){ return r.text(); })
     .then(function(t){
-      banco.filas = leerCSV(t).slice(1);
+      var nf = leerCSV(t).slice(1);   /* Google a veces da una copia antigua: nunca ir hacia atrás */
+      if(nf.length >= banco.filas.length) banco.filas = nf;
       banco.cargado = true; banco.error = false; banco.hora = new Date();
       limpiarPend(); pintarBanco();
       if(pendiente) revisarSaldo();
@@ -2295,8 +2306,9 @@ function pintarBanco(){
 
   var cs = cuentas(), grid = $('bAlumnos');
   grid.innerHTML = '';
-  grid.appendChild(tarjetaMaestro());
+  if(!UNO) grid.appendChild(tarjetaMaestro());
   CONFIG.alumnos.forEach(function(nombre){
+    if(UNO && nombre!==UNO) return;
     var c = cs[nombre], nv = nivelDe(c.acum);
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'cam';
@@ -2314,6 +2326,10 @@ function pintarBanco(){
     b.querySelector('.niv').textContent = huevo ? 'Nv. 0 · Dentro del huevo' : 'Nv. '+(nv.i+1)+' · '+nombreNivel(nombre, nv);
     b.querySelector('.sig').textContent = (huevo ? 'Faltan '+(-c.acum)+' para salir del huevo' : (nv.sig ? 'Faltan '+(nv.sig.min-c.acum)+' para '+(asp.chica ? (nv.sig.f||nv.sig.n) : nv.sig.n) : '¡Nivel máximo!'))+' · '+c.acum+' acumulados';
     b.setAttribute('aria-label', nombre+', '+(huevo?'dentro del huevo':nombreNivel(nombre,nv))+', '+c.acum+' galeones acumulados, '+c.saldo+' de saldo');
+    if(UNO){   /* ?uno: sin tocar; al subir el saldo, «+n» en grande y su sonido */
+      if(window.unoPrev!=null && c.saldo!==window.unoPrev){ var d = c.saldo-window.unoPrev, e = document.createElement('span'); e.className = 'mas'; e.textContent = (d>0?'+':'')+d; b.appendChild(e); try{ JAVI.sonarPuntos(d); }catch(er){} }
+      window.unoPrev = c.saldo; grid.appendChild(b); return;
+    }
     b.addEventListener('click', function(){
       if(modoVarios){
         if(seleccion[nombre]) delete seleccion[nombre]; else seleccion[nombre] = 1;
@@ -3067,6 +3083,7 @@ function iniciarGaleones(){
     iniciarPodio();
   }
   cargarBanco();
+  if(UNO) setInterval(function(){ if(!document.hidden) cargarBanco(); }, 20000);
 }
 
 window.MERCADER = { elegirTipo:elegirTipo, calcular:calcular, ofertasDe:ofertasDe, clave:clave, precioBase:precioBase };
