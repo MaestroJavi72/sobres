@@ -547,6 +547,7 @@ html.pedir #tabs,html.pedir #mAlumnoWrap,html.pedir label[for=mQuien],html.pedir
 #pedidos .ped{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:4px 0;border-top:1px dashed rgba(201,163,74,.4)}
 #pedidos .ped span{flex:1;min-width:200px}
 #pedidos .neg{color:#ff8a8a}
+#pedidos .hechos{margin:0 0 4px;font-size:14px;opacity:.9}
 html.uno body{background:transparent!important}
 html.uno body *{visibility:hidden}
 html.uno #bAlumnos,html.uno #bAlumnos *,html.uno .jv-cierre,html.uno .jv-cierre *{visibility:visible}
@@ -1879,13 +1880,15 @@ function pintarPedidos(){
   if(PEDIR || UNO || !esProfe) return;
   var box = $('pedidos');
   if(!box){ box = document.createElement('div'); box.id = 'pedidos'; var est = $('bEstado'); est.parentNode.insertBefore(box, est); }
-  var l = pedidosPendientes(), cs = cuentas();
-  box.hidden = !l.length;
-  box.innerHTML = l.length ? '<h3>🛒 Pedidos desde los ordenadores</h3>'+l.map(function(x){
+  var l = pedidosPendientes(), cs = cuentas(), hoyK = clave(new Date());
+  /* 🧾 lo pedido hoy ya resuelto (Javi: «¿dónde me sale que han comprado cartas?») */
+  var hechos = filasPed('Pedido').filter(function(f){ return fechaFila(f[0])===hoyK && (respuestaPedido(f[3]) || pedResueltos[f[3]]); }).map(function(f){ var j = jsonDe(f[5]) || {}, rr = respuestaPedido(f[3]) || (pedResueltos[f[3]]==='no' ? 'no' : 'ok'); return (rr==='ok' ? '✅ ' : '❌ ')+f[4]+' · '+(j.det||''); });
+  box.hidden = !l.length && !hechos.length;
+  box.innerHTML = (l.length ? '<h3>🛒 Pedidos desde los ordenadores</h3>' : '<h3>🛒 Pedidos de hoy</h3>')+(hechos.length ? '<p class="hechos">🧾 Hoy: '+hechos.join(' · ')+'</p>' : '')+l.map(function(x){
     var s = cs[x.nombre] ? cs[x.nombre].saldo : 0, falta = s < x.pagas;
     return '<div class="ped"><span><b>'+x.nombre+'</b> · '+x.det+' · '+x.pagas+' galeones <small>(tiene '+s+')</small>'+(falta ? ' <b class="neg">no le llega</b>' : '')+'</span>'+
       '<button type="button" class="ok" data-ok="'+x.id+'"'+(falta?' disabled':'')+'>✅ Aprobar</button><button type="button" class="no" data-no="'+x.id+'">❌</button></div>';
-  }).join('') : '';
+  }).join('');
   Array.prototype.forEach.call(box.querySelectorAll('button'), function(b){
     b.onclick = function(){ resolverPedido(b.dataset.ok || b.dataset.no, !!b.dataset.ok); };
   });
@@ -1898,7 +1901,7 @@ function resolverPedido(id, ok){
     enviarMovimiento(x.nombre, 'Compra', x.pagas, 'Mercader', x.det+' · pedido');
   }
   JAVI.escribir({ alumno:TAG_PED, accion: ok ? 'PedidoOk' : 'PedidoNo', cartaId:id, tipo:x.nombre });
-  pedResueltos[id] = 1; pintarPedidos(); pintarBanco();
+  pedResueltos[id] = ok ? 'ok' : 'no'; pintarPedidos(); pintarBanco();
 }
 
 /* ---------- caja ---------- */

@@ -678,7 +678,7 @@ function misiones(){const m=new Map();rowsC('mision').forEach(f=>{if(plain(f.tip
   const j=jrow(f);if(!j||!j.qs||!j.qs.length)return;
   /* las misiones largas van en varias filas (partes de 12 preguntas): {p:nº de parte, of:total, qs} */
   let o=m.get(f.cartaId);if(!o||!j.of){o={id:f.cartaId,titulo:f.tipo,dia:f.dia,of:j.of||1,partes:{}};m.set(f.cartaId,o)}
-  o.partes[j.p||1]=j.qs;if((j.p||1)===1){if(j.niv)o.niv=j.niv;if(j.tiempo)o.tiempo=j.tiempo}});
+  o.partes[j.p||1]=j.qs;if((j.p||1)===1){if(j.niv)o.niv=j.niv;if(j.tiempo)o.tiempo=j.tiempo;if(j.tniv)o.tniv=j.tniv;if(j.gal)o.gal=j.gal;if(j.pase)o.pase=j.pase}});
   const out=[];m.forEach(o=>{const ks=Object.keys(o.partes);if(ks.length<o.of)return;o.qs=[];for(let i=1;i<=o.of;i++)o.qs=o.qs.concat(o.partes[i]||[]);out.push(o)});return out.reverse()}
 function respuestas(id){const m=new Map();rowsC('respuesta').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r){let r=j.r;if(Array.isArray(j.o)&&j.o.length){r=new Array(j.o.length).fill(null);j.r.forEach((v,k)=>{if(j.o[k]!=null)r[j.o[k]]=v})}if(j.nv!=null)r.nv=j.nv;m.set(f.tipo,r)}});return m}
 const cnt=a=>(a||[]).filter(x=>x!=null).length;
@@ -705,42 +705,56 @@ function vDev(){const d=V.dev;
     ${d.repaso?'<p>(Era un repaso: no se ha guardado de nuevo.)</p>':'<p>✅ Tu resultado se ha enviado al profe.</p>'}
     ${fa.length?`<div class="parch pad"><h3>📚 Para repasar</h3><ol>${fa.map(q=>`<li><b>${esc(q.text)}</b><br>Respuesta: ${esc(correctText(q))}${q.explanation?`<br><i>💡 ${esc(q.explanation)}</i>`:''}</li>`).join('')}</ol></div>`:''}
     <div class="row"><button class="gold big" data-a="devback">📜 Más misiones</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div>`}
-  if(d.m){const q=qAct(d),nv=nivelDe(d.m,d.i);return `<div class="wrap">${top}<div class="phead"><span class="gname">${nv?NIVN[nv.k]+' · pregunta '+(d.i-nv.ini+1)+' de '+nv.n:'Pregunta '+(d.i+1)+' de '+d.m.qs.length}</span><span>${'⭐'.repeat(sum(d.res))}</span><span id="timer"></span></div>${avanceHTML(d)}
+  if(d.m){const q=qAct(d),nv=nivelDe(d.m,d.i);return `<div class="wrap">${top}<div class="phead"><span class="gname">${nv?nivNom(nv.k)+' · pregunta '+(d.i-nv.ini+1)+' de '+nv.n:'Pregunta '+(d.i+1)+' de '+d.m.qs.length}</span><span>${'⭐'.repeat(sum(d.res))}</span><span id="timer"></span></div>${avanceHTML(d)}
     ${readBox(q)}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div></div>`}
   const ms=misiones().filter(m=>!m.cerrada);
   return `<div class="wrap">${top}<div class="parch pad">${ms.map(m=>{const h=hecha(m.id,d.who.id);return `<div class="qrow"><span class="ty">${h?'✅':'📜'}</span><div class="qt"><b>${esc(m.titulo)}</b><small>${m.qs.length} preguntas${insignias(m)}${h?' · hecha: '+sum(h)+' de '+cnt(h)+(h.nv!=null&&m.niv?' · '+(h.nv>=m.niv.length?'🏆 todos los niveles':'nivel '+(h.nv+1)):''):''}</small></div><button class="${h?'':'gold big'}" data-a="devplay" data-id="${esc(m.id)}">${h?'🔁 Repasar':'✨ ¡Jugar!'}</button></div>`}).join('')||'<p style="font-size:1.2rem">Todavía no hay misiones. Cuando el profe envíe una, tarda unos minutos en llegar.</p>'}
   <div class="row"><button data-a="devref">🔄 Buscar misiones nuevas</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div></div>`}
-/* 🧗 MISIONES POR NIVELES Y CON TIEMPO (30/10/2026, Javi: «diferentes misiones, por niveles e incluso con tiempo»).
-   m.niv = [n1,n2,n3]: preguntas de cada nivel, en orden (🟢 fácil = dificultad 1, 🟡 medio = 2, 🔴 difícil = 3). Para pasar de nivel hay
-   que acertar el 70 % de ese nivel; si no, la misión acaba ahí (se guarda el nivel alcanzado: nv = niveles superados).
-   m.tiempo = 'q' (reloj en cada pregunta, timeFor; si se acaba, cuenta como fallo) o segundos en total (al acabar, se termina la misión). */
-const NIVN=['🟢 Nivel 1','🟡 Nivel 2','🔴 Nivel 3'],PASE=0.7;
-function porNiveles(qs,n){const por=[1,2,3].map(k=>shuffle(qs.filter(q=>(q.difficulty||1)===k)));
-  const cada=n>0?Math.max(2,Math.round(n/3)):10;   /* «Todas» en niveles = 10 por nivel (si no, salían más de 100 en el nivel 1) */const out=[],niv=[];
-  for(let k=0;k<3;k++){let l=por[k].splice(0,cada);
-    for(const j of [k-1,k+1,k-2,k+2])if(l.length<cada&&por[j])l=l.concat(por[j].splice(0,cada-l.length));   /* si faltan, de la dificultad de al lado */
-    if(l.length){out.push(...l);niv.push(l.length)}}
-  return{qs:out,niv}}
+/* 🧗 MISIONES POR NIVELES (30/10/2026, Javi). Desde la tarde del 30/10: 5 NIVELES FIJOS (decisión de Javi):
+   nivel 1 = 3 preguntas · 2 min · 1 galeón; 2 = 5 · 3 min · 1; 3 = 8 · 4 min · 2; 4 = 10 · 5 min · 3; 5 = 15 · 8 min · 4.
+   Para pasar de nivel (y ganar sus galeones) hay que acertar el 90 % de ese nivel; si no, o si se acaba su tiempo, la misión acaba ahí.
+   Las preguntas van de más fáciles a más difíciles (dificultad del banco). Los galeones los da el profe con un botón en Resultados.
+   m.niv = preguntas de cada nivel, m.tniv = segundos de cada nivel, m.gal = galeones de cada nivel, m.pase = 0.9.
+   (Las misiones de 3 niveles enviadas antes, sin tniv/gal, siguen funcionando con el 70 %.) */
+const NIVN=['🟢 Nivel 1','🔵 Nivel 2','🟡 Nivel 3','🟠 Nivel 4','🔴 Nivel 5'],PASE=0.7;
+const NIV5={tam:[3,5,8,10,15],seg:[120,180,240,300,480],gal:[1,1,2,3,4],pase:0.9};
+const nivNom=k=>NIVN[k]||'⭐ Nivel '+(k+1),paseDe=m=>m.pase||PASE;
+function porNiveles(qs){const A=shuffle(qs).sort((a,b)=>(a.difficulty||1)-(b.difficulty||1)),L=A.length,T=NIV5.tam,out=[],niv=[];
+  /* con banco de sobra: niveles 1-2 de las más fáciles, 4-5 de las más difíciles y el 3 del medio; si no, seguidas */
+  const tramos=L>=T.reduce((x,y)=>x+y,0)+10?[[0,3],[3,8],[Math.floor(L/2)-4,Math.floor(L/2)+4],[L-25,L-15],[L-15,L]]:(()=>{let i=0;return T.map(n=>[i,i+=n])})();
+  tramos.forEach(([x,y])=>{const l=A.slice(Math.max(0,x),Math.min(L,y));if(l.length){out.push(...l);niv.push(l.length)}});
+  return{qs:out,niv,tniv:NIV5.seg.slice(0,niv.length),gal:NIV5.gal.slice(0,niv.length),pase:NIV5.pase}}
 function nivelDe(m,i){if(!m.niv)return null;let ini=0;for(let k=0;k<m.niv.length;k++){if(i<ini+m.niv[k])return{k,ini,n:m.niv[k]};ini+=m.niv[k]}return null}
-function nivelAlcanzado(d){if(d.nvFin!=null)return d.nvFin;let ini=0,c=0;for(let k=0;k<d.m.niv.length;k++){const t=d.res.slice(ini,ini+d.m.niv[k]);if(t.length<d.m.niv[k]||sum(t)/t.length<PASE)break;c++;ini+=d.m.niv[k]}return c}
+function nivelAlcanzado(d){if(d.nvFin!=null)return d.nvFin;let ini=0,c=0;for(let k=0;k<d.m.niv.length;k++){const t=d.res.slice(ini,ini+d.m.niv[k]);if(t.length<d.m.niv[k]||sum(t)/t.length<paseDe(d.m)-1e-9)break;c++;ini+=d.m.niv[k]}return c}
+const galHasta=(m,c)=>(m.gal||[]).slice(0,c).reduce((a,b)=>a+b,0);
 /* al terminar un nivel: ¿sube o se acaba? (devuelve true si ya ha pintado algo) */
 function finDeNivel(d){const m=d.m;if(!m.niv||d.end)return false;const nv=nivelDe(m,d.i-1);if(!nv||d.i!==nv.ini+nv.n)return false;
   const t=d.res.slice(nv.ini,nv.ini+nv.n),ok=sum(t);
-  if(ok/nv.n<PASE){d.nvFin=nv.k;d.end=true;return false}
+  if(ok/nv.n<paseDe(m)-1e-9){d.nvFin=nv.k;d.end=true;return false}
   if(nv.k===m.niv.length-1)return false;
-  SFX.fanfare();modal(`<h2>🎉 ¡${NIVN[nv.k]} superado!</h2><p style="font-size:1.3rem">${ok} de ${nv.n}. Ahora viene el <b>${NIVN[nv.k+1]}</b>: más difícil.</p><button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
-function finTitulo(d){const m=d.m;if(d.sinTiempo)return '⏳ ¡Se acabó el tiempo!';if(!m.niv)return '¡Misión cumplida!';const c=nivelAlcanzado(d);
-  return c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+NIVN[c]:'💪 Sigue practicando el '+NIVN[0]}
-function insignias(m){return (m.niv?' · 🧗 '+m.niv.length+' niveles':'')+(m.tiempo==='q'?' · ⏱️ reloj':m.tiempo?' · ⏳ '+Math.round(m.tiempo/60)+' min':'')}
-/* reloj de la misión */
+  const g=m.gal&&m.gal[nv.k];
+  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(nv.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${nv.n}.${g?` <b>+${g} galeón${g>1?'es':''}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:''}</p><p style="font-size:1.2rem">Ahora viene el <b>${nivNom(nv.k+1)}</b>: ${m.niv[nv.k+1]} preguntas${m.tniv?' en '+Math.round(m.tniv[nv.k+1]/60)+' minutos':''}.</p><button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
+function finTitulo(d){const m=d.m;const pre=d.sinTiempo?'⏳ ¡Se acabó el tiempo! ':'';if(!m.niv)return pre||'¡Misión cumplida!';const c=nivelAlcanzado(d),g=galHasta(m,c);
+  return pre+(c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+nivNom(c):'💪 Sigue practicando el '+nivNom(0))+(g?' · 💰 '+g+' galeón'+(g>1?'es':''):'')}
+function insignias(m){return (m.niv?' · 🧗 '+m.niv.length+' niveles':'')+(m.tniv?' · ⏳ por nivel':m.tiempo==='q'?' · ⏱️ reloj':m.tiempo?' · ⏳ '+Math.round(m.tiempo/60)+' min':'')}
+/* reloj de la misión: por pregunta, total, o (5 niveles) el de cada nivel */
 let RELOJ=null;
-function relojMision(){clearInterval(RELOJ);const d=V.dev,m=d.m;if(!m.tiempo)return;
-  if(m.tiempo==='q'){const q=qAct(d);startTimer(timeFor(Object.assign({},q,{time:0})),()=>{if(V.screen==='dev'&&V.dev.m===m&&!$('.ov'))devAnswered(false)});return}
-  const pinta=()=>{if(V.screen!=='dev'||V.dev.m!==m||d.end){clearInterval(RELOJ);return}const el=$('#timer');const left=Math.max(0,Math.round((d.t0+m.tiempo*1000-Date.now())/1000));
+function relojMision(){clearInterval(RELOJ);const d=V.dev,m=d.m;if(!m.tiempo&&!m.tniv)return;
+  if(!m.tniv&&m.tiempo==='q'){const q=qAct(d);startTimer(timeFor(Object.assign({},q,{time:0})),()=>{if(V.screen==='dev'&&V.dev.m===m&&!$('.ov'))devAnswered(false)});return}
+  let fin,nv=null;
+  if(m.tniv){nv=nivelDe(m,d.i);if(!nv)return;const k='copa-nivt|'+m.id+'|'+d.who.id+'|'+nv.k;let t0=0;try{t0=+localStorage.getItem(k);if(!t0||Date.now()-t0>36e5){t0=Date.now();localStorage.setItem(k,String(t0))}}catch(e){t0=Date.now()}fin=t0+m.tniv[nv.k]*1000}
+  else fin=d.t0+m.tiempo*1000;
+  const pinta=()=>{if(V.screen!=='dev'||V.dev.m!==m||d.end){clearInterval(RELOJ);return}const el=$('#timer');const left=Math.max(0,Math.round((fin-Date.now())/1000));
     if(el)el.innerHTML=`<b>⏳ ${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b>`;
-    if(left<=0){clearInterval(RELOJ);closeModal();const nv=m.niv&&nivelDe(m,d.res.length),hasta=nv?nv.ini+nv.n:m.qs.length;while(d.res.length<hasta)d.res.push(0);
-      d.sinTiempo=true;d.i=m.qs.length;ACT.devnext()}};
+    if(left<=0){clearInterval(RELOJ);closeModal();d.sinTiempo=true;
+      if(nv){while(d.res.length<nv.ini+nv.n)d.res.push(0);d.i=nv.ini+nv.n-1;ACT.devnext();return}
+      while(d.res.length<m.qs.length)d.res.push(0);d.i=m.qs.length;ACT.devnext()}};
   pinta();RELOJ=setInterval(pinta,1000)}
+/* 💰 galeones de los niveles (los da el profe; una vez por alumno, solo lo que falta: localStorage copa-nivgal|misión) */
+function nivGalDados(id){try{return JSON.parse(localStorage.getItem('copa-nivgal|'+id))||{}}catch(e){return{}}}
+function nivGalLista(m,rs,inv){const dados=nivGalDados(m.id);return [...rs.entries()].filter(([w,r])=>w[0]==='#'&&inv[w]&&r.nv!=null).map(([w,r])=>{const g=galHasta(m,r.nv);return{n:inv[w],nv:r.nv,g,ya:dados[inv[w]]||0}}).filter(x=>x.g>0)}
+function nivGalHTML(m,rs,inv){if(!window.JAVI||!m.gal||!rs.size)return'';const l=nivGalLista(m,rs,inv),faltan=l.filter(x=>x.g>x.ya);
+  return `<p>💰 <b>Galeones por niveles</b> (${m.gal.join(' · ')}): ${l.length?l.map(x=>esc(x.n)+' '+x.g+(x.ya>=x.g?' ✅':x.ya?' (ya '+x.ya+')':'')).join(' · '):'nadie ha superado todavía el nivel 1'}</p>${faltan.length?`<div class="row"><button class="gold" data-a="devnivgal" data-id="${esc(m.id)}">💰 Dar los galeones de los niveles (${faltan.length===1?esc(faltan[0].n):faltan.length+' alumnos'})</button></div>`:''}`}
 /* 🔀 ORDEN PROPIO (30/10/2026, Javi: «que no les salgan las mismas preguntas al mismo momento»): cada alumno juega la misión en su
    propio orden (siempre el mismo para él: semilla = misión + quién, así puede seguir donde lo dejó). En las de niveles se baraja dentro
    de cada nivel. Se guarda o = orden jugado, y respuestas() lo devuelve en el orden de la misión. */
@@ -752,7 +766,7 @@ function qAct(d){const k=d.ord&&d.ord[d.i]!=null?d.ord[d.i]:d.i;return d.m.qs[k]
 /* 📊 AVANCE: una casilla por pregunta (verde acierto, roja fallo, la de ahora marcada); en las de niveles, por niveles */
 function avanceHTML(d){const m=d.m,cas=i=>`<i class="${d.res[i]===1?'ok':d.res[i]===0?'ko':''}${i===d.i?' ya':''}"></i>`;
   if(!m.niv)return `<div class="avance">${m.qs.map((q,i)=>cas(i)).join('')}</div>`;
-  let ini=0;return `<div class="avance">${m.niv.map((n,k)=>{let h=`<b>${NIVN[k].split(' ')[0]}</b>`;for(let i=ini;i<ini+n;i++)h+=cas(i);ini+=n;return h}).join('')}</div>`}
+  let ini=0;return `<div class="avance">${m.niv.map((n,k)=>{let h=`<b>${nivNom(k).split(' ')[0]}</b>`;for(let i=ini;i<ini+n;i++)h+=cas(i);ini+=n;return h}).join('')}</div>`}
 /* 🧙 MI PERSONAJE (30/10/2026, Javi): en las misiones, el alumno que entra con su nombre ve su personaje de Hogwarts con sus galeones
    y su nivel (hogwarts/?uno=Nombre en un marco fijo arriba a la derecha); se relee cada 20 s, así que ve los galeones que le da el profe */
 function miPersonaje(){const d=V.dev,yo=V.screen==='dev'&&d&&d.who&&d.who.id[0]==='#'&&window.JAVI?d.who.label:'';let c=document.getElementById('mipj');
@@ -779,13 +793,13 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
     const peores=fallos.map((f,i)=>({f,i})).filter(x=>x.f>0).sort((a,b)=>b.f-a.f).slice(0,5);
     return `<div style="border:2px solid #b08a45;border-radius:.6rem;padding:.6rem;margin:.6rem 0;${m.cerrada?'opacity:.6':''}"><div class="row" style="justify-content:space-between"><b>${esc(m.titulo)}</b><small>${m.dia} · ${n} preguntas${insignias(m)} · ${rs.size} respuestas${m.cerrada?' · cerrada':''}</small>${m.cerrada?'':`<button data-a="devclose" data-id="${esc(m.id)}">🔒 Cerrar</button>`}</div>
     ${rs.size?`<table class="stand"><tr><th>Quién</th>${m.niv?'<th>Nivel</th>':''}<th>Aciertos</th><th>Falló las preguntas</th></tr>${filas.map(([w,r])=>`<tr><td>${w[0]==='#'?esc(w.slice(1)+' · '+(inv[w]||'?')):esc(w)}</td>${m.niv?`<td>${r.nv==null?'—':r.nv>=m.niv.length?'🏆 los '+m.niv.length:'se quedó en el '+(r.nv+1)}</td>`:''}<td><b>${sum(r)}</b> de ${cnt(r)}</td><td>${r.map((x,i)=>x===0?i+1:'').filter(Boolean).join(', ')||'—'}</td></tr>`).join('')}</table>
-    ${premioHTML(m,rs,inv)}${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
+    ${m.gal?nivGalHTML(m,rs,inv):premioHTML(m,rs,inv)}${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
   return `<h3>📤 Enviar una misión a los dispositivos</h3>
   <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${subs.map(x=>`<option value="s:${esc(x)}">Todo «${esc(x)}» (${S.questions.filter(q=>q.subject===x&&q.type!=='open').length})</option>`).join('')}${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
   <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="30">30</option><option value="0">Todas</option></select></label>
   <label>Título<input id="dv_t" placeholder="Repaso del tema"></label>
-  <label>Tipo de misión<select id="dv_tipo"><option value="">📜 Normal (todas seguidas)</option><option value="niv">🧗 Por niveles: 🟢 fácil → 🟡 medio → 🔴 difícil (para subir, 7 de cada 10)</option></select></label>
-  <label>Tiempo<select id="dv_tiempo"><option value="">Sin tiempo</option><option value="q">⏱️ Reloj en cada pregunta</option><option value="300">⏳ 5 minutos en total</option><option value="600">⏳ 10 minutos en total</option><option value="900">⏳ 15 minutos en total</option></select></label></div>
+  <label>Tipo de misión<select id="dv_tipo"><option value="">📜 Normal (todas seguidas)</option><option value="niv">🧗 5 niveles: 3 · 5 · 8 · 10 · 15 preguntas, 2 · 3 · 4 · 5 · 8 min, 💰 1 · 1 · 2 · 3 · 4 galeones (90 % para pasar)</option></select></label>
+  <label>Tiempo (en los 5 niveles ya va el de cada nivel)<select id="dv_tiempo"><option value="">Sin tiempo</option><option value="q">⏱️ Reloj en cada pregunta</option><option value="300">⏳ 5 minutos en total</option><option value="600">⏳ 10 minutos en total</option><option value="900">⏳ 15 minutos en total</option></select></label></div>
   <div class="row"><button class="gold big" data-a="devsend">📤 Enviar misión</button><button data-a="devbank">📥 Cargar el banco de evaluación del Tema 2</button></div>
   <p>Los alumnos entran en <b style="-webkit-user-select:text;user-select:text">${esc(url)}</b>, escriben el código de clase (4A), tocan su nombre y ponen su número de lista (o eligen su casa). La misión tarda unos minutos en aparecer en sus aparatos, y sus respuestas tardan otros tantos en llegar aquí. Las preguntas de «respuesta abierta» no se envían.</p>
   <h3>🎓 Notas por criterio <button data-a="devcsv">⬇️ Exportar a Excel</button></h3>
@@ -1145,11 +1159,11 @@ const ACT={
     render()},
   devsend(){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para enviar la misión',texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Enviar misión».'});
     const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0,tipo=$('#dv_tipo').value,tiempo=$('#dv_tiempo').value;let qs=S.questions.filter(q=>q.type!=='open'&&(!g||(g.indexOf('s:')===0?q.subject===g.slice(2):gkey(q)===g)));let niv=null;
-    if(tipo==='niv'){const r=porNiveles(qs,n);qs=r.qs;niv=r.niv}else if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
+    let extra={};if(tipo==='niv'){const r=porNiveles(qs);qs=r.qs;niv=r.niv;extra={tniv:r.tniv,gal:r.gal,pase:r.pase}}else if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
     if(!qs.length)return toast('No hay preguntas para enviar en ese grupo');
     const titulo=($('#dv_t').value.trim()||(g.replace(/^s:/,'')||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     const limpias=qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;delete o.points;return o}),id='m'+Date.now().toString(36),of=Math.ceil(limpias.length/6);
-    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify(Object.assign({p,of,qs:limpias.slice((p-1)*6,p*6)},p===1&&niv?{niv}:{},p===1&&tiempo?{tiempo:tiempo==='q'?'q':+tiempo}:{}))});
+    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify(Object.assign({p,of,qs:limpias.slice((p-1)*6,p*6)},p===1&&niv?Object.assign({niv},extra):{},p===1&&tiempo&&!niv?{tiempo:tiempo==='q'?'q':+tiempo}:{}))});
     render();toast('📤 Misión enviada: '+qs.length+' preguntas'+(niv?' en '+niv.length+' niveles':'')+'. Tarda unos minutos en llegar a los aparatos.')})},
   devbank(){const go=()=>fetch(JAVI.BASE+'data/copa/tema2-evaluacion.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);S.questions=S.questions.filter(q=>q.subject!=='Tema 2').concat(r.qs);V.sel=null;save();render();toast('📥 '+r.qs.length+' preguntas del Tema 2 cargadas'+(r.errs.length?' ('+r.errs.length+' con problemas)':''))}).catch(()=>toast('❌ No he podido leer el banco del Tema 2'));
     S.questions.some(q=>q.subject==='Tema 2')?ask('Ya tienes preguntas de «Tema 2». ¿Sustituirlas por el banco original?',go):go()},
@@ -1161,6 +1175,12 @@ const ACT={
     ask('¿Dar +1 galeón a '+c.map(x=>esc(x.n)+' ('+x.ok+'/'+x.de+')').join(', ')+'?',()=>{const ya=premiados(m.id);
       c.forEach(x=>{JAVI.darPuntos('4ºA',x.n,1,'Acierto','La Copa · misión «'+m.titulo+'» ('+x.ok+'/'+x.de+')');ya.push(x.n)});
       try{localStorage.setItem(K_PREMIO(m.id),JSON.stringify(ya))}catch(e){}SFX.fanfare();toast('🏅 +1 galeón para '+c.length+(c.length===1?' alumno':' alumnos')+(JAVI.PRUEBA?' (modo prueba)':''));render()})})},
+  devnivgal(d){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para dar galeones',texto:'Escribe el código y vuelve a pulsar «Dar los galeones de los niveles».'});
+    const m=misiones().find(x=>x.id===d.id);if(!m)return;const inv={};Object.keys(LISTA||{}).forEach(n=>inv['#'+LISTA[n]]=n);
+    const l=nivGalLista(m,respuestas(m.id),inv).filter(x=>x.g>x.ya);if(!l.length)return toast('No hay galeones pendientes');
+    ask('¿Dar los galeones de los niveles?<br>'+l.map(x=>esc(x.n)+' +'+(x.g-x.ya)+' ('+(x.nv>=m.niv.length?'los '+m.niv.length+' niveles':x.nv+' nivel'+(x.nv>1?'es':''))+')').join('<br>'),()=>{const dados=nivGalDados(m.id);
+      l.forEach(x=>{JAVI.darPuntos('4ºA',x.n,x.g-x.ya,'Acierto','La Copa · «'+m.titulo+'» · '+x.nv+' nivel'+(x.nv>1?'es':'')+' superado'+(x.nv>1?'s':''));dados[x.n]=x.g});
+      try{localStorage.setItem('copa-nivgal|'+m.id,JSON.stringify(dados))}catch(e){}SFX.fanfare();toast('💰 Galeones dados a '+l.length+(l.length===1?' alumno':' alumnos')+(JAVI.PRUEBA?' (modo prueba)':''));render()})})},
   devclose(d){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo();ask('¿Cerrar esta misión? Dejará de salir en los aparatos (los resultados se conservan).',()=>{JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:d.id,tipo:'cerrada',carta:''});render()})})},
   /* libro */
   qnew(){editor(null)},qed(d){editor(qById(d.id))},
