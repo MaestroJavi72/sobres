@@ -719,22 +719,25 @@ function vDev(){const d=V.dev;
 const NIVN=['🟢 Nivel 1','🔵 Nivel 2','🟡 Nivel 3','🟠 Nivel 4','🔴 Nivel 5'],PASE=0.7;
 const NIV5={tam:[3,5,8,10,15],seg:[120,180,240,300,480],gal:[1,1,2,3,4],pase:0.9};
 const nivNom=k=>NIVN[k]||'⭐ Nivel '+(k+1),paseDe=m=>m.pase||PASE;
+/* 30/10/2026 (Javi, tras probarla): en las de 5 niveles se SUBE de nivel con el 60 %; los galeones de cada nivel siguen pidiendo el 90 % */
+const SUBIR=0.6,subirDe=m=>m.gal?SUBIR:paseDe(m);
+function galDe(m,r){let ini=0,g=0;(m.niv||[]).forEach((n,k)=>{const t=(r||[]).slice(ini,ini+n);if(t.length===n&&t.every(x=>x!=null)&&sum(t)/n>=paseDe(m)-1e-9)g+=(m.gal||[])[k]||0;ini+=n});return g}
 function porNiveles(qs){const A=shuffle(qs).sort((a,b)=>(a.difficulty||1)-(b.difficulty||1)),L=A.length,T=NIV5.tam,out=[],niv=[];
   /* con banco de sobra: niveles 1-2 de las más fáciles, 4-5 de las más difíciles y el 3 del medio; si no, seguidas */
   const tramos=L>=T.reduce((x,y)=>x+y,0)+10?[[0,3],[3,8],[Math.floor(L/2)-4,Math.floor(L/2)+4],[L-25,L-15],[L-15,L]]:(()=>{let i=0;return T.map(n=>[i,i+=n])})();
   tramos.forEach(([x,y])=>{const l=A.slice(Math.max(0,x),Math.min(L,y));if(l.length){out.push(...l);niv.push(l.length)}});
   return{qs:out,niv,tniv:NIV5.seg.slice(0,niv.length),gal:NIV5.gal.slice(0,niv.length),pase:NIV5.pase}}
 function nivelDe(m,i){if(!m.niv)return null;let ini=0;for(let k=0;k<m.niv.length;k++){if(i<ini+m.niv[k])return{k,ini,n:m.niv[k]};ini+=m.niv[k]}return null}
-function nivelAlcanzado(d){if(d.nvFin!=null)return d.nvFin;let ini=0,c=0;for(let k=0;k<d.m.niv.length;k++){const t=d.res.slice(ini,ini+d.m.niv[k]);if(t.length<d.m.niv[k]||sum(t)/t.length<paseDe(d.m)-1e-9)break;c++;ini+=d.m.niv[k]}return c}
+function nivelAlcanzado(d){if(d.nvFin!=null)return d.nvFin;let ini=0,c=0;for(let k=0;k<d.m.niv.length;k++){const t=d.res.slice(ini,ini+d.m.niv[k]);if(t.length<d.m.niv[k]||sum(t)/t.length<subirDe(d.m)-1e-9)break;c++;ini+=d.m.niv[k]}return c}
 const galHasta=(m,c)=>(m.gal||[]).slice(0,c).reduce((a,b)=>a+b,0);
 /* al terminar un nivel: ¿sube o se acaba? (devuelve true si ya ha pintado algo) */
 function finDeNivel(d){const m=d.m;if(!m.niv||d.end)return false;const nv=nivelDe(m,d.i-1);if(!nv||d.i!==nv.ini+nv.n)return false;
   const t=d.res.slice(nv.ini,nv.ini+nv.n),ok=sum(t);
-  if(ok/nv.n<paseDe(m)-1e-9){d.nvFin=nv.k;d.end=true;return false}
+  if(ok/nv.n<subirDe(m)-1e-9){d.nvFin=nv.k;d.end=true;return false}
   if(nv.k===m.niv.length-1)return false;
-  const g=m.gal&&m.gal[nv.k];
-  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(nv.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${nv.n}.${g?` <b>+${g} ${g>1?'galeones':'galeón'}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:''}</p><p style="font-size:1.2rem">Ahora viene el <b>${nivNom(nv.k+1)}</b>: ${m.niv[nv.k+1]} preguntas${m.tniv?' en '+Math.round(m.tniv[nv.k+1]/60)+' minutos':''}.</p><button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
-function finTitulo(d){const m=d.m;const pre=d.sinTiempo?'⏳ ¡Se acabó el tiempo! ':'';if(!m.niv)return pre||'¡Misión cumplida!';const c=nivelAlcanzado(d),g=galHasta(m,c);
+  const g=m.gal&&m.gal[nv.k],conG=g&&ok/nv.n>=paseDe(m)-1e-9,falta=Math.ceil(paseDe(m)*nv.n-1e-9);
+  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(nv.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${nv.n}.${conG?` <b>+${g} ${g>1?'galeones':'galeón'}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:g?` Esta vez sin galeones: para ganarlos hacía falta ${falta} de ${nv.n}.`:''}</p><p style="font-size:1.2rem">Ahora viene el <b>${nivNom(nv.k+1)}</b>: ${m.niv[nv.k+1]} preguntas${m.tniv?' en '+Math.round(m.tniv[nv.k+1]/60)+' minutos':''}.</p><button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
+function finTitulo(d){const m=d.m;const pre=d.sinTiempo?'⏳ ¡Se acabó el tiempo! ':'';if(!m.niv)return pre||'¡Misión cumplida!';const c=nivelAlcanzado(d),g=galDe(m,d.res);
   return pre+(c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+nivNom(c):'💪 Sigue practicando el '+nivNom(0))+(g?' · 💰 '+g+' '+(g>1?'galeones':'galeón'):'')}
 function insignias(m){return (m.niv?' · 🧗 '+m.niv.length+' niveles':'')+(m.tniv?' · ⏳ por nivel':m.tiempo==='q'?' · ⏱️ reloj':m.tiempo?' · ⏳ '+Math.round(m.tiempo/60)+' min':'')}
 /* reloj de la misión: por pregunta, total, o (5 niveles) el de cada nivel */
@@ -752,7 +755,7 @@ function relojMision(){clearInterval(RELOJ);const d=V.dev,m=d.m;if(!m.tiempo&&!m
   pinta();RELOJ=setInterval(pinta,1000)}
 /* 💰 galeones de los niveles (los da el profe; una vez por alumno, solo lo que falta: localStorage copa-nivgal|misión) */
 function nivGalDados(id){try{return JSON.parse(localStorage.getItem('copa-nivgal|'+id))||{}}catch(e){return{}}}
-function nivGalLista(m,rs,inv){const dados=nivGalDados(m.id);return [...rs.entries()].filter(([w,r])=>w[0]==='#'&&inv[w]&&r.nv!=null).map(([w,r])=>{const g=galHasta(m,r.nv);return{n:inv[w],nv:r.nv,g,ya:dados[inv[w]]||0}}).filter(x=>x.g>0)}
+function nivGalLista(m,rs,inv){const dados=nivGalDados(m.id);return [...rs.entries()].filter(([w,r])=>w[0]==='#'&&inv[w]&&r.nv!=null).map(([w,r])=>{const g=galDe(m,r);return{n:inv[w],nv:r.nv,g,ya:dados[inv[w]]||0}}).filter(x=>x.g>0)}
 function nivGalHTML(m,rs,inv){if(!window.JAVI||!m.gal||!rs.size)return'';const l=nivGalLista(m,rs,inv),faltan=l.filter(x=>x.g>x.ya);
   return `<p>💰 <b>Galeones por niveles</b> (${m.gal.join(' · ')}): ${l.length?l.map(x=>esc(x.n)+' '+x.g+(x.ya>=x.g?' ✅':x.ya?' (ya '+x.ya+')':'')).join(' · '):'nadie ha superado todavía el nivel 1'}</p>${faltan.length?`<div class="row"><button class="gold" data-a="devnivgal" data-id="${esc(m.id)}">💰 Dar los galeones de los niveles (${faltan.length===1?esc(faltan[0].n):faltan.length+' alumnos'})</button></div>`:''}`}
 /* 🔀 ORDEN PROPIO (30/10/2026, Javi: «que no les salgan las mismas preguntas al mismo momento»): cada alumno juega la misión en su
@@ -835,7 +838,7 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
   <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${subs.map(x=>`<option value="s:${esc(x)}">Todo «${esc(x)}» (${S.questions.filter(q=>q.subject===x&&q.type!=='open').length})</option>`).join('')}${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
   <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="30">30</option><option value="0">Todas</option></select></label>
   <label>Título<input id="dv_t" placeholder="Repaso del tema"></label>
-  <label>Tipo de misión<select id="dv_tipo"><option value="">📜 Normal (todas seguidas)</option><option value="niv">🧗 5 niveles: 3 · 5 · 8 · 10 · 15 preguntas, 2 · 3 · 4 · 5 · 8 min, 💰 1 · 1 · 2 · 3 · 4 galeones (90 % para pasar)</option></select></label>
+  <label>Tipo de misión<select id="dv_tipo"><option value="">📜 Normal (todas seguidas)</option><option value="niv">🧗 5 niveles: 3 · 5 · 8 · 10 · 15 preguntas, 2 · 3 · 4 · 5 · 8 min, 💰 1 · 1 · 2 · 3 · 4 galeones (60 % para subir de nivel, 90 % para ganar sus galeones)</option></select></label>
   <label>Tiempo (en los 5 niveles ya va el de cada nivel)<select id="dv_tiempo"><option value="">Sin tiempo</option><option value="q">⏱️ Reloj en cada pregunta</option><option value="300">⏳ 5 minutos en total</option><option value="600">⏳ 10 minutos en total</option><option value="900">⏳ 15 minutos en total</option></select></label></div>
   <div class="row"><button class="gold big" data-a="devsend">📤 Enviar misión</button><button data-a="devbank">📥 Cargar el banco de evaluación del Tema 2</button></div>
   <p>Los alumnos entran en <b style="-webkit-user-select:text;user-select:text">${esc(url)}</b>, escriben el código de clase (4A), tocan su nombre y ponen su número de lista (o eligen su casa). La misión tarda unos minutos en aparecer en sus aparatos, y sus respuestas tardan otros tantos en llegar aquí. Las preguntas de «respuesta abierta» no se envían.</p>
@@ -1189,6 +1192,8 @@ const ACT={
   devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
   devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.ord=ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
     if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<m.qs.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
+    /* si empieza desde el principio (o la repasa), los relojes de nivel de una vez anterior no cuentan */
+    if(!v.i)try{Object.keys(localStorage).filter(k=>k.indexOf('copa-nivt|'+m.id+'|'+v.who.id+'|')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
     render()},
   /* 👀 PROBAR (30/10/2026, Javi: «quiero ver cómo funciona la misión que he mandado»): el profe la juega como un alumno; no se guarda nada */
   devprobar(d){V.screen='dev';V.dev={open:true,who:{id:'Profe',label:'👀 Profe (prueba, no se guarda)'}};ACT.devplay({id:d.id});V.dev.repaso=true;V.dev.res=[];V.dev.i=0;try{Object.keys(localStorage).filter(k=>/^copa-(nivt|inicio)\|/.test(k)&&k.indexOf('|Profe')>0).forEach(k=>localStorage.removeItem(k))}catch(e){}V.dev.t0=Date.now();render()},
