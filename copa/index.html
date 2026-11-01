@@ -700,7 +700,7 @@ function vDev(){const d=V.dev;
     <div class="parch pad"><h3>🧙 Yo solo: toca tu nombre</h3><div class="row">${g.nombres.map(n=>`<button class="stu" style="font-size:1.25rem;padding:.6rem 1.1rem" data-a="devname" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div></div>
     <details class="parch pad" style="margin-top:.8rem"><summary style="cursor:pointer">🏰 Solo si os lo dice el profe: jugar toda la casa con un aparato</summary><div class="row">${HK.map(h=>`<button class="big" style="background:${HOUSES[h].c};border:3px solid ${HOUSES[h].c2}" data-a="devhouse" data-h="${h}">${HOUSES[h].e} ${HOUSES[h].n}</button>`).join('')}</div></details></div>`}
   const top=`<div class="bar"><h1>📜 ${d.m?esc(d.m.titulo):'Misiones'}</h1><span class="hb" style="--c:#3b2a6b;--c2:var(--gold)">${esc(d.who.label)}</span></div>`;
-  if(d.m&&d.end){const n=d.res.length||d.m.qs.length,ok=sum(d.res),fa=d.res.map((x,k)=>x===0?d.m.qs[(d.ord||[])[k]!=null?d.ord[k]:k]:null).filter(Boolean);
+  if(d.m&&d.end){const n=d.res.length||d.m.qs.length,ok=sum(d.res),fa=d.res.map((x,k)=>x===0?(d.qsJ||d.m.qs)[(d.ord||[])[k]!=null?d.ord[k]:k]:null).filter(Boolean);
     return `<div class="wrap final">${top}<div class="cup">${ok===n?'🏆':ok>=n/2?'🌟':'💪'}</div><h2>${finTitulo(d)}</h2><p class="sub">${ok} de ${n} hechizos conseguidos. ${ok===n?'¡Perfecto!':'¡Buen trabajo! Mira lo que puedes repasar.'}</p>
     ${d.repaso?'<p>(Era un repaso: no se ha guardado de nuevo.)</p>':'<p>✅ Tu resultado se ha enviado al profe.</p>'}
     ${fa.length?`<div class="parch pad"><h3>📚 Para repasar</h3><ol>${fa.map(q=>`<li><b>${esc(q.text)}</b><br>Respuesta: ${esc(correctText(q))}${q.explanation?`<br><i>💡 ${esc(q.explanation)}</i>`:''}</li>`).join('')}</ol></div>`:''}
@@ -843,7 +843,16 @@ function semilla(t){let h=2166136261;for(let i=0;i<t.length;i++)h=Math.imul(h^t.
   return()=>{h=Math.imul(h^h>>>15,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}
 function ordenAlumno(m,who){const rnd=semilla(m.id+'|'+who),o=[];let ini=0;
   (m.niv||[m.qs.length]).forEach(n=>{const b=[];for(let k=0;k<n;k++)b.push(ini+k);for(let i=b.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[b[i],b[j]]=[b[j],b[i]]}o.push(...b);ini+=n});return o}
-function qAct(d){const k=d.ord&&d.ord[d.i]!=null?d.ord[d.i]:d.i;return d.m.qs[k]}
+function qAct(d){const k=d.ord&&d.ord[d.i]!=null?d.ord[d.i]:d.i;return (d.qsJ||d.m.qs)[k]}
+/* 🔀 PREGUNTAS PROPIAS (1/11/2026, Javi: «no quiero que sean las mismas preguntas; pueden ser del mismo tipo… pero que no sea la misma»):
+   en las misiones del profe, cada hueco de la misión es un MOLDE (tema + dificultad + tipo de pregunta) y cada alumno recibe otra
+   pregunta del banco de su aparato con ese mismo tema y dificultad (si hay menos de 4, cualquiera del tema), elegida con su semilla (siempre la
+   misma para él, así puede seguir donde lo dejó) y sin repetir dentro de la misión. Si no hay otra, le sale la del molde.
+   Los resultados siguen siendo por hueco (pregunta 1, 2…), así que el profe compara por temas. Los retos sí usan las mismas. */
+function preguntasPropias(m,who){const rnd=semilla('var|'+m.id+'|'+who),usadasJ=new Set(),out=[];
+  m.qs.forEach(mol=>{const tema=S.questions.filter(q=>q.type!=='open'&&gkey(q)===gkey(mol)&&!usadasJ.has(claveQ(q))),misma=tema.filter(q=>(q.difficulty||1)===(mol.difficulty||1));
+    const c=(misma.length>=4?misma:tema).sort((a,b)=>claveQ(a)<claveQ(b)?-1:1);   /* mismo tema y dificultad; si hay pocas, cualquiera del tema */
+    const q=c.length?c[Math.floor(rnd()*c.length)]:mol;usadasJ.add(claveQ(q));out.push(q)});return out}
 /* 📊 AVANCE: una casilla por pregunta (verde acierto, roja fallo, la de ahora marcada); en las de niveles, por niveles */
 function avanceHTML(d){const cas=i=>`<i class="${d.res[i]===1?'ok':d.res[i]===0?'ko':''}${i===d.i?' ya':''}"></i>`;
   if(!d.seg)return `<div class="avance">${(d.ord||d.m.qs).map((x,i)=>cas(i)).join('')}</div>`;
@@ -913,7 +922,7 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
     const peores=fallos.map((f,i)=>({f,i})).filter(x=>x.f>0).sort((a,b)=>b.f-a.f).slice(0,5);
     return `<div style="border:2px solid #b08a45;border-radius:.6rem;padding:.6rem;margin:.6rem 0;${m.cerrada?'opacity:.6':''}"><div class="row" style="justify-content:space-between"><b>${esc(m.titulo)}</b><small>${m.dia} · ${m.niv?sum(m.niv)+(m.nivr?' (+'+sum(m.nivr)+' de reserva)':''):n} preguntas${insignias(m)} · ${rs.size} respuestas${m.cerrada?' · cerrada':''}</small><span><button data-a="devprobar" data-id="${esc(m.id)}" title="Jugarla como un alumno, sin que se guarde nada">👀 Probar</button>${m.cerrada?'':`<button data-a="devclose" data-id="${esc(m.id)}">🔒 Cerrar</button>`}</span></div>
     ${rs.size?`<table class="stand"><tr><th>Quién</th>${m.niv?'<th>Nivel</th>':''}<th>Aciertos</th><th>Falló las preguntas</th></tr>${filas.map(([w,r])=>`<tr><td>${w[0]==='#'?esc(w.slice(1)+' · '+(inv[w]||'?')):esc(w)}</td>${m.niv?`<td>${r.nv==null?'—':r.nv>=m.niv.length?'🏆 los '+m.niv.length:'se quedó en el '+(r.nv+1)}</td>`:''}<td><b>${sum(r)}</b> de ${cnt(r)}</td><td>${r.map((x,i)=>x===0?i+1:'').filter(Boolean).join(', ')||'—'}</td></tr>`).join('')}</table>
-    ${m.gal?nivGalHTML(m,rs,inv):premioHTML(m,rs,inv)}${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(m.qs[x.i].text)} <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
+    ${m.gal?nivGalHTML(m,rs,inv):premioHTML(m,rs,inv)}${peores.length?`<p><b>Las más falladas:</b><br>${peores.map(x=>`${x.i+1}. ${esc(gkey(m.qs[x.i]).replace(/^Tema 2 - /,''))} (cada uno tuvo una pregunta distinta de este tema) <b>(${x.f})</b>`).join('<br>')}</p>`:''}`:'<p>Aún no ha llegado ninguna respuesta.</p>'}</div>`};
   return `<h3>📤 Enviar una misión a los dispositivos</h3>
   <div class="form"><label>Preguntas de<select id="dv_g"><option value="">Todos los grupos</option>${subs.map(x=>`<option value="s:${esc(x)}">Todo «${esc(x)}» (${S.questions.filter(q=>q.subject===x&&q.type!=='open').length})</option>`).join('')}${gs.map(g=>`<option value="${esc(g.k)}">${esc(g.k)} (${g.n})</option>`).join('')}</select></label>
   <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="30">30</option><option value="0">Todas</option></select></label>
@@ -1271,7 +1280,7 @@ const ACT={
   devout(){V.dev={open:true};render()},
   devback(){const d=V.dev;d.m=null;d.end=false;render()},
   devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
-  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.seg=tramosIniciales(m,v.who.id);v.ord=v.seg?[].concat(...v.seg.map(x=>x.idx)):ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;v.mb={};try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
+  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.qsJ=m.reto||m.practica?null:preguntasPropias(m,v.who.id);v.seg=tramosIniciales(m,v.who.id);v.ord=v.seg?[].concat(...v.seg.map(x=>x.idx)):ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;v.mb={};try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
     if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;if(c.seg)v.seg=c.seg;if(c.mb)v.mb=c.mb;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<v.ord.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
     /* si empieza desde el principio (o la repasa), los relojes de nivel de una vez anterior no cuentan */
     if(!v.i)try{Object.keys(localStorage).filter(k=>k.indexOf('copa-nivt|'+m.id+'|'+v.who.id+'|')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
