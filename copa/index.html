@@ -431,7 +431,7 @@ const SFX={click:()=>tone(660,.06,'triangle',0,.08),
 
 /* ============ MODALES ============ */
 function modal(html,cls){$('#modal').innerHTML=`<div class="ov"><div class="dlg parch ${cls||''}">${html}</div></div>`}
-function closeModal(){$('#modal').innerHTML=''}
+function closeModal(){if(typeof mjParar==='function')mjParar();$('#modal').innerHTML=''}
 function ask(msg,yes){V.yes=yes;modal(`<p style="font-size:1.3rem">${msg}</p><div class="row"><button class="big" data-a="mno">Cancelar</button><button class="gold big" data-a="myes">Sí</button></div>`)}
 function toast(msg){const d=document.createElement('div');d.innerHTML=msg;$('#toast').appendChild(d);setTimeout(()=>d.remove(),3800)}
 
@@ -742,7 +742,7 @@ function nivelAlcanzado(d){if(d.nvFin!=null)return d.nvFin;const pas=new Set();(
 function galJugado(d){const g=new Set();(d.seg||[]).forEach(s=>{if(tramoOk(d,s,paseDe(d.m)))g.add(s.k)});let x=0;g.forEach(k=>x+=((d.m.gal||[])[k]||0)*((d.mx&&d.mx[k])||1));return x}
 const galHasta=(m,c)=>(m.gal||[]).slice(0,c).reduce((a,b)=>a+b,0);
 /* al terminar un tramo: ¿sube, repite con la reserva o se acaba? (devuelve true si ya ha pintado algo) */
-function finDeNivel(d){const m=d.m;if(!m.niv||d.end||!d.seg)return false;const s=segDe(d,d.i-1);if(!s||d.i!==s.ini+s.n)return false;
+function finDeNivel(d){const m=d.m;if(!m.niv||d.end||!d.seg)return false;const s=segDe(d,d.i-1);if(!s||d.i!==s.ini+s.n)return false;clearInterval(RELOJ);   /* el reloj del nivel se para al acabarlo (si no, cortaría el minijuego) */
   const ok=sum(d.res.slice(s.ini,s.ini+s.n));
   if(ok/s.n<subirDe(m)-1e-9){
     const r=bloquesNivel(m).res[s.k];
@@ -758,24 +758,60 @@ function finDeNivel(d){const m=d.m;if(!m.niv||d.end||!d.seg)return false;const s
   if(conG&&d.mx[s.k]==null){d.mjK=s.k;d.mjG=g;SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(s.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${s.n}. <b>+${g} ${g>1?'galeones':'galeón'}</b> 💰</p><p style="font-size:1.25rem">🎲 <b>¡Minijuego!</b> Puedes multiplicar ${g>1?'tus galeones':'tu galeón'} de este nivel.</p><button class="gold big" data-a="mjempezar">🎲 ¡A jugar!</button>`,'fb-ok');return true}
   if(ultimo)return false;
   SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(s.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${s.n}.${conG?` <b>+${g*(d.mx[s.k]||1)} ${g*(d.mx[s.k]||1)>1?'galeones':'galeón'}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:g?` Esta vez sin galeones: para ganarlos hacía falta ${falta} de ${s.n}.`:''}</p>${sig?`<p style="font-size:1.2rem">Ahora viene el <b>${nivNom(sig.k)}</b>: ${sig.n} preguntas${m.tniv?' en '+Math.round(m.tniv[sig.k]/60)+' minutos':''}.</p>`:''}<button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
-/* 🎲 MINIJUEGOS ENTRE NIVELES (1/11/2026, Javi: «minijuegos entre niveles que permitan multiplicar los galeones»).
-   Solo si en ese nivel se han ganado galeones (90 %). Uno al azar: 🎁 tres cofres (×1, ×2 y ×1 o ×3), ⚡ atrapa la snitch (×2 si la
-   toca en 6 s) o 🎡 la ruleta (×1 ×1 ×2 ×1 ×3 ×1 ×2 ×1). El resultado se guarda en d.mx = {nivel: ×} y va en la fila (mx);
-   galDe/galJugado multiplican los galeones de ese nivel. Se juega una sola vez por nivel. */
-function mjFin(mult){const d=V.dev,k=d.mjK,g=d.mjG;d.mx=d.mx||{};d.mx[k]=mult;
+/* 🎲 MINIJUEGOS ENTRE NIVELES (1/11/2026, Javi: «minijuegos entre niveles que permitan multiplicar los galeones»; ese mismo día:
+   «que no dependan de una ruleta sino de la HABILIDAD»). Solo si en ese nivel se han ganado galeones (90 %). Uno al azar de 4,
+   y el multiplicador sale de cómo lo hacen (×1, ×2 o ×3):
+   ⚡ atrapa la snitch (12 s: 3 toques ×2, 5 ×3) · 🎯 lanza el hechizo (parar la barra en la zona verde, 3 intentos: 2 ×2, 3 ×3)
+   🔮 memoria de runas (secuencias de 3, 4 y 5: 2 bien ×2, 3 ×3) · 🐸 ranas de chocolate (12 s: 6 ×2, 9 ×3).
+   Se guarda en d.mx = {nivel: ×} y va en la fila (mx); galDe/galJugado multiplican los galeones de ese nivel. Una vez por nivel. */
+function mjFin(mult){mjParar();const d=V.dev,k=d.mjK,g=d.mjG;d.mx=d.mx||{};d.mx[k]=mult;
   if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mx:d.mx}))}catch(e){}
   mult>1?SFX.fanfare():SFX.ko();
   const ultimo=k===d.m.niv.length-1;
-  modal(`<h2>${mult>1?'🤩 ¡×'+mult+'!':'😅 ×1'}</h2><p style="font-size:1.4rem">💰 ${g} × ${mult} = <b>${g*mult} ${g*mult>1?'galeones':'galeón'}</b> en este nivel${mult>1?'':' (¡otra vez será!)'}.</p><p>Te ${g*mult>1?'los':'lo'} dará el profe.</p><button class="gold big" data-a="${ultimo?'mjterminar':'devsigue'}">${ultimo?'🏁 Ver mi resultado':'¡Siguiente nivel! ▶'}</button>`,mult>1?'fb-ok':'')}
-function mjCofres(){const v=shuffle([1,2,Math.random()<0.3?3:1]);V.mjV=v;
-  modal(`<h2>🎁 Los tres cofres</h2><p style="font-size:1.25rem">Elige un cofre. Dentro hay un multiplicador…</p><div class="row" style="gap:1rem">${v.map((x,i)=>`<button class="big" style="font-size:3rem;padding:.6rem 1.2rem" data-a="mjcofre" data-i="${i}">🎁</button>`).join('')}</div>`)}
-function mjSnitch(){modal(`<h2>⚡ ¡Atrapa la snitch!</h2><p style="font-size:1.2rem">Tócala antes de que escape (6 segundos) y tus galeones valdrán el doble.</p><div id="mjZona" style="position:relative;height:260px;border-radius:14px;background:radial-gradient(ellipse,#2c5f2d,#173a18);overflow:hidden"><button id="mjSn" data-a="mjsnitch" style="position:absolute;left:45%;top:40%;font-size:2.4rem;padding:0;border:0;background:none;cursor:pointer;transition:left .55s,top .55s">✨🟡✨</button></div><p id="mjT" style="font-size:1.3rem;text-align:center">⏳ 6</p>`);
-  let t=6;const z=$('#mjZona'),sn=$('#mjSn'),mueve=()=>{if(!sn.isConnected)return;sn.style.left=Math.random()*75+'%';sn.style.top=Math.random()*70+'%'};
-  V.mjInt=setInterval(mueve,600);V.mjTick=setInterval(()=>{t--;const e=$('#mjT');if(e)e.textContent='⏳ '+t;if(t<=0){clearInterval(V.mjInt);clearInterval(V.mjTick);if(sn.isConnected)mjFin(1)}},1000)}
-function mjRuleta(){const seg=[1,1,2,1,3,1,2,1],i=Math.floor(Math.random()*seg.length),cols=['#6a5acd','#3fbf5f','#e0a83a','#6a5acd','#e0484f','#3fbf5f','#e0a83a','#3fbf5f'];
-  const grad=seg.map((x,j)=>`${cols[j]} ${j*45}deg ${(j+1)*45}deg`).join(',');
-  modal(`<h2>🎡 La ruleta mágica</h2><div style="position:relative;width:240px;height:240px;margin:0 auto"><div id="mjRu" style="width:240px;height:240px;border-radius:50%;background:conic-gradient(${grad});border:5px solid var(--gold);transition:transform 3.2s cubic-bezier(.17,.67,.2,1)">${seg.map((x,j)=>`<b style="position:absolute;left:50%;top:50%;transform:rotate(${j*45+22.5}deg) translateY(-92px) translateX(-50%);transform-origin:0 0;font-size:1.3rem;color:#fff">×${x}</b>`).join('')}</div><div style="position:absolute;left:50%;top:-14px;transform:translateX(-50%);font-size:2rem">🔻</div></div><div class="row"><button class="gold big" id="mjGira" data-a="mjgira">🎡 ¡Girar!</button></div>`);
-  V.mjRu={x:seg[i],ang:360*5+(360-(i*45+22.5))}}
+  modal(`<h2>${mult>1?'🤩 ¡×'+mult+'!':'😅 ×1'}</h2><p style="font-size:1.4rem">${V.mjTxt||''}</p><p style="font-size:1.4rem">💰 ${g} × ${mult} = <b>${g*mult} ${g*mult>1?'galeones':'galeón'}</b> en este nivel${mult>1?'':' (¡la próxima vez lo harás mejor!)'}.</p><p>Te ${g*mult>1?'los':'lo'} dará el profe.</p><button class="gold big" data-a="${ultimo?'mjterminar':'devsigue'}">${ultimo?'🏁 Ver mi resultado':'¡Siguiente nivel! ▶'}</button>`,mult>1?'fb-ok':'')}
+let MJT=[];
+function mjParar(){MJT.forEach(t=>{clearInterval(t);clearTimeout(t)});MJT=[]}
+const mjEl=id=>document.getElementById(id);
+/* pantalla de instrucciones y, al pulsar «¡Empezar!», el juego */
+function mjIntro(tit,txt,empezar){mjParar();V.mjTxt='';modal(`<h2>${tit}</h2><p style="font-size:1.25rem">${txt}</p><button class="gold big" id="mjGo">▶ ¡Empezar!</button>`);mjEl('mjGo').onclick=empezar}
+const ZONA='position:relative;height:280px;border-radius:14px;overflow:hidden;user-select:none;touch-action:manipulation';
+/* ⚡ snitch: salta cada vez más deprisa; cada toque cuenta */
+function mjSnitch(){mjIntro('⚡ ¡Atrapa la snitch!','Tócala <b>todas las veces que puedas</b> en 12 segundos. <b>3 toques = ×2 · 5 toques = ×3</b>.',()=>{
+  modal(`<h2>⚡ ¡Atrapa la snitch!</h2><div id="mjZ" style="${ZONA};background:radial-gradient(ellipse,#2c5f2d,#173a18)"><button id="mjSn" style="position:absolute;left:45%;top:40%;font-size:2.2rem;padding:0;border:0;background:none;cursor:pointer">✨🟡✨</button></div><p style="font-size:1.3rem;text-align:center"><span id="mjT">⏳ 12</span> · <b id="mjP">0</b> toques</p>`);
+  let t=12,p=0,vel=900;const sn=mjEl('mjSn'),mueve=()=>{sn.style.left=Math.random()*78+'%';sn.style.top=Math.random()*72+'%'};
+  const salto=()=>{mueve();vel=Math.max(450,vel-40);MJT.push(setTimeout(salto,vel))};MJT.push(setTimeout(salto,vel));
+  sn.onclick=()=>{p++;mjEl('mjP').textContent=p;SFX.ok();mueve()};
+  MJT.push(setInterval(()=>{t--;mjEl('mjT').textContent='⏳ '+t;if(t<=0){V.mjTxt='Has atrapado la snitch <b>'+p+'</b> '+(p===1?'vez':'veces')+'.';mjFin(p>=5?3:p>=3?2:1)}},1000))})}
+/* 🎯 hechizo: la barra va y viene; hay que pararla en la zona verde (cada intento, más rápida) */
+function mjHechizo(){mjIntro('🎯 Lanza el hechizo','Una luz va y viene por la barra. Pulsa <b>¡Lanzar!</b> cuando esté en la <b style="color:#3fbf5f">zona verde</b>. Tienes 3 intentos. <b>2 aciertos = ×2 · 3 = ×3</b>.',()=>{
+  let intento=0,ok=0,pos=0,dir=1,vel=1.6,zona=0;
+  modal(`<h2>🎯 Lanza el hechizo</h2><div style="position:relative;height:46px;border-radius:23px;background:#2b2147;border:3px solid var(--gold);margin:1rem 0"><div id="mjVerde" style="position:absolute;top:0;bottom:0;background:#3fbf5f;border-radius:20px"></div><div id="mjLuz" style="position:absolute;top:-6px;width:14px;height:52px;border-radius:7px;background:#fff6c2;box-shadow:0 0 14px #ffe27a"></div></div><p style="font-size:1.3rem;text-align:center">Intento <b id="mjI">1</b> de 3 · aciertos: <b id="mjA">0</b></p><div class="row"><button class="gold big" id="mjLanza">✨ ¡Lanzar!</button></div>`);
+  const nueva=()=>{zona=10+Math.random()*68;const v=mjEl('mjVerde');v.style.left=zona+'%';v.style.width='14%'};nueva();
+  MJT.push(setInterval(()=>{pos+=dir*vel;if(pos>=97||pos<=0)dir*=-1;pos=Math.max(0,Math.min(97,pos));const l=mjEl('mjLuz');if(l)l.style.left=pos+'%'},16));
+  mjEl('mjLanza').onclick=()=>{const bien=pos+1>=zona&&pos+1<=zona+14;if(bien){ok++;SFX.ok()}else SFX.ko();intento++;vel+=0.5;
+    mjEl('mjA').textContent=ok;if(intento>=3){V.mjTxt='Has acertado <b>'+ok+' de 3</b> hechizos.';MJT.push(setTimeout(()=>mjFin(ok>=3?3:ok>=2?2:1),500));mjEl('mjLanza').disabled=true;return}
+    mjEl('mjI').textContent=intento+1;nueva()}})}
+/* 🔮 memoria: se iluminan runas; hay que repetirlas en el mismo orden (3, 4 y 5) */
+function mjMemoria(){mjIntro('🔮 Memoria de runas','Mira qué runas se iluminan y <b>tócalas en el mismo orden</b>. Serán 3, luego 4 y luego 5. <b>2 bien = ×2 · las 3 = ×3</b>.',()=>{
+  const R=[['🔥','#e0484f'],['💧','#3b82f6'],['🌿','#3fbf5f'],['⚡','#e0a83a']];let ronda=0,bien=0,sec=[],paso=0,mirando=true;
+  modal(`<h2>🔮 Memoria de runas</h2><p id="mjMsg" style="font-size:1.3rem;text-align:center">Mira…</p><div style="display:grid;grid-template-columns:repeat(2,110px);gap:12px;justify-content:center">${R.map((x,i)=>`<button id="mjR${i}" style="height:110px;font-size:3rem;border-radius:18px;border:4px solid ${x[1]};background:#2b2147;cursor:pointer;transition:background .15s">${x[0]}</button>`).join('')}</div><p style="text-align:center">Ronda <b id="mjRo">1</b> de 3 · bien: <b id="mjB">0</b></p>`);
+  const luz=(i,on)=>{const b=mjEl('mjR'+i);if(b)b.style.background=on?R[i][1]:'#2b2147'};
+  const mostrar=()=>{mirando=true;paso=0;sec=Array.from({length:3+ronda},()=>Math.floor(Math.random()*4));mjEl('mjMsg').textContent='Mira…';mjEl('mjRo').textContent=ronda+1;
+    sec.forEach((x,j)=>{MJT.push(setTimeout(()=>{luz(x,true);SFX.click()},700+j*750));MJT.push(setTimeout(()=>luz(x,false),700+j*750+450))});
+    MJT.push(setTimeout(()=>{mirando=false;mjEl('mjMsg').textContent='¡Ahora tú!'},700+sec.length*750))};
+  const finRonda=acierto=>{if(acierto){bien++;SFX.ok()}else SFX.ko();mjEl('mjB').textContent=bien;ronda++;mirando=true;
+    if(ronda>=3){V.mjTxt='Has acertado <b>'+bien+' de 3</b> secuencias.';MJT.push(setTimeout(()=>mjFin(bien>=3?3:bien>=2?2:1),600));return}
+    mjEl('mjMsg').textContent=acierto?'¡Bien! Ahora una más larga…':'¡Uy! Prueba la siguiente…';MJT.push(setTimeout(mostrar,1100))};
+  R.forEach((x,i)=>{mjEl('mjR'+i).onclick=()=>{if(mirando)return;luz(i,true);MJT.push(setTimeout(()=>luz(i,false),200));if(sec[paso]!==i)return finRonda(false);paso++;if(paso>=sec.length)finRonda(true)}});
+  mostrar()})}
+/* 🐸 ranas de chocolate: salen en un agujero y se esconden; cada vez más rápidas */
+function mjRanas(){mjIntro('🐸 Caza ranas de chocolate','Van a salir ranas de chocolate. <b>Tócalas antes de que se escondan</b> durante 12 segundos. <b>6 = ×2 · 9 = ×3</b>.',()=>{
+  modal(`<h2>🐸 Caza ranas de chocolate</h2><div style="display:grid;grid-template-columns:repeat(3,90px);gap:10px;justify-content:center">${[0,1,2,3,4,5,6,7,8].map(i=>`<button id="mjH${i}" style="height:90px;font-size:2.6rem;border-radius:50%;border:3px solid #5b3a1e;background:#3b2412;cursor:pointer"></button>`).join('')}</div><p style="font-size:1.3rem;text-align:center"><span id="mjT">⏳ 12</span> · <b id="mjP">0</b> ranas</p>`);
+  let t=12,p=0,act=-1,vel=1000;
+  const sale=()=>{if(act>=0)mjEl('mjH'+act).textContent='';let n;do{n=Math.floor(Math.random()*9)}while(n===act);act=n;mjEl('mjH'+n).textContent='🐸';vel=Math.max(520,vel-35);MJT.push(setTimeout(sale,vel))};
+  for(let i=0;i<9;i++)mjEl('mjH'+i).onclick=()=>{if(i!==act)return;p++;mjEl('mjP').textContent=p;SFX.ok();mjEl('mjH'+i).textContent='💥';act=-1};
+  MJT.push(setTimeout(sale,400));
+  MJT.push(setInterval(()=>{t--;mjEl('mjT').textContent='⏳ '+t;if(t<=0){V.mjTxt='Has cazado <b>'+p+'</b> '+(p===1?'rana':'ranas')+'.';mjFin(p>=9?3:p>=6?2:1)}},1000))})}
 function finTitulo(d){const m=d.m;const pre=d.sinTiempo?'⏳ ¡Se acabó el tiempo! ':'';if(!m.niv)return pre||'¡Misión cumplida!';const c=nivelAlcanzado(d),g=d.seg?galJugado(d):galDe(m,d.res);
   return pre+(c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+nivNom(c):'💪 Sigue practicando el '+nivNom(0))+(g?' · 💰 '+g+' '+(g>1?'galeones':'galeón'):'')}
 function insignias(m){return (m.niv?' · 🧗 '+m.niv.length+' niveles':'')+(m.nivr?' · 🔁 con reintento':'')+(m.tniv?' · ⏳ por nivel':m.tiempo==='q'?' · ⏱️ reloj':m.tiempo?' · ⏳ '+Math.round(m.tiempo/60)+' min':'')}
@@ -1239,10 +1275,7 @@ const ACT={
   /* 👀 PROBAR (30/10/2026, Javi: «quiero ver cómo funciona la misión que he mandado»): el profe la juega como un alumno; no se guarda nada */
   devprobar(d){V.screen='dev';V.dev={open:true,who:{id:'Profe',label:'👀 Profe (prueba, no se guarda)'}};ACT.devplay({id:d.id});V.dev.repaso=true;V.dev.res=[];V.dev.i=0;try{Object.keys(localStorage).filter(k=>/^copa-(nivt|inicio)\|/.test(k)&&k.indexOf('|Profe')>0).forEach(k=>localStorage.removeItem(k))}catch(e){}V.dev.t0=Date.now();render()},
   rincon(){abrirMarco(JAVI.BASE+'sda/tema2-lengua-4a/rincon.html')},
-  mjempezar(){[mjCofres,mjSnitch,mjRuleta][Math.floor(Math.random()*3)]()},
-  mjcofre(d){const v=V.mjV,i=+d.i;if(!v)return;V.mjV=null;document.querySelectorAll('[data-a=mjcofre]').forEach((b,j)=>{b.textContent='×'+v[j];b.style.fontSize='2rem';if(j===i)b.style.outline='4px solid var(--gold)'});setTimeout(()=>mjFin(v[i]),1300)},
-  mjsnitch(){clearInterval(V.mjInt);clearInterval(V.mjTick);mjFin(2)},
-  mjgira(){const ru=V.mjRu,e=$('#mjRu');if(!ru||!e)return;V.mjRu=null;$('#mjGira').disabled=true;e.style.transform='rotate('+ru.ang+'deg)';setTimeout(()=>mjFin(ru.x),3400)},
+  mjempezar(){[mjSnitch,mjHechizo,mjMemoria,mjRanas][Math.floor(Math.random()*4)]()},
   mjterminar(){closeModal();ACT.devnext()},
   devsigue(){closeModal();render()},
   entrenar(){const t=$('#en_t').value,qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
