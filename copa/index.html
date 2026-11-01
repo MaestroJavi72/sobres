@@ -680,7 +680,7 @@ function misiones(){const m=new Map();rowsC('mision').forEach(f=>{if(plain(f.tip
   let o=m.get(f.cartaId);if(!o||!j.of){o={id:f.cartaId,titulo:f.tipo,dia:f.dia,of:j.of||1,partes:{}};m.set(f.cartaId,o)}
   o.partes[j.p||1]=j.qs;if((j.p||1)===1){if(j.niv)o.niv=j.niv;if(j.tiempo)o.tiempo=j.tiempo;if(j.tniv)o.tniv=j.tniv;if(j.nivr)o.nivr=j.nivr;if(j.gal)o.gal=j.gal;if(j.pase)o.pase=j.pase}});
   const out=[];m.forEach(o=>{const ks=Object.keys(o.partes);if(ks.length<o.of)return;o.qs=[];for(let i=1;i<=o.of;i++)o.qs=o.qs.concat(o.partes[i]||[]);out.push(o)});return out.reverse()}
-function respuestas(id){const m=new Map();rowsC('respuesta').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r){let r=j.r;if(Array.isArray(j.o)&&j.o.length){r=new Array(Math.max(j.o.length,Math.max.apply(null,j.o.filter(x=>x!=null))+1)).fill(null);j.r.forEach((v,k)=>{if(j.o[k]!=null)r[j.o[k]]=v})}if(j.nv!=null)r.nv=j.nv;if(j.mx)r.mx=j.mx;m.set(f.tipo,r)}});return m}
+function respuestas(id){const m=new Map();rowsC('respuesta').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r){let r=j.r;if(Array.isArray(j.o)&&j.o.length){r=new Array(Math.max(j.o.length,Math.max.apply(null,j.o.filter(x=>x!=null))+1)).fill(null);j.r.forEach((v,k)=>{if(j.o[k]!=null)r[j.o[k]]=v})}if(j.nv!=null)r.nv=j.nv;if(j.mb)r.mb=j.mb;m.set(f.tipo,r)}});return m}
 const cnt=a=>(a||[]).filter(x=>x!=null).length;
 const sum=a=>a.reduce((x,y)=>x+y,0);
 function devEnter(){V.screen='dev';V.dev=V.dev||{};document.body.classList.remove('en-home');
@@ -724,7 +724,9 @@ const SUBIR=0.6,subirDe=m=>m.gal?SUBIR:paseDe(m);
 const rango=(a,n)=>Array.from({length:n},(_,j)=>a+j);
 function bloquesNivel(m){const pri=[],res=[];let i=0;(m.niv||[]).forEach(n=>{pri.push(rango(i,n));i+=n});(m.nivr||[]).forEach(n=>{res.push(rango(i,n));i+=n});return{pri,res}}
 /* galeones con las respuestas en el orden de la misión (profe): un nivel cuenta si su tanda principal o la de reserva llega al 90 % */
-function galDe(m,r){const b=bloquesNivel(m);let g=0;(m.niv||[]).forEach((n,k)=>{if([b.pri[k],b.res[k]].some(ix=>ix&&ix.length&&ix.every(i=>r[i]!=null)&&sum(ix.map(i=>r[i]))/ix.length>=paseDe(m)-1e-9))g+=((m.gal||[])[k]||0)*((r.mx&&r.mx[k])||1)});return g}
+function galDe(m,r){const b=bloquesNivel(m);let g=0;(m.niv||[]).forEach((n,k)=>{if([b.pri[k],b.res[k]].some(ix=>ix&&ix.length&&ix.every(i=>r[i]!=null)&&sum(ix.map(i=>r[i]))/ix.length>=paseDe(m)-1e-9))g+=((m.gal||[])[k]||0)+((r.mb&&r.mb[k])||0)});return g}
+/* 1/11/2026 (Javi: «se me han repetido preguntas»): al crear una misión, se usan primero las que no estaban en otras misiones */
+function preguntasNuevas(qs,hacen){const vistas=new Set();misiones().forEach(m=>m.qs.forEach(q=>vistas.add(claveQ(q))));const nuevas=qs.filter(q=>!vistas.has(claveQ(q)));return nuevas.length>=hacen?nuevas:qs}
 function porNiveles(qs){const A=shuffle(qs).sort((a,b)=>(a.difficulty||1)-(b.difficulty||1)),L=A.length,T=NIV5.tam,out=[],niv=[],lv=[];
   /* con banco de sobra: niveles 1-2 de las más fáciles, 4-5 de las más difíciles y el 3 del medio; si no, seguidas */
   const tramos=L>=T.reduce((x,y)=>x+y,0)+10?[[0,3],[3,8],[Math.floor(L/2)-4,Math.floor(L/2)+4],[L-25,L-15],[L-15,L]]:(()=>{let i=0;return T.map(n=>[i,i+=n])})();
@@ -739,7 +741,7 @@ function tramosIniciales(m,who){if(!m.niv)return null;const rnd=semilla(m.id+'|'
 function segDe(d,i){return (d.seg||[]).find(s=>i>=s.ini&&i<s.ini+s.n)||null}
 const tramoOk=(d,s,p)=>{const t=d.res.slice(s.ini,s.ini+s.n);return t.length===s.n&&sum(t)/s.n>=p-1e-9};
 function nivelAlcanzado(d){if(d.nvFin!=null)return d.nvFin;const pas=new Set();(d.seg||[]).forEach(s=>{if(tramoOk(d,s,subirDe(d.m)))pas.add(s.k)});let c=0;while(pas.has(c))c++;return c}
-function galJugado(d){const g=new Set();(d.seg||[]).forEach(s=>{if(tramoOk(d,s,paseDe(d.m)))g.add(s.k)});let x=0;g.forEach(k=>x+=((d.m.gal||[])[k]||0)*((d.mx&&d.mx[k])||1));return x}
+function galJugado(d){const g=new Set();(d.seg||[]).forEach(s=>{if(tramoOk(d,s,paseDe(d.m)))g.add(s.k)});let x=0;g.forEach(k=>x+=((d.m.gal||[])[k]||0)+((d.mb&&d.mb[k])||0));return x}
 const galHasta=(m,c)=>(m.gal||[]).slice(0,c).reduce((a,b)=>a+b,0);
 /* al terminar un tramo: ¿sube, repite con la reserva o se acaba? (devuelve true si ya ha pintado algo) */
 function finDeNivel(d){const m=d.m;if(!m.niv||d.end||!d.seg)return false;const s=segDe(d,d.i-1);if(!s||d.i!==s.ini+s.n)return false;clearInterval(RELOJ);   /* el reloj del nivel se para al acabarlo (si no, cortaría el minijuego) */
@@ -753,22 +755,23 @@ function finDeNivel(d){const m=d.m;if(!m.niv||d.end||!d.seg)return false;const s
       SFX.ko();modal(`<h2>😕 ${nivNom(s.k)}: ${ok} de ${s.n}</h2><p style="font-size:1.3rem">Para subir necesitabas ${Math.ceil(subirDe(m)*s.n-1e-9)}. <b>¡Tienes otra oportunidad!</b> ${r.length} preguntas nuevas${m.tniv?' en '+Math.round(m.tniv[s.k]/60)+' minutos':''}.</p><button class="gold big" data-a="devsigue">🔁 ¡Otra vez! ▶</button>`,'fb-ko');return true}
     d.nvFin=s.k;d.end=true;return false}
   const g=m.gal&&m.gal[s.k],conG=g&&ok/s.n>=paseDe(m)-1e-9,falta=Math.ceil(paseDe(m)*s.n-1e-9),sig=d.seg[d.seg.indexOf(s)+1],ultimo=s.k===m.niv.length-1;
-  d.mx=d.mx||{};
+  d.mb=d.mb||{};
   /* 🎲 con galeones ganados en este nivel: minijuego que puede multiplicarlos (también en el último nivel) */
-  if(conG&&d.mx[s.k]==null){d.mjK=s.k;d.mjG=g;SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(s.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${s.n}. <b>+${g} ${g>1?'galeones':'galeón'}</b> 💰</p><p style="font-size:1.25rem">🎲 <b>¡Minijuego!</b> Puedes multiplicar ${g>1?'tus galeones':'tu galeón'} de este nivel.</p><button class="gold big" data-a="mjempezar">🎲 ¡A jugar!</button>`,'fb-ok');return true}
+  if(conG&&d.mb[s.k]==null){d.mjK=s.k;d.mjG=g;SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(s.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${s.n}. <b>+${g} ${g>1?'galeones':'galeón'}</b> 💰</p><p style="font-size:1.25rem">🎲 <b>¡Minijuego!</b> Si lo haces bien, ganas <b>+1 galeón extra</b>.</p><button class="gold big" data-a="mjempezar">🎲 ¡A jugar!</button>`,'fb-ok');return true}
   if(ultimo)return false;
-  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(s.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${s.n}.${conG?` <b>+${g*(d.mx[s.k]||1)} ${g*(d.mx[s.k]||1)>1?'galeones':'galeón'}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:g?` Esta vez sin galeones: para ganarlos hacía falta ${falta} de ${s.n}.`:''}</p>${sig?`<p style="font-size:1.2rem">Ahora viene el <b>${nivNom(sig.k)}</b>: ${sig.n} preguntas${m.tniv?' en '+Math.round(m.tniv[sig.k]/60)+' minutos':''}.</p>`:''}<button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
+  SFX.fanfare();modal(`<h2>🎉 ¡${nivNom(s.k)} superado!</h2><p style="font-size:1.3rem">${ok} de ${s.n}.${conG?` <b>+${g+(d.mb[s.k]||0)} ${g+(d.mb[s.k]||0)>1?'galeones':'galeón'}</b> 💰 (te lo${g>1?'s':''} dará el profe).`:g?` Esta vez sin galeones: para ganarlos hacía falta ${falta} de ${s.n}.`:''}</p>${sig?`<p style="font-size:1.2rem">Ahora viene el <b>${nivNom(sig.k)}</b>: ${sig.n} preguntas${m.tniv?' en '+Math.round(m.tniv[sig.k]/60)+' minutos':''}.</p>`:''}<button class="gold big" data-a="devsigue">¡Vamos! ▶</button>`,'fb-ok');return true}
 /* 🎲 MINIJUEGOS ENTRE NIVELES (1/11/2026, Javi: «minijuegos entre niveles que permitan multiplicar los galeones»; ese mismo día:
-   «que no dependan de una ruleta sino de la HABILIDAD»). Solo si en ese nivel se han ganado galeones (90 %). Uno al azar de 4,
-   y el multiplicador sale de cómo lo hacen (×1, ×2 o ×3):
-   ⚡ atrapa la snitch (12 s: 3 toques ×2, 5 ×3) · 🎯 lanza el hechizo (parar la barra en la zona verde, 3 intentos: 2 ×2, 3 ×3)
-   🔮 memoria de runas (secuencias de 3, 4 y 5: 2 bien ×2, 3 ×3) · 🐸 ranas de chocolate (12 s: 6 ×2, 9 ×3).
-   Se guarda en d.mx = {nivel: ×} y va en la fila (mx); galDe/galJugado multiplican los galeones de ese nivel. Una vez por nivel. */
-function mjFin(mult){mjParar();const d=V.dev,k=d.mjK,g=d.mjG;d.mx=d.mx||{};d.mx[k]=mult;
-  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mx:d.mx}))}catch(e){}
-  mult>1?SFX.fanfare():SFX.ko();
-  const ultimo=k===d.m.niv.length-1;
-  modal(`<h2>${mult>1?'🤩 ¡×'+mult+'!':'😅 ×1'}</h2><p style="font-size:1.4rem">${V.mjTxt||''}</p><p style="font-size:1.4rem">💰 ${g} × ${mult} = <b>${g*mult} ${g*mult>1?'galeones':'galeón'}</b> en este nivel${mult>1?'':' (¡la próxima vez lo harás mejor!)'}.</p><p>Te ${g*mult>1?'los':'lo'} dará el profe.</p><button class="gold big" data-a="${ultimo?'mjterminar':'devsigue'}">${ultimo?'🏁 Ver mi resultado':'¡Siguiente nivel! ▶'}</button>`,mult>1?'fb-ok':'')}
+   «que no dependan de una ruleta sino de la HABILIDAD»; y luego: «no pueden dar tantos galeones»). Solo si en ese nivel se han ganado
+   galeones (90 %). Uno al azar de 4; si lo hacen bien, +1 GALEÓN EXTRA (como mucho +5 en una misión), si no, nada:
+   ⚡ atrapa la snitch (12 s, 3 toques) · 🎯 lanza el hechizo (parar la barra en la zona verde, 2 de 3 intentos)
+   🔮 memoria de runas (secuencias de 3, 4 y 5: 2 bien) · 🐸 ranas de chocolate (12 s, 6 ranas).
+   Se guarda en d.mb = {nivel: 1|0} y va en la fila (mb); galDe/galJugado lo suman. Una vez por nivel. «🎮 Probar los minijuegos» en
+   Dispositivos los juega el profe sin preguntas (d.probando). */
+function mjFin(gana){mjParar();const d=V.dev,k=d.mjK,g=d.mjG,b=gana?1:0;d.mb=d.mb||{};d.mb[k]=b;
+  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mb:d.mb}))}catch(e){}
+  gana?SFX.fanfare():SFX.ko();
+  const ultimo=d.probando||k===d.m.niv.length-1;
+  modal(`<h2>${gana?'🤩 ¡Conseguido! +1 galeón extra':'😅 ¡Casi!'}</h2><p style="font-size:1.4rem">${V.mjTxt||''}</p><p style="font-size:1.4rem">💰 Este nivel: ${g}${b?' + 1':''} = <b>${g+b} ${g+b>1?'galeones':'galeón'}</b>${b?'':' (¡la próxima vez!)'}.</p><p>Te ${g+b>1?'los':'lo'} dará el profe.</p><button class="gold big" data-a="${d.probando?'mno':ultimo?'mjterminar':'devsigue'}">${d.probando?'Cerrar':ultimo?'🏁 Ver mi resultado':'¡Siguiente nivel! ▶'}</button>`,gana?'fb-ok':'')}
 let MJT=[];
 function mjParar(){MJT.forEach(t=>{clearInterval(t);clearTimeout(t)});MJT=[]}
 const mjEl=id=>document.getElementById(id);
@@ -776,23 +779,23 @@ const mjEl=id=>document.getElementById(id);
 function mjIntro(tit,txt,empezar){mjParar();V.mjTxt='';modal(`<h2>${tit}</h2><p style="font-size:1.25rem">${txt}</p><button class="gold big" id="mjGo">▶ ¡Empezar!</button>`);mjEl('mjGo').onclick=empezar}
 const ZONA='position:relative;height:280px;border-radius:14px;overflow:hidden;user-select:none;touch-action:manipulation';
 /* ⚡ snitch: salta cada vez más deprisa; cada toque cuenta */
-function mjSnitch(){mjIntro('⚡ ¡Atrapa la snitch!','Tócala <b>todas las veces que puedas</b> en 12 segundos. <b>3 toques = ×2 · 5 toques = ×3</b>.',()=>{
+function mjSnitch(){mjIntro('⚡ ¡Atrapa la snitch!','Tócala <b>todas las veces que puedas</b> en 12 segundos. <b>Con 3 toques ganas +1 galeón extra</b>.',()=>{
   modal(`<h2>⚡ ¡Atrapa la snitch!</h2><div id="mjZ" style="${ZONA};background:radial-gradient(ellipse,#2c5f2d,#173a18)"><button id="mjSn" style="position:absolute;left:45%;top:40%;font-size:2.2rem;padding:0;border:0;background:none;cursor:pointer">✨🟡✨</button></div><p style="font-size:1.3rem;text-align:center"><span id="mjT">⏳ 12</span> · <b id="mjP">0</b> toques</p>`);
   let t=12,p=0,vel=900;const sn=mjEl('mjSn'),mueve=()=>{sn.style.left=Math.random()*78+'%';sn.style.top=Math.random()*72+'%'};
   const salto=()=>{mueve();vel=Math.max(450,vel-40);MJT.push(setTimeout(salto,vel))};MJT.push(setTimeout(salto,vel));
   sn.onclick=()=>{p++;mjEl('mjP').textContent=p;SFX.ok();mueve()};
-  MJT.push(setInterval(()=>{t--;mjEl('mjT').textContent='⏳ '+t;if(t<=0){V.mjTxt='Has atrapado la snitch <b>'+p+'</b> '+(p===1?'vez':'veces')+'.';mjFin(p>=5?3:p>=3?2:1)}},1000))})}
+  MJT.push(setInterval(()=>{t--;mjEl('mjT').textContent='⏳ '+t;if(t<=0){V.mjTxt='Has atrapado la snitch <b>'+p+'</b> '+(p===1?'vez':'veces')+'.';mjFin(p>=3)}},1000))})}
 /* 🎯 hechizo: la barra va y viene; hay que pararla en la zona verde (cada intento, más rápida) */
-function mjHechizo(){mjIntro('🎯 Lanza el hechizo','Una luz va y viene por la barra. Pulsa <b>¡Lanzar!</b> cuando esté en la <b style="color:#3fbf5f">zona verde</b>. Tienes 3 intentos. <b>2 aciertos = ×2 · 3 = ×3</b>.',()=>{
+function mjHechizo(){mjIntro('🎯 Lanza el hechizo','Una luz va y viene por la barra. Pulsa <b>¡Lanzar!</b> cuando esté en la <b style="color:#3fbf5f">zona verde</b>. Tienes 3 intentos. <b>Con 2 aciertos ganas +1 galeón extra</b>.',()=>{
   let intento=0,ok=0,pos=0,dir=1,vel=1.6,zona=0;
   modal(`<h2>🎯 Lanza el hechizo</h2><div style="position:relative;height:46px;border-radius:23px;background:#2b2147;border:3px solid var(--gold);margin:1rem 0"><div id="mjVerde" style="position:absolute;top:0;bottom:0;background:#3fbf5f;border-radius:20px"></div><div id="mjLuz" style="position:absolute;top:-6px;width:14px;height:52px;border-radius:7px;background:#fff6c2;box-shadow:0 0 14px #ffe27a"></div></div><p style="font-size:1.3rem;text-align:center">Intento <b id="mjI">1</b> de 3 · aciertos: <b id="mjA">0</b></p><div class="row"><button class="gold big" id="mjLanza">✨ ¡Lanzar!</button></div>`);
   const nueva=()=>{zona=10+Math.random()*68;const v=mjEl('mjVerde');v.style.left=zona+'%';v.style.width='14%'};nueva();
   MJT.push(setInterval(()=>{pos+=dir*vel;if(pos>=97||pos<=0)dir*=-1;pos=Math.max(0,Math.min(97,pos));const l=mjEl('mjLuz');if(l)l.style.left=pos+'%'},16));
   mjEl('mjLanza').onclick=()=>{const bien=pos+1>=zona&&pos+1<=zona+14;if(bien){ok++;SFX.ok()}else SFX.ko();intento++;vel+=0.5;
-    mjEl('mjA').textContent=ok;if(intento>=3){V.mjTxt='Has acertado <b>'+ok+' de 3</b> hechizos.';MJT.push(setTimeout(()=>mjFin(ok>=3?3:ok>=2?2:1),500));mjEl('mjLanza').disabled=true;return}
+    mjEl('mjA').textContent=ok;if(intento>=3){V.mjTxt='Has acertado <b>'+ok+' de 3</b> hechizos.';MJT.push(setTimeout(()=>mjFin(ok>=2),500));mjEl('mjLanza').disabled=true;return}
     mjEl('mjI').textContent=intento+1;nueva()}})}
 /* 🔮 memoria: se iluminan runas; hay que repetirlas en el mismo orden (3, 4 y 5) */
-function mjMemoria(){mjIntro('🔮 Memoria de runas','Mira qué runas se iluminan y <b>tócalas en el mismo orden</b>. Serán 3, luego 4 y luego 5. <b>2 bien = ×2 · las 3 = ×3</b>.',()=>{
+function mjMemoria(){mjIntro('🔮 Memoria de runas','Mira qué runas se iluminan y <b>tócalas en el mismo orden</b>. Serán 3, luego 4 y luego 5. <b>Con 2 bien ganas +1 galeón extra</b>.',()=>{
   const R=[['🔥','#e0484f'],['💧','#3b82f6'],['🌿','#3fbf5f'],['⚡','#e0a83a']];let ronda=0,bien=0,sec=[],paso=0,mirando=true;
   modal(`<h2>🔮 Memoria de runas</h2><p id="mjMsg" style="font-size:1.3rem;text-align:center">Mira…</p><div style="display:grid;grid-template-columns:repeat(2,110px);gap:12px;justify-content:center">${R.map((x,i)=>`<button id="mjR${i}" style="height:110px;font-size:3rem;border-radius:18px;border:4px solid ${x[1]};background:#2b2147;cursor:pointer;transition:background .15s">${x[0]}</button>`).join('')}</div><p style="text-align:center">Ronda <b id="mjRo">1</b> de 3 · bien: <b id="mjB">0</b></p>`);
   const luz=(i,on)=>{const b=mjEl('mjR'+i);if(b)b.style.background=on?R[i][1]:'#2b2147'};
@@ -800,18 +803,18 @@ function mjMemoria(){mjIntro('🔮 Memoria de runas','Mira qué runas se ilumina
     sec.forEach((x,j)=>{MJT.push(setTimeout(()=>{luz(x,true);SFX.click()},700+j*750));MJT.push(setTimeout(()=>luz(x,false),700+j*750+450))});
     MJT.push(setTimeout(()=>{mirando=false;mjEl('mjMsg').textContent='¡Ahora tú!'},700+sec.length*750))};
   const finRonda=acierto=>{if(acierto){bien++;SFX.ok()}else SFX.ko();mjEl('mjB').textContent=bien;ronda++;mirando=true;
-    if(ronda>=3){V.mjTxt='Has acertado <b>'+bien+' de 3</b> secuencias.';MJT.push(setTimeout(()=>mjFin(bien>=3?3:bien>=2?2:1),600));return}
+    if(ronda>=3){V.mjTxt='Has acertado <b>'+bien+' de 3</b> secuencias.';MJT.push(setTimeout(()=>mjFin(bien>=2),600));return}
     mjEl('mjMsg').textContent=acierto?'¡Bien! Ahora una más larga…':'¡Uy! Prueba la siguiente…';MJT.push(setTimeout(mostrar,1100))};
   R.forEach((x,i)=>{mjEl('mjR'+i).onclick=()=>{if(mirando)return;luz(i,true);MJT.push(setTimeout(()=>luz(i,false),200));if(sec[paso]!==i)return finRonda(false);paso++;if(paso>=sec.length)finRonda(true)}});
   mostrar()})}
 /* 🐸 ranas de chocolate: salen en un agujero y se esconden; cada vez más rápidas */
-function mjRanas(){mjIntro('🐸 Caza ranas de chocolate','Van a salir ranas de chocolate. <b>Tócalas antes de que se escondan</b> durante 12 segundos. <b>6 = ×2 · 9 = ×3</b>.',()=>{
+function mjRanas(){mjIntro('🐸 Caza ranas de chocolate','Van a salir ranas de chocolate. <b>Tócalas antes de que se escondan</b> durante 12 segundos. <b>Con 6 ranas ganas +1 galeón extra</b>.',()=>{
   modal(`<h2>🐸 Caza ranas de chocolate</h2><div style="display:grid;grid-template-columns:repeat(3,90px);gap:10px;justify-content:center">${[0,1,2,3,4,5,6,7,8].map(i=>`<button id="mjH${i}" style="height:90px;font-size:2.6rem;border-radius:50%;border:3px solid #5b3a1e;background:#3b2412;cursor:pointer"></button>`).join('')}</div><p style="font-size:1.3rem;text-align:center"><span id="mjT">⏳ 12</span> · <b id="mjP">0</b> ranas</p>`);
   let t=12,p=0,act=-1,vel=1000;
   const sale=()=>{if(act>=0)mjEl('mjH'+act).textContent='';let n;do{n=Math.floor(Math.random()*9)}while(n===act);act=n;mjEl('mjH'+n).textContent='🐸';vel=Math.max(520,vel-35);MJT.push(setTimeout(sale,vel))};
   for(let i=0;i<9;i++)mjEl('mjH'+i).onclick=()=>{if(i!==act)return;p++;mjEl('mjP').textContent=p;SFX.ok();mjEl('mjH'+i).textContent='💥';act=-1};
   MJT.push(setTimeout(sale,400));
-  MJT.push(setInterval(()=>{t--;mjEl('mjT').textContent='⏳ '+t;if(t<=0){V.mjTxt='Has cazado <b>'+p+'</b> '+(p===1?'rana':'ranas')+'.';mjFin(p>=9?3:p>=6?2:1)}},1000))})}
+  MJT.push(setInterval(()=>{t--;mjEl('mjT').textContent='⏳ '+t;if(t<=0){V.mjTxt='Has cazado <b>'+p+'</b> '+(p===1?'rana':'ranas')+'.';mjFin(p>=6)}},1000))})}
 function finTitulo(d){const m=d.m;const pre=d.sinTiempo?'⏳ ¡Se acabó el tiempo! ':'';if(!m.niv)return pre||'¡Misión cumplida!';const c=nivelAlcanzado(d),g=d.seg?galJugado(d):galDe(m,d.res);
   return pre+(c>=m.niv.length?'🏆 ¡Has superado los '+m.niv.length+' niveles!':c?'🧗 Has llegado al '+nivNom(c):'💪 Sigue practicando el '+nivNom(0))+(g?' · 💰 '+g+' '+(g>1?'galeones':'galeón'):'')}
 function insignias(m){return (m.niv?' · 🧗 '+m.niv.length+' niveles':'')+(m.nivr?' · 🔁 con reintento':'')+(m.tniv?' · ⏳ por nivel':m.tiempo==='q'?' · ⏱️ reloj':m.tiempo?' · ⏳ '+Math.round(m.tiempo/60)+' min':'')}
@@ -898,7 +901,7 @@ function retosProfeHTML(){const hoy=JAVI.util.clave(new Date()),inv={};Object.ke
   return (rs.length?`<p><b>⚔️ Retos:</b><br>${rs.map(r=>{const res=retoRes(r.id),a=res.get(r.deId),b=res.get(r.para);return esc(r.de||'?')+' '+(a?a.ok+'/'+a.n:'…')+' vs '+esc(r.paraN||'?')+' '+(b?b.ok+'/'+b.n:'…')+' · '+esc(nomTema(r.tema))}).join('<br>')}</p>`:'')+
     (pr.length?`<p><b>🎯 Entrenamientos:</b><br>${pr.map(esc).join('<br>')}</p>`:'')}
 function devAnswered(ok){stopTimer();const d=V.dev,q=qAct(d);d.res.push(ok?1:0);
-  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mx:d.mx}))}catch(e){}ok?SFX.ok():SFX.ko();
+  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mb:d.mb}))}catch(e){}ok?SFX.ok():SFX.ko();
   modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2><div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}
 function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo funcionan dentro de la web de Javificación.</p>';
   if(!LISTA)loadLista().then(()=>{if(V.screen==='book'&&V.tab==='dev')render()}).catch(()=>{});
@@ -922,6 +925,7 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
   <h3>🎓 Notas por criterio <button data-a="devcsv">⬇️ Exportar a Excel</button></h3>
   <p><label>Con las respuestas de <select data-c="dvm"><option value="">todas las misiones</option>${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===msel?'selected':''}>${esc(m.titulo)}</option>`).join('')}</select></label> · Solo cuentan los alumnos que entran con su nombre (no las casas). Nota del 1 al 10 según los aciertos en las preguntas de cada criterio.</p>
   ${(()=>{const t=notasTabla(msel?ms.filter(m=>m.id===msel):ms);return t.filas.length?`<div style="overflow:auto"><table class="stand"><tr>${t.cab.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${t.filas.map(f=>`<tr>${f.map((c,i)=>`<td>${i>1&&i%2===0?'<b>'+esc(c)+'</b>':esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`:'<p>Todavía no hay respuestas individuales.</p>'})()}
+  <h3>🎮 Probar los minijuegos</h3><div class="row"><button data-a="mjprobar" data-j="0">⚡ Snitch</button><button data-a="mjprobar" data-j="1">🎯 Hechizo</button><button data-a="mjprobar" data-j="2">🔮 Memoria</button><button data-a="mjprobar" data-j="3">🐸 Ranas</button></div>
   <h3>⚔️ Retos y 🎯 entrenamientos de hoy</h3>${retosProfeHTML()}
   <h3>📊 Resultados <button data-a="devref">🔄 Actualizar</button></h3>${ms.map(res).join('')||'<p>Aún no has enviado ninguna misión.</p>'}`}
 /* ============ CEREMONIA ============ */
@@ -1267,15 +1271,16 @@ const ACT={
   devout(){V.dev={open:true};render()},
   devback(){const d=V.dev;d.m=null;d.end=false;render()},
   devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
-  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.seg=tramosIniciales(m,v.who.id);v.ord=v.seg?[].concat(...v.seg.map(x=>x.idx)):ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;v.mx={};try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
-    if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;if(c.seg)v.seg=c.seg;if(c.mx)v.mx=c.mx;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<v.ord.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
+  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.seg=tramosIniciales(m,v.who.id);v.ord=v.seg?[].concat(...v.seg.map(x=>x.idx)):ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;v.mb={};try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
+    if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;if(c.seg)v.seg=c.seg;if(c.mb)v.mb=c.mb;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<v.ord.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
     /* si empieza desde el principio (o la repasa), los relojes de nivel de una vez anterior no cuentan */
     if(!v.i)try{Object.keys(localStorage).filter(k=>k.indexOf('copa-nivt|'+m.id+'|'+v.who.id+'|')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
     render()},
   /* 👀 PROBAR (30/10/2026, Javi: «quiero ver cómo funciona la misión que he mandado»): el profe la juega como un alumno; no se guarda nada */
-  devprobar(d){V.screen='dev';V.dev={open:true,who:{id:'Profe',label:'👀 Profe (prueba, no se guarda)'}};ACT.devplay({id:d.id});V.dev.repaso=true;V.dev.res=[];V.dev.i=0;try{Object.keys(localStorage).filter(k=>/^copa-(nivt|inicio)\|/.test(k)&&k.indexOf('|Profe')>0).forEach(k=>localStorage.removeItem(k))}catch(e){}V.dev.t0=Date.now();render()},
+  devprobar(d){V.screen='dev';V.dev={open:true,who:{id:'Profe-'+Date.now().toString(36),label:'👀 Profe (prueba, no se guarda)'}};ACT.devplay({id:d.id});V.dev.repaso=true;V.dev.res=[];V.dev.i=0;try{Object.keys(localStorage).filter(k=>/^copa-(nivt|inicio)\|/.test(k)&&k.indexOf('|Profe')>0).forEach(k=>localStorage.removeItem(k))}catch(e){}V.dev.t0=Date.now();render()},
   rincon(){abrirMarco(JAVI.BASE+'sda/tema2-lengua-4a/rincon.html')},
   mjempezar(){[mjSnitch,mjHechizo,mjMemoria,mjRanas][Math.floor(Math.random()*4)]()},
+  mjprobar(d){V.dev={who:{id:'Profe',label:'Profe'},m:{id:'prueba-mj',niv:[1]},repaso:true,probando:true,mjK:0,mjG:1,mb:{}};[mjSnitch,mjHechizo,mjMemoria,mjRanas][+d.j]()},
   mjterminar(){closeModal();ACT.devnext()},
   devsigue(){closeModal();render()},
   entrenar(){const t=$('#en_t').value,qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
@@ -1289,12 +1294,12 @@ const ACT={
   retojugar(d){const r=retosTodos().find(x=>x.id===d.id);if(!r)return;const qs=r.k.map(k=>S.questions.find(q=>claveQ(q)===k)).filter(Boolean);
     if(!qs.length)return toast('No encuentro las preguntas de este reto. Recarga la página.');ACT.devplay({m:{id:r.id,titulo:'⚔️ Reto de '+r.de+' · '+nomTema(r.tema),qs,reto:r.id}})},
   devnext(){closeModal();const d=V.dev;d.i++;if(finDeNivel(d))return;if(d.i>=(d.ord||d.m.qs).length||d.end){d.end=true;SFX.fanfare();
-      if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:d.m.practica?'Practica':d.m.reto?'RetoRes':'Respuesta',cartaId:d.m.practica?d.m.tema:d.m.id,tipo:d.who.id,carta:JSON.stringify(Object.assign({r:d.res,o:d.ord,s:Math.round((Date.now()-d.t0)/1000)},d.m.practica||d.m.reto?{t:d.m.titulo}:{},d.m.niv?{nv:nivelAlcanzado(d),mx:d.mx||{}}:{}))});
+      if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:d.m.practica?'Practica':d.m.reto?'RetoRes':'Respuesta',cartaId:d.m.practica?d.m.tema:d.m.id,tipo:d.who.id,carta:JSON.stringify(Object.assign({r:d.res,o:d.ord,s:Math.round((Date.now()-d.t0)/1000)},d.m.practica||d.m.reto?{t:d.m.titulo}:{},d.m.niv?{nv:nivelAlcanzado(d),mb:d.mb||{}}:{}))});
         try{localStorage.setItem('copa-hecha|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res));localStorage.removeItem('copa-curso|'+d.m.id+'|'+d.who.id)}catch(e){}}}
     render()},
   devsend(){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para enviar la misión',texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Enviar misión».'});
     const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0,tipo=$('#dv_tipo').value,tiempo=$('#dv_tiempo').value;let qs=S.questions.filter(q=>q.type!=='open'&&(!g||(g.indexOf('s:')===0?q.subject===g.slice(2):gkey(q)===g)));let niv=null;
-    let extra={};if(tipo==='niv'){const r=porNiveles(qs);qs=r.qs;niv=r.niv;extra={nivr:r.nivr,tniv:r.tniv,gal:r.gal,pase:r.pase}}else if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
+    qs=preguntasNuevas(qs,tipo==='niv'?92:(n||qs.length));let extra={};if(tipo==='niv'){const r=porNiveles(qs);qs=r.qs;niv=r.niv;extra={nivr:r.nivr,tniv:r.tniv,gal:r.gal,pase:r.pase}}else if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
     if(!qs.length)return toast('No hay preguntas para enviar en ese grupo');
     const titulo=($('#dv_t').value.trim()||(g.replace(/^s:/,'')||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     const limpias=qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;delete o.points;return o}),id='m'+Date.now().toString(36),of=Math.ceil(limpias.length/6);
