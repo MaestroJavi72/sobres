@@ -2,8 +2,8 @@
   "clase": "4ºA",
   "colegio": "CEIP Arias Montano",
   "tutor": "Maestro Javi",
-  "actualizado": "2026-10-01",
-  "plano_vigente": "mes_2",
+  "actualizado": "2026-11-03",
+  "plano_vigente": "mes_3",
   "casas": {
     "1": "Gryffindor",
     "2": "Hufflepuff",
@@ -17,7 +17,31 @@
     "pupitre_individual": "Pupitre solo al lado de la mesa del maestro. No pertenece a ninguna mesa.",
     "sitio_individual_mesa": "En las mesas de 5, uno de los sitios es la cabecera (sitio individual de la mesa)."
   },
-  "alumnos": ["Ahinara", "Ainhoa", "Alejandro", "Alexia", "Amanda", "Carla", "Claudia", "Dylan", "Imran", "Jesús", "José F", "José M", "Leila", "Leonel", "Lucas", "Manuela", "María José", "Martina", "Pedro", "Sara", "Sofía", "Valeria", "Yaiza"],
+  "alumnos": [
+    "Ahinara",
+    "Ainhoa",
+    "Alejandro",
+    "Alexia",
+    "Amanda",
+    "Carla",
+    "Claudia",
+    "Dylan",
+    "Imran",
+    "Jesús",
+    "José F",
+    "José M",
+    "Leila",
+    "Leonel",
+    "Lucas",
+    "Manuela",
+    "María José",
+    "Martina",
+    "Pedro",
+    "Sara",
+    "Sofía",
+    "Valeria",
+    "Yaiza"
+  ],
   "planos": {
     "mes_1": {
       "periodo": "septiembre 2026",
@@ -25,31 +49,58 @@
         {
           "mesa": 1,
           "posicion": "junto a la mesa del maestro",
-          "alumnos": ["María José", "Valeria", "Ainhoa", "Dylan"],
+          "alumnos": [
+            "María José",
+            "Valeria",
+            "Ainhoa",
+            "Dylan"
+          ],
           "cabecera": null
         },
         {
           "mesa": 2,
           "posicion": "junto a la pizarra",
-          "alumnos": ["Amanda", "Alejandro", "Carla", "Yaiza", "Sofía"],
+          "alumnos": [
+            "Amanda",
+            "Alejandro",
+            "Carla",
+            "Yaiza",
+            "Sofía"
+          ],
           "cabecera": "Sofía"
         },
         {
           "mesa": 3,
           "posicion": "arriba a la derecha",
-          "alumnos": ["Leila", "Imran", "Lucas", "Sara"],
+          "alumnos": [
+            "Leila",
+            "Imran",
+            "Lucas",
+            "Sara"
+          ],
           "cabecera": null
         },
         {
           "mesa": 4,
           "posicion": "en medio a la derecha",
-          "alumnos": ["Martina", "Ahinara", "José F", "Manuela"],
+          "alumnos": [
+            "Martina",
+            "Ahinara",
+            "José F",
+            "Manuela"
+          ],
           "cabecera": null
         },
         {
           "mesa": 5,
           "posicion": "abajo a la derecha",
-          "alumnos": ["Alexia", "Jesús", "Claudia", "José M", "Leonel"],
+          "alumnos": [
+            "Alexia",
+            "Jesús",
+            "Claudia",
+            "José M",
+            "Leonel"
+          ],
           "cabecera": "Leonel"
         }
       ],
@@ -61,36 +112,128 @@
         {
           "mesa": 1,
           "posicion": "junto a la mesa del maestro",
-          "alumnos": ["Amanda", "Lucas", "Alexia", "Ahinara", "José F"],
+          "alumnos": [
+            "Amanda",
+            "Lucas",
+            "Alexia",
+            "Ahinara",
+            "José F"
+          ],
           "cabecera": "José F"
         },
         {
           "mesa": 2,
           "posicion": "junto a la pizarra",
-          "alumnos": ["Yaiza", "Carla", "José M", "Claudia", "Alejandro"],
+          "alumnos": [
+            "Yaiza",
+            "Carla",
+            "José M",
+            "Claudia",
+            "Alejandro"
+          ],
           "cabecera": "Alejandro"
         },
         {
           "mesa": 3,
           "posicion": "arriba a la derecha",
-          "alumnos": ["Valeria", "Imran", "Sara", "Leila"],
+          "alumnos": [
+            "Valeria",
+            "Imran",
+            "Sara",
+            "Leila"
+          ],
           "cabecera": null
         },
         {
           "mesa": 4,
           "posicion": "en medio a la derecha",
-          "alumnos": ["Manuela", "Ainhoa", "María José", "Dylan"],
+          "alumnos": [
+            "Manuela",
+            "Ainhoa",
+            "María José",
+            "Dylan"
+          ],
           "cabecera": null
         },
         {
           "mesa": 5,
           "posicion": "abajo a la derecha",
-          "alumnos": ["Leonel", "Jesús", "Martina", "Sofía"],
+          "alumnos": [
+            "Leonel",
+            "Jesús",
+            "Martina",
+            "Sofía"
+          ],
           "cabecera": null
         }
       ],
       "pupitre_individual": "Pedro",
       "equipo_pupitre": 5
+    },
+    "mes_3": {
+      "periodo": "noviembre 2026",
+      "desde": "2026-11-04",
+      "mesas": [
+        {
+          "mesa": 1,
+          "posicion": "junto a la mesa del maestro",
+          "alumnos": [
+            "Amanda",
+            "Ahinara",
+            "Pedro",
+            "Carla",
+            "José F"
+          ],
+          "cabecera": null
+        },
+        {
+          "mesa": 2,
+          "posicion": "junto a la pizarra",
+          "alumnos": [
+            "José M",
+            "Claudia",
+            "Lucas",
+            "Yaiza",
+            "Alejandro"
+          ],
+          "cabecera": null
+        },
+        {
+          "mesa": 3,
+          "posicion": "arriba a la derecha",
+          "alumnos": [
+            "Imran",
+            "Sara",
+            "Leonel",
+            "Ainhoa"
+          ],
+          "cabecera": null
+        },
+        {
+          "mesa": 4,
+          "posicion": "en medio a la derecha",
+          "alumnos": [
+            "Manuela",
+            "María José",
+            "Leila",
+            "Jesús",
+            "Sofía"
+          ],
+          "cabecera": null
+        },
+        {
+          "mesa": 5,
+          "posicion": "abajo a la derecha",
+          "alumnos": [
+            "Martina",
+            "Valeria",
+            "Alexia",
+            "Dylan"
+          ],
+          "cabecera": null
+        }
+      ],
+      "pupitre_individual": null
     }
   }
 }
