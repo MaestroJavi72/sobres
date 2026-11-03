@@ -78,6 +78,21 @@ small{opacity:.8}
 .hs .hn{flex:1;font-size:.95rem;line-height:1.1}
 .hs b{font-size:1.9rem;color:#fff;text-shadow:0 .1rem 0 #000}
 .hs.pop{animation:pop .6s}
+.hs{position:relative}.fuego{position:absolute;top:-.55rem;right:-.3rem;font-style:normal;font-size:1rem;background:rgba(0,0,0,.7);color:#fff;border-radius:1rem;padding:0 .4rem;animation:pop .6s}
+.vaultrow{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:1rem 0}
+.vault{font-size:3.4rem;min-width:7.5rem;min-height:9rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;background:linear-gradient(#6b5528,#2d2412);border:4px solid var(--gold);border-radius:1rem;color:#fff;line-height:1.1}
+.vault:disabled{opacity:1;cursor:default}.vault small{font-size:1rem}.vault.abierta{background:linear-gradient(#2b2147,#151033)}.vault.elegida{box-shadow:0 0 2rem var(--gold);transform:scale(1.08)}
+.scene .vault{font-size:2.4rem;min-width:4.5rem;min-height:5rem;cursor:default}
+.clasif{max-width:46rem;margin:0 auto}.cbar{display:flex;align-items:center;gap:.5rem;margin:.45rem 0;opacity:0;animation:entra .5s forwards}
+.cpos{width:2.6rem;font-weight:bold;font-size:1.3rem}.cfill{background:var(--c);border:3px solid var(--c2);color:#fff;border-radius:.6rem;padding:.45rem .6rem;text-align:left;font-weight:bold;white-space:nowrap;overflow:hidden}
+.cpts{font-size:1.6rem;min-width:3rem}.sube{color:#2e9b4a}.baja{color:#c0392b}
+@keyframes entra{from{opacity:0;transform:translateX(-2rem)}to{opacity:1;transform:none}}
+#podio{position:fixed;inset:0;z-index:60;background:radial-gradient(ellipse at 50% 30%,#2b2a6b,#070a1c);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:1rem;color:#fff;text-align:center}
+.pods{display:flex;align-items:flex-end;gap:1rem;height:58vh;width:min(62rem,100%)}
+.pod{flex:1;background:var(--c);border:4px solid var(--c2);border-bottom:0;border-radius:1rem 1rem 0 0;display:flex;flex-direction:column;align-items:center;padding-top:.6rem;opacity:0;transform:translateY(40%);transition:all .8s cubic-bezier(.2,1.4,.4,1);font-size:1.2rem}
+.pod.ve{opacity:1;transform:none}.pod .pe{font-size:3rem}.pod .pn{margin-top:auto;margin-bottom:.4rem;font-size:2.4rem;font-weight:bold;color:var(--c2)}
+.pod[data-i="0"].ve{box-shadow:0 0 3rem var(--c2)}#podio .salta{position:absolute;top:.6rem;right:.6rem;font-size:.9rem}
+@media(max-width:700px){.pod{font-size:.8rem}.pod .pe{font-size:2rem}.vault{min-width:5.5rem;font-size:2.6rem}}
 @keyframes pop{40%{transform:scale(1.12)}}
 @media(max-width:1100px){.hs .hn{font-size:.75rem}}
 @media(max-width:800px){.hs .hn{display:none}.top{flex-wrap:wrap}.tools{width:100%;justify-content:center}.hs b{font-size:1.4rem}.hs svg{height:2.4rem}.cell{font-size:.55rem!important;min-height:3rem!important}}
@@ -259,7 +274,8 @@ const GAMES={
   pociones:{n:'Clase de Pociones',e:'⚗️',d:'Echa los ingredientes al caldero en el orden correcto.'},
   quidditch:{n:'Partido de Quidditch',e:'🏟️',d:'Cada acierto es un gol en los aros. ¡La casa con más goles gana el partido!'},
   mapa:{n:'El Mapa del Merodeador',e:'🗺️',d:'Acierta para avanzar por el castillo. ¡Cuidado con las casillas especiales!'},
-  camara:{n:'La Cámara de los Secretos',e:'🚪',d:'Cada respuesta correcta abre un candado de la puerta.'}};
+  camara:{n:'La Cámara de los Secretos',e:'🚪',d:'Cada respuesta correcta abre un candado de la puerta.'},
+  gringotts:{n:'Asalto a Gringotts',e:'🏦',d:'Si acertáis, elegís una cámara acorazada. Dentro puede haber galeones, un tesoro, la llave para robar a otra casa… ¡o un dragón!'}};
 const OKMSG=['✨ ¡Hechizo perfecto!','🌟 ¡Magia pura!','🎉 ¡Brillante!','🦉 ¡Digno de un gran mago!','⚡ ¡Excelente!'];
 const KOMSG=['💪 ¡Casi! Los grandes magos aprenden practicando','🌱 ¡Buen intento! Cada error nos hace más sabios','🧙 Hasta los mejores magos fallan hechizos','📚 ¡Ánimo! Ahora ya lo sabemos para la próxima'];
 const SAMPLE=`# Lengua | Sustantivos
@@ -399,7 +415,7 @@ const stu=id=>S.students.find(s=>s.id===id);
 /* ============ ESTADO ============ */
 let S,V={screen:'home',tab:'q',bg:'',sel:null,unlocked:false,paused:false};
 function defState(){return{v:1,cfg:{pass:'alohomora',muted:false,defTime:40,gameMode:'random',part:'mix',maxQ:0,jokers:1,
-  games:{duelo:true,snitch:true,pociones:true,quidditch:true,mapa:true,camara:true},nHouses:5,mode:'mix',matchGame:'quidditch',matchN:5},students:[],questions:parseText(SAMPLE).qs,session:null}}
+  games:{duelo:true,snitch:true,pociones:true,quidditch:true,mapa:true,camara:true,gringotts:true},nHouses:5,mode:'mix',matchGame:'quidditch',matchN:5},students:[],questions:parseText(SAMPLE).qs,session:null}}
 function load(){let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
   const def=defState();if(!d||!Array.isArray(d.questions))return def;
   d.cfg=Object.assign(def.cfg,d.cfg||{});d.cfg.games=Object.assign(defState().cfg.games,d.cfg.games||{});d.students=d.students||[];return d}
@@ -531,7 +547,7 @@ function glass(h,r){const H=HOUSES[h],b=24*r,t=22*(1-r);
   <rect clip-path="url(#ct${h})" x="7" y="${31-t}" width="26" height="${t}" fill="${H.c2}" opacity=".85"/>
   <rect clip-path="url(#cb${h})" x="7" y="${58-b}" width="26" height="${b}" fill="${H.c2}"/></svg>`}
 function updateScore(popH){const el=$('#score');if(!el||!S.session)return;const ss=S.session,mx=Math.max(60,...HK.map(h=>ss.pts[h]));
-  el.innerHTML=HK.map(h=>`<button class="hs ${popH===h?'pop':''}" data-a="pts" data-h="${h}" style="--c:${HOUSES[h].c};--c2:${HOUSES[h].c2}">${glass(h,Math.min(1,Math.max(0,ss.pts[h])/mx))}<span class="hn">${HOUSES[h].e} ${HOUSES[h].n}</span><b>${ss.pts[h]}</b></button>`).join('')}
+  el.innerHTML=HK.map(h=>`<button class="hs ${popH===h?'pop':''}" data-a="pts" data-h="${h}" style="--c:${HOUSES[h].c};--c2:${HOUSES[h].c2}">${glass(h,Math.min(1,Math.max(0,ss.pts[h])/mx))}<span class="hn">${HOUSES[h].e} ${HOUSES[h].n}</span><b>${ss.pts[h]}</b>${(ss.racha||{})[h]>=2?`<i class="fuego">🔥${ss.racha[h]}</i>`:''}</button>`).join('')}
 function vFinal(){const ss=S.session;if(!ss)return vHome();const rank=HK.slice().sort((a,b)=>ss.pts[b]-ss.pts[a]),top=ss.pts[rank[0]],win=rank.filter(h=>ss.pts[h]===top);
   const ids=[...new Set(ss.failed.map(f=>f.q))],fq=ids.map(qById).filter(Boolean);
   const repaso=fq.map((q,i)=>`${i+1}. ${q.text}\n   Respuesta: ${correctText(q)}${q.explanation?'\n   '+q.explanation:''}`).join('\n');
@@ -678,7 +694,7 @@ function misiones(){const m=new Map();rowsC('mision').forEach(f=>{if(plain(f.tip
   const j=jrow(f);if(!j||!j.qs||!j.qs.length)return;
   /* las misiones largas van en varias filas (partes de 12 preguntas): {p:nº de parte, of:total, qs} */
   let o=m.get(f.cartaId);if(!o||!j.of){o={id:f.cartaId,titulo:f.tipo,dia:f.dia,of:j.of||1,partes:{}};m.set(f.cartaId,o)}
-  o.partes[j.p||1]=j.qs;if((j.p||1)===1){if(j.niv)o.niv=j.niv;if(j.tiempo)o.tiempo=j.tiempo;if(j.tniv)o.tniv=j.tniv;if(j.nivr)o.nivr=j.nivr;if(j.gal)o.gal=j.gal;if(j.pase)o.pase=j.pase}});
+  o.partes[j.p||1]=j.qs;if((j.p||1)===1){if(j.niv)o.niv=j.niv;if(j.tiempo)o.tiempo=j.tiempo;if(j.tniv)o.tniv=j.tniv;if(j.nivr)o.nivr=j.nivr;if(j.gal)o.gal=j.gal;if(j.pase)o.pase=j.pase;if(j.com)o.com=1}});
   const out=[];m.forEach(o=>{const ks=Object.keys(o.partes);if(ks.length<o.of)return;o.qs=[];for(let i=1;i<=o.of;i++)o.qs=o.qs.concat(o.partes[i]||[]);out.push(o)});return out.reverse()}
 function respuestas(id){const m=new Map();rowsC('respuesta').forEach(f=>{if(f.cartaId!==id||m.has(f.tipo))return;const j=jrow(f);if(j&&j.r){let r=j.r;if(Array.isArray(j.o)&&j.o.length){r=new Array(Math.max(j.o.length,Math.max.apply(null,j.o.filter(x=>x!=null))+1)).fill(null);j.r.forEach((v,k)=>{if(j.o[k]!=null)r[j.o[k]]=v})}if(j.nv!=null)r.nv=j.nv;if(j.mb)r.mb=j.mb;m.set(f.tipo,r)}});return m}
 const cnt=a=>(a||[]).filter(x=>x!=null).length;
@@ -702,11 +718,11 @@ function vDev(){const d=V.dev;
   const top=`<div class="bar"><h1>📜 ${d.m?esc(d.m.titulo):'Misiones'}</h1><span class="hb" style="--c:#3b2a6b;--c2:var(--gold)">${esc(d.who.label)}</span></div>`;
   if(d.m&&d.end){const n=d.res.length||d.m.qs.length,ok=sum(d.res),fa=d.res.map((x,k)=>x===0?(d.qsJ||d.m.qs)[(d.ord||[])[k]!=null?d.ord[k]:k]:null).filter(Boolean);
     return `<div class="wrap final">${top}<div class="cup">${ok===n?'🏆':ok>=n/2?'🌟':'💪'}</div><h2>${finTitulo(d)}</h2><p class="sub">${ok} de ${n} hechizos conseguidos. ${ok===n?'¡Perfecto!':'¡Buen trabajo! Mira lo que puedes repasar.'}</p>
-    ${d.repaso?'<p>(Era un repaso: no se ha guardado de nuevo.)</p>':'<p>✅ Tu resultado se ha enviado al profe.</p>'}
+    ${d.fantMsg?`<p style="font-size:1.45rem"><b>${d.fantMsg}</b></p>`:''}${d.repaso?'<p>(Era un repaso: no se ha guardado de nuevo.)</p>':'<p>✅ Tu resultado se ha enviado al profe.</p>'}
     ${fa.length?`<div class="parch pad"><h3>📚 Para repasar</h3><ol>${fa.map(q=>`<li><b>${esc(q.text)}</b><br>Respuesta: ${esc(correctText(q))}${q.explanation?`<br><i>💡 ${esc(q.explanation)}</i>`:''}</li>`).join('')}</ol></div>`:''}
-    <div class="row"><button class="gold big" data-a="devback">📜 Más misiones</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div>`}
-  if(d.m){const q=qAct(d),nv=segDe(d,d.i);return `<div class="wrap">${top}<div class="phead"><span class="gname">${nv?nivNom(nv.k)+(nv.intento>1?' · 🔁 2.º intento':'')+' · pregunta '+(d.i-nv.ini+1)+' de '+nv.n:'Pregunta '+(d.i+1)+' de '+(d.ord||d.m.qs).length}</span><span>${'⭐'.repeat(sum(d.res))}</span><span id="timer"></span></div>${avanceHTML(d)}
-    ${readBox(q)}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div></div>`}
+    <div class="row">${d.m.practica?`<button class="gold big" data-a="entrenar" data-t="${esc(d.m.tema)}">👻 Entrenar otra vez</button>`:''}<button class="gold big" data-a="devback">📜 Más misiones</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div>`}
+  if(d.m){const q=qAct(d),nv=segDe(d,d.i);return `<div class="wrap">${top}<div class="phead"><span class="gname">${nv?nivNom(nv.k)+(nv.intento>1?' · 🔁 2.º intento':'')+' · pregunta '+(d.i-nv.ini+1)+' de '+nv.n:'Pregunta '+(d.i+1)+' de '+(d.ord||d.m.qs).length}</span><span>${comOn(d)?'':'⭐'.repeat(sum(d.res))}${d.racha>=2?' 🔥 '+d.racha+' seguidas':''}</span>${d.fant?'<span id="fant"></span>':''}<span id="timer"></span></div>${avanceHTML(d)}
+    ${readBox(q)}<div class="qcard parch"><div class="qmeta">${esc(gkey(q))}</div><div class="qtext">${fmtQ(q)}</div></div><div id="ans"></div>${comOn(d)?'<div id="djok"></div>':''}</div>`}
   const ms=misiones().filter(m=>!m.cerrada);
   return `<div class="wrap">${top}${zonaAlumno(d)}<div class="parch pad"><h3>📜 Misiones del profe</h3>${ms.map(m=>{const h=hecha(m.id,d.who.id);return `<div class="qrow"><span class="ty">${h?'✅':'📜'}</span><div class="qt"><b>${esc(m.titulo)}</b><small>${m.niv?sum(m.niv):m.qs.length} preguntas${insignias(m)}${h?' · hecha: '+sum(h)+' de '+cnt(h)+(h.nv!=null&&m.niv?' · '+(h.nv>=m.niv.length?'🏆 todos los niveles':'nivel '+(h.nv+1)):''):''}</small></div><button class="${h?'':'gold big'}" data-a="devplay" data-id="${esc(m.id)}">${h?'🔁 Repasar':'✨ ¡Jugar!'}</button></div>`}).join('')||'<p style="font-size:1.2rem">Todavía no hay misiones. Cuando el profe envíe una, tarda unos minutos en llegar.</p>'}
   <div class="row"><button data-a="devref">🔄 Buscar misiones nuevas</button><button data-a="devout">👋 Salir (otro jugador)</button></div></div></div>`}
@@ -825,7 +841,7 @@ function relojMision(){clearInterval(RELOJ);const d=V.dev,m=d.m;if(!m.tiempo&&!m
   let fin,s=null;
   if(m.tniv){s=d.seg?segDe(d,d.i):null;if(!s)return;const k='copa-nivt|'+m.id+'|'+d.who.id+'|'+s.k+(s.intento>1?'|2':'');let t0=0;try{t0=+localStorage.getItem(k);if(!t0||Date.now()-t0>36e5){t0=Date.now();localStorage.setItem(k,String(t0))}}catch(e){t0=Date.now()}fin=t0+m.tniv[s.k]*1000}
   else fin=d.t0+m.tiempo*1000;
-  const pinta=()=>{if(V.screen!=='dev'||V.dev!==d||V.dev.m!==m||d.end){clearInterval(RELOJ);return}const el=$('#timer');const left=Math.max(0,Math.round((fin-Date.now())/1000));
+  const pinta=()=>{if(V.screen!=='dev'||V.dev!==d||V.dev.m!==m||d.end){clearInterval(RELOJ);return}const el=$('#timer');const left=Math.max(0,Math.round((fin+((d.masT||{})[masKey(d)]||0)*1000-Date.now())/1000));
     if(el)el.innerHTML=`<b>⏳ ${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b>`;
     if(left<=0){clearInterval(RELOJ);closeModal();d.sinTiempo=true;
       if(s){while(d.res.length<s.ini+s.n)d.res.push(0);d.i=s.ini+s.n-1;ACT.devnext();return}
@@ -909,9 +925,33 @@ function retosProfeHTML(){const hoy=JAVI.util.clave(new Date()),inv={};Object.ke
   if(!rs.length&&!pr.length)return '<p>Hoy todavía nadie ha entrenado ni retado.</p>';
   return (rs.length?`<p><b>⚔️ Retos:</b><br>${rs.map(r=>{const res=retoRes(r.id),a=res.get(r.deId),b=res.get(r.para);return esc(r.de||'?')+' '+(a?a.ok+'/'+a.n:'…')+' vs '+esc(r.paraN||'?')+' '+(b?b.ok+'/'+b.n:'…')+' · '+esc(nomTema(r.tema))}).join('<br>')}</p>`:'')+
     (pr.length?`<p><b>🎯 Entrenamientos:</b><br>${pr.map(esc).join('<br>')}</p>`:'')}
-function devAnswered(ok){stopTimer();const d=V.dev,q=qAct(d);d.res.push(ok?1:0);
-  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mb:d.mb}))}catch(e){}ok?SFX.ok():SFX.ko();
-  modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2><div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}
+/* 🃏 COMODINES EN LOS DISPOSITIVOS (3/11/2026, idea de Quizizz/Gimkit): cada acierto da ⭐ (y cada 3 seguidos, ⭐ extra); con ⭐ se compran
+   ✂️ quitar dos (2⭐) · ⏳ +30 s (2⭐, solo con reloj) · 🛡️ escudo (3⭐: si falla esa pregunta, la repite sin que se vea la buena). Uno de cada por pregunta.
+   Solo en Entrenar y en las misiones enviadas «Con comodines» (m.com); nunca en los retos. Las ⭐ NO son galeones. */
+const COM={fifty:['✂️ Quitar dos',2],time:['⏳ +30 s',2],shield:['🛡️ Escudo',3]};
+const comOn=d=>!!(d&&d.m&&(d.m.com||d.m.practica)&&!d.m.reto);
+const estrellas=d=>sum(d.res)+(d.rb||0)-(d.gast||0);
+const masKey=d=>{const s=d.seg?segDe(d,d.i):null;return s?s.k+'|'+s.intento:'tot'};
+function pintarCom(){const d=V.dev,el=$('#djok');if(!el||!d||!d.m)return;const e=estrellas(d),reloj=!!(T.id||d.m.tniv||(d.m.tiempo&&d.m.tiempo!=='q'));
+  const ok=k=>e>=COM[k][1]&&!(d.usado||{})[k]&&(k!=='fifty'||V.fifty)&&(k!=='time'||reloj)&&(k!=='shield'||!d.escudo);
+  el.innerHTML=`<div class="jokers"><span>⭐ <b>${e}</b> ${e===1?'estrella':'estrellas'}</span>${Object.keys(COM).map(k=>`<button data-a="dcom" data-k="${k}" ${ok(k)?'':'disabled'}>${COM[k][0]} · ${COM[k][1]}⭐</button>`).join('')}${d.escudo?'<b>🛡️ Escudo puesto</b>':''}</div>`}
+/* 👻 MODO FANTASMA en Entrenar (3/11/2026, idea de Kahoot): compites contra tu MEJOR entrenamiento de ese tema en este aparato; el fantasma
+   «responde» al ritmo de aquella vez. localStorage copa-fantasma|quién|tema = {r, tt (segundo de cada respuesta), s}. Solo se guarda si lo superas. */
+let FANT=null;
+function fantIba(f,seg){let ok=0;(f.tt||[]).forEach((t,i)=>{if(t<=seg)ok+=f.r[i]||0});return ok}
+function fantasma(){clearInterval(FANT);const d=V.dev;if(!d||!d.fant||!d.m||d.end)return;
+  const pinta=()=>{const el=$('#fant');if(!el||V.dev!==d||d.end){clearInterval(FANT);return}const g=fantIba(d.fant,(Date.now()-d.t0)/1000),yo=sum(d.res);
+    el.innerHTML=`👻 Fantasma <b>${g}</b> · Tú <b>${yo}</b> ${yo>g?'😎':yo<g?'😬':'🤜🤛'}`};pinta();FANT=setInterval(pinta,1000)}
+function finFantasma(d){const f=d.fant,yo={r:d.res.slice(),tt:d.tt||[],s:Math.round((Date.now()-d.t0)/1000)},a=sum(yo.r),b=f?sum(f.r):0;
+  const gana=!f||a>b||(a===b&&yo.s<f.s);
+  d.fantMsg=!f?'👻 Has creado tu fantasma. La próxima vez que entrenes este tema, competirás contra él.':gana?'👻 ¡Has vencido a tu fantasma! ('+a+' contra '+b+')':'👻 Tu fantasma gana esta vez ('+b+' contra '+a+'). ¡Entrena otra vez y gánale!';
+  if(gana)try{localStorage.setItem(d.m.fk,JSON.stringify(yo))}catch(e){}}
+function devAnswered(ok){stopTimer();const d=V.dev,q=qAct(d);
+  if(!ok&&d.escudo){d.escudo=false;SFX.ko();return modal(`<h2>🛡️ ¡El escudo te protege!</h2><p style="font-size:1.3rem">Esa no era. Piénsalo bien e inténtalo otra vez.</p><button class="gold big" data-a="devsigue">🔁 Otra vez</button>`,'fb-ko')}
+  d.escudo=false;d.res.push(ok?1:0);(d.tt=d.tt||[]).push(Math.round((Date.now()-d.t0)/1000));
+  let extra='';if(ok){d.racha=(d.racha||0)+1;if(d.racha%3===0&&comOn(d)){d.rb=(d.rb||0)+1;extra=`<p style="font-size:1.2rem">🔥 ¡${d.racha} seguidas! <b>+1 ⭐ extra</b></p>`}}else d.racha=0;
+  if(!d.repaso)try{localStorage.setItem('copa-curso|'+d.m.id+'|'+d.who.id,JSON.stringify({r:d.res,o:d.ord,seg:d.seg,mb:d.mb,gast:d.gast,rb:d.rb}))}catch(e){}ok?SFX.ok():SFX.ko();
+  modal(`<h2>${ok?pick(OKMSG):pick(KOMSG)}</h2>${extra}<div class="sol"><b>Respuesta:</b> ${esc(correctText(q))}</div>${q.explanation?`<p class="exp">💡 ${esc(q.explanation)}</p>`:''}<button class="gold big" data-a="devnext">Continuar ▶</button>`,ok?'fb-ok':'fb-ko')}
 function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo funcionan dentro de la web de Javificación.</p>';
   if(!LISTA)loadLista().then(()=>{if(V.screen==='book'&&V.tab==='dev')render()}).catch(()=>{});
   const subs=[...new Set(S.questions.map(q=>q.subject))],msel=V.dvm&&misiones().some(m=>m.id===V.dvm)?V.dvm:'';
@@ -928,6 +968,7 @@ function bookDev(){if(!window.JAVI)return'<p>Las misiones para dispositivos solo
   <label>Cuántas<select id="dv_n"><option value="5">5</option><option value="8">8</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="30">30</option><option value="0">Todas</option></select></label>
   <label>Título<input id="dv_t" placeholder="Repaso del tema"></label>
   <label>Tipo de misión<select id="dv_tipo"><option value="">📜 Normal (todas seguidas)</option><option value="niv">🧗 5 niveles: 3 · 5 · 8 · 10 · 15 preguntas, 2 · 3 · 4 · 5 · 8 min, 💰 1 · 1 · 2 · 3 · 4 galeones (60 % para subir de nivel, 90 % para ganar sus galeones)</option></select></label>
+  <label>Comodines<select id="dv_com"><option value="1">🃏 Con comodines (con las ⭐ de sus aciertos: ✂️ quitar dos, ⏳ +30 s, 🛡️ escudo)</option><option value="">Sin comodines (mejor si es para nota)</option></select></label>
   <label>Tiempo (en los 5 niveles ya va el de cada nivel)<select id="dv_tiempo"><option value="">Sin tiempo</option><option value="q">⏱️ Reloj en cada pregunta</option><option value="300">⏳ 5 minutos en total</option><option value="600">⏳ 10 minutos en total</option><option value="900">⏳ 15 minutos en total</option></select></label></div>
   <div class="row"><button class="gold big" data-a="devsend">📤 Enviar misión</button><button data-a="devbank">📥 Cargar el banco de evaluación del Tema 2</button></div>
   <p>Los alumnos entran en <b style="-webkit-user-select:text;user-select:text">${esc(url)}</b>, escriben el código de clase (4A), tocan su nombre y ponen su número de lista (o eligen su casa). La misión tarda unos minutos en aparecer en sus aparatos, y sus respuestas tardan otros tantos en llegar aquí. Las preguntas de «respuesta abierta» no se envían.</p>
@@ -1047,6 +1088,23 @@ function showIntro(){const ss=S.session,r=ss.round,q=curQ(),g=GAMES[r.game];upda
   <button class="gold big" data-a="start">✨ ¡Comenzar!</button>
   <div class="row" style="font-size:.85rem"><label>Minijuego <select data-c="regame">${comp.map(k=>`<option value="${k}" ${k===r.game?'selected':''}>${GAMES[k].e} ${GAMES[k].n}</option>`).join('')}</select></label>
   <label>Responde <select data-c="repart" ${canRep?'':'disabled'}><option value="0">Un representante</option><option value="1" ${r.team?'selected':''}>Toda la casa</option></select></label></div></div>`}
+/* 📊 CLASIFICACIÓN cada 4 preguntas (3/11/2026, idea de Kahoot): barras ordenadas, ▲▼ respecto a la anterior y redoble */
+function clasificacion(){const ss=S.session,hs=playHouses(),rk=hs.slice().sort((a,b)=>ss.pts[b]-ss.pts[a]),mx=Math.max(1,...hs.map(h=>ss.pts[h])),ant=ss.rkAnt||[];updateScore();
+  $('#stage').innerHTML=`<div class="intro parch clasif"><div class="rn">Llevamos ${ss.i} de ${ss.queue.length} preguntas</div><h2>📊 Así va la Copa</h2>${rk.map((h,i)=>{const a=ant.indexOf(h),fl=a<0||a===i?'':a>i?'<b class="sube">▲'+(a-i)+'</b>':'<b class="baja">▼'+(i-a)+'</b>';
+    return `<div class="cbar" style="--c:${HOUSES[h].c};--c2:${HOUSES[h].c2};animation-delay:${(rk.length-i)*.35}s"><span class="cpos">${i+1}.º</span><span class="cfill" style="width:${Math.max(10,85*Math.max(0,ss.pts[h])/mx)}%">${HOUSES[h].e} ${HOUSES[h].n}${(ss.racha||{})[h]>=2?' 🔥'+ss.racha[h]:''}</span><b class="cpts">${ss.pts[h]}</b>${fl}</div>`}).join('')}
+  <button class="gold big" data-a="clasig">Siguiente pregunta ▶</button></div>`;
+  ss.rkAnt=rk;save();redoble()}
+function redoble(){if(S.cfg.muted)return;if(window.JAVI_EFECTOS)try{return JAVI_EFECTOS.tocar('redoble')}catch(e){}for(let i=0;i<16;i++)tone(110+Math.random()*40,.06,'square',i*.07,.05)}
+/* 🏆 PODIO (3/11/2026, idea de Kahoot): al acabar, las casas se descubren de la última a la primera, con redoble antes de las tres primeras */
+function podio(){const ss=S.session,rk=playHouses().sort((a,b)=>ss.pts[b]-ss.pts[a]),alto=[100,78,60,44,32],ord=[2,1,3,0,4];let el=document.getElementById('podio');if(el)el.remove();
+  el=document.createElement('div');el.id='podio';
+  el.innerHTML=`<button class="salta">⏭ Saltar</button><h1 class="title">🏆 ¡Y la Copa de las Casas es para…!</h1><div class="pods">${rk.map((h,i)=>`<div class="pod" data-i="${i}" style="--c:${HOUSES[h].c};--c2:${HOUSES[h].c2};order:${ord[i]};height:${alto[i]}%"><div class="pe">${HOUSES[h].e}</div><b>${HOUSES[h].n}</b><span>${ss.pts[h]} puntos</span><div class="pn">${i+1}.º</div></div>`).join('')}</div><button class="gold big" id="podok" style="visibility:hidden">Ver los resultados ▶</button>`;
+  document.body.appendChild(el);const tt=[],cierra=()=>{tt.forEach(clearTimeout);el.remove();if(window.JAVI_EFECTOS)try{JAVI_EFECTOS.parar()}catch(e){}};
+  el.querySelector('.salta').onclick=cierra;el.querySelector('#podok').onclick=cierra;
+  const c=$('#conf');if(c)c.style.zIndex=61;let t=700;
+  for(let i=rk.length-1;i>=0;i--){const j=i;if(j<=2){tt.push(setTimeout(redoble,t));t+=j===0?3000:2200}
+    tt.push(setTimeout(()=>{const p=el.querySelector('.pod[data-i="'+j+'"]');if(p)p.classList.add('ve');j===0?party():SFX.ok()},t));t+=j<=2?700:900}
+  tt.push(setTimeout(()=>{el.querySelector('#podok').style.visibility='visible'},t+600))}
 function endSession(){const ss=S.session;stopTimer();cancelAnimationFrame(V.raf);
   if(!ss.ended){ss.ended=true;ss.round=null;const mg=Math.max(...HK.map(h=>ss.goals[h]));if(mg>0){ss.qwin=HK.filter(h=>ss.goals[h]===mg);ss.qwin.forEach(h=>ss.pts[h]+=20)}save()}
   V.screen='final';render()}
@@ -1062,7 +1120,7 @@ function timeFor(q){if(q.time)return q.time;if(q.type==='open'||!S.cfg.defTime)r
   if(q.type==='match')t=12+8*q.pairs.length+(q.pairs.some(x=>String(x[1]).length>18)?3*q.pairs.length:0);
   t+=Math.max(0,pal(q.text)-12);if(q.read)t+=Math.round(pal(q.read)/3);t+=5*((q.difficulty||1)-1);
   t=Math.round(t*S.cfg.defTime/40/5)*5;return Math.max(10,Math.min(150,t))}
-function startTimer(sec,cb){stopTimer();const el=$('#timer');if(!sec){if(el)el.innerHTML='';return}
+function startTimer(sec,cb){stopTimer();const el=$('#timer');if(!sec){T.left=0;T.total=1;if(el)el.innerHTML='';return}
   T.left=T.total=sec;T.cb=cb;drawTimer();
   T.id=setInterval(()=>{if(V.paused)return;T.left--;if(T.left<=5&&T.left>0)SFX.tick();drawTimer();if(T.left<=0){stopTimer();cb&&cb()}},1000)}
 function stopTimer(){clearInterval(T.id);T.id=null}
@@ -1083,7 +1141,7 @@ function mountAnswer(el,q,cb,o){o=o||{};V.fifty=null;let fin=false;const done=ok
   if(choice(q)){const ops=choiceList(q);
     el.innerHTML=`<div class="opts">${ops.map((x,i)=>`<button class="opt" data-i="${i}">${esc(x.t)}</button>`).join('')}</div>`;
     const bs=[...el.querySelectorAll('.opt')];
-    bs.forEach(b=>b.onclick=()=>{if(fin)return;const x=ops[b.dataset.i];b.classList.add(x.ok?'good':'bad');bs.forEach((bb,i)=>{if(ops[i].ok)bb.classList.add('good')});done(x.ok)});
+    bs.forEach(b=>b.onclick=()=>{if(fin)return;const x=ops[b.dataset.i];b.classList.add(x.ok?'good':'bad');if(x.ok||!(o.shield&&o.shield()))bs.forEach((bb,i)=>{if(ops[i].ok)bb.classList.add('good')});done(x.ok)});
     if(ops.filter(x=>!x.ok).length>=3)V.fifty=()=>{shuffle(bs.filter((b,i)=>!ops[i].ok)).slice(0,2).forEach(b=>b.classList.add('gone'));V.fifty=null}}
   else if(q.type==='fill'){el.innerHTML=`<div class="fillrow"><input id="fin" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Escribe aquí…"><button class="gold big" id="fok">Comprobar</button></div>`;
     const go=()=>{const v=norm($('#fin').value);if(!v)return;done(q.answer.split('|').some(a=>norm(a)===v))};$('#fok').onclick=go;$('#fin').onkeydown=e=>{if(e.key==='Enter')go()}}
@@ -1111,7 +1169,12 @@ function jokers(h){const el=$('#jok');if(!el)return;const j=S.session.jok[h];V.j
   <button data-a="jok" data-k="fifty" ${j.fifty>0&&V.fifty?'':'disabled'}>✂️ Quitar dos</button>
   <button data-a="jok" data-k="time" ${j.time>0&&T.id?'':'disabled'}>⏳ Más tiempo</button></div>`}
 function finishRound(res,extra){extra=extra||{};stopTimer();cancelAnimationFrame(V.raf);const ss=S.session,q=curQ(),lines=[];let any=false,popH;
-  for(const h in res){if(res[h]){any=true;popH=h;const p=Math.max(1,Math.round(q.points*(V.mult||1)));ss.pts[h]+=p;ss.ok[h]++;lines.push(`+${p} puntos para ${hb(h)}`)}else ss.ko[h]++}
+  /* ⚡ rapidez (hasta la mitad de los puntos según el tiempo que sobra) y 🔥 racha (3 aciertos seguidos +5, 4 +10, 5 o más +15) (3/11/2026, idea de Kahoot) */
+  ss.racha=ss.racha||{};const rap=T.total>1&&T.left>0?T.left/T.total:0;
+  for(const h in res){if(res[h]){any=true;popH=h;const p=Math.max(1,Math.round(q.points*(V.mult||1)));ss.pts[h]+=p;ss.ok[h]++;lines.push(`+${p} puntos para ${hb(h)}`);
+      const rp=Math.round(p*.5*rap);if(rp>0){ss.pts[h]+=rp;lines.push(`⚡ +${rp} por rapidez`)}
+      const ra=ss.racha[h]=(ss.racha[h]||0)+1,rb=ra>=3?Math.min(15,5*(ra-2)):0;if(rb){ss.pts[h]+=rb;lines.push(`🔥 ¡Racha de ${ra} aciertos! +${rb}`)}}
+    else{if((ss.racha[h]||0)>=3)lines.push(`💨 ${HOUSES[h].n} pierde su racha de ${ss.racha[h]}`);ss.racha[h]=0;ss.ko[h]++}}
   if(!any)ss.failed.push({q:q.id,h:Object.keys(res).join('')});
   for(const h in(extra.bonus||{})){ss.pts[h]+=extra.bonus[h];lines.push(`${extra.bonus[h]>0?'+':''}${extra.bonus[h]} puntos extra para ${hb(h)}`)}
   any?SFX.ok():SFX.ko();save();updateScore(popH);
@@ -1129,7 +1192,34 @@ function boardHTML(me){const pos=S.session.map.pos,hs=playHouses();let h='';
     h+=`<div class="cell ${sp?'sp':''}" style="grid-row:${row+1};grid-column:${col+1}"><em>${i===0?'🏰':i===LAST?'🏆':sp?sp[0]:''}</em>${i===0?'Salida':i===LAST?'Meta':sp?sp[1]:i}
     <div class="toks">${hs.filter(x=>pos[x]===i).map(x=>`<span class="tok ${x===me?'me':''}" style="--c:${HOUSES[x].c};--c2:${HOUSES[x].c2}">${HOUSES[x].e}</span>`).join('')}</div></div>`}
   return h}
+/* 🏦 ASALTO A GRINGOTTS (3/11/2026, Javi: «piensa en Kahoot… que sea muy top»; idea del Gold Quest de Blooket). Son PUNTOS de la Copa,
+   no galeones. Al acertar, la casa elige 1 de 3 cámaras y luego se abren las otras para ver qué había. p = puntos de la pregunta, m = la mitad (mín. 5):
+   💰 saco +m (3) · 💎 tesoro +p (2) · 🗝️ llave: roba m a la casa que elijan (2) · 🎁 regalo: +m y +m a la casa que va última (1) · 🐉 dragón −m (1) */
+const BOTIN=[['oro',3],['tesoro',2],['robar',2],['regalo',1],['dragon',1]];
+function botin(){let x=Math.random()*sum(BOTIN.map(b=>b[1]));for(const b of BOTIN){x-=b[1];if(x<0)return b[0]}return'oro'}
+function botinTxt(k,p){const m=Math.max(5,Math.round(p/2));return{oro:['💰','Saco de galeones','+'+m],tesoro:['💎','¡Tesoro!','+'+p],robar:['🗝️','Llave de otra cámara','roba '+m],regalo:['🎁','Regalo','+'+m+' y +'+m+' a la última'],dragon:['🐉','¡Un dragón!','−'+m]}[k]}
+function camaras(h,q){const p=q.points,m=Math.max(5,Math.round(p/2)),c=[botin(),botin(),botin()];SFX.magic();
+  modal(`<h2>🏦 ¡${HOUSES[h].e} ${HOUSES[h].n}, elegid una cámara!</h2><p style="font-size:1.2rem">+${p} por acertar. ¿Qué habrá dentro?</p><div class="vaultrow">${c.map((k,i)=>`<button class="vault" data-i="${i}">🚪<small>${i+1}</small></button>`).join('')}</div>`,'dark');
+  const bs=[...document.querySelectorAll('.vaultrow button.vault')];
+  bs.forEach(b=>b.onclick=()=>{if(bs.some(x=>x.disabled))return;const i=+b.dataset.i,k=c[i];bs.forEach(x=>x.disabled=true);
+    const pinta=(x,j)=>{const t=botinTxt(c[j],p);x.innerHTML=`${t[0]}<small>${t[1]}<br><b>${t[2]}</b></small>`;x.classList.add('abierta')};
+    pinta(b,i);b.classList.add('elegida');k==='dragon'?SFX.ko():SFX.ok();
+    setTimeout(()=>bs.forEach((x,j)=>{if(j!==i)pinta(x,j)}),900);
+    setTimeout(()=>{const ot=playHouses().filter(x=>x!==h),fin=(msg,bonus)=>finishRound({[h]:true},{msg,bonus});
+      if(k==='oro')return fin('💰 ¡Un saco de galeones!',{[h]:m});
+      if(k==='tesoro')return fin('💎 ¡Habéis encontrado un tesoro!',{[h]:p});
+      if(k==='dragon')return fin('🐉 ¡Un dragón custodiaba la cámara! Salís corriendo…',{[h]:-m});
+      if(k==='regalo'){const ss=S.session,ult=ot.slice().sort((a,b)=>ss.pts[a]-ss.pts[b])[0];return ult?fin('🎁 ¡Regalo! Compartís el botín con la casa que va última: '+HOUSES[ult].n+'.',{[h]:m,[ult]:m}):fin('🎁 ¡Regalo!',{[h]:m})}
+      if(!ot.length)return fin('🗝️ No hay otra casa a la que robar… ¡os lo quedáis!',{[h]:m});
+      modal(`<h2>🗝️ ¿A qué casa le robáis ${m} puntos?</h2><div class="row">${ot.map(x=>`<button class="big" data-roba="${x}" style="background:${HOUSES[x].c};border:3px solid ${HOUSES[x].c2}">${HOUSES[x].e} ${HOUSES[x].n} · ${S.session.pts[x]}</button>`).join('')}</div>`,'dark');
+      document.querySelectorAll('[data-roba]').forEach(x=>x.onclick=()=>{const v=x.dataset.roba,n=Math.min(m,Math.max(0,S.session.pts[v]));SFX.magic();fin(`🗝️ ¡${HOUSES[h].n} se cuela en la cámara de ${HOUSES[v].n}!`,{[h]:n,[v]:-n})})},2600)})}
 const GAMEFN={
+  gringotts(){const r=rd(),q=curQ(),h=r.houses[0];let fin=false;
+    shell(`<div class="scene"><div class="vaultrow">${[1,2,3].map(i=>`<span class="vault">🚪<small>${i}</small></span>`).join('')}</div><div class="stext">🏦 Si acertáis, ${HOUSES[h].n} elige una de las tres cámaras acorazadas de Gringotts.</div></div>`);
+    const end=(ok,to)=>{if(fin)return;fin=true;stopTimer();
+      if(!ok)return setTimeout(()=>finishRound({[h]:false},{msg:(to?'⏳ ¡Se acabó el tiempo! ':'')+'🔒 Los duendes cierran las cámaras… ¡a la próxima!'}),1100);
+      setTimeout(()=>camaras(h,q),900)};
+    mountAnswer($('#ans'),q,ok=>end(ok));startTimer(timeFor(q),()=>end(false,true));jokers(h)},
   snitch(){solo({custom(end){const q=curQ(),ops=choiceList(q);
       $('#ans').innerHTML=`<div class="arena" id="arena">${ops.map((x,i)=>`<button class="sn" data-i="${i}">${esc(x.t)}</button>`).join('')}</div>`;
       const ar=$('#arena'),sp=.05+.03*q.difficulty;let live=true;
@@ -1182,10 +1272,10 @@ function render(){stopTimer();cancelAnimationFrame(V.raf);V.paused=false;
   if((V.screen==='game'||V.screen==='final')&&!S.session)V.screen='home';
   if(V.screen==='game'&&S.session.ended)V.screen='final';
   $('#app').innerHTML={home:vHome,topics:vTopics,houses:vHouses,game:vGame,final:vFinal,book:vBook,dev:vDev}[V.screen]();
-  if(V.screen==='dev'&&V.dev.m&&!V.dev.end){mountAnswer($('#ans'),qAct(V.dev),devAnswered);relojMision()}
+  if(V.screen==='dev'&&V.dev.m&&!V.dev.end){mountAnswer($('#ans'),qAct(V.dev),devAnswered,{shield:()=>V.dev.escudo});relojMision();pintarCom();fantasma()}
   miPersonaje();
   if(V.screen==='game'){updateScore();S.session.mode==='match'?matchNext():S.session.round?showIntro():nextRound()}
-  if(V.screen==='final')party();document.body.classList.toggle('en-home',V.screen==='home');window.scrollTo(0,0)}
+  if(V.screen==='final'){if(!S.session.podio){S.session.podio=true;save();podio()}else party()}document.body.classList.toggle('en-home',V.screen==='home');window.scrollTo(0,0)}
 function applyMute(){$('#mute').textContent=S.cfg.muted?'🔇':'🔊'}
 const ACT={
   go(d){V.screen=d.s;V.editList=false;render()},
@@ -1223,7 +1313,8 @@ const ACT={
     S.cfg.matchN=parseInt($('#mN').value)||5;ss.match={a,b,n:S.cfg.matchN,ga:0,gb:0,q:0,tb:false};save();SFX.magic();matchNext()},
   mnext(){closeModal();matchNext()},
   start(){V.skin=null;const ss=S.session,r=ss.round;if(!r.team)r.houses.forEach(h=>{const id=peek(h);if(id){r.players[h]=id;ss.bag[h].pop()}});V.mult=1;save();SFX.magic();GAMEFN[r.game]()},
-  cont(){closeModal();const ss=S.session;if(ss.mode==='match'){if(ss.match)ss.match.q++;ss.i++;ss.round=null;save();return matchNext()}ss.lastGame=ss.round.game;ss.turn+=ss.round.houses.length;ss.i++;ss.round=null;save();nextRound()},
+  cont(){closeModal();const ss=S.session;if(ss.mode==='match'){if(ss.match)ss.match.q++;ss.i++;ss.round=null;save();return matchNext()}ss.lastGame=ss.round.game;ss.turn+=ss.round.houses.length;ss.i++;ss.round=null;save();if(ss.i%4===0&&ss.i<ss.queue.length)return clasificacion();nextRound()},
+  clasig(){nextRound()},
   jok(d){const h=V.jh,j=S.session.jok[h];if(!(j[d.k]>0))return;
     if(d.k==='help'){addTime(20);toast(`🤝 ¡Toda la casa ${HOUSES[h].n} puede ayudar! (+20 s)`)}else if(d.k==='fifty'){if(!V.fifty)return;V.fifty();toast('✂️ ¡Dos respuestas falsas desaparecen!')}else{if(!T.id)return;addTime(30);toast('⏳ +30 segundos')}
     j[d.k]--;save();SFX.magic();jokers(h)},
@@ -1280,20 +1371,25 @@ const ACT={
   devout(){V.dev={open:true};render()},
   devback(){const d=V.dev;d.m=null;d.end=false;render()},
   devref(){toast('🔄 Buscando…');JAVI.leerHoja().then(render,()=>toast('❌ No he podido leer la Hoja'))},
-  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.qsJ=m.reto||m.practica?null:preguntasPropias(m,v.who.id);v.seg=tramosIniciales(m,v.who.id);v.ord=v.seg?[].concat(...v.seg.map(x=>x.idx)):ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;v.mb={};try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
-    if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;if(c.seg)v.seg=c.seg;if(c.mb)v.mb=c.mb;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<v.ord.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
+  devplay(d){const v=V.dev,m=d.m||misiones().find(x=>x.id===d.id);if(!m)return;v.m=m;v.qsJ=m.reto||m.practica?null:preguntasPropias(m,v.who.id);v.seg=tramosIniciales(m,v.who.id);v.ord=v.seg?[].concat(...v.seg.map(x=>x.idx)):ordenAlumno(m,v.who.id);v.i=0;v.res=[];v.end=false;v.t0=Date.now();v.nvFin=null;v.mb={};v.gast=0;v.rb=0;v.racha=0;v.escudo=false;v.usado={};v.masT={};v.tt=[];v.fantMsg='';v.fant=null;if(m.fk)try{v.fant=JSON.parse(localStorage.getItem(m.fk)||'null')}catch(e){}try{const k='copa-inicio|'+m.id+'|'+v.who.id,t=+localStorage.getItem(k);if(t&&Date.now()-t<36e5)v.t0=t;else localStorage.setItem(k,String(v.t0))}catch(e){}v.repaso=!!hecha(m.id,v.who.id);
+    if(!v.repaso){let c=null;try{c=JSON.parse(localStorage.getItem('copa-curso|'+m.id+'|'+v.who.id)||'null')}catch(e){}if(c&&!Array.isArray(c)&&c.r){v.ord=c.o||v.ord;if(c.seg)v.seg=c.seg;if(c.mb)v.mb=c.mb;if(c.gast)v.gast=c.gast;if(c.rb)v.rb=c.rb;c=c.r}else if(Array.isArray(c)&&c.length)v.ord=m.qs.map((q,i)=>i);if(c&&c.length&&c.length<v.ord.length){v.res=c;v.i=c.length;toast('Sigues por donde lo dejaste: pregunta '+(c.length+1))}}
     /* si empieza desde el principio (o la repasa), los relojes de nivel de una vez anterior no cuentan */
     if(!v.i)try{Object.keys(localStorage).filter(k=>k.indexOf('copa-nivt|'+m.id+'|'+v.who.id+'|')===0).forEach(k=>localStorage.removeItem(k))}catch(e){}
     render()},
   /* 👀 PROBAR (30/10/2026, Javi: «quiero ver cómo funciona la misión que he mandado»): el profe la juega como un alumno; no se guarda nada */
   devprobar(d){V.screen='dev';V.dev={open:true,who:{id:'Profe-'+Date.now().toString(36),label:'👀 Profe (prueba, no se guarda)'}};ACT.devplay({id:d.id});V.dev.repaso=true;V.dev.res=[];V.dev.i=0;try{Object.keys(localStorage).filter(k=>/^copa-(nivt|inicio)\|/.test(k)&&k.indexOf('|Profe')>0).forEach(k=>localStorage.removeItem(k))}catch(e){}V.dev.t0=Date.now();render()},
+  dcom(x){const d=V.dev,k=x.k,c=COM[k];if(!c||!comOn(d)||estrellas(d)<c[1]||(d.usado||{})[k])return;
+    if(k==='fifty'){if(!V.fifty)return;V.fifty();toast('✂️ ¡Dos respuestas falsas desaparecen!')}
+    else if(k==='time'){if(T.id)addTime(30);else{d.masT=d.masT||{};d.masT[masKey(d)]=(d.masT[masKey(d)]||0)+30}toast('⏳ +30 segundos')}
+    else{d.escudo=true;toast('🛡️ Escudo puesto: si fallas, podrás intentarlo otra vez')}
+    d.gast=(d.gast||0)+c[1];(d.usado=d.usado||{})[k]=1;SFX.magic();pintarCom()},
   rincon(){abrirMarco(JAVI.BASE+'sda/tema2-lengua-4a/rincon.html')},
   mjempezar(){[mjSnitch,mjHechizo,mjMemoria,mjRanas][Math.floor(Math.random()*4)]()},
   mjprobar(d){V.dev={who:{id:'Profe',label:'Profe'},m:{id:'prueba-mj',niv:[1]},repaso:true,probando:true,mjK:0,mjG:1,mb:{}};[mjSnitch,mjHechizo,mjMemoria,mjRanas][+d.j]()},
   mjterminar(){closeModal();ACT.devnext()},
   devsigue(){closeModal();render()},
-  entrenar(){const t=$('#en_t').value,qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
-    ACT.devplay({m:{id:'pr'+Date.now().toString(36),titulo:'🎯 Entrenar · '+nomTema(t),qs,practica:true,tema:t}})},
+  entrenar(x){const t=(x&&x.t)||$('#en_t').value,qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
+    ACT.devplay({m:{id:'pr'+Date.now().toString(36),titulo:'🎯 Entrenar · '+nomTema(t),qs,practica:true,tema:t,fk:'copa-fantasma|'+V.dev.who.id+'|'+t}})},
   retar(){const v=V.dev,t=$('#re_t').value,para=$('#re_p').value;if(!para)return toast('Elige a quién quieres retar');if(!LISTA||!LISTA[para])return toast('No encuentro a '+para);
     const qs=preguntasDe(t,10);if(!qs.length)return toast('No hay preguntas de ese tema');
     const id='r'+Date.now().toString(36)+Math.floor(Math.random()*1e3).toString(36),j={de:v.who.label,para:'#'+LISTA[para],paraN:para,tema:t,k:qs.map(claveQ)};
@@ -1302,17 +1398,17 @@ const ACT={
     toast('⚔️ Reto enviado a '+para+'. ¡Ahora te toca a ti!');ACT.devplay({m:{id,titulo:'⚔️ Reto a '+para+' · '+nomTema(t),qs,reto:id}})},
   retojugar(d){const r=retosTodos().find(x=>x.id===d.id);if(!r)return;const qs=r.k.map(k=>S.questions.find(q=>claveQ(q)===k)).filter(Boolean);
     if(!qs.length)return toast('No encuentro las preguntas de este reto. Recarga la página.');ACT.devplay({m:{id:r.id,titulo:'⚔️ Reto de '+r.de+' · '+nomTema(r.tema),qs,reto:r.id}})},
-  devnext(){closeModal();const d=V.dev;d.i++;if(finDeNivel(d))return;if(d.i>=(d.ord||d.m.qs).length||d.end){d.end=true;SFX.fanfare();
+  devnext(){closeModal();const d=V.dev;d.i++;d.usado={};d.escudo=false;if(finDeNivel(d))return;if(d.i>=(d.ord||d.m.qs).length||d.end){d.end=true;SFX.fanfare();if(d.m.fk)finFantasma(d);
       if(!d.repaso){JAVI.escribirLibre({alumno:TAGC,accion:d.m.practica?'Practica':d.m.reto?'RetoRes':'Respuesta',cartaId:d.m.practica?d.m.tema:d.m.id,tipo:d.who.id,carta:JSON.stringify(Object.assign({r:d.res,o:d.ord,s:Math.round((Date.now()-d.t0)/1000)},d.m.practica||d.m.reto?{t:d.m.titulo}:{},d.m.niv?{nv:nivelAlcanzado(d),mb:d.mb||{}}:{}))});
         try{localStorage.setItem('copa-hecha|'+d.m.id+'|'+d.who.id,JSON.stringify(d.res));localStorage.removeItem('copa-curso|'+d.m.id+'|'+d.who.id)}catch(e){}}}
     render()},
   devsend(){JAVI.listo(()=>{if(!JAVI.llaveAbierta())return JAVI.pedirCodigo({titulo:'🔐 Código para enviar la misión',texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Enviar misión».'});
-    const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0,tipo=$('#dv_tipo').value,tiempo=$('#dv_tiempo').value;let qs=S.questions.filter(q=>q.type!=='open'&&(!g||(g.indexOf('s:')===0?q.subject===g.slice(2):gkey(q)===g)));let niv=null;
+    const g=$('#dv_g').value,n=parseInt($('#dv_n').value)||0,tipo=$('#dv_tipo').value,tiempo=$('#dv_tiempo').value,com=$('#dv_com').value;let qs=S.questions.filter(q=>q.type!=='open'&&(!g||(g.indexOf('s:')===0?q.subject===g.slice(2):gkey(q)===g)));let niv=null;
     qs=preguntasNuevas(qs,tipo==='niv'?92:(n||qs.length));let extra={};if(tipo==='niv'){const r=porNiveles(qs);qs=r.qs;niv=r.niv;extra={nivr:r.nivr,tniv:r.tniv,gal:r.gal,pase:r.pase}}else if(n>0)qs=shuffle(qs).slice(0,n);   /* «Todas»: en el orden del banco (los temas juntos) */
     if(!qs.length)return toast('No hay preguntas para enviar en ese grupo');
     const titulo=($('#dv_t').value.trim()||(g.replace(/^s:/,'')||'Repaso'))+' · '+new Date().toLocaleDateString('es-ES',{day:'numeric',month:'short'});
     const limpias=qs.map(q=>{const o=Object.assign({},q);delete o.id;delete o.time;delete o.points;return o}),id='m'+Date.now().toString(36),of=Math.ceil(limpias.length/6);
-    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify(Object.assign({p,of,qs:limpias.slice((p-1)*6,p*6)},p===1&&niv?Object.assign({niv},extra):{},p===1&&tiempo&&!niv?{tiempo:tiempo==='q'?'q':+tiempo}:{}))});
+    for(let p=1;p<=of;p++)JAVI.escribir({alumno:TAGC,accion:'Mision',cartaId:id,tipo:titulo,carta:JSON.stringify(Object.assign({p,of,qs:limpias.slice((p-1)*6,p*6)},p===1&&niv?Object.assign({niv},extra):{},p===1&&tiempo&&!niv?{tiempo:tiempo==='q'?'q':+tiempo}:{},p===1&&com?{com:1}:{}))});
     render();toast('📤 Misión enviada: '+qs.length+' preguntas'+(niv?' en '+niv.length+' niveles':'')+'. Tarda unos minutos en llegar a los aparatos.')})},
   devbank(){const go=()=>fetch(JAVI.BASE+'data/copa/tema2-evaluacion.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);S.questions=S.questions.filter(q=>q.subject!=='Tema 2').concat(r.qs);V.sel=null;save();render();toast('📥 '+r.qs.length+' preguntas del Tema 2 cargadas'+(r.errs.length?' ('+r.errs.length+' con problemas)':''))}).catch(()=>toast('❌ No he podido leer el banco del Tema 2'));
     S.questions.some(q=>q.subject==='Tema 2')?ask('Ya tienes preguntas de «Tema 2». ¿Sustituirlas por el banco original?',go):go()},
