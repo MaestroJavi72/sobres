@@ -100,6 +100,9 @@ function razon(x){
 }
 const expRegla = x => sep(x) + ': tónica «' + x.sil[x.t] + '», ' + posTxt[x.tipo] + ' sílaba → ' + x.tipo + '. ' + razon(x) + (x.tipo === 'esdrújula' ? '.' : x.tilde ? ' → lleva tilde.' : ' → no lleva tilde.');
 const pool = f => [...W.values()].filter(x => x.grupo !== 'texto' && f(x));
+/* cartas.js usa las mismas palabras comprobadas: si lo carga otro script, aquí se para (no genera el banco) */
+module.exports = { W, ERR, SIN_TILDE, TILDES, sep, razon };
+if(require.main !== module) return;
 
 /* ---------- preguntas ---------- */
 const Q = [];

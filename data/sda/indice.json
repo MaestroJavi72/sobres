@@ -565,7 +565,18 @@
    "enlaces": {
     "I-12": "tema2-lengua-4a/i12-lumos.html"
    },
-   "recursos": []
+   "recursos": [
+    {
+     "n": "Cartas de los pacientes (tarea final)",
+     "ic": "🏥",
+     "url": "tema3-lengua-4a/cartas-pacientes.html",
+     "sesiones": [
+      16,
+      17,
+      18
+     ]
+    }
+   ]
   }
  ]
 }
