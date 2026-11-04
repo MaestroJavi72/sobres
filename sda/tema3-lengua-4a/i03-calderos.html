@@ -39,7 +39,7 @@ var $ = ACT.$, modo = 'con', fichas = [], sel = null, puntos = 0, mal = {}, qued
 function empezar(){
   var f = modo === 'con' ? function(x){ return x.tilde; } : modo === 'sin' ? function(x){ return !x.tilde && x.tipo !== 'esdrújula'; } : null;
   /* sin tilde no hay esdrújulas: en ese modo, 6 agudas y 6 llanas */
-  fichas = modo === 'sin' ? AC.mezclar(AC.mezclar(AC.de('aguda', f)).slice(0, 6).concat(AC.mezclar(AC.de('llana', f)).slice(0, 6))) : AC.ronda(12, f);
+  fichas = modo === 'sin' ? AC.mezclar(AC.tomar(AC.de('aguda', f), 6).concat(AC.tomar(AC.de('llana', f), 6))) : AC.ronda(12, f);
   sel = null; puntos = 0; mal = {}; quedan = fichas.length; t0 = Date.now();
   $('zona').innerHTML = '<div class="barraSup"><span id="qd">Quedan ' + quedan + '</span><div class="progreso"><i id="pg" style="width:0"></i></div><span id="pt">⭐ 0</span></div>' +
     '<div class="ac-pizarra"><div class="ac-paso">' + (modo === 'sin' ? 'Toca una palabra para oírla y llévala a su caldero.' : 'Toca una palabra y después su caldero (o arrástrala).') + '</div>' +

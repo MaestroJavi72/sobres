@@ -35,7 +35,7 @@
 /* I-4 (Tema 3) · REGLAS DE LA TILDE: la palabra llega «herida» (sin tilde). Hay que tocar la vocal donde va la tilde o, si no la necesita,
    «Está sana». 10 palabras: 6 que la necesitan y 4 que no (agudas y llanas). Con pista: la sílaba tónica brilla. Puntúa lo acertado a la primera. */
 var $ = ACT.$, modo = 'pista', ronda = [], k = 0, puntos = 0, fallos = [];
-function empezar(){ ronda = AC.mezclar(AC.ronda(6, function(x){ return x.tilde; }).concat(AC.mezclar(AC.de('aguda', function(x){ return !x.tilde; })).slice(0, 2), AC.mezclar(AC.de('llana', function(x){ return !x.tilde; })).slice(0, 2)));
+function empezar(){ ronda = AC.mezclar(AC.ronda(6, function(x){ return x.tilde; }).concat(AC.tomar(AC.de('aguda', function(x){ return !x.tilde; }), 2), AC.tomar(AC.de('llana', function(x){ return !x.tilde; }), 2)));
   k = 0; puntos = 0; fallos = []; pregunta(); }
 function letras(x){ var n = 0; return '<div class="ac-sils">' + x.s.map(function(s, j){ var h = '<span class="ac-sil letras' + (modo === 'pista' && j === x.t ? ' luz' : '') + '" data-j="' + j + '">';
   AC.sinT(s).split('').forEach(function(c){ h += /[aeiou]/.test(c) ? '<span class="ac-letra" data-n="' + n + '">' + c + '</span>' : '<span>' + c + '</span>'; n++; });

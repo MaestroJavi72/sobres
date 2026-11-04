@@ -50,7 +50,7 @@ var REGLA = { aguda:'llevan tilde si acaban en <u>vocal, -n o -s</u>', llana:'ll
 var SI = ['Es aguda y acaba en vocal', 'Es aguda y acaba en -n', 'Es aguda y acaba en -s', 'Es llana y no acaba en vocal, -n ni -s', 'Es esdrújula: las esdrújulas llevan tilde siempre'];
 var NO = ['Es aguda, pero no acaba en vocal, -n ni -s', 'Es llana y acaba en vocal', 'Es llana y acaba en -n', 'Es llana y acaba en -s', 'Es esdrújula y por eso no lleva tilde'];
 function reglasHTML(on){ return '<div class="reglas">' + AC.TIPOS.map(function(t){ return '<div class="regla ' + t + (on === t ? ' on' : '') + '"><b>' + t.toUpperCase() + 'S</b>' + REGLA[t] + '</div>'; }).join('') + '</div>'; }
-function nueva(){ lista = AC.mezclar(AC.ronda(6, function(x){ return x.tilde; }).concat(AC.mezclar(AC.de('aguda', function(x){ return !x.tilde; })).slice(0, 2), AC.mezclar(AC.de('llana', function(x){ return !x.tilde; })).slice(0, 2))); i = 0; }
+function nueva(){ lista = AC.mezclar(AC.ronda(6, function(x){ return x.tilde; }).concat(AC.tomar(AC.de('aguda', function(x){ return !x.tilde; }), 2), AC.tomar(AC.de('llana', function(x){ return !x.tilde; }), 2))); i = 0; }
 function explica(){
   var x = lista[i], paso = 0;
   $('zona').innerHTML = '<div class="ac-pizarra" id="piz">' + AC.silHTML(x, { sinTilde:true }) +
@@ -69,7 +69,7 @@ function explica(){
   $('bSig').onclick = function(){ i = (i + 1) % lista.length; explica(); };
   $('bOtra').onclick = function(){ nueva(); explica(); };
 }
-function practica(){ ronda = AC.mezclar(AC.ronda(5, function(x){ return x.tilde; }).concat(AC.mezclar(AC.de('aguda', function(x){ return !x.tilde; })).slice(0, 2), AC.mezclar(AC.de('llana', function(x){ return !x.tilde; })).slice(0, 1))); k = 0; puntos = 0; fallos = []; pregunta(); }
+function practica(){ ronda = AC.mezclar(AC.ronda(5, function(x){ return x.tilde; }).concat(AC.tomar(AC.de('aguda', function(x){ return !x.tilde; }), 2), AC.tomar(AC.de('llana', function(x){ return !x.tilde; }), 1))); k = 0; puntos = 0; fallos = []; pregunta(); }
 function pregunta(){
   var x = ronda[k], r = AC.razon(x), base = x.tilde ? SI : NO, intento = false;
   var ops = AC.mezclar([r].concat(AC.mezclar(base.filter(function(y){ return y !== r; })).slice(0, 3)));

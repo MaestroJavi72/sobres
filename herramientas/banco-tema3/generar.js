@@ -68,7 +68,7 @@ function alta(anot, grupo){
   if(auto.join('-') !== limpio.join('-')) e('separación «' + limpio.join('-') + '» y el separador dice «' + auto.join('-') + '»');
   /* hiatos: vocal al final de una sílaba y vocal al principio de la siguiente, o í/ú junto a otra vocal */
   for(let i = 0; i < limpio.length - 1; i++) if(esV(limpio[i].slice(-1)) && esV(limpio[i+1].replace(/^h/, '')[0])) e('hiato');
-  if(/[íú][aeiouáéó]|[aeiouáéó][íú]/.test(w)) e('hiato con í/ú');
+  if(/[íú][aeiouáéó]|[aeiouáéó][íú]/.test(w.replace(/([qg])u(?=[eéií])/g, '$1'))) e('hiato con í/ú');   /* la u de que/qui/gue/gui no suena */
   const conTilde = TILDES.test(w), fin = final(w);
   const tDer = conTilde ? limpio.findIndex(s => TILDES.test(s)) : (fin === 'otra' ? limpio.length - 1 : limpio.length - 2);
   if(tDer !== t) e('la sílaba tónica marcada (' + limpio[t] + ') no coincide con la que dice la ortografía (' + limpio[tDer] + ')');
@@ -83,6 +83,17 @@ Object.keys(P).forEach(g => P[g].forEach(a => alta(a, g)));
 ['iz-^quier-da','de-^re-cha','es-^pa-cio','^par-te','pe-^que-ño','^la-do','ac-ti-vi-^dad','^fuer-te','pro-fun-da-^men-te','ins-^tan-tes','sen-^tir','a-di-cio-^nal',
  '^má-gi-ca','a-^brió','po-^cio-nes','ex-^tra-ño','guar-^dó','be-^ber','lu-^gar','es-ti-^rar','par-^ti-do','^fres-co','pe-^que-ña','^ma-go','^cla-se','pro-fe-^sor','^to-dos','e-^xá-me-nes','^jó-ve-nes']
   .forEach(a => alta(a, 'texto'));
+/* palabras EXTRA (solo para las interactivas): escritas por tipo; la separación y la tónica las calcula el separador y tienen que dar
+   el MISMO tipo que la lista en la que están (dos fuentes que se comprueban entre sí). Las repetidas se saltan. */
+{ const X = require('./palabras-extra.js'), esperado = { aguda:'aguda', agudaSin:'aguda', llana:'llana', llanaCon:'llana', esdrujula:'esdrújula' };
+  Object.keys(X).forEach(l => X[l].forEach(w => {
+    if(W.has(w)) return;
+    const sil = silabear(w), conT = TILDES.test(w), t = conT ? sil.findIndex(x => TILDES.test(x)) : (final(w) === 'otra' ? sil.length - 1 : sil.length - 2);
+    const pos = sil.length - 1 - t, tipo = pos === 0 ? 'aguda' : pos === 1 ? 'llana' : pos === 2 ? 'esdrújula' : '?';
+    if(tipo !== esperado[l]) return ERR.push('extra «' + w + '»: el separador dice ' + sil.join('-') + ' (' + tipo + ') y está en la lista de ' + esperado[l]);
+    if((l === 'agudaSin' && conT) || (l === 'aguda' && !conT) || (l === 'llana' && conT) || (l === 'llanaCon' && !conT)) return ERR.push('extra «' + w + '»: tilde que no toca a su lista');
+    alta(sil.map((x, i) => (i === t ? '^' : '') + x).join('-'), 'extra');
+  })); }
 
 /* ---------- utilidades ---------- */
 let semilla = 20261104;
@@ -99,7 +110,7 @@ function razon(x){
   return x.tilde ? 'Es llana y no acaba en vocal, -n ni -s' : 'Es llana y acaba ' + finTxt(x);
 }
 const expRegla = x => sep(x) + ': tónica «' + x.sil[x.t] + '», ' + posTxt[x.tipo] + ' sílaba → ' + x.tipo + '. ' + razon(x) + (x.tipo === 'esdrújula' ? '.' : x.tilde ? ' → lleva tilde.' : ' → no lleva tilde.');
-const pool = f => [...W.values()].filter(x => x.grupo !== 'texto' && f(x));
+const pool = f => [...W.values()].filter(x => x.grupo !== 'texto' && x.grupo !== 'extra' && f(x));   /* el banco no cambia con las extra */
 /* cartas.js usa las mismas palabras comprobadas: si lo carga otro script, aquí se para (no genera el banco) */
 module.exports = { W, ERR, SIN_TILDE, TILDES, sep, razon };
 if(require.main !== module) return;
@@ -178,7 +189,7 @@ const tokens = t => t.toLowerCase().match(/[a-záéíóúüñ]+/g);
 TEXTOS.forEach(T => {
   const tk = tokens(T.t), conT = tk.filter(w => TILDES.test(w));
   conT.forEach(w => { if(!W.has(w) && !(T.id === 'ej18' && w === 'más')) ERR.push('texto ' + T.id + ': «' + w + '» lleva tilde y no está comprobada'); });
-  const enL = [...new Set(tk)].filter(w => W.has(w)).map(w => W.get(w)), n = conT.length;
+  const enL = [...new Set(tk)].filter(w => W.has(w) && W.get(w).grupo !== 'extra').map(w => W.get(w)), n = conT.length;
   /* a) cuántas tildes */
   op(6, '¿Cuántas palabras con tilde hay en el texto?', String(n), [n - 2, n - 1, n + 1].filter(v => v > 0).map(String), { dif:3, texto:T.t, exp:'Llevan tilde: ' + conT.join(', ') + ' (' + n + ').' });
   /* b) tipo de dos palabras del texto */

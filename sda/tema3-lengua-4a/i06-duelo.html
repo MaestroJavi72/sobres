@@ -80,12 +80,13 @@ function miembrosHTML(){ return CASAS.map(function(c){ return '<b>' + c.e + ' ' 
 /* ---------- preguntas ---------- */
 function variantes(x){ var s = x.s.map(AC.sinT), M = { a:'á', e:'é', o:'ó', i:'í', u:'ú' }, out = {};
   out[AC.sinT(x.w)] = 1;
-  s.forEach(function(sil, i){ var j = sil.search(/[aeo]/); if(j < 0) j = sil.search(/[iu]/); if(j < 0) return; var c = s.slice(); c[i] = sil.slice(0, j) + M[sil[j]] + sil.slice(j + 1); out[c.join('')] = 1; });
+  /* la tilde mal puesta solo en la tónica o ANTES de ella: después podría salir otra palabra que existe (salto → saltó, trabajo → trabajó) */
+  s.forEach(function(sil, i){ if(i > x.t) return; var j = sil.search(/[aeo]/); if(j < 0) j = sil.search(/[iu]/); if(j < 0) return; var c = s.slice(); c[i] = sil.slice(0, j) + M[sil[j]] + sil.slice(j + 1); out[c.join('')] = 1; });
   delete out[x.w]; return Object.keys(out).filter(function(v){ return !AC.TODAS.some(function(y){ return y.w === v; }); }); }
 function crear(x, c){
   if(c === 'tipo') return { x:x, txt:'¿Es aguda, llana o esdrújula?', ver:AC.silHTML(x, { sinTilde:true }), ops:AC.TIPOS.slice(), ok:x.tipo };
   if(c === 'tilde') return { x:x, txt:'¿Lleva tilde?', ver:AC.silHTML(x, { sinTilde:true }), ops:['Sí', 'No'], ok:x.tilde ? 'Sí' : 'No' };
-  var v = AC.mezclar(variantes(x)).slice(0, 2); return { x:x, txt:'¿Cuál está bien escrita?', ver:'', ops:AC.mezclar([x.w].concat(v)), ok:x.w };
+  var v = AC.mezclar(variantes(x)).slice(0, 2); if(!v.length) return crear(x, 'tilde'); return { x:x, txt:'¿Cuál está bien escrita?', ver:'', ops:AC.mezclar([x.w].concat(v)), ok:x.w };
 }
 function botonOp(q, o){ return '<button class="ac-b ' + (AC.TIPOS.indexOf(o) >= 0 ? o : o === 'Sí' ? 'si' : o === 'No' ? 'no' : 'si') + '" data-o="' + AC.esc(o) + '" type="button" style="' + (q.txt.indexOf('escrita') > 0 ? 'text-transform:none;font-family:Andika,sans-serif' : '') + '">' + (AC.TIPOS.indexOf(o) >= 0 ? o.toUpperCase() : AC.esc(o)) + '</button>'; }
 function explicacion(q){ var x = q.x; return 'Se escribe «<b>' + AC.esc(x.w) + '</b>». ' + (q.txt.indexOf('aguda') >= 0 ? 'Tónica «' + AC.esc(x.s[x.t]) + '», ' + AC.POS[x.tipo] + ' → ' + x.tipo + '.' : AC.esc(AC.razon(x)) + '.'); }

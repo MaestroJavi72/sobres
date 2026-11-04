@@ -18,10 +18,19 @@ function razon(x){
 function semilla(t){ var h = 2166136261; for(var i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 16777619);
   return function(){ h |= 0; h = h + 0x6D2B79F5 | 0; var r = Math.imul(h ^ h >>> 15, 1 | h); r = r + Math.imul(r ^ r >>> 7, 61 | r) ^ r; return ((r ^ r >>> 14) >>> 0) / 4294967296; }; }
 function mezclar(a, rnd){ rnd = rnd || Math.random; a = a.slice(); for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(rnd() * (i + 1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+/* SIN REPETIR (Javi, 4/11/2026): el aparato recuerda cuándo salió cada palabra (localStorage t3-vistas, compartido por todas las
+   actividades) y elige primero las que nunca han salido y luego las que salieron hace más tiempo. */
+var KV = 't3-vistas';
+function vistas(){ try{ return JSON.parse(localStorage.getItem(KV)) || {}; }catch(e){ return {}; } }
+function marcar(l){ var v = vistas(), t = Date.now(); l.forEach(function(x){ v[x.w] = t; }); try{ localStorage.setItem(KV, JSON.stringify(v)); }catch(e){} }
+function elegir(cands, n, rnd){ var v = vistas(); return mezclar(cands, rnd).sort(function(a, b){ return (v[a.w] || 0) - (v[b.w] || 0); }).slice(0, n); }
 function de(tipo, filtro){ return P.filter(function(x){ return x.tipo === tipo && (!filtro || filtro(x)); }); }
 /* ronda equilibrada: n palabras con los tres tipos */
 function ronda(n, filtro, rnd){ var l = []; for(var i = 0; i < n; i++) l.push(TIPOS[i % 3]);
-  var usadas = {}; return mezclar(l, rnd).map(function(t){ var c = mezclar(de(t, function(x){ return !usadas[x.w] && (!filtro || filtro(x)); }), rnd)[0]; if(c) usadas[c.w] = 1; return c; }).filter(Boolean); }
+  var usadas = {}, r = mezclar(l, rnd).map(function(t){ var c = elegir(de(t, function(x){ return !usadas[x.w] && (!filtro || filtro(x)); }), 1, rnd)[0]; if(c) usadas[c.w] = 1; return c; }).filter(Boolean);
+  marcar(r); return r; }
+/* n palabras de una lista, las menos vistas primero (y se apuntan como vistas) */
+function tomar(cands, n){ var r = elegir(cands, n); marcar(r); return r; }
 /* sílabas: o.sinTilde = enseñar sin tildes; o.mayus = la tónica en mayúsculas */
 function silHTML(x, o){ o = o || {};
   return '<div class="ac-sils ' + (o.clase || '') + '">' + x.s.map(function(s, j){ var t = o.sinTilde ? sinT(s) : s; if(o.mayus && j === x.t) t = t.toUpperCase();
@@ -47,6 +56,6 @@ function tipoHTML(x){ return '<span class="ac-tipo ' + x.tipo + '">' + x.tipo.to
 function tresCasas(on){ return '<div class="ac-tres">' + [['aguda', 'la última', 'ca-mión, na-riz'], ['llana', 'la penúltima', 'ár-bol, bo-ca'], ['esdrújula', 'la antepenúltima', 'mú-si-ca']]
   .map(function(c){ return '<div class="ac-casa ' + c[0] + (on === c[0] ? ' on' : '') + '"><b>' + c[0].toUpperCase() + '</b>tónica: ' + c[1] + '<br><small>' + c[2] + '</small></div>'; }).join('') + '</div>'; }
 function voz(x){ if(window.ACT) ACT.voz(x.w); }
-window.AC = { P:P, TODAS:TODAS, TIPOS:TIPOS, POS:POS, esc:esc, sinT:sinT, finTxt:finTxt, razon:razon, semilla:semilla, mezclar:mezclar, de:de, ronda:ronda,
+window.AC = { P:P, TODAS:TODAS, TIPOS:TIPOS, POS:POS, esc:esc, sinT:sinT, finTxt:finTxt, razon:razon, semilla:semilla, mezclar:mezclar, de:de, ronda:ronda, tomar:tomar, marcar:marcar,
   silHTML:silHTML, animarTipo:animarTipo, ponerTilde:ponerTilde, tipoHTML:tipoHTML, tresCasas:tresCasas, voz:voz };
 })();
