@@ -69,11 +69,11 @@ Veinte sesiones según el horario de 4ºA: 60 min de lunes a viernes, salvo los 
 | 7 | Lun 16 nov | 60' | Contables e incontables, individuales y colectivos | Pregunta del día. Calentamiento: Acentuación 3. Contables e incontables. Músico → orquesta, ave → bandada, pino → pinar, isla → archipiélago, libro → biblioteca. Buscar el colectivo de plumas, ovejas, abejas, hayas, estrellas, cerdos | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
 | 8 | Mar 17 nov | 60' | Poner tildes en un texto | Pregunta del día. Ej. 18: copiar el texto de los pulmones poniendo las tildes. Actividad E. Calentamiento: Acentuación 4 | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
 | 9 | Mié 18 nov | 60' | Hablamos con cortesía | Pregunta del día. Calentamiento: Acentuación 4. Normas y fórmulas de cortesía. Por parejas, se reparten las tarjetas del teatrillo y se prepara la situación | I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa) |
-| 10 | Jue 19 nov | 90' | Teatrillo de la cortesía + ¿por qué lleva tilde? | Pregunta del día y calentamiento: Acentuación 5 (10'). Representaciones y valoración (50'). Explicar por qué lleva o no lleva tilde, en el cuaderno (30') | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa) |
+| 10 | Jue 19 nov | 90' | Teatrillo de la cortesía + ¿por qué lleva tilde? | Pregunta del día y calentamiento: Acentuación 5 (10'). Representaciones y valoración (50'). Explicar por qué lleva o no lleva tilde, en el cuaderno (30') | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa), I-6 Duelo de tildes por casas (puntúa) |
 | 11 | Vie 20 nov | 60' | Los personajes de la narración | Pregunta del día. Protagonista, personajes secundarios y escenario con «Los tres cerditos». Calentamiento: Acentuación 5 | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
-| 12 | Lun 23 nov | 60' | Repaso: acentuación | Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner. Entrenar en los ordenadores por niveles | I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa), I-4 Cura la palabra (puntúa) |
+| 12 | Lun 23 nov | 60' | Repaso: acentuación | Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner. Entrenar en los ordenadores por niveles | I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa), I-4 Cura la palabra (puntúa), I-6 Duelo de tildes por casas (puntúa) |
 | 13 | Mar 24 nov | 60' | Repaso: nombres, lectura y personajes | Pregunta del día. Repaso de las clases de nombres, del vocabulario de la lectura y de los personajes | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa) |
-| 14 | Mié 25 nov | 60' | Repaso general | Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y misión de 5 niveles en los ordenadores | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
+| 14 | Mié 25 nov | 60' | Repaso general | Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y misión de 5 niveles en los ordenadores | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa), I-6 Duelo de tildes por casas (puntúa) |
 | 15 | Jue 26 nov | 90' | Control del Tema 3 | Control (1 h 30) | — |
 | 16 | Vie 27 nov | 60' | Tarea final (1): diagnóstico y tratamiento | Pregunta del día. Cada casa recibe su «paciente»: una carta sin tildes. Historial clínico de cada palabra herida (sílabas, tónica y tipo) y receta (pone la tilde y explica por qué) | I-2 La pregunta del día (no puntúa) |
 | 17 | Lun 30 nov | 60' | Tarea final (2): el cartel y el reto | Pregunta del día. Cada casa hace el cartel de su regla y prepara 5 palabras heridas para otra casa | I-2 La pregunta del día (no puntúa) |
@@ -210,7 +210,7 @@ Un hechizo ha borrado las tildes de las cartas que los alumnos de Hogwarts enví
 
 ## Actividades interactivas
 
-Cinco actividades para la pizarra (y para los ordenadores), con las mismas palabras comprobadas del banco (`sda/tema3-lengua-4a/palabras.js`). Javi: «todos los días se les pregunta los tipos de palabras y si lleva tilde o no».
+Seis actividades para la pizarra (y para los ordenadores), con las mismas palabras comprobadas del banco (`sda/tema3-lengua-4a/palabras.js`). Javi: «todos los días se les pregunta los tipos de palabras y si lleva tilde o no».
 
 | Código | Nombre | Tipo | Puntúa | Qué hace |
 | --- | --- | --- | --- | --- |
@@ -218,6 +218,7 @@ Cinco actividades para la pizarra (y para los ordenadores), con las mismas palab
 | I-2 | La pregunta del día | Rutina diaria | No (punto con «¿Quién responde?») | Cada día 3 palabras nuevas (una de cada tipo), sin tilde y en voz alta. La clase vota con la mano el tipo y, desde el 12/11, si lleva tilde; la tilde cae en su sitio con la razón. «Una más» para seguir |
 | I-3 | Los tres calderos | Repaso | Sí | 12 palabras a los calderos de agudas, llanas y esdrújulas (tocar o arrastrar). Modos con tilde, sin tilde (hay que oírla) y mezcla |
 | I-4 | Cura la palabra | Repaso de las reglas | Sí | La palabra llega sin tilde: tocar la vocal donde va o decir «está sana». Con pista (brilla la tónica) o sin pista |
+| I-6 | Duelo de tildes por casas | Juego por equipos | Sí (+1 galeón a la casa ganadora, con código) | Las casas de las mesas se enfrentan de dos en dos (rotan): la primera que levanta la varita contesta y, si falla, rebota. Preguntas de tipo, de ¿lleva tilde? y de ¿cuál está bien escrita?. Podio al final |
 | I-5 | La receta de la tilde | Explicación y práctica | En la práctica | Las reglas en 4 pasos: dónde está la tónica, en qué acaba, qué dice la regla y la tilde cae (o no). Práctica: elegir por qué lleva o no lleva tilde |
 
 Además, en los ordenadores: misiones de La Copa por niveles de acentuación, Entrenar y retos (banco del Tema 3). Y I-12 Lumos del Tema 2 para recordar la sílaba tónica (S2).

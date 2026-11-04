@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Duelo de tildes por casas</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+<style>
+.marc{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:8px;width:100%}
+.cs{border-radius:14px;padding:8px;color:#fff;background:var(--c);border:3px solid var(--c2);text-align:center;opacity:.5;transition:all .3s}
+.cs.juega{opacity:1;transform:scale(1.05);box-shadow:0 0 18px var(--c2)}
+.cs b{display:block;font-family:'Cinzel',serif;font-size:clamp(14px,1.8vw,19px)}
+.cs .pt{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(26px,4vw,44px)}
+.varitas{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.varita{font-family:'Cinzel',serif;font-weight:800;font-size:clamp(20px,3vw,32px);padding:clamp(16px,3vw,28px);border-radius:20px;border:4px solid var(--c2);background:var(--c);color:#fff;cursor:pointer}
+.varita:disabled{opacity:.35;cursor:default}
+.varita.turno{box-shadow:0 0 0 6px #fff,0 0 30px var(--c2)}
+.miembros{font-size:15px;color:#6b5732;max-width:900px}
+.cfg{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;max-width:900px}
+.casas-sel{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.casas-sel label{display:flex;gap:6px;align-items:center;padding:6px 12px;border-radius:12px;color:#fff;background:var(--c);border:3px solid var(--c2);font-family:var(--f-sub);font-weight:700;font-size:17px;cursor:pointer}
+.podio{display:flex;gap:10px;align-items:flex-end;justify-content:center;width:100%;max-width:800px;height:240px}
+.podio div{flex:1;border-radius:14px 14px 0 0;background:var(--c);border:3px solid var(--c2);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:8px;font-family:'Cinzel',serif;font-weight:800}
+@media (max-width:700px){ .marc{grid-template-columns:repeat(3,1fr)} }
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⚔️ Duelo de tildes<span class="sub">I-6 · Por casas · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="palabras.js"></script>
+<script src="acentos.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-6 (Tema 3) · DUELO DE TILDES POR CASAS (Javi, 4/11/2026). Las casas son las mesas del plano vigente de data/mesas-4A.json.
+   En cada pregunta se enfrentan DOS casas (van rotando para que todas jueguen lo mismo): la primera que levanta la varita contesta
+   (el maestro toca lo que dice la casa); si falla, REBOTA a la otra. Acierto = +1 punto de duelo. Preguntas de tres clases:
+   ¿qué tipo es? · ¿lleva tilde? (sin tilde y en voz alta) · ¿cuál está bien escrita? Al final, podio y, con el código, +1 galeón
+   a cada alumno de la casa ganadora (sin los que faltan hoy: faltan|4ºA|fecha). Los puntos del duelo no van a la Hoja. */
+var $ = ACT.$, CASAS = [], ELEG = [], N = 15, preguntas = [], k = 0, PT = {}, GALEON = 1;
+var COL = { 'gryffindor':['#8f0b0d','#eeba30','🦁'], 'hufflepuff':['#a67c00','#1d1a16','🦡'], 'ravenclaw':['#1a2b6b','#b08d57','🦅'], 'slytherin':['#1a5a34','#c0c0c0','🐍'], 'orden del fénix':['#5b2a86','#ff9a3c','🔥'] };
+function estilo(c){ return '--c:' + c.c + ';--c2:' + c.c2; }
+function cargarCasas(){
+  return fetch('../../data/mesas-4A.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(d){
+    var p = d.planos[d.plano_vigente];
+    CASAS = p.mesas.map(function(m){ var n = d.casas[String(m.mesa)] || ('Mesa ' + m.mesa), c = COL[n.toLowerCase()] || ['#444','#999','🪑'];
+      return { id:m.mesa, n:n, c:c[0], c2:c[1], e:c[2], al:m.alumnos.slice() }; });
+    if(p.pupitre_individual){ var t = CASAS.filter(function(c){ return c.id === p.equipo_pupitre; })[0] || CASAS[0]; t.al.push(p.pupitre_individual); }
+  }).catch(function(){ CASAS = Object.keys(COL).map(function(n, i){ return { id:i + 1, n:n.replace(/\b\w/g, function(l){ return l.toUpperCase(); }), c:COL[n][0], c2:COL[n][1], e:COL[n][2], al:[] }; }); });
+}
+function abierta(){ return window.JAVI && JAVI.claseAbierta && JAVI.claseAbierta('4ºA'); }
+function config(){
+  $('escena').innerHTML = '<div class="cfg"><p class="instr">En cada pregunta se enfrentan <b>dos casas</b>. ¡La primera que levanta la varita contesta! Si falla, <b>rebota</b> a la otra.</p>' +
+    '<div class="casas-sel">' + CASAS.map(function(c){ return '<label style="' + estilo(c) + '"><input type="checkbox" data-id="' + c.id + '" checked> ' + c.e + ' ' + AC.esc(c.n) + '</label>'; }).join('') + '</div>' +
+    '<label class="instr">Preguntas: <select id="nq"><option>10</option><option selected>15</option><option>20</option><option>30</option></select></label>' +
+    '<label class="instr">Qué se pregunta: <select id="qt"><option value="todo" selected>Todo mezclado</option><option value="tipo">Solo agudas, llanas y esdrújulas</option><option value="tilde">Solo ¿lleva tilde? y bien escrita</option></select></label>' +
+    '<div class="miembros" id="miem">' + (abierta() ? miembrosHTML() : '<button class="mini" id="bVer" type="button">🔓 Ver quién está en cada casa (código 4A)</button>') + '</div>' +
+    '<button class="gran" id="bEmp" type="button">⚔️ ¡Que empiece el duelo!</button></div>';
+  if($('bVer')) $('bVer').onclick = function(){ JAVI.protegerClase('4ºA', { alAbrir:function(){ $('miem').innerHTML = miembrosHTML(); } }); };
+  $('bEmp').onclick = function(){
+    ELEG = CASAS.filter(function(c){ return document.querySelector('[data-id="' + c.id + '"]').checked; });
+    if(ELEG.length < 2) return alert('Elige al menos dos casas');
+    N = +$('nq').value; preparar($('qt').value); };
+}
+function miembrosHTML(){ return CASAS.map(function(c){ return '<b>' + c.e + ' ' + AC.esc(c.n) + ':</b> ' + c.al.map(AC.esc).join(', '); }).join('<br>'); }
+/* ---------- preguntas ---------- */
+function variantes(x){ var s = x.s.map(AC.sinT), M = { a:'á', e:'é', o:'ó', i:'í', u:'ú' }, out = {};
+  out[AC.sinT(x.w)] = 1;
+  s.forEach(function(sil, i){ var j = sil.search(/[aeo]/); if(j < 0) j = sil.search(/[iu]/); if(j < 0) return; var c = s.slice(); c[i] = sil.slice(0, j) + M[sil[j]] + sil.slice(j + 1); out[c.join('')] = 1; });
+  delete out[x.w]; return Object.keys(out).filter(function(v){ return !AC.TODAS.some(function(y){ return y.w === v; }); }); }
+function preparar(que){
+  var clases = que === 'tipo' ? ['tipo'] : que === 'tilde' ? ['tilde', 'escrita'] : ['tipo', 'tilde', 'escrita'];
+  var pal = AC.ronda(N);
+  preguntas = pal.map(function(x, i){ var c = clases[i % clases.length];
+    if(c === 'tipo') return { x:x, txt:'¿Es aguda, llana o esdrújula?', ver:AC.silHTML(x, { sinTilde:true }), ops:AC.TIPOS.slice(), ok:x.tipo };
+    if(c === 'tilde') return { x:x, txt:'¿Lleva tilde?', ver:AC.silHTML(x, { sinTilde:true }), ops:['Sí', 'No'], ok:x.tilde ? 'Sí' : 'No' };
+    var v = AC.mezclar(variantes(x)).slice(0, 2); return { x:x, txt:'¿Cuál está bien escrita?', ver:'', ops:AC.mezclar([x.w].concat(v)), ok:x.w };
+  });
+  /* parejas que rotan: todas las casas juegan lo mismo */
+  var pares = []; for(var a = 0; a < ELEG.length; a++) for(var b = a + 1; b < ELEG.length; b++) pares.push([ELEG[a], ELEG[b]]);
+  pares = AC.mezclar(pares); preguntas.forEach(function(q, i){ q.par = AC.mezclar(pares[i % pares.length]); });
+  PT = {}; ELEG.forEach(function(c){ PT[c.id] = 0; }); k = 0; pregunta();
+}
+function marcadorHTML(par){ return '<div class="marc" style="--n:' + ELEG.length + '">' + ELEG.map(function(c){ return '<div class="cs' + (par.indexOf(c) >= 0 ? ' juega' : '') + '" style="' + estilo(c) + '"><b>' + c.e + ' ' + AC.esc(c.n) + '</b><span class="pt">' + PT[c.id] + '</span></div>'; }).join('') + '</div>'; }
+function pregunta(){
+  var q = preguntas[k], x = q.x, par = q.par, turno = null, fuera = {};
+  $('escena').innerHTML = '<div class="barraSup"><span>Pregunta ' + (k + 1) + ' de ' + preguntas.length + '</span><div class="progreso"><i style="width:' + (k / preguntas.length * 100) + '%"></i></div></div>' + marcadorHTML(par) +
+    '<div class="ac-pizarra" id="piz"><div class="ac-paso">' + par[0].e + ' ' + AC.esc(par[0].n) + ' contra ' + par[1].e + ' ' + AC.esc(par[1].n) + '</div>' +
+    (q.ver || '<div class="ac-palabra">🔊</div>') + '<div class="ac-paso" id="txt">' + q.txt + '</div>' +
+    '<div class="varitas" id="var">' + par.map(function(c, i){ return '<button class="varita" data-i="' + i + '" style="' + estilo(c) + '" type="button">✨ ¡' + AC.esc(c.n) + '!</button>'; }).join('') + '</div>' +
+    '<div class="ac-bots" id="ops" hidden>' + q.ops.map(function(o){ return '<button class="ac-b ' + (AC.TIPOS.indexOf(o) >= 0 ? o : o === 'Sí' ? 'si' : o === 'No' ? 'no' : 'si') + '" data-o="' + AC.esc(o) + '" type="button" style="' + (q.txt.indexOf('escrita') > 0 ? 'text-transform:none;font-family:Andika,sans-serif' : '') + '">' + (AC.TIPOS.indexOf(o) >= 0 ? o.toUpperCase() : AC.esc(o)) + '</button>'; }).join('') + '</div>' +
+    '<div class="ac-nota" id="nota"></div><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div>' +
+    '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button><button class="mini" id="bNadie" type="button">🤷 Nadie lo sabe</button></div>';
+  AC.voz(x); $('bOir').onclick = function(){ AC.voz(x); };
+  function darTurno(i){ turno = i; ACT.SON.magia(); Array.prototype.forEach.call(document.querySelectorAll('.varita'), function(b){ b.disabled = +b.dataset.i !== i; b.classList.toggle('turno', +b.dataset.i === i); });
+    $('ops').hidden = false; $('nota').innerHTML = 'Contesta <b>' + par[i].e + ' ' + AC.esc(par[i].n) + '</b>.'; }
+  Array.prototype.forEach.call(document.querySelectorAll('.varita'), function(b){ b.onclick = function(){ if(turno === null && !fuera[+b.dataset.i]) darTurno(+b.dataset.i); }; });
+  function cerrar(ganador){
+    $('ops').hidden = true; $('bNadie').hidden = true; Array.prototype.forEach.call(document.querySelectorAll('.varita'), function(b){ b.disabled = true; });
+    if(ganador){ PT[ganador.id]++; ACT.SON.acierto(); }
+    var exp = q.txt.indexOf('tipo') >= 0 || q.txt.indexOf('aguda') >= 0 ? 'Tónica «' + AC.esc(x.s[x.t]) + '», ' + AC.POS[x.tipo] + ' → ' + x.tipo + '.' : AC.esc(AC.razon(x)) + '.';
+    $('nota').innerHTML = (ganador ? '¡Punto para ' + ganador.e + ' ' + AC.esc(ganador.n) + '! ' : 'Nadie ha acertado. ') + 'Se escribe «<b>' + AC.esc(x.w) + '</b>». ' + exp;
+    if(q.ver) AC.animarTipo($('piz'), x, function(){ AC.ponerTilde($('piz'), x); });
+    document.querySelector('.marc').outerHTML = marcadorHTML(par);
+    $('bSig').hidden = false; if(k + 1 === preguntas.length) $('bSig').textContent = '🏁 ¡Ver quién gana!'; }
+  Array.prototype.forEach.call(document.querySelectorAll('#ops button'), function(b){ b.onclick = function(){ if(turno === null) return;
+    if(b.dataset.o === q.ok) return cerrar(par[turno]);
+    ACT.SON.fallo(); b.disabled = true; fuera[turno] = 1; var otro = 1 - turno;
+    if(fuera[otro]) return cerrar(null);
+    turno = null; $('ops').hidden = true; $('nota').innerHTML = '¡Fallo! <b>Rebota</b> a ' + par[otro].e + ' ' + AC.esc(par[otro].n) + '.'; darTurno(otro); }; });
+  $('bNadie').onclick = function(){ cerrar(null); };
+  $('bSig').onclick = function(){ k++; if(k < preguntas.length) pregunta(); else fin(); };
+}
+function fin(){
+  var orden = ELEG.slice().sort(function(a, b){ return PT[b.id] - PT[a.id]; }), top = PT[orden[0].id], gan = orden.filter(function(c){ return PT[c.id] === top; });
+  var alto = [100, 75, 55, 40, 30];
+  $('escena').innerHTML = '<div class="final"><h2>' + (gan.length > 1 ? '🤝 ¡Empate entre ' + gan.map(function(c){ return c.e + ' ' + AC.esc(c.n); }).join(' y ') + '!' : '🏆 ¡Gana ' + gan[0].e + ' ' + AC.esc(gan[0].n) + '!') + '</h2>' +
+    '<div class="podio">' + orden.map(function(c, i){ return '<div style="' + estilo(c) + ';height:' + alto[i] + '%;order:' + [2, 1, 3, 0, 4][i] + '"><span>' + c.e + '</span><span>' + AC.esc(c.n) + '</span><span style="font-size:30px">' + PT[c.id] + '</span></div>'; }).join('') + '</div>' +
+    (window.JAVI && gan.length && gan[0].al.length ? '<button class="gran verde" id="bGal" type="button">🪙 +' + GALEON + ' galeón a cada alumno de ' + gan.map(function(c){ return AC.esc(c.n); }).join(' y ') + '</button><div class="detalle" id="galInfo">Pide el código. No se da a quien falta hoy.</div>' : '') +
+    '<div class="botones"><button class="gran sec" id="bOtro" type="button">⚔️ Otro duelo</button></div></div>';
+  ACT.SON.fanfarria();
+  $('bOtro').onclick = config;
+  if($('bGal')) $('bGal').onclick = function(){ var b = this;
+    JAVI.listo(function(){
+      if(!JAVI.llaveAbierta()) return JAVI.pedirCodigo({ titulo:'🔐 Código para dar galeones', texto:'Escribe el código y vuelve a pulsar el botón.' });
+      var falt = []; try{ falt = JSON.parse(localStorage.getItem('faltan|4ºA|' + JAVI.util.clave(new Date())) || '[]') || []; }catch(e){}
+      var dar = []; gan.forEach(function(c){ c.al.forEach(function(n){ if(falt.indexOf(n) < 0) dar.push(n); }); });
+      if(!confirm('¿Dar +' + GALEON + ' galeón a ' + dar.join(', ') + '?')) return;
+      dar.forEach(function(n){ JAVI.darPuntos('4ºA', n, GALEON, 'Acierto', 'Duelo de tildes (Tema 3)'); });
+      b.disabled = true; b.textContent = '✓ Galeones dados' + (JAVI.PRUEBA ? ' (modo prueba)' : ''); $('galInfo').textContent = dar.length + ' alumnos' + (falt.length ? ' · sin los que faltan hoy' : ''); ACT.SON.fanfarria(); }); };
+}
+cargarCasas().then(config);
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>

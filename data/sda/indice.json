@@ -489,7 +489,7 @@
      "objetivo": "Pregunta del día y calentamiento: Acentuación 5 (10'). Representaciones y valoración (50'). Explicar por qué lleva o no lleva tilde, en el cuaderno (30')",
      "fecha": "2026-11-19",
      "duracion": "90'",
-     "interactivas": "I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa), I-6 Duelo de tildes por casas (puntúa)"
     },
     {
      "titulo": "Los personajes de la narración",
@@ -503,7 +503,7 @@
      "objetivo": "Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner. Entrenar en los ordenadores por niveles",
      "fecha": "2026-11-23",
      "duracion": "60'",
-     "interactivas": "I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa), I-4 Cura la palabra (puntúa)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa), I-4 Cura la palabra (puntúa), I-6 Duelo de tildes por casas (puntúa)"
     },
     {
      "titulo": "Repaso: nombres, lectura y personajes",
@@ -517,7 +517,7 @@
      "objetivo": "Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y misión de 5 niveles en los ordenadores",
      "fecha": "2026-11-25",
      "duracion": "60'",
-     "interactivas": "I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa), I-6 Duelo de tildes por casas (puntúa)"
     },
     {
      "titulo": "Control del Tema 3",
@@ -568,7 +568,8 @@
     "I-3": "tema3-lengua-4a/i03-calderos.html",
     "I-4": "tema3-lengua-4a/i04-cura.html",
     "I-5": "tema3-lengua-4a/i05-receta.html",
-    "I-12": "tema2-lengua-4a/i12-lumos.html"
+    "I-12": "tema2-lengua-4a/i12-lumos.html",
+    "I-6": "tema3-lengua-4a/i06-duelo.html"
    },
    "recursos": [
     {
@@ -619,7 +620,8 @@
     "I-2": "☀️",
     "I-3": "⚗️",
     "I-4": "🩹",
-    "I-5": "📜"
+    "I-5": "📜",
+    "I-6": "⚔️"
    }
   }
  ]
