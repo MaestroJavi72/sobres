@@ -81,7 +81,7 @@ function alta(anot, grupo){
 Object.keys(P).forEach(g => P[g].forEach(a => alta(a, g)));
 /* palabras que salen en los textos (también comprobadas) */
 ['iz-^quier-da','de-^re-cha','es-^pa-cio','^par-te','pe-^que-ño','^la-do','ac-ti-vi-^dad','^fuer-te','pro-fun-da-^men-te','ins-^tan-tes','sen-^tir','a-di-cio-^nal',
- '^má-gi-ca','a-^brió','po-^cio-nes','ex-^tra-ño','guar-^dó','be-^ber','lu-^gar','es-ti-^rar','par-^ti-do','^fres-co','pe-^que-ña','^ma-go','^cla-se','pro-fe-^sor','^to-dos']
+ '^má-gi-ca','a-^brió','po-^cio-nes','ex-^tra-ño','guar-^dó','be-^ber','lu-^gar','es-ti-^rar','par-^ti-do','^fres-co','pe-^que-ña','^ma-go','^cla-se','pro-fe-^sor','^to-dos','e-^xá-me-nes','^jó-ve-nes']
   .forEach(a => alta(a, 'texto'));
 
 /* ---------- utilidades ---------- */

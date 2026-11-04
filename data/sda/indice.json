@@ -567,6 +567,38 @@
    },
    "recursos": [
     {
+     "n": "Ficha para familias · Agudas, llanas y esdrújulas",
+     "ic": "🖨️",
+     "url": "tema3-lengua-4a/ficha-agudas.html",
+     "sesiones": [
+      3,
+      4,
+      12
+     ]
+    },
+    {
+     "n": "Ficha para familias · Las reglas de la tilde",
+     "ic": "🖨️",
+     "url": "tema3-lengua-4a/ficha-tilde.html",
+     "sesiones": [
+      4,
+      5,
+      6,
+      8,
+      12
+     ]
+    },
+    {
+     "n": "Ficha para familias · Clases de nombres",
+     "ic": "🖨️",
+     "url": "tema3-lengua-4a/ficha-nombres.html",
+     "sesiones": [
+      5,
+      7,
+      13
+     ]
+    },
+    {
      "n": "Cartas de los pacientes (tarea final)",
      "ic": "🏥",
      "url": "tema3-lengua-4a/cartas-pacientes.html",
