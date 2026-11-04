@@ -66,7 +66,10 @@ function config(){
     '<label class="instr">Preguntas: <select id="nq"><option>10</option><option selected>15</option><option>20</option><option>30</option></select></label>' +
     '<label class="instr">Qué se pregunta: <select id="qt"><option value="todo" selected>Todo mezclado</option><option value="tipo">Solo agudas, llanas y esdrújulas</option><option value="tilde">Solo ¿lleva tilde? y bien escrita</option></select></label>' +
     '<div class="miembros" id="miem">' + (abierta() ? miembrosHTML() : '<button class="mini" id="bVer" type="button">🔓 Ver quién está en cada casa (código 4A)</button>') + '</div>' +
-    '<button class="gran" id="bEmp" type="button">⚔️ ¡Que empiece el duelo!</button></div>';
+    '<button class="gran" id="bEmp" type="button">⚔️ ¡Que empiece el duelo!</button>' +
+    '<p class="instr" style="margin-top:14px">O el <b>🎯 Reto de 3</b>, de uno en uno: tres preguntas a un alumno. <b>3 de 3: +1 galeón</b> · 1 o 2: ni gana ni pierde · <b>0 de 3: −1 galeón</b>.</p>' +
+    '<button class="gran azul" id="bReto" type="button">🎯 Reto de 3 (un alumno)</button></div>';
+  $('bReto').onclick = function(){ if(abierta()) return elegirAlumno(); JAVI.protegerClase('4ºA', { alAbrir:elegirAlumno }); };
   if($('bVer')) $('bVer').onclick = function(){ JAVI.protegerClase('4ºA', { alAbrir:function(){ $('miem').innerHTML = miembrosHTML(); } }); };
   $('bEmp').onclick = function(){
     ELEG = CASAS.filter(function(c){ return document.querySelector('[data-id="' + c.id + '"]').checked; });
@@ -79,14 +82,16 @@ function variantes(x){ var s = x.s.map(AC.sinT), M = { a:'á', e:'é', o:'ó', i
   out[AC.sinT(x.w)] = 1;
   s.forEach(function(sil, i){ var j = sil.search(/[aeo]/); if(j < 0) j = sil.search(/[iu]/); if(j < 0) return; var c = s.slice(); c[i] = sil.slice(0, j) + M[sil[j]] + sil.slice(j + 1); out[c.join('')] = 1; });
   delete out[x.w]; return Object.keys(out).filter(function(v){ return !AC.TODAS.some(function(y){ return y.w === v; }); }); }
+function crear(x, c){
+  if(c === 'tipo') return { x:x, txt:'¿Es aguda, llana o esdrújula?', ver:AC.silHTML(x, { sinTilde:true }), ops:AC.TIPOS.slice(), ok:x.tipo };
+  if(c === 'tilde') return { x:x, txt:'¿Lleva tilde?', ver:AC.silHTML(x, { sinTilde:true }), ops:['Sí', 'No'], ok:x.tilde ? 'Sí' : 'No' };
+  var v = AC.mezclar(variantes(x)).slice(0, 2); return { x:x, txt:'¿Cuál está bien escrita?', ver:'', ops:AC.mezclar([x.w].concat(v)), ok:x.w };
+}
+function botonOp(q, o){ return '<button class="ac-b ' + (AC.TIPOS.indexOf(o) >= 0 ? o : o === 'Sí' ? 'si' : o === 'No' ? 'no' : 'si') + '" data-o="' + AC.esc(o) + '" type="button" style="' + (q.txt.indexOf('escrita') > 0 ? 'text-transform:none;font-family:Andika,sans-serif' : '') + '">' + (AC.TIPOS.indexOf(o) >= 0 ? o.toUpperCase() : AC.esc(o)) + '</button>'; }
+function explicacion(q){ var x = q.x; return 'Se escribe «<b>' + AC.esc(x.w) + '</b>». ' + (q.txt.indexOf('aguda') >= 0 ? 'Tónica «' + AC.esc(x.s[x.t]) + '», ' + AC.POS[x.tipo] + ' → ' + x.tipo + '.' : AC.esc(AC.razon(x)) + '.'); }
 function preparar(que){
   var clases = que === 'tipo' ? ['tipo'] : que === 'tilde' ? ['tilde', 'escrita'] : ['tipo', 'tilde', 'escrita'];
-  var pal = AC.ronda(N);
-  preguntas = pal.map(function(x, i){ var c = clases[i % clases.length];
-    if(c === 'tipo') return { x:x, txt:'¿Es aguda, llana o esdrújula?', ver:AC.silHTML(x, { sinTilde:true }), ops:AC.TIPOS.slice(), ok:x.tipo };
-    if(c === 'tilde') return { x:x, txt:'¿Lleva tilde?', ver:AC.silHTML(x, { sinTilde:true }), ops:['Sí', 'No'], ok:x.tilde ? 'Sí' : 'No' };
-    var v = AC.mezclar(variantes(x)).slice(0, 2); return { x:x, txt:'¿Cuál está bien escrita?', ver:'', ops:AC.mezclar([x.w].concat(v)), ok:x.w };
-  });
+  preguntas = AC.ronda(N).map(function(x, i){ return crear(x, clases[i % clases.length]); });
   /* parejas que rotan: todas las casas juegan lo mismo */
   var pares = []; for(var a = 0; a < ELEG.length; a++) for(var b = a + 1; b < ELEG.length; b++) pares.push([ELEG[a], ELEG[b]]);
   pares = AC.mezclar(pares); preguntas.forEach(function(q, i){ q.par = AC.mezclar(pares[i % pares.length]); });
@@ -139,6 +144,56 @@ function fin(){
       if(!confirm('¿Dar +' + GALEON + ' galeón a ' + dar.join(', ') + '?')) return;
       dar.forEach(function(n){ JAVI.darPuntos('4ºA', n, GALEON, 'Acierto', 'Duelo de tildes (Tema 3)'); });
       b.disabled = true; b.textContent = '✓ Galeones dados' + (JAVI.PRUEBA ? ' (modo prueba)' : ''); $('galInfo').textContent = dar.length + ' alumnos' + (falt.length ? ' · sin los que faltan hoy' : ''); ACT.SON.fanfarria(); }); };
+}
+/* ---------- 🎯 RETO DE 3 (Javi, 4/11/2026: «yo pregunto 3: si acierta, se lleva galeón; si falla las tres, pierde un galeón»).
+   Un alumno, 3 preguntas (una de cada clase, en otro orden), sin rebote. 3/3 → +1 galeón · 1-2 → nada · 0/3 → −1 galeón
+   (con el código; motivo «Acierto» o «Tarea» −1, detalle «Reto de tildes (Tema 3): n de 3»). Ya retados hoy: localStorage reto3|fecha. */
+function kHoy(){ return 'reto3|' + JAVI.util.clave(new Date()); }
+function leer(k){ try{ return JSON.parse(localStorage.getItem(k) || '[]') || []; }catch(e){ return []; } }
+function elegirAlumno(){
+  var g = JAVI.grupo('4ºA'), falt = leer('faltan|4ºA|' + JAVI.util.clave(new Date())), ya = leer(kHoy());
+  var lista = (g ? g.nombres : []).filter(function(n){ return falt.indexOf(n) < 0; }), libres = lista.filter(function(n){ return ya.indexOf(n) < 0; });
+  $('escena').innerHTML = '<div class="cfg"><h2 class="j-titulo" style="font-size:clamp(26px,4vw,40px)">🎯 Reto de 3</h2><p class="instr">¿A quién retamos? Los tachados ya lo han hecho hoy (se pueden volver a elegir).</p>' +
+    '<button class="gran" id="bAzar" type="button" ' + (lista.length ? '' : 'disabled') + '>🎲 ¡Al azar!</button>' +
+    '<div class="lista" style="max-width:900px">' + lista.map(function(n){ return '<button class="mini" data-n="' + AC.esc(n) + '" type="button" style="' + (ya.indexOf(n) >= 0 ? 'text-decoration:line-through;opacity:.6' : '') + '">' + AC.esc(n) + '</button>'; }).join('') + '</div>' +
+    '<button class="mini" id="bVolver" type="button">↩ Volver al duelo por casas</button></div>';
+  $('bAzar').onclick = function(){ var de = libres.length ? libres : lista; reto(de[Math.floor(Math.random() * de.length)]); };
+  Array.prototype.forEach.call(document.querySelectorAll('[data-n]'), function(b){ b.onclick = function(){ reto(b.dataset.n); }; });
+  $('bVolver').onclick = config;
+}
+function reto(nombre){
+  var ya = leer(kHoy()); if(ya.indexOf(nombre) < 0){ ya.push(nombre); try{ localStorage.setItem(kHoy(), JSON.stringify(ya)); }catch(e){} }
+  var cl = AC.mezclar(['tipo', 'tilde', 'escrita']), qs = AC.ronda(3).map(function(x, i){ return crear(x, cl[i]); });
+  var i = 0, res = []; ACT.SON.magia(); paso();
+  function paso(){
+    var q = qs[i];
+    $('escena').innerHTML = '<div class="barraSup"><span>🎯 ' + AC.esc(nombre) + ' · pregunta ' + (i + 1) + ' de 3</span><div class="progreso"><i style="width:' + (i / 3 * 100) + '%"></i></div><span>' + res.map(function(r){ return r ? '✅' : '❌'; }).join(' ') + '</span></div>' +
+      '<div class="ac-pizarra" id="piz">' + (q.ver || '<div class="ac-palabra">🔊</div>') + '<div class="ac-paso">' + q.txt + '</div>' +
+      '<div class="ac-bots" id="ops">' + q.ops.map(function(o){ return botonOp(q, o); }).join('') + '</div><div class="ac-nota" id="nota"></div><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div>' +
+      '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+    AC.voz(q.x); $('bOir').onclick = function(){ AC.voz(q.x); };
+    Array.prototype.forEach.call(document.querySelectorAll('#ops button'), function(b){ b.onclick = function(){
+      if(!$('bSig').hidden) return; var ok = b.dataset.o === q.ok; res.push(ok);
+      Array.prototype.forEach.call(document.querySelectorAll('#ops button'), function(y){ y.disabled = true; if(y.dataset.o === q.ok) y.classList.add('elegido'); });
+      ok ? ACT.SON.acierto() : ACT.SON.fallo(); $('nota').innerHTML = (ok ? '✅ ¡Bien! ' : '❌ No. ') + explicacion(q);
+      if(q.ver) AC.animarTipo($('piz'), q.x, function(){ AC.ponerTilde($('piz'), q.x); });
+      $('bSig').hidden = false; if(i === 2) $('bSig').textContent = '🏁 Resultado'; }; });
+    $('bSig').onclick = function(){ i++; if(i < 3) paso(); else final(); };
+  }
+  function final(){
+    var n = res.filter(Boolean).length, g = n === 3 ? 1 : n === 0 ? -1 : 0;
+    $('escena').innerHTML = '<div class="final"><h2>' + (g > 0 ? '🌟 ¡Reto superado, ' : g < 0 ? '😕 Esta vez no, ' : '👍 ¡Casi, ') + AC.esc(nombre) + '!</h2><div class="cifra">' + n + ' / 3</div>' +
+      '<div class="detalle">' + (g > 0 ? 'Las tres bien: +1 galeón.' : g < 0 ? 'Ninguna bien: −1 galeón.' : 'Ni gana ni pierde galeones.') + '</div>' +
+      (g ? '<button class="gran ' + (g > 0 ? 'verde' : 'rojo') + '" id="bGal" type="button">' + (g > 0 ? '🪙 +1 galeón a ' : '➖ −1 galeón a ') + AC.esc(nombre) + '</button><div class="detalle" id="galInfo">Pide el código.</div>' : '') +
+      '<div class="botones"><button class="gran" id="bOtroA" type="button">🎯 Otro alumno</button><button class="gran sec" id="bDuelo" type="button">⚔️ Duelo por casas</button></div></div>';
+    g > 0 ? ACT.SON.fanfarria() : g < 0 ? ACT.SON.fallo() : ACT.SON.acierto();
+    $('bOtroA').onclick = elegirAlumno; $('bDuelo').onclick = config;
+    if($('bGal')) $('bGal').onclick = function(){ var b = this;
+      JAVI.listo(function(){
+        if(!JAVI.llaveAbierta()) return JAVI.pedirCodigo({ titulo:'🔐 Código para los galeones', texto:'Escribe el código y vuelve a pulsar el botón.' });
+        JAVI.darPuntos('4ºA', nombre, g, g > 0 ? 'Acierto' : 'Tarea', 'Reto de tildes (Tema 3): ' + n + ' de 3');
+        b.disabled = true; b.textContent = '✓ Hecho' + (JAVI.PRUEBA ? ' (modo prueba)' : ''); $('galInfo').textContent = ''; }); };
+  }
 }
 cargarCasas().then(config);
 ACT.iniciar('tema3-lengua-4a');
