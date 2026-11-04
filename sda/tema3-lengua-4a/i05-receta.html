@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La receta de la tilde</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+<style>
+.reglas{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.regla{border-radius:14px;padding:8px 10px;color:#fff;opacity:.45;font-size:clamp(14px,1.7vw,18px);line-height:1.3;transition:all .3s}
+.regla b{display:block;font-family:'Cinzel',serif;font-size:clamp(17px,2.2vw,24px)}
+.regla.aguda{background:var(--ac-aguda)} .regla.llana{background:var(--ac-llana)} .regla.esdrújula{background:var(--ac-esdr)}
+.regla.on{opacity:1;transform:scale(1.04);box-shadow:0 0 20px rgba(255,255,255,.4)}
+.opc{display:flex;flex-direction:column;gap:8px;width:100%;max-width:760px}
+.opc button{font-family:'Andika',sans-serif;font-weight:700;font-size:clamp(17px,2.1vw,22px);text-align:left;padding:10px 16px;border-radius:14px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.opc button.ok{background:#3cae5f;color:#fff;border-color:#1e6b3c} .opc button.ko{background:#d0473f;color:#fff;border-color:#8f2a24}
+@media (max-width:700px){ .reglas{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">📜 La receta de la tilde<span class="sub">I-5 · Las reglas, paso a paso · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="modo" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <button class="mini" data-m="explica" aria-pressed="true" type="button">📖 Explicación paso a paso</button>
+      <button class="mini" data-m="practica" aria-pressed="false" type="button">🎯 ¿Por qué? (puntúa)</button>
+    </div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="palabras.js"></script>
+<script src="acentos.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-5 (Tema 3) · LA RECETA: explicación de las reglas en 4 pasos con la palabra sin tilde:
+   1) ¿dónde está la tónica? (tipo) · 2) ¿en qué acaba? · 3) ¿qué dice la regla de ese tipo? · 4) la tilde cae (o no).
+   Práctica: elegir la razón correcta, como el nivel 5 del banco. */
+var $ = ACT.$, modo = 'explica', lista = [], i = 0, ronda = [], k = 0, puntos = 0, fallos = [];
+var REGLA = { aguda:'llevan tilde si acaban en <u>vocal, -n o -s</u>', llana:'llevan tilde si <u>NO</u> acaban en vocal, -n o -s', 'esdrújula':'llevan tilde <u>siempre</u>' };
+var SI = ['Es aguda y acaba en vocal', 'Es aguda y acaba en -n', 'Es aguda y acaba en -s', 'Es llana y no acaba en vocal, -n ni -s', 'Es esdrújula: las esdrújulas llevan tilde siempre'];
+var NO = ['Es aguda, pero no acaba en vocal, -n ni -s', 'Es llana y acaba en vocal', 'Es llana y acaba en -n', 'Es llana y acaba en -s', 'Es esdrújula y por eso no lleva tilde'];
+function reglasHTML(on){ return '<div class="reglas">' + AC.TIPOS.map(function(t){ return '<div class="regla ' + t + (on === t ? ' on' : '') + '"><b>' + t.toUpperCase() + 'S</b>' + REGLA[t] + '</div>'; }).join('') + '</div>'; }
+function nueva(){ lista = AC.mezclar(AC.ronda(6, function(x){ return x.tilde; }).concat(AC.mezclar(AC.de('aguda', function(x){ return !x.tilde; })).slice(0, 2), AC.mezclar(AC.de('llana', function(x){ return !x.tilde; })).slice(0, 2))); i = 0; }
+function explica(){
+  var x = lista[i], paso = 0;
+  $('zona').innerHTML = '<div class="ac-pizarra" id="piz">' + AC.silHTML(x, { sinTilde:true }) +
+    '<div class="ac-arbol"><div class="ac-nodo" id="n1"><b>1 · ¿Dónde está la tónica?</b><span></span></div><div class="ac-nodo" id="n2"><b>2 · ¿En qué acaba?</b><span></span></div><div class="ac-nodo" id="n3"><b>3 · ¿Qué dice la regla?</b><span></span></div></div>' +
+    reglasHTML() + '<div class="ac-nota" id="nota"></div><div class="ac-bots"><button class="gran" id="bPaso" type="button">▶ Paso 1</button><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div></div>' +
+    '<div class="botones"><button class="mini" id="bAnt" type="button">◀</button><span class="detalle">' + (i + 1) + ' / ' + lista.length + '</span><button class="mini" id="bSig" type="button">▶</button><button class="mini" id="bOtra" type="button">🎲 Otras palabras</button></div>';
+  function nodo(n, txt){ var e = $('n' + n); e.classList.add('on'); e.querySelector('span').innerHTML = txt; }
+  $('bPaso').onclick = function(){ var b = this; paso++;
+    if(paso === 1){ b.disabled = true; AC.voz(x); AC.animarTipo($('piz'), x, function(){ nodo(1, 'En «' + AC.esc(AC.sinT(x.s[x.t])) + '», ' + AC.POS[x.tipo] + ': es <b>' + x.tipo + '</b>.'); b.disabled = false; b.textContent = '▶ Paso 2'; }); }
+    if(paso === 2){ var u = AC.sinT(x.w).slice(-1); nodo(2, 'Acaba en «<b>' + u + '</b>»: ' + (x.fin === 'vocal' ? 'en <b>vocal</b>.' : x.fin === 'otra' ? '<b>no</b> es vocal, ni -n ni -s.' : 'en <b>-' + x.fin + '</b>.')); ACT.SON.tic(); b.textContent = '▶ Paso 3'; }
+    if(paso === 3){ $('piz').querySelector('.regla.' + x.tipo).classList.add('on'); nodo(3, 'Las ' + x.tipo + 's ' + REGLA[x.tipo] + ' → <b>' + (x.tilde ? '¡SÍ lleva tilde!' : 'NO lleva tilde.') + '</b>'); ACT.SON.tic(); b.textContent = x.tilde ? '✨ ¡Que caiga la tilde!' : '✅ Ver cómo se escribe'; }
+    if(paso === 4){ AC.ponerTilde($('piz'), x); if(!x.tilde) ACT.SON.acierto(); $('nota').innerHTML = AC.esc(AC.razon(x)) + '. Se escribe «<b>' + AC.esc(x.w) + '</b>».'; b.textContent = '▶ Siguiente palabra'; }
+    if(paso === 5){ i = (i + 1) % lista.length; explica(); } };
+  $('bOir').onclick = function(){ AC.voz(x); };
+  $('bAnt').onclick = function(){ i = (i - 1 + lista.length) % lista.length; explica(); };
+  $('bSig').onclick = function(){ i = (i + 1) % lista.length; explica(); };
+  $('bOtra').onclick = function(){ nueva(); explica(); };
+}
+function practica(){ ronda = AC.mezclar(AC.ronda(5, function(x){ return x.tilde; }).concat(AC.mezclar(AC.de('aguda', function(x){ return !x.tilde; })).slice(0, 2), AC.mezclar(AC.de('llana', function(x){ return !x.tilde; })).slice(0, 1))); k = 0; puntos = 0; fallos = []; pregunta(); }
+function pregunta(){
+  var x = ronda[k], r = AC.razon(x), base = x.tilde ? SI : NO, intento = false;
+  var ops = AC.mezclar([r].concat(AC.mezclar(base.filter(function(y){ return y !== r; })).slice(0, 3)));
+  $('zona').innerHTML = '<div class="barraSup"><span>' + (k + 1) + ' de ' + ronda.length + '</span><div class="progreso"><i style="width:' + (k / ronda.length * 100) + '%"></i></div><span>⭐ ' + puntos + '</span></div>' +
+    '<div class="ac-pizarra" id="piz"><div class="ac-paso">¿Por qué «' + AC.esc(x.w) + '» ' + (x.tilde ? 'LLEVA' : 'NO lleva') + ' tilde?</div>' + AC.silHTML(x) + reglasHTML() +
+    '<div class="opc">' + ops.map(function(o){ return '<button type="button">' + AC.esc(o) + '</button>'; }).join('') + '</div><div class="ac-nota" id="nota"></div></div>' +
+    '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  AC.voz(x);
+  Array.prototype.forEach.call(document.querySelectorAll('.opc button'), function(b){ b.onclick = function(){ if(!$('bSig').hidden) return;
+    if(b.textContent !== r){ b.classList.add('ko'); if(!intento) fallos.push(x); intento = true; ACT.SON.fallo(); $('nota').innerHTML = 'Mira la regla de su tipo… ¿qué tipo es?'; return; }
+    b.classList.add('ok'); if(!intento) puntos++; ACT.SON.acierto(); $('piz').querySelector('.regla.' + x.tipo).classList.add('on');
+    AC.animarTipo($('piz'), x); $('bSig').hidden = false; if(k + 1 === ronda.length) $('bSig').textContent = '🏁 Ver resultado'; }; });
+  $('bSig').onclick = function(){ k++; if(k < ronda.length) return pregunta();
+    ACT.final($('zona'), { titulo:'📜 ¡Recetas perfectas!', puntos:puntos, total:ronda.length, detalle:'razones acertadas a la primera',
+      mensajes:['¡A repasar las reglas!', '¡Bien! Vas entendiendo las reglas.', '¡Muy bien, sanador!', '¡Perfecto! Te sabes las tres reglas.'],
+      extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">' + fallos.map(function(y){ return '<span>' + AC.esc(y.w) + ': ' + AC.esc(AC.razon(y).toLowerCase()) + '</span>'; }).join('') + '</div>' : '', textoRepetir:'Otra ronda', repetir:practica }); };
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.addEventListener('click', function(){ modo = b.dataset.m;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); });
+  if(modo === 'explica') explica(); else practica(); }); });
+nueva(); explica();
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>

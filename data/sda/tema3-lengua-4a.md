@@ -60,26 +60,26 @@ Veinte sesiones según el horario de 4ºA: 60 min de lunes a viernes, salvo los 
 
 | S | Fecha | Duración | Contenido | Actividades | Interactivas |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Vie 6 nov | 60' | Lectura y vocabulario | Pregunta del día: ¿qué sílaba suena más fuerte? (aliento, pulmón, nariz). Presentación del reto. Lectura en voz alta de «¡El más importante!». Glosario con diccionario: brahmán, hacer amago de, emprender, desfallecimiento, unísono | — |
-| 2 | Lun 9 nov | 60' | Comprensión lectora + la sílaba tónica | Pregunta del día. Preguntas de comprensión de la lectura y moraleja. Recordamos la sílaba tónica del Tema 2 (Lumos). Calentamiento: Acentuación 1 | I-12 Lumos: ilumina la tónica (repaso) |
-| 3 | Mar 10 nov | 60' | Agudas, llanas y esdrújulas | Pregunta del día. Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar. Calentamiento: Acentuación 2 | — |
-| 4 | Mié 11 nov | 60' | La tilde en las agudas | Pregunta del día (con tilde y por qué). Regla de las agudas: sofá, camión, atrás. Actividades A y B para copiar. Calentamiento: Acentuación 2 | — |
-| 5 | Jue 12 nov | 90' | La tilde en las llanas + comunes y propios, concretos y abstractos | Pregunta del día y calentamiento: Acentuación 3 (10'). Regla de las llanas: árbol, césped, lápiz. Actividad C (35'). Nombres comunes y propios (Ganges, Himalaya, Nueva Delhi, Taj Mahal) y concretos y abstractos (amistad, calma / bolígrafo, reloj) (45') | — |
-| 6 | Vie 13 nov | 60' | La tilde en las esdrújulas | Pregunta del día. Regla de las esdrújulas: tráquea, atmósfera, húmedo. Actividad D y cuadro resumen de las tres reglas en el cuaderno. Calentamiento: Acentuación 3 | — |
-| 7 | Lun 16 nov | 60' | Contables e incontables, individuales y colectivos | Pregunta del día. Calentamiento: Acentuación 3. Contables e incontables. Músico → orquesta, ave → bandada, pino → pinar, isla → archipiélago, libro → biblioteca. Buscar el colectivo de plumas, ovejas, abejas, hayas, estrellas, cerdos | — |
-| 8 | Mar 17 nov | 60' | Poner tildes en un texto | Pregunta del día. Ej. 18: copiar el texto de los pulmones poniendo las tildes. Actividad E. Calentamiento: Acentuación 4 | — |
-| 9 | Mié 18 nov | 60' | Hablamos con cortesía | Pregunta del día. Calentamiento: Acentuación 4. Normas y fórmulas de cortesía. Por parejas, se reparten las tarjetas del teatrillo y se prepara la situación | — |
-| 10 | Jue 19 nov | 90' | Teatrillo de la cortesía + ¿por qué lleva tilde? | Pregunta del día y calentamiento: Acentuación 5 (10'). Representaciones y valoración (50'). Explicar por qué lleva o no lleva tilde, en el cuaderno (30') | — |
-| 11 | Vie 20 nov | 60' | Los personajes de la narración | Pregunta del día. Protagonista, personajes secundarios y escenario con «Los tres cerditos». Calentamiento: Acentuación 5 | — |
-| 12 | Lun 23 nov | 60' | Repaso: acentuación | Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner. Entrenar en los ordenadores por niveles | — |
-| 13 | Mar 24 nov | 60' | Repaso: nombres, lectura y personajes | Pregunta del día. Repaso de las clases de nombres, del vocabulario de la lectura y de los personajes | — |
-| 14 | Mié 25 nov | 60' | Repaso general | Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y misión de 5 niveles en los ordenadores | — |
+| 1 | Vie 6 nov | 60' | Lectura y vocabulario | Pregunta del día: ¿qué sílaba suena más fuerte? (aliento, pulmón, nariz). Presentación del reto. Lectura en voz alta de «¡El más importante!». Glosario con diccionario: brahmán, hacer amago de, emprender, desfallecimiento, unísono | I-2 La pregunta del día (no puntúa) |
+| 2 | Lun 9 nov | 60' | Comprensión lectora + la sílaba tónica | Pregunta del día. Preguntas de comprensión de la lectura y moraleja. Recordamos la sílaba tónica del Tema 2 (Lumos). Calentamiento: Acentuación 1 | I-2 La pregunta del día (no puntúa), I-12 Lumos: ilumina la tónica (repaso), I-1 La varita que cuenta (explicación) |
+| 3 | Mar 10 nov | 60' | Agudas, llanas y esdrújulas | Pregunta del día. Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar. Calentamiento: Acentuación 2 | I-2 La pregunta del día (no puntúa), I-1 La varita que cuenta (puntúa), I-3 Los tres calderos (puntúa) |
+| 4 | Mié 11 nov | 60' | La tilde en las agudas | Pregunta del día (con tilde y por qué). Regla de las agudas: sofá, camión, atrás. Actividades A y B para copiar. Calentamiento: Acentuación 2 | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (explicación), I-4 Cura la palabra (puntúa) |
+| 5 | Jue 12 nov | 90' | La tilde en las llanas + comunes y propios, concretos y abstractos | Pregunta del día y calentamiento: Acentuación 3 (10'). Regla de las llanas: árbol, césped, lápiz. Actividad C (35'). Nombres comunes y propios (Ganges, Himalaya, Nueva Delhi, Taj Mahal) y concretos y abstractos (amistad, calma / bolígrafo, reloj) (45') | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (explicación), I-3 Los tres calderos (puntúa) |
+| 6 | Vie 13 nov | 60' | La tilde en las esdrújulas | Pregunta del día. Regla de las esdrújulas: tráquea, atmósfera, húmedo. Actividad D y cuadro resumen de las tres reglas en el cuaderno. Calentamiento: Acentuación 3 | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa), I-4 Cura la palabra (puntúa) |
+| 7 | Lun 16 nov | 60' | Contables e incontables, individuales y colectivos | Pregunta del día. Calentamiento: Acentuación 3. Contables e incontables. Músico → orquesta, ave → bandada, pino → pinar, isla → archipiélago, libro → biblioteca. Buscar el colectivo de plumas, ovejas, abejas, hayas, estrellas, cerdos | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
+| 8 | Mar 17 nov | 60' | Poner tildes en un texto | Pregunta del día. Ej. 18: copiar el texto de los pulmones poniendo las tildes. Actividad E. Calentamiento: Acentuación 4 | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
+| 9 | Mié 18 nov | 60' | Hablamos con cortesía | Pregunta del día. Calentamiento: Acentuación 4. Normas y fórmulas de cortesía. Por parejas, se reparten las tarjetas del teatrillo y se prepara la situación | I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa) |
+| 10 | Jue 19 nov | 90' | Teatrillo de la cortesía + ¿por qué lleva tilde? | Pregunta del día y calentamiento: Acentuación 5 (10'). Representaciones y valoración (50'). Explicar por qué lleva o no lleva tilde, en el cuaderno (30') | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa) |
+| 11 | Vie 20 nov | 60' | Los personajes de la narración | Pregunta del día. Protagonista, personajes secundarios y escenario con «Los tres cerditos». Calentamiento: Acentuación 5 | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
+| 12 | Lun 23 nov | 60' | Repaso: acentuación | Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner. Entrenar en los ordenadores por niveles | I-2 La pregunta del día (no puntúa), I-3 Los tres calderos (puntúa), I-4 Cura la palabra (puntúa) |
+| 13 | Mar 24 nov | 60' | Repaso: nombres, lectura y personajes | Pregunta del día. Repaso de las clases de nombres, del vocabulario de la lectura y de los personajes | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa) |
+| 14 | Mié 25 nov | 60' | Repaso general | Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y misión de 5 niveles en los ordenadores | I-2 La pregunta del día (no puntúa), I-4 Cura la palabra (puntúa) |
 | 15 | Jue 26 nov | 90' | Control del Tema 3 | Control (1 h 30) | — |
-| 16 | Vie 27 nov | 60' | Tarea final (1): diagnóstico y tratamiento | Pregunta del día. Cada casa recibe su «paciente»: una carta sin tildes. Historial clínico de cada palabra herida (sílabas, tónica y tipo) y receta (pone la tilde y explica por qué) | — |
-| 17 | Lun 30 nov | 60' | Tarea final (2): el cartel y el reto | Pregunta del día. Cada casa hace el cartel de su regla y prepara 5 palabras heridas para otra casa | — |
-| 18 | Mar 1 dic | 60' | Tarea final (3): la feria de la enfermería | Pregunta del día. Cada casa presenta su cartel (2'), intercambio de retos y curación de las palabras de otra casa. Galeones a la casa que más cure | — |
-| 19 | Mié 2 dic | 60' | Expresión escrita: plan y borrador | Pregunta del día. Plan de «Una aventura en la enfermería de Hogwarts» (protagonista, 2 secundarios, escenario y problema) y borrador | — |
-| 20 | Jue 3 dic | 90' | Prueba de expresión escrita | Pregunta del día. Revisión por parejas con la lista de control (tildes, mayúsculas de los nombres propios) (30') y versión final de la narración (rúbrica de la narración) (45'). Silla del autor (15'). Último día antes de que Javi se vaya (4 de diciembre) | — |
+| 16 | Vie 27 nov | 60' | Tarea final (1): diagnóstico y tratamiento | Pregunta del día. Cada casa recibe su «paciente»: una carta sin tildes. Historial clínico de cada palabra herida (sílabas, tónica y tipo) y receta (pone la tilde y explica por qué) | I-2 La pregunta del día (no puntúa) |
+| 17 | Lun 30 nov | 60' | Tarea final (2): el cartel y el reto | Pregunta del día. Cada casa hace el cartel de su regla y prepara 5 palabras heridas para otra casa | I-2 La pregunta del día (no puntúa) |
+| 18 | Mar 1 dic | 60' | Tarea final (3): la feria de la enfermería | Pregunta del día. Cada casa presenta su cartel (2'), intercambio de retos y curación de las palabras de otra casa. Galeones a la casa que más cure | I-2 La pregunta del día (no puntúa) |
+| 19 | Mié 2 dic | 60' | Expresión escrita: plan y borrador | Pregunta del día. Plan de «Una aventura en la enfermería de Hogwarts» (protagonista, 2 secundarios, escenario y problema) y borrador | I-2 La pregunta del día (no puntúa) |
+| 20 | Jue 3 dic | 90' | Prueba de expresión escrita | Pregunta del día. Revisión por parejas con la lista de control (tildes, mayúsculas de los nombres propios) (30') y versión final de la narración (rúbrica de la narración) (45'). Silla del autor (15'). Último día antes de que Javi se vaya (4 de diciembre) | I-2 La pregunta del día (no puntúa) |
 
 ## Actividades por bloque
 
@@ -210,14 +210,17 @@ Un hechizo ha borrado las tildes de las cartas que los alumnos de Hogwarts enví
 
 ## Actividades interactivas
 
-No hace falta crear páginas nuevas para el arranque: el **banco del Tema 3 de La Copa** (190 preguntas, `data/copa/tema3-evaluacion.txt`) ya está dividido en los 6 niveles de acentuación y en lectura, nombres, cortesía y personajes.
+Cinco actividades para la pizarra (y para los ordenadores), con las mismas palabras comprobadas del banco (`sda/tema3-lengua-4a/palabras.js`). Javi: «todos los días se les pregunta los tipos de palabras y si lleva tilde o no».
 
-- **Calentamiento diario:** misión de La Copa con «Preguntas de» = el nivel de acentuación que toca (comodines sí; para nota, sin comodines).
-- **Entrenar y retos** en los ordenadores: cada alumno elige el nivel que peor lleva.
-- **Pizarra:** La Copa de las Casas con el bloque de acentuación (S14).
-- **I-12 Lumos** del Tema 2 para recordar la sílaba tónica (S2).
+| Código | Nombre | Tipo | Puntúa | Qué hace |
+| --- | --- | --- | --- | --- |
+| I-1 | La varita que cuenta | Explicación y práctica | En la práctica | La varita ilumina la sílaba tónica y cuenta desde el final (última, penúltima, antepenúltima) hasta llegar a ella: aguda, llana o esdrújula. Primero palabras con tilde y luego sin tilde. Práctica: 9 palabras, A/L/E |
+| I-2 | La pregunta del día | Rutina diaria | No (punto con «¿Quién responde?») | Cada día 3 palabras nuevas (una de cada tipo), sin tilde y en voz alta. La clase vota con la mano el tipo y, desde el 12/11, si lleva tilde; la tilde cae en su sitio con la razón. «Una más» para seguir |
+| I-3 | Los tres calderos | Repaso | Sí | 12 palabras a los calderos de agudas, llanas y esdrújulas (tocar o arrastrar). Modos con tilde, sin tilde (hay que oírla) y mezcla |
+| I-4 | Cura la palabra | Repaso de las reglas | Sí | La palabra llega sin tilde: tocar la vocal donde va o decir «está sana». Con pista (brilla la tónica) o sin pista |
+| I-5 | La receta de la tilde | Explicación y práctica | En la práctica | Las reglas en 4 pasos: dónde está la tónica, en qué acaba, qué dice la regla y la tilde cae (o no). Práctica: elegir por qué lleva o no lleva tilde |
 
-Ideas para hacer más adelante, si Javi las quiere: «Curar palabras» (palabras heridas sin tilde que se curan al tocar la sílaba correcta), clasificador de agudas, llanas y esdrújulas en tres calderos, y memory de nombres individuales y colectivos.
+Además, en los ordenadores: misiones de La Copa por niveles de acentuación, Entrenar y retos (banco del Tema 3). Y I-12 Lumos del Tema 2 para recordar la sílaba tónica (S2).
 
 ## Ficha para familias
 

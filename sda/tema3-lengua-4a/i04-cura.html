@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cura la palabra</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+<style>.ac-sil{text-transform:none}.ac-sil.letras{font-family:'Andika',sans-serif;font-weight:700}</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🩹 Cura la palabra<span class="sub">I-4 · ¿Dónde va la tilde? ¿O está sana? · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="modo" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <button class="mini" data-m="pista" aria-pressed="true" type="button">💡 Con pista (se ilumina la tónica)</button>
+      <button class="mini" data-m="sola" aria-pressed="false" type="button">🎯 Sin pista</button>
+    </div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="palabras.js"></script>
+<script src="acentos.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-4 (Tema 3) · REGLAS DE LA TILDE: la palabra llega «herida» (sin tilde). Hay que tocar la vocal donde va la tilde o, si no la necesita,
+   «Está sana». 10 palabras: 6 que la necesitan y 4 que no (agudas y llanas). Con pista: la sílaba tónica brilla. Puntúa lo acertado a la primera. */
+var $ = ACT.$, modo = 'pista', ronda = [], k = 0, puntos = 0, fallos = [];
+function empezar(){ ronda = AC.mezclar(AC.ronda(6, function(x){ return x.tilde; }).concat(AC.mezclar(AC.de('aguda', function(x){ return !x.tilde; })).slice(0, 2), AC.mezclar(AC.de('llana', function(x){ return !x.tilde; })).slice(0, 2)));
+  k = 0; puntos = 0; fallos = []; pregunta(); }
+function letras(x){ var n = 0; return '<div class="ac-sils">' + x.s.map(function(s, j){ var h = '<span class="ac-sil letras' + (modo === 'pista' && j === x.t ? ' luz' : '') + '" data-j="' + j + '">';
+  AC.sinT(s).split('').forEach(function(c){ h += /[aeiou]/.test(c) ? '<span class="ac-letra" data-n="' + n + '">' + c + '</span>' : '<span>' + c + '</span>'; n++; });
+  return h + '<small class="ac-et"></small></span>'; }).join('') + '</div>'; }
+function donde(x){ var a = x.w, b = AC.sinT(a); for(var i = 0; i < a.length; i++) if(a[i] !== b[i]) return i; return -1; }
+function pregunta(){
+  var x = ronda[k], d = donde(x), intento = false, hecho = false;
+  $('zona').innerHTML = '<div class="barraSup"><span>Paciente ' + (k + 1) + ' de ' + ronda.length + '</span><div class="progreso"><i style="width:' + (k / ronda.length * 100) + '%"></i></div><span>⭐ ' + puntos + '</span></div>' +
+    '<div class="ac-pizarra" id="piz"><div class="ac-paso">Toca la vocal donde va la tilde… o di que está sana.</div>' + letras(x) +
+    '<div class="ac-bots"><button class="ac-b si" id="bSana" type="button">✅ Está sana: sin tilde</button><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div>' +
+    '<div class="ac-nota" id="nota"></div></div><div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  AC.voz(x); $('bOir').onclick = function(){ AC.voz(x); };
+  function bien(){ hecho = true; if(!intento) puntos++; ACT.SON.acierto(); AC.animarTipo($('piz'), x, function(){ AC.ponerTilde($('piz'), x); });
+    $('nota').innerHTML = (x.tilde ? '¡Curada! ' : '¡Está sana! ') + AC.esc(AC.razon(x)) + (x.tipo === 'esdrújula' ? '' : x.tilde ? ' → lleva tilde' : ' → no lleva tilde') + '. Se escribe «<b>' + AC.esc(x.w) + '</b>».';
+    $('bSana').disabled = true; $('bSig').hidden = false; if(k + 1 === ronda.length) $('bSig').textContent = '🏁 Ver resultado'; }
+  function mal(txt){ if(!intento) fallos.push(x); intento = true; ACT.SON.fallo(); $('nota').innerHTML = txt; }
+  Array.prototype.forEach.call(document.querySelectorAll('.ac-letra'), function(l){ l.onclick = function(){ if(hecho) return; var n = +l.dataset.n;
+    if(n === d){ l.textContent = x.w[d]; return bien(); }
+    l.classList.add('mal'); mal(d < 0 ? 'Esta palabra no necesita tilde. Mira la tónica y en qué letra acaba.' : 'Ahí no. La tilde va en la vocal de la sílaba tónica… ¿y la necesita?'); }; });
+  $('bSana').onclick = function(){ if(hecho) return; if(d < 0) return bien(); mal('¡Está herida! Es ' + x.tipo + ' y acaba ' + AC.esc(AC.finTxt(x)) + '. ¿Qué dice la regla?'); };
+  $('bSig').onclick = function(){ k++; if(k < ronda.length) return pregunta();
+    ACT.final($('zona'), { titulo:'🩹 ¡Enfermería en orden!', puntos:puntos, total:ronda.length, detalle:'pacientes curados a la primera',
+      mensajes:['¡A repasar las reglas y otra ronda!', '¡Bien! Vas entendiendo las reglas.', '¡Muy bien, sanador!', '¡Perfecto! Eres el mejor sanador de Hogwarts.'],
+      extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">' + fallos.map(function(y){ return '<span>' + AC.esc(y.w) + '</span>'; }).join('') + '</div>' : '', textoRepetir:'Otra ronda', repetir:empezar }); };
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.addEventListener('click', function(){ modo = b.dataset.m;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); }); empezar(); }); });
+empezar();
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>

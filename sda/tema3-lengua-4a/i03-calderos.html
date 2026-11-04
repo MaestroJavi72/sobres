@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los tres calderos</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">⚗️ Los tres calderos<span class="sub">I-3 · Clasifica: agudas, llanas y esdrújulas · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="modo" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <button class="mini" data-m="con" aria-pressed="true" type="button">✏️ Con tilde (más fácil)</button>
+      <button class="mini" data-m="sin" aria-pressed="false" type="button">🙈 Sin tilde (hay que oírla)</button>
+      <button class="mini" data-m="mezcla" aria-pressed="false" type="button">🔀 Mezcla</button>
+    </div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="palabras.js"></script>
+<script src="acentos.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-3 (Tema 3): 12 palabras (4 de cada tipo) a sus calderos. Tocar la palabra y luego el caldero, o arrastrarla.
+   «Con tilde»: palabras que llevan tilde (la tónica se ve). «Sin tilde»: palabras que no la llevan (hay que oírla; 🔊 al tocarla).
+   «Mezcla»: de las dos y se enseñan bien escritas. Puntúa lo acertado a la primera. */
+var $ = ACT.$, modo = 'con', fichas = [], sel = null, puntos = 0, mal = {}, quedan = 0, t0 = 0;
+function empezar(){
+  var f = modo === 'con' ? function(x){ return x.tilde; } : modo === 'sin' ? function(x){ return !x.tilde && x.tipo !== 'esdrújula'; } : null;
+  /* sin tilde no hay esdrújulas: en ese modo, 6 agudas y 6 llanas */
+  fichas = modo === 'sin' ? AC.mezclar(AC.mezclar(AC.de('aguda', f)).slice(0, 6).concat(AC.mezclar(AC.de('llana', f)).slice(0, 6))) : AC.ronda(12, f);
+  sel = null; puntos = 0; mal = {}; quedan = fichas.length; t0 = Date.now();
+  $('zona').innerHTML = '<div class="barraSup"><span id="qd">Quedan ' + quedan + '</span><div class="progreso"><i id="pg" style="width:0"></i></div><span id="pt">⭐ 0</span></div>' +
+    '<div class="ac-pizarra"><div class="ac-paso">' + (modo === 'sin' ? 'Toca una palabra para oírla y llévala a su caldero.' : 'Toca una palabra y después su caldero (o arrástrala).') + '</div>' +
+    '<div class="ac-fichas" id="fichas">' + fichas.map(function(x, i){ return '<span class="ac-ficha" data-i="' + i + '">' + AC.esc(x.w) + '</span>'; }).join('') + '</div>' +
+    '<div class="ac-calderos">' + AC.TIPOS.map(function(t){ return '<div class="ac-caldero ' + t + '" data-t="' + t + '"><h3>' + t.toUpperCase() + '</h3><small>tónica: ' + AC.POS[t] + '</small><div class="dentro"></div></div>'; }).join('') + '</div>' +
+    '<div class="ac-nota" id="nota"></div></div>';
+  Array.prototype.forEach.call(document.querySelectorAll('.ac-ficha'), function(el){
+    el.addEventListener('pointerdown', function(e){ elegir(el); arrastre(el, e); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.ac-caldero'), function(c){ c.addEventListener('click', function(){ if(sel) soltar(sel, c.dataset.t); }); });
+}
+function elegir(el){ if(sel) sel.classList.remove('sel'); sel = el; el.classList.add('sel'); AC.voz(fichas[+el.dataset.i]); }
+function arrastre(el, e){
+  var x0 = e.clientX, y0 = e.clientY, mov = false, cl = null;
+  function mueve(ev){ if(!mov && Math.hypot(ev.clientX - x0, ev.clientY - y0) < 8) return;
+    if(!mov){ mov = true; cl = el.cloneNode(true); cl.style.cssText = 'position:fixed;z-index:50;pointer-events:none;opacity:.9'; document.body.appendChild(cl); }
+    cl.style.left = (ev.clientX - 40) + 'px'; cl.style.top = (ev.clientY - 25) + 'px'; }
+  function suelta(ev){ document.removeEventListener('pointermove', mueve); document.removeEventListener('pointerup', suelta);
+    if(!mov) return; cl.remove(); var d = document.elementFromPoint(ev.clientX, ev.clientY), c = d && d.closest('.ac-caldero'); if(c) soltar(el, c.dataset.t); }
+  document.addEventListener('pointermove', mueve); document.addEventListener('pointerup', suelta);
+}
+function soltar(el, t){
+  var x = fichas[+el.dataset.i];
+  if(x.tipo !== t){ mal[x.w] = 1; ACT.SON.fallo(); el.classList.add('temblor'); setTimeout(function(){ el.classList.remove('temblor'); }, 450);
+    $('nota').innerHTML = '«' + AC.esc(x.w) + '» no es ' + t + '. Busca su sílaba fuerte: ' + x.s.map(function(s, j){ return j === x.t ? '<b>' + AC.esc(s.toUpperCase()) + '</b>' : AC.esc(s); }).join('-') + '.'; return; }
+  if(!mal[x.w]) puntos++; ACT.SON.acierto(); el.remove(); sel = null; quedan--;
+  var sp = document.createElement('span'); sp.textContent = x.w; document.querySelector('.ac-caldero.' + t + ' .dentro').appendChild(sp);
+  $('nota').innerHTML = '¡Sí! ' + AC.esc(x.s.join('-')) + ': tónica «<b>' + AC.esc(x.s[x.t]) + '</b>», ' + AC.POS[x.tipo] + '.';
+  $('qd').textContent = 'Quedan ' + quedan; $('pt').textContent = '⭐ ' + puntos; $('pg').style.width = ((fichas.length - quedan) / fichas.length * 100) + '%';
+  if(!quedan) setTimeout(function(){ ACT.final($('zona'), { titulo:'⚗️ ¡Pociones perfectas!', puntos:puntos, total:fichas.length, detalle:'a la primera · ' + Math.round((Date.now() - t0) / 1000) + ' segundos',
+    mensajes:['¡A repasar y a por otra ronda!', '¡Bien! Vas entendiéndolo.', '¡Muy bien, aprendiz de sanador!', '¡Perfecto! Dominas los tres tipos.'],
+    extra: Object.keys(mal).length ? '<p class="detalle">Para repasar:</p><div class="lista">' + Object.keys(mal).map(function(w){ var y = fichas.filter(function(z){ return z.w === w; })[0]; return '<span>' + AC.esc(w) + ': ' + y.tipo + '</span>'; }).join('') + '</div>' : '',
+    textoRepetir:'Otra ronda', repetir:empezar }); }, 700);
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.addEventListener('click', function(){ modo = b.dataset.m;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); }); empezar(); }); });
+empezar();
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>

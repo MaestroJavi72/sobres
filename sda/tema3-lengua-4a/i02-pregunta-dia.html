@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La pregunta del día</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+<style>
+.dia{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-family:var(--f-sub);font-weight:700;color:#5a3d12;font-size:19px}
+.pasos{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pasos span{font-family:var(--f-sub);font-weight:700;font-size:16px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:2px solid #3a4c66;color:#9aa6bd}
+.pasos span.on{border-color:#f3d27a;color:#f3d27a}
+.pasos span.ok{border-color:#3cae5f;color:#8fe0a9}
+.manos{font-size:16px;color:#c9bfa0}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">☀️ La pregunta del día<span class="sub">I-2 · ¿Aguda, llana o esdrújula? ¿Lleva tilde? · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="dia"><button class="mini" id="dAnt" type="button">‹</button><span id="dTxt"></span><button class="mini" id="dSig" type="button">›</button>
+      <label style="font-size:16px"><input type="checkbox" id="conTilde"> También «¿lleva tilde?»</label></div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="palabras.js"></script>
+<script src="acentos.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-2 (Tema 3) · LA PREGUNTA DEL DÍA (Javi, 4/11/2026: «todos los días se les pregunta los tipos de palabras y si lleva acento o no»).
+   Cada día de clase salen 3 palabras (una aguda, una llana y una esdrújula, en otro orden), siempre las mismas para ese día y distintas de un día
+   a otro. La palabra sale SIN tilde y se oye: 1) la clase vota con la mano (1 dedo aguda, 2 llana, 3 esdrújula) y el maestro toca la respuesta;
+   2) si está marcado «¿lleva tilde?» (por defecto desde el 12/11, cuando se explica la regla), sí o no, y la tilde cae en su sitio con la razón.
+   «¿Quién responde?» de la barra da el punto a quien lo explique. «Una más» saca palabras extra al azar. */
+var $ = ACT.$, INICIO = new Date(2026, 10, 6), DESDE_TILDE = new Date(2026, 10, 12);
+var q = (location.search.match(/[?&]fecha=(\d{4})-(\d{2})-(\d{2})/) || []);
+var hoy = q.length ? new Date(+q[1], +q[2] - 1, +q[3]) : new Date(); hoy.setHours(0, 0, 0, 0);
+var dia = new Date(hoy), lista = [], k = 0, extra = 0, aciertos = 0;
+function laborables(d){ var n = 0, x = new Date(INICIO); while(x < d){ var w = x.getDay(); if(w > 0 && w < 6) n++; x.setDate(x.getDate() + 1); } return n; }
+var ORDEN = {}; AC.TIPOS.forEach(function(t){ ORDEN[t] = AC.mezclar(AC.de(t), AC.semilla('pregunta-dia|' + t)); });
+function palabrasDe(d){ var n = Math.max(0, laborables(d));
+  return AC.mezclar(AC.TIPOS.map(function(t){ return ORDEN[t][n % ORDEN[t].length]; }), AC.semilla('orden|' + d.toDateString())); }
+function pintarDia(){ $('dTxt').textContent = dia.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+  var guard = null; try{ guard = localStorage.getItem('t3-pregunta-tilde'); }catch(e){}
+  $('conTilde').checked = guard ? guard === 'si' : dia >= DESDE_TILDE; lista = palabrasDe(dia); k = 0; extra = 0; aciertos = 0; pregunta(); }
+function cambiaDia(s){ do dia.setDate(dia.getDate() + s); while(dia.getDay() === 0 || dia.getDay() === 6); pintarDia(); }
+function pasosHTML(paso){ var t = $('conTilde').checked;
+  return '<div class="pasos"><span class="' + (paso === 1 ? 'on' : 'ok') + '">1 · ¿Qué tipo es?</span>' + (t ? '<span class="' + (paso === 2 ? 'on' : paso > 2 ? 'ok' : '') + '">2 · ¿Lleva tilde?</span>' : '') + '</div>'; }
+function pregunta(){
+  var x = lista[k], conT = $('conTilde').checked, fallos = 0;
+  $('zona').innerHTML = '<div class="barraSup"><span>' + (extra ? 'Palabra extra ' + extra : 'Palabra ' + (k + 1) + ' de 3') + '</span><div class="progreso"><i style="width:' + (Math.min(k, 3) / 3 * 100) + '%"></i></div><span>✅ ' + aciertos + '</span></div>' +
+    '<div class="ac-pizarra" id="piz">' + pasosHTML(1) + AC.silHTML(x, { sinTilde:true }) + '<div id="res" style="min-height:60px"></div>' +
+    '<div class="ac-paso" id="preg">¿Es aguda, llana o esdrújula?</div><div class="manos">✋ Votad con la mano: 1 dedo = aguda · 2 = llana · 3 = esdrújula</div>' +
+    '<div class="ac-bots" id="bots">' + AC.TIPOS.map(function(t){ return '<button class="ac-b ' + t + '" data-t="' + t + '" type="button">' + t.toUpperCase() + '</button>'; }).join('') + '</div>' +
+    '<div class="ac-nota" id="nota"></div><button class="mini" id="bOir" type="button">🔊 Escuchar otra vez</button></div>' +
+    '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  AC.voz(x); $('bOir').onclick = function(){ AC.voz(x); };
+  function botones(h, f){ $('bots').innerHTML = h; Array.prototype.forEach.call($('bots').querySelectorAll('button'), function(b){ b.onclick = function(){ f(b); }; }); }
+  function fin(){ if(!fallos) aciertos++; ACT.SON.acierto(); $('bSig').hidden = false; if(!extra && k === 2) $('bSig').textContent = '🏁 Terminar'; }
+  botones($('bots').innerHTML, function tipo(b){
+    if(b.dataset.t !== x.tipo){ fallos++; b.disabled = true; ACT.SON.fallo(); $('nota').innerHTML = 'Mmm… Llamad a la palabra desde lejos para oír la sílaba fuerte, y contad desde el final.'; return; }
+    $('bots').innerHTML = ''; $('nota').innerHTML = '';
+    AC.animarTipo($('piz'), x, function(){
+      $('res').innerHTML = AC.tipoHTML(x);
+      if(!conT){ $('preg').textContent = '¡Muy bien!'; $('nota').innerHTML = 'Tónica «<b>' + AC.esc(x.s[x.t]) + '</b>», ' + AC.POS[x.tipo] + ' sílaba → <b>' + x.tipo + '</b>. Se escribe «<b>' + AC.esc(x.w) + '</b>».'; AC.ponerTilde($('piz'), x); return fin(); }
+      document.querySelector('.pasos').outerHTML = pasosHTML(2); $('preg').textContent = '¿Lleva tilde?'; document.querySelector('.manos').textContent = '✋ Votad: mano arriba = sí · brazos cruzados = no';
+      botones('<button class="ac-b si" data-s="1" type="button">✔ SÍ</button><button class="ac-b no" data-s="0" type="button">✘ NO</button>', function(b2){
+        if((b2.dataset.s === '1') !== x.tilde){ fallos++; b2.disabled = true; ACT.SON.fallo(); $('nota').innerHTML = 'Pensad: es <b>' + x.tipo + '</b> y acaba ' + AC.esc(AC.finTxt(x)) + '. ¿Qué dice la regla de las ' + x.tipo + 's?'; return; }
+        $('bots').innerHTML = ''; document.querySelector('.pasos').outerHTML = pasosHTML(3); document.querySelector('.manos').textContent = '';
+        $('preg').textContent = x.tilde ? '¡Sí lleva tilde!' : '¡No lleva tilde!'; AC.ponerTilde($('piz'), x);
+        $('nota').innerHTML = AC.esc(AC.razon(x)) + (x.tipo === 'esdrújula' ? '' : x.tilde ? ' → lleva tilde' : ' → no lleva tilde') + '. Se escribe «<b>' + AC.esc(x.w) + '</b>».'; fin(); });
+    });
+  });
+  if(extra) $('bSig').textContent = '➕ Otra más';
+  $('bSig').onclick = function(){
+    if(extra){ extra++; lista.push(AC.ronda(1)[0]); k = lista.length - 1; return pregunta(); }
+    if(k === 2) return final();
+    k++; pregunta(); };
+}
+function final(){
+  $('zona').innerHTML = '<div class="final"><h2>☀️ ¡Pregunta del día superada!</h2><div class="cifra">' + aciertos + ' / 3</div><div class="detalle">a la primera</div>' +
+    '<div class="lista">' + lista.slice(0, 3).map(function(x){ return '<span>' + AC.esc(x.w) + ' · ' + x.tipo + '</span>'; }).join('') + '</div>' +
+    '<div class="botones"><button class="gran" id="bMas" type="button">➕ Una más</button><button class="gran sec" id="bOtra" type="button">🔁 Repetir las de hoy</button></div></div>';
+  if(aciertos >= 2) ACT.SON.fanfarria();
+  $('bMas').onclick = function(){ extra = 1; lista.push(AC.ronda(1)[0]); k = lista.length - 1; pregunta(); };
+  $('bOtra').onclick = function(){ pintarDia(); };
+}
+$('dAnt').onclick = function(){ cambiaDia(-1); }; $('dSig').onclick = function(){ cambiaDia(1); };
+$('conTilde').onchange = function(){ try{ localStorage.setItem('t3-pregunta-tilde', this.checked ? 'si' : 'no'); }catch(e){} k = 0; aciertos = 0; extra = 0; lista = palabrasDe(dia); pregunta(); };
+if(dia.getDay() === 0 || dia.getDay() === 6) cambiaDia(1); else pintarDia();
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>

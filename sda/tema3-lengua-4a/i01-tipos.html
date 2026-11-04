@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La varita que cuenta: agudas, llanas y esdrújulas</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">✨ La varita que cuenta<span class="sub">I-1 · Agudas, llanas y esdrújulas · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="modo" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+      <button class="mini" data-m="explica" aria-pressed="true" type="button">📖 Modo explicación</button>
+      <button class="mini" data-m="practica" aria-pressed="false" type="button">🎯 Modo práctica (puntúa)</button>
+    </div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="palabras.js"></script>
+<script src="acentos.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-1 (Tema 3): la varita ilumina la sílaba tónica y cuenta desde el FINAL (última, penúltima, antepenúltima) hasta llegar a ella.
+   Explicación: palabra a palabra, primero las que llevan tilde (se ve la tónica) y luego sin tilde. Práctica: 9 palabras (3 de cada tipo), A/L/E. */
+var $ = ACT.$, modo = 'explica', lista = [], i = 0, ronda = [], k = 0, puntos = 0, fallos = [];
+function nuevaLista(){ var r = AC.semilla('i01|' + Date.now()); lista = AC.ronda(9, function(x){ return x.tilde; }, r).concat(AC.ronda(9, function(x){ return !x.tilde; }, r)); i = 0; }
+function explica(){
+  var x = lista[i];
+  $('zona').innerHTML = '<div class="ac-pizarra">' + AC.tresCasas() +
+    '<div class="ac-paso">Busca la sílaba que suena más fuerte y cuenta desde el final.</div>' + AC.silHTML(x) +
+    '<div id="res" style="min-height:64px"></div><div class="ac-nota" id="nota"></div>' +
+    '<div class="ac-bots"><button class="gran" id="bVa" type="button">✨ ¡Descúbrela!</button><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div></div>' +
+    '<div class="botones"><button class="mini" id="bAnt" type="button">◀</button><span class="detalle">' + (i + 1) + ' / ' + lista.length + (x.tilde ? ' · con tilde' : ' · sin tilde') + '</span><button class="mini" id="bSig" type="button">▶</button><button class="mini" id="bOtra" type="button">🎲 Otras palabras</button></div>';
+  $('bVa').onclick = function(){ this.disabled = true; AC.voz(x); AC.animarTipo($('zona'), x, function(){
+    $('res').innerHTML = AC.tipoHTML(x); document.querySelector('.ac-casa.' + x.tipo).classList.add('on');
+    $('nota').innerHTML = 'La tónica es <b>«' + AC.esc(x.s[x.t]) + '»</b>, ' + AC.POS[x.tipo] + ' sílaba: es <b>' + x.tipo + '</b>.'; ACT.SON.acierto(); }); };
+  $('bOir').onclick = function(){ AC.voz(x); };
+  $('bAnt').onclick = function(){ i = (i - 1 + lista.length) % lista.length; explica(); };
+  $('bSig').onclick = function(){ i = (i + 1) % lista.length; explica(); };
+  $('bOtra').onclick = function(){ nuevaLista(); explica(); };
+}
+function practica(){ ronda = AC.ronda(9); k = 0; puntos = 0; fallos = []; pregunta(); }
+function pregunta(){
+  var x = ronda[k], intento = false;
+  $('zona').innerHTML = '<div class="barraSup"><span>Palabra ' + (k + 1) + ' de ' + ronda.length + '</span><div class="progreso"><i style="width:' + (k / ronda.length * 100) + '%"></i></div><span>⭐ ' + puntos + '</span></div>' +
+    '<div class="ac-pizarra"><div class="ac-paso">¿Es aguda, llana o esdrújula?</div>' + AC.silHTML(x) + '<div id="res" style="min-height:64px"></div><div class="ac-nota" id="nota"></div>' +
+    '<div class="ac-bots" id="bots">' + AC.TIPOS.map(function(t){ return '<button class="ac-b ' + t + '" data-t="' + t + '" type="button">' + t.toUpperCase() + '</button>'; }).join('') + '</div>' +
+    '<button class="mini" id="bOir" type="button">🔊 Escuchar</button></div><div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  $('bOir').onclick = function(){ AC.voz(x); };
+  Array.prototype.forEach.call(document.querySelectorAll('#bots .ac-b'), function(b){
+    b.onclick = function(){ if(!$('bSig').hidden) return; var ok = b.dataset.t === x.tipo;
+      if(!ok){ if(!intento) fallos.push(x); intento = true; b.disabled = true; ACT.SON.fallo(); $('nota').innerHTML = 'No… Busca la sílaba que suena más fuerte y cuenta desde el final.'; return; }
+      if(!intento) puntos++; b.classList.add('elegido');
+      AC.animarTipo($('zona'), x, function(){ $('res').innerHTML = AC.tipoHTML(x); $('nota').innerHTML = 'Tónica «<b>' + AC.esc(x.s[x.t]) + '</b>», ' + AC.POS[x.tipo] + ' → <b>' + x.tipo + '</b>.'; ACT.SON.acierto();
+        $('bSig').hidden = false; if(k + 1 === ronda.length) $('bSig').textContent = '🏁 Ver resultado'; }); };
+  });
+  $('bSig').onclick = function(){ k++; if(k < ronda.length) pregunta(); else ACT.final($('zona'), { titulo:'🏁 ¡Varita maestra!', puntos:puntos, total:ronda.length, detalle:'acertadas a la primera',
+    mensajes:['¡A repasar y a por otra ronda!', '¡Bien! Vas entendiéndolo.', '¡Muy bien, aprendiz de sanador!', '¡Perfecto! Dominas los tres tipos.'],
+    extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">' + fallos.map(function(x){ return '<span>' + AC.esc(x.w) + ': ' + x.tipo + '</span>'; }).join('') + '</div>' : '', textoRepetir:'Otra ronda', repetir:practica }); };
+}
+Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){ b.addEventListener('click', function(){ modo = b.dataset.m;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); });
+  if(modo === 'explica') explica(); else practica(); }); });
+document.addEventListener('keydown', function(e){ if(modo === 'explica' && e.key === ' ' && $('bVa') && !$('bVa').disabled){ e.preventDefault(); $('bVa').click(); } });
+nuevaLista(); explica();
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>
