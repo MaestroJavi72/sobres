@@ -420,13 +420,16 @@ function load(){let d=null;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){
   const def=defState();if(!d||!Array.isArray(d.questions))return def;
   d.cfg=Object.assign(def.cfg,d.cfg||{});d.cfg.games=Object.assign(defState().cfg.games,d.cfg.games||{});d.students=d.students||[];return d}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-/* 28/10/2026 (Javi: «faltan cosas del Tema 2» y «se repiten»): al abrir, añade solas las preguntas nuevas del banco del Tema 2
-   (data/copa/tema2-evaluacion.txt) que este aparato aún no tenga; no toca las suyas ni vuelve a meter las que ya se le ofrecieron (S.bancoVistos) */
-function traerBancoT2(){if(!window.JAVI||!JAVI.BASE)return;const k=q=>[q.text,String(q.read||'').slice(0,40),JSON.stringify(q.options||q.items||q.pairs||''),String(q.answer)].join('|');
-  fetch(JAVI.BASE+'data/copa/tema2-evaluacion.txt',{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);if(!r.qs.length)return;
-    const tengo=new Set(S.questions.map(k)),vistos=new Set(S.bancoVistos||S.questions.filter(q=>q.subject==='Tema 2').map(k));
-    const nuevas=r.qs.filter(q=>!tengo.has(k(q))&&!vistos.has(k(q)));S.bancoVistos=r.qs.map(k);
-    if(nuevas.length){S.questions=S.questions.concat(nuevas);if(V.screen==='home'||V.screen==='setup')render();toast('📥 '+nuevas.length+' preguntas nuevas del Tema 2')}
+/* 28/10/2026 (Javi: «faltan cosas del Tema 2» y «se repiten»): al abrir, añade solas las preguntas nuevas de los bancos
+   (data/copa/temaN-evaluacion.txt) que este aparato aún no tenga; no toca las suyas ni vuelve a meter las que ya se le ofrecieron (S.bancoVistos…).
+   4/11/2026: también el del Tema 3, para que los ordenadores de los alumnos puedan entrenarlo y retarse con él */
+const BANCOS=[{f:'tema2-evaluacion.txt',s:'Tema 2',v:'bancoVistos'},{f:'tema3-evaluacion.txt',s:'Tema 3',v:'bancoVistos3'}];
+function traerBancos(){BANCOS.forEach(traerBanco)}
+function traerBanco(b){if(!window.JAVI||!JAVI.BASE)return;const k=q=>[q.text,String(q.read||'').slice(0,40),JSON.stringify(q.options||q.items||q.pairs||''),String(q.answer)].join('|');
+  fetch(JAVI.BASE+'data/copa/'+b.f,{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{const r=parseText(t);if(!r.qs.length)return;
+    const tengo=new Set(S.questions.map(k)),vistos=new Set(S[b.v]||S.questions.filter(q=>q.subject===b.s).map(k));
+    const nuevas=r.qs.filter(q=>!tengo.has(k(q))&&!vistos.has(k(q)));S[b.v]=r.qs.map(k);
+    if(nuevas.length){S.questions=S.questions.concat(nuevas);if(V.screen==='home'||V.screen==='setup'||(V.screen==='dev'&&V.dev&&!V.dev.m))render();toast('📥 '+nuevas.length+' preguntas nuevas del '+b.s)}
     save()}).catch(()=>{})}
 
 function setHK(){const n=S.cfg.nHouses===4?4:5;HK=ALLH.slice(0,n);document.body.style.setProperty("--nh",n);
@@ -894,11 +897,12 @@ function abrirTienda(yo,modo,url){let t=document.getElementById('mitienda');if(t
    Retar: elige tema y compañero; juega 10 preguntas y se guarda «Reto» (CartaId = id, Tipo = #nº, Carta = {de, para, paraN, tema, k})
    con las claves de las preguntas (k), para que el compañero juegue LAS MISMAS. Cada resultado va en «RetoRes» (CartaId = id del reto).
    Gana quien acierta más; si empatan, quien tarda menos. Todo sin código (escribirLibre). No da galeones. */
-const TEMA_TODO='s:Tema 2';
 function claveQ(q){return [q.text,String(q.read||'').slice(0,30),JSON.stringify(q.options||q.items||q.pairs||'').slice(0,80)].join('|')}
-function temasEntreno(){const t=[...new Set(S.questions.filter(q=>q.subject==='Tema 2'&&q.type!=='open').map(q=>gkey(q)))];return [[TEMA_TODO,'📚 Todo el Tema 2']].concat(t.map(k=>[k,k.replace(/^Tema 2 - /,'')]))}
+/* 4/11/2026 (Javi): Entrenar y Retos con todos los temas del curso que tenga el aparato («Tema N»), el más nuevo primero */
+function temasCurso(){return [...new Set(S.questions.filter(q=>/^Tema \d+$/.test(q.subject)&&q.type!=='open').map(q=>q.subject))].sort((a,b)=>parseInt(b.slice(5))-parseInt(a.slice(5)))}
+function temasEntreno(){const out=[];temasCurso().forEach(t=>{out.push(['s:'+t,'📚 Todo el '+t]);[...new Set(S.questions.filter(q=>q.subject===t&&q.type!=='open').map(gkey))].forEach(k=>out.push([k,t+' · '+k.slice(t.length+3)]))});return out}
 const nomTema=k=>(temasEntreno().find(x=>x[0]===k)||[k,k])[1];
-function preguntasDe(tema,n){const u=usadas(),pool=shuffle(S.questions.filter(q=>q.type!=='open'&&(tema===TEMA_TODO?q.subject==='Tema 2':gkey(q)===tema))).sort((a,b)=>(u[a.id]||0)-(u[b.id]||0));
+function preguntasDe(tema,n){const u=usadas(),pool=shuffle(S.questions.filter(q=>q.type!=='open'&&(tema.indexOf('s:')===0?q.subject===tema.slice(2):gkey(q)===tema))).sort((a,b)=>(u[a.id]||0)-(u[b.id]||0));
   const qs=pool.slice(0,n);qs.forEach(marcarUsada);return qs}
 function retosTodos(){const out=[];rowsC('reto').forEach(f=>{const j=jrow(f);if(j&&j.para)out.push(Object.assign({id:f.cartaId,deId:f.tipo,dia:f.dia},j))});
   let mios=[];try{mios=JSON.parse(localStorage.getItem('copa-retos-mios')||'[]')}catch(e){}
@@ -1458,7 +1462,7 @@ const CH={
 };
 document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t||t.disabled)return;const f=ACT[t.dataset.a];if(f){if(t.dataset.a!=='mute')SFX.click();f(t.dataset,t)}});
 document.addEventListener('change',e=>{const t=e.target.closest('[data-c]');if(t&&CH[t.dataset.c])CH[t.dataset.c](t)});
-S=load();setHK();applyMute();traerBancoT2();if(window.JAVI&&/mision/.test(location.hash))V.screen='dev';render();
+S=load();setHK();applyMute();traerBancos();if(window.JAVI&&/mision/.test(location.hash))V.screen='dev';render();
 </script>
 </body>
 </html>
