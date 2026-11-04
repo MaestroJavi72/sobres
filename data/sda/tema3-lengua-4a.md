@@ -1,0 +1,253 @@
+# SA Tema 3 Lengua 4ºA · El aliento mágico
+
+4 de noviembre de 2026 · Borrador preparado por Claude para que Javi lo revise
+
+## Datos generales
+
+Situación de aprendizaje de 20 sesiones (del viernes 6 de noviembre al jueves 3 de diciembre: Javi se va el 4 de diciembre y el tema tiene que estar cerrado antes) para el Tema 3 de Lengua de 4ºA, con la respiración como hilo conductor. **Todos los días** hay una pregunta de agudas, llanas y esdrújulas, la acentuación se trabaja casi a diario con un calentamiento de tildes y el tema se cierra con la tarea final «La enfermería de las palabras heridas».
+
+| Campo | Detalle |
+| --- | --- |
+| Título | Aprendices de la enfermería de Hogwarts: el aliento mágico |
+| Curso y área | 4º Primaria · Lengua Castellana y Literatura · CEIP Arias Montano |
+| Libro | Vicens Vives, Tema 3 «Inspirar y espirar» (ajustar las páginas) |
+| Duración | 20 sesiones (60 min; los jueves 90 min). Control el jueves 3 de diciembre |
+| Producto final | Tarea final de acentuación: «La enfermería de las palabras heridas» (cada casa diagnostica y cura un texto sin tildes, hace el cartel de una regla y prepara un reto para otra casa) |
+| Producto escrito | Una narración original, «Una aventura en la enfermería de Hogwarts», con protagonista, personajes secundarios y escenario |
+| Producto oral | Teatrillo de la cortesía: situaciones del cole representadas por parejas |
+
+**Contexto y reto.** La enfermería de Hogwarts necesita aprendices. Para conseguir la insignia de aprendiz, cada alumno tiene que superar las pruebas del tema: entender cómo funciona el aliento (la lectura), «curar» las palabras heridas poniendo las tildes que les faltan, ordenar los nombres en su sitio, tratar a todo el mundo con cortesía y escribir su propia aventura en la enfermería. Encaja en la gamificación de Javificación: el calentamiento diario de tildes es una misión de La Copa por niveles, con sus galeones, y cada prueba superada puede dar galeones o una carta.
+
+## Criterios de evaluación y saberes básicos
+
+La SA trabaja 10 criterios del segundo ciclo (Orden de 30 de mayo de 2023). Los textos están resumidos: comprueba el código y la redacción exacta en el cuaderno de Séneca antes de cargarlos.
+
+| Código | Criterio (resumido) | Dónde se evalúa |
+| --- | --- | --- |
+| LCL.2.3.1 | Producir textos orales coherentes, con planificación acompañada y recursos no verbales | Teatrillo de la cortesía, lectura de la narración |
+| LCL.2.3.2 | Participar en interacciones orales con escucha activa y cortesía lingüística | Hablamos con cortesía, teatrillo |
+| LCL.2.4.1 | Comprender el sentido global y la información relevante de textos escritos, haciendo inferencias | Lectura «¡El más importante!», vocabulario |
+| LCL.2.5.1 | Producir textos escritos con coherencia y adecuación, planificando, textualizando y revisando | Narración de la enfermería |
+| LCL.2.6.1 | Localizar y seleccionar información de distintas fuentes (diccionario) | Glosario de la lectura |
+| LCL.2.8.1 | Leer y escuchar literatura infantil, relacionándola con los elementos de cada género | Personajes de la narración, Los tres cerditos |
+| LCL.2.8.2 | Producir textos con intención literaria, reelaborando modelos con creatividad | Narración de la enfermería |
+| LCL.2.9.1 | Formular conclusiones sobre el funcionamiento de la lengua con metalenguaje básico | Acentuación (tipos y reglas), clases de nombres, control |
+| LCL.2.9.2 | Revisar y mejorar textos propios y ajenos con reflexión metalingüística | Poner tildes a textos (ej. 18), revisión de la narración |
+| LCL.2.10.2 | Escucha activa, comunicación asertiva y gestión dialogada | Teatrillo: resolver situaciones sin enfado |
+
+### Saberes básicos
+
+**B. Comunicación**
+
+- Comprensión lectora: sentido global, información explícita e implícita, vocabulario por contexto (brahmán, hacer amago de, emprender, desfallecimiento, al unísono).
+- Comunicación oral: normas de cortesía (saludar, pedir por favor, dar las gracias, pedir perdón, respetar el turno).
+- Producción escrita: planificación de una narración (personajes y escenario), textualización, revisión y presentación.
+
+**C. Educación literaria**
+
+- Los personajes de la narración: protagonista y personajes secundarios.
+- El escenario: dónde y cuándo ocurre la historia.
+
+**D. Reflexión sobre la lengua**
+
+- Sílaba tónica y acento. Palabras agudas, llanas y esdrújulas.
+- Reglas generales de la tilde: agudas acabadas en vocal, -n o -s; llanas no acabadas en vocal, -n o -s; esdrújulas siempre. (Sin hiatos ni monosílabos: no se ven todavía.)
+- Clases de nombres: comunes y propios; concretos y abstractos; contables e incontables; individuales y colectivos.
+
+## Temporalización
+
+Veinte sesiones según el horario de 4ºA: 60 min de lunes a viernes, salvo los jueves, que son 90 min. **Todas** empiezan con la **pregunta del día** (5'): tres palabras en la pizarra y la clase dice si son agudas, llanas o esdrújulas (y, desde la S5, si llevan tilde y por qué). Además, casi todas tienen el **calentamiento de tildes** (10'): una misión de La Copa del nivel que toca, o «Entrenar» en los ordenadores. Si una sesión se queda corta, lo marcado como «si sobra tiempo» pasa a la siguiente.
+
+| S | Fecha | Duración | Contenido | Actividades | Interactivas |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Vie 6 nov | 60' | Lectura y vocabulario | Pregunta del día: ¿qué sílaba suena más fuerte? (aliento, pulmón, nariz). Presentación del reto. Lectura en voz alta de «¡El más importante!». Glosario con diccionario: brahmán, hacer amago de, emprender, desfallecimiento, unísono | — |
+| 2 | Lun 9 nov | 60' | Comprensión lectora + la sílaba tónica | Pregunta del día. Preguntas de comprensión de la lectura y moraleja. Recordamos la sílaba tónica del Tema 2 (Lumos). Calentamiento: Acentuación 1 | I-12 Lumos: ilumina la tónica (repaso) |
+| 3 | Mar 10 nov | 60' | Agudas, llanas y esdrújulas | Pregunta del día. Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar | — |
+| 4 | Mié 11 nov | 60' | Clases de nombres: comunes y propios | Pregunta del día. Calentamiento: Acentuación 2. Explicación de comunes y propios (mayúscula): Ganges, Himalaya, Nueva Delhi, Taj Mahal | — |
+| 5 | Jue 12 nov | 90' | La tilde en las agudas + nombres concretos y abstractos | Pregunta del día (con tilde y por qué). Regla de las agudas: sofá, camión, atrás (40'). Actividades A y B para copiar. Nombres concretos y abstractos: amistad, calma, elegancia, sinceridad / bolígrafo, árbol, reloj, cepillo (40'). Misión en los ordenadores (10') | — |
+| 6 | Vie 13 nov | 60' | La tilde en las llanas | Pregunta del día. Calentamiento: Acentuación 2. Regla de las llanas: árbol, césped, lápiz. Actividad C | — |
+| 7 | Lun 16 nov | 60' | La tilde en las esdrújulas + contables e incontables | Pregunta del día. Regla de las esdrújulas: tráquea, atmósfera, húmedo. Cuadro resumen de las tres reglas en el cuaderno. Nombres contables e incontables | — |
+| 8 | Mar 17 nov | 60' | Nombres individuales y colectivos | Pregunta del día. Calentamiento: Acentuación 3. Músico → orquesta, ave → bandada, pino → pinar, isla → archipiélago, libro → biblioteca. Buscar el colectivo de plumas, ovejas, abejas, hayas, estrellas, cerdos | — |
+| 9 | Mié 18 nov | 60' | Poner tildes en un texto + Hablamos con cortesía | Pregunta del día. Ej. 18: copiar el texto de los pulmones poniendo las tildes (30'). Cortesía: normas y fórmulas (25') | — |
+| 10 | Jue 19 nov | 90' | Teatrillo de la cortesía | Pregunta del día y calentamiento: Acentuación 4 (10'). Por parejas, preparar una situación (tropezar y pisar a alguien, prestar el libro, un pelotazo sin querer, ayudar a recoger un estuche) (30'). Representaciones y valoración (50') | — |
+| 11 | Vie 20 nov | 60' | Los personajes de la narración | Pregunta del día. Protagonista, personajes secundarios y escenario con «Los tres cerditos». Calentamiento: Acentuación 4 | — |
+| 12 | Lun 23 nov | 60' | Expresión escrita: el plan | Pregunta del día. Calentamiento: Acentuación 5. Plan de la narración: protagonista, 2 secundarios, escenario y problema | — |
+| 13 | Mar 24 nov | 60' | Expresión escrita: borrador y revisión | Pregunta del día. Borrador de «Una aventura en la enfermería de Hogwarts» y revisión por parejas con la lista de control (tildes, mayúsculas de los nombres propios) | — |
+| 14 | Mié 25 nov | 60' | Prueba de expresión escrita | Pregunta del día. Versión final de la narración con protagonista, secundarios y escenario (rúbrica de la narración). Silla del autor si sobra tiempo | — |
+| 15 | Jue 26 nov | 90' | Tarea final (1): el diagnóstico | Pregunta del día y calentamiento: Acentuación 5 (10'). Cada casa recibe su «paciente»: una carta sin tildes. Historial clínico de cada palabra herida: sílabas, tónica y tipo (40'). Tratamiento: poner las tildes y escribir la receta (por qué) (40') | — |
+| 16 | Vie 27 nov | 60' | Tarea final (2): el cartel y el reto | Pregunta del día. Cada casa hace el cartel de su regla y prepara 5 palabras heridas para otra casa | — |
+| 17 | Lun 30 nov | 60' | Tarea final (3): la feria de la enfermería | Pregunta del día. Cada casa presenta su cartel (2'), intercambio de retos y curación de las palabras de otra casa. Galeones a la casa que más cure | — |
+| 18 | Mar 1 dic | 60' | Repaso: acentuación y nombres | Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner; repaso de las clases de nombres | — |
+| 19 | Mié 2 dic | 60' | Repaso general | Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y retos entre compañeros | — |
+| 20 | Jue 3 dic | 90' | Control del Tema 3 | Control (1 h 30). Último día antes de que Javi se vaya (4 de diciembre) | — |
+
+## Actividades por bloque
+
+### 1. La lectura y el glosario (S1-S2)
+
+**Lectura «¡El más importante!»** (adaptación de un cuento sobre la respiración). En Calcuta, los sentidos discuten cuál es el más valioso y acuden al brahmán. Se van marchando la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo sobrevive; cuando la respiración hace amago de irse, el cuerpo desfallece y todos le piden que se quede. Moraleja: la respiración es lo más importante.
+
+- Glosario obligatorio: brahmán, hacer amago de, emprender, desfallecimiento, al unísono.
+- Preguntas para el cuaderno: ¿dónde ocurre?, ¿por qué discuten?, ¿a quién acuden?, ¿qué pasa cuando se va cada uno?, ¿cuál es la moraleja?, ¿estás de acuerdo? ¿por qué?
+- Oral (5 min): ¿qué sentido elegirías tú como el más importante y por qué?
+
+### 2. La acentuación (todos los días)
+
+**Pregunta del día (5', en todas las sesiones).** Tres palabras en la pizarra (del cuerpo, del cole o de Hogwarts) y la clase responde a la vez con la mano: un dedo = aguda, dos = llana, tres = esdrújula. Desde la S5 se añade: ¿lleva tilde? ¿por qué? Quien lo explique bien puede ganar un galeón (⭐ da punto en «¿Quién responde?»). Ejemplos por semanas:
+
+- Semana 1: pulmón, boca, oxígeno · nariz, pecho, músculo · varita, lechuza, mágico.
+- Semana 2: camión, árbol, pájaro · reloj, lápiz, pócima · sofá, examen, sábado.
+- Semana 3: corazón, césped, murciélago · feliz, joven, plátano · menú, fútbol, lámpara.
+- Semana 4: además, cáliz, gramática · ciudad, origen, brújula · jardín, móvil, sílaba.
+
+
+**Explicación.** Todas las palabras tienen una sílaba que suena más fuerte: la sílaba tónica (acento). Según dónde esté, las palabras son:
+
+- **Agudas:** la tónica es la última. Llevan tilde si acaban en vocal, -n o -s: sofá, camión, atrás.
+- **Llanas:** la tónica es la penúltima. Llevan tilde si NO acaban en vocal, -n o -s: árbol, césped, lápiz.
+- **Esdrújulas:** la tónica es la antepenúltima. Llevan tilde SIEMPRE: tráquea, atmósfera, húmedo.
+
+Truco de clase: llamar a la palabra desde lejos para encontrar la tónica, y después «preguntar a la última letra».
+
+**Progresión** (los mismos niveles que el banco de La Copa: misiones de un nivel o Entrenar por nivel):
+
+1. Separar en sílabas y señalar la tónica (S2).
+2. Clasificar en agudas, llanas y esdrújulas: primero con tilde y luego sin tilde (S3-S6).
+3. ¿Lleva tilde o no? (S7-S8).
+4. Poner la tilde donde falte y encontrar la palabra mal escrita (S9-S11).
+5. Explicar por qué lleva o no lleva tilde (S12-S15).
+6. Textos cortos con todo mezclado (S16-S18).
+
+**Libro.**
+
+- **Ej. 17.** Clasificar: agudas (nasal, nariz, meditar, respiración); llanas (boca, pulmones, olfato); esdrújulas (oxígeno, esófago, glándula).
+- **Ej. 18.** Poner la tilde a órganos, están, tórax, pulmón, más, corazón, fácil, acción, además, física y respiración. Ojo: «más» es un monosílabo; se explica aparte, sin entrar en la regla.
+
+**Actividades para copiar**
+
+- **A. Agudas.** Copia y pon la tilde solo a las que la necesiten: sofa, nariz, cafe, reloj, cancion, papel, raton, feliz, compas, azul.
+- **B. ¿Por qué?** Escribe por qué llevan tilde: camión (aguda acabada en -n), menú (aguda acabada en vocal), atrás (aguda acabada en -s).
+- **C. Llanas.** Copia y pon la tilde solo a las que la necesiten: arbol, mesa, lapiz, examen, util, joven, cesped, cuaderno, facil, origen.
+- **D. Esdrújulas de Hogwarts.** Escribe con su tilde: magico, pocima, murcielago, lampara, musica, pajaro.
+- **E. Tabla de tres columnas.** Agudas, llanas y esdrújulas con 4 palabras del cuerpo en cada una.
+
+### 3. Clases de nombres (S4-S8)
+
+**Explicación.** Los nombres comunes nombran cualquier persona, animal o cosa; los propios nombran uno en concreto y van con mayúscula. Los comunes pueden ser concretos (se ven y se tocan) o abstractos (no se ven ni se tocan: ideas y sentimientos), contables (se pueden contar: tres manzanas) o incontables (un poco de agua) e individuales (un músico) o colectivos (una orquesta).
+
+- Abstractos: amistad, calma, elegancia, sinceridad. Concretos: bolígrafo, árbol, reloj, cepillo.
+- Individual → colectivo: músico → orquesta, ave → bandada, pino → pinar, isla → archipiélago, libro → biblioteca.
+- Buscar el colectivo: plumas (plumaje), ovejas (rebaño), abejas (enjambre), hayas (hayedo), estrellas (constelación), cerdos (piara).
+- Propios: Ganges, Himalaya, Nueva Delhi, Taj Mahal.
+
+### 4. Hablamos con cortesía (S9-S10)
+
+Normas: saludar y despedirse, pedir por favor, dar las gracias, pedir perdón, respetar el turno de palabra y hablar con un tono amable.
+
+**Teatrillo de la cortesía.** Por parejas, cada una saca una tarjeta y la representa dos veces: primero sin cortesía y después con cortesía. La clase dice qué ha cambiado.
+
+- Tropiezas y pisas a alguien en la fila.
+- Necesitas que te presten un libro.
+- Das un pelotazo sin querer en el recreo.
+- Un compañero te ayuda a recoger el estuche.
+- Llegas tarde y tienes que entrar en clase.
+- Alguien te interrumpe mientras hablas.
+
+### 5. Los personajes de la narración (S11)
+
+Con «Los tres cerditos»: protagonistas (los tres cerditos), personaje que se les enfrenta (el lobo) y escenario (el bosque y las tres casas). En la pizarra, una ficha de personaje: cómo es, qué quiere y qué hace.
+
+## Tarea final: «La enfermería de las palabras heridas» (S15-S17)
+
+Un hechizo ha borrado las tildes de las cartas que los alumnos de Hogwarts envían a casa. Cada casa (mesa) trabaja como un equipo de sanadores: diagnostica las palabras heridas, las cura con la regla correcta, deja escrito el tratamiento para que no vuelva a pasar y pone a prueba a otra casa.
+
+**1. El diagnóstico (S15).** Cada casa recibe su «paciente»: una carta de 8-10 líneas sin ninguna tilde (con unas 12 palabras heridas y otras que están bien sin tilde, para que piensen). Para cada palabra herida rellenan el **historial clínico**: palabra, sílabas, sílaba tónica, tipo (aguda, llana o esdrújula) y en qué letra acaba.
+
+**2. El tratamiento (S15).** Ponen la tilde y escriben la **receta**: «Lleva tilde porque es aguda acabada en -n». También eligen 3 palabras de la carta que NO llevan tilde y explican por qué (las que más engañan: examen, joven, reloj, nariz…).
+
+**3. La prevención: el cartel (S16).** Cada casa hace el cartel de una regla, con la explicación, un dibujo y 6 ejemplos del tema:
+
+- 🦁 Gryffindor: las agudas.
+- 🦡 Hufflepuff: las llanas.
+- 🦅 Ravenclaw: las esdrújulas.
+- 🐍 Slytherin: «las que engañan» (agudas y llanas sin tilde: reloj, nariz, examen, joven, origen).
+- 🔥 Orden del Fénix: el gran resumen (la tabla de las tres reglas con el truco de la tónica).
+
+**4. El reto para otra casa (S16-S17).** Cada casa inventa 5 «palabras heridas» (escritas sin tilde o con la tilde mal puesta) y las intercambia con otra casa, que tiene que curarlas y escribir su receta. La casa que inventa comprueba las soluciones.
+
+**5. La feria de la enfermería (S17).** Cada casa presenta su cartel en 2 minutos y los carteles se quedan en la clase hasta el control. Galeones: +2 a la casa que más palabras cure bien y +1 al cartel más claro (vota la clase).
+
+**Cartas de los pacientes.** Una por casa, con palabras del banco del tema: 12 que necesitan tilde (4 agudas, 4 llanas, 4 esdrújulas) y 6 que no la llevan. Las prepara Javi o Claude, si se le pide.
+
+**Rúbrica de la tarea final (de 1 a 4)**
+
+| Aspecto | 1 | 4 | Criterio |
+| --- | --- | --- | --- |
+| Diagnóstico | No encuentra la tónica o confunde los tipos | Sílabas, tónica y tipo bien en todas las palabras | LCL.2.9.1 |
+| Tratamiento | Pone tildes al azar | Pone todas las tildes y explica la regla de cada una | LCL.2.9.1 |
+| Curar la carta y el reto | Deja muchas palabras sin curar | Cura la carta y las palabras de la otra casa sin errores | LCL.2.9.2 |
+| Cartel y exposición | El cartel no se entiende o no lo explica | Cartel claro, con ejemplos, y lo explica con voz clara | LCL.2.3.1 |
+| Trabajo en equipo | No participa o no deja participar | Reparte el trabajo y escucha a su casa | LCL.2.10.2 |
+
+## La narración: «Una aventura en la enfermería de Hogwarts»
+
+**Cómo se hace (S12-S14; la versión final de la S14 es la prueba de expresión escrita)**
+
+1. Plan: protagonista (cómo es y qué quiere), 2 personajes secundarios, escenario (la enfermería u otro lugar del castillo) y un problema relacionado con la respiración (un hechizo que deja sin aliento, una poción que hace estornudar…).
+2. Borrador de 12-20 líneas con título.
+3. Condiciones: al menos 2 palabras del glosario, 1 nombre colectivo, 1 abstracto y 5 palabras con tilde (al menos una aguda, una llana y una esdrújula).
+4. Revisión por parejas con la lista de control: ¿tiene protagonista, secundarios y escenario?, ¿las tildes están bien puestas?, ¿los nombres propios van con mayúscula?, ¿hay punto al final de cada oración?
+5. Versión final en limpio con un dibujo (S14).
+
+**Rúbrica de la narración (de 1 a 4)**
+
+| Aspecto | 1 | 4 | Criterio |
+| --- | --- | --- | --- |
+| Personajes y escenario | Falta el protagonista o el escenario | Protagonista, secundarios y escenario claros y descritos | LCL.2.8.1 |
+| Estructura y coherencia | Ideas sueltas | Planteamiento, problema y final conectados | LCL.2.5.1 |
+| Creatividad | Repite el modelo | Ideas propias y un final sorprendente | LCL.2.8.2 |
+| Tildes y revisión | Muchos errores, no corrige | Tildes correctas y corrige con su pareja | LCL.2.9.2 |
+
+## Actividades interactivas
+
+No hace falta crear páginas nuevas para el arranque: el **banco del Tema 3 de La Copa** (190 preguntas, `data/copa/tema3-evaluacion.txt`) ya está dividido en los 6 niveles de acentuación y en lectura, nombres, cortesía y personajes.
+
+- **Calentamiento diario:** misión de La Copa con «Preguntas de» = el nivel de acentuación que toca (comodines sí; para nota, sin comodines).
+- **Entrenar y retos** en los ordenadores: cada alumno elige el nivel que peor lleva.
+- **Pizarra:** La Copa de las Casas con el bloque de acentuación (S19).
+- **I-12 Lumos** del Tema 2 para recordar la sílaba tónica (S2).
+
+Ideas para hacer más adelante, si Javi las quiere: «Curar palabras» (palabras heridas sin tilde que se curan al tocar la sílaba correcta), clasificador de agudas, llanas y esdrújulas en tres calderos, y memory de nombres individuales y colectivos.
+
+## Ficha para familias
+
+Una hoja A4 por bloque, con nota a las familias y soluciones aparte (se pueden preparar si Javi las quiere): las reglas de la tilde, clases de nombres y la lectura.
+
+> Estimadas familias: estos días estamos trabajando la tilde en Lengua. Os enviamos esta ficha para repasar en casa. Un truco que usamos en clase: buscar la sílaba que suena más fuerte y después mirar en qué letra acaba la palabra. Gracias por vuestra colaboración. Javi, tutor de 4ºA
+
+## Evaluación
+
+| Evidencia | Instrumento | Criterios |
+| --- | --- | --- |
+| Glosario | Lista de cotejo | LCL.2.6.1 |
+| Comprensión de la lectura | Cuaderno, misiones de La Copa | LCL.2.4.1 |
+| Ej. 17 y actividades de acentuación | Cuaderno, misiones por niveles | LCL.2.9.1 |
+| Ej. 18 y textos sin tildes | Cuaderno | LCL.2.9.2 |
+| Clases de nombres | Cuaderno, misiones | LCL.2.9.1 |
+| Pregunta del día | Observación (quién explica bien la regla) | LCL.2.9.1 |
+| Tarea final: la enfermería de las palabras heridas | Rúbrica de la tarea final | LCL.2.3.1, LCL.2.9.1, LCL.2.9.2, LCL.2.10.2 |
+| Teatrillo de la cortesía | Observación | LCL.2.3.1, LCL.2.3.2, LCL.2.10.2 |
+| Personajes de «Los tres cerditos» | Cuaderno | LCL.2.8.1 |
+| Narración de la enfermería | Rúbrica de la narración | LCL.2.5.1, LCL.2.8.1, LCL.2.8.2, LCL.2.9.2 |
+| Control del Tema 3 | Prueba escrita (nota de 0 a 10 por ejercicio) | Ver propuesta |
+
+**Propuesta de control (6 ejercicios)**
+
+1. Comprensión de un texto corto sobre el cuerpo → LCL.2.4.1
+2. Separar en sílabas, rodear la tónica y clasificar en agudas, llanas y esdrújulas → LCL.2.9.1
+3. Poner las tildes que faltan en palabras sueltas y explicar por qué → LCL.2.9.1
+4. Poner las tildes que faltan en un texto corto → LCL.2.9.2
+5. Clases de nombres: clasificar y buscar el colectivo → LCL.2.9.1
+6. Protagonista, secundarios y escenario de un cuento corto → LCL.2.8.1
+
+El teatrillo, la narración y la tarea final se evalúan con su observación y su rúbrica, fuera del control.

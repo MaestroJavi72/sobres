@@ -396,6 +396,176 @@
      "1": 2
     }
    }
+  },
+  {
+   "id": "tema3-lengua-4a",
+   "md": "tema3-lengua-4a.md",
+   "titulo": "Aprendices de la enfermería de Hogwarts: el aliento mágico",
+   "grupo": "4ºA",
+   "asig": "LCL",
+   "inicio": "2026-11-06",
+   "unidad": "Vicens Vives, Tema 3 «Inspirar y espirar»",
+   "reto": "La enfermería de Hogwarts necesita aprendices. Para conseguir la insignia, cada alumno supera las pruebas del tema: entender el aliento (la lectura), curar las palabras heridas poniendo sus tildes, ordenar los nombres, tratar a todos con cortesía y escribir su aventura en la enfermería. Todos los días hay pregunta de agudas, llanas y esdrújulas y calentamiento de tildes con La Copa.",
+   "producto": "Tarea final de acentuación «La enfermería de las palabras heridas» (diagnóstico, tratamiento, cartel de una regla y reto para otra casa) y una narración con protagonista, secundarios y escenario",
+   "evaluacion": "Rúbrica de la tarea final, rúbrica de la narración, observación del teatrillo y de la pregunta del día, cuaderno, misiones de La Copa y control del Tema 3",
+   "criterios": [
+    "3.1",
+    "3.2",
+    "4.1",
+    "5.1",
+    "6.1",
+    "8.1",
+    "8.2",
+    "9.1",
+    "9.2",
+    "10.2"
+   ],
+   "sesiones": [
+    {
+     "titulo": "Lectura y vocabulario",
+     "objetivo": "Pregunta del día: ¿qué sílaba suena más fuerte? (aliento, pulmón, nariz). Presentación del reto. Lectura en voz alta de «¡El más importante!». Glosario con diccionario: brahmán, hacer amago de, emprender, desfallecimiento, unísono",
+     "fecha": "2026-11-06",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Comprensión lectora + la sílaba tónica",
+     "objetivo": "Pregunta del día. Preguntas de comprensión de la lectura y moraleja. Recordamos la sílaba tónica del Tema 2 (Lumos). Calentamiento: Acentuación 1",
+     "fecha": "2026-11-09",
+     "duracion": "60'",
+     "interactivas": "I-12 Lumos: ilumina la tónica (repaso)"
+    },
+    {
+     "titulo": "Agudas, llanas y esdrújulas",
+     "objetivo": "Pregunta del día. Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar",
+     "fecha": "2026-11-10",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Clases de nombres: comunes y propios",
+     "objetivo": "Pregunta del día. Calentamiento: Acentuación 2. Explicación de comunes y propios (mayúscula): Ganges, Himalaya, Nueva Delhi, Taj Mahal",
+     "fecha": "2026-11-11",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "La tilde en las agudas + nombres concretos y abstractos",
+     "objetivo": "Pregunta del día (con tilde y por qué). Regla de las agudas: sofá, camión, atrás (40'). Actividades A y B para copiar. Nombres concretos y abstractos: amistad, calma, elegancia, sinceridad / bolígrafo, árbol, reloj, cepillo (40'). Misión en los ordenadores (10')",
+     "fecha": "2026-11-12",
+     "duracion": "90'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "La tilde en las llanas",
+     "objetivo": "Pregunta del día. Calentamiento: Acentuación 2. Regla de las llanas: árbol, césped, lápiz. Actividad C",
+     "fecha": "2026-11-13",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "La tilde en las esdrújulas + contables e incontables",
+     "objetivo": "Pregunta del día. Regla de las esdrújulas: tráquea, atmósfera, húmedo. Cuadro resumen de las tres reglas en el cuaderno. Nombres contables e incontables",
+     "fecha": "2026-11-16",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Nombres individuales y colectivos",
+     "objetivo": "Pregunta del día. Calentamiento: Acentuación 3. Músico → orquesta, ave → bandada, pino → pinar, isla → archipiélago, libro → biblioteca. Buscar el colectivo de plumas, ovejas, abejas, hayas, estrellas, cerdos",
+     "fecha": "2026-11-17",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Poner tildes en un texto + Hablamos con cortesía",
+     "objetivo": "Pregunta del día. Ej. 18: copiar el texto de los pulmones poniendo las tildes (30'). Cortesía: normas y fórmulas (25')",
+     "fecha": "2026-11-18",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Teatrillo de la cortesía",
+     "objetivo": "Pregunta del día y calentamiento: Acentuación 4 (10'). Por parejas, preparar una situación (tropezar y pisar a alguien, prestar el libro, un pelotazo sin querer, ayudar a recoger un estuche) (30'). Representaciones y valoración (50')",
+     "fecha": "2026-11-19",
+     "duracion": "90'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Los personajes de la narración",
+     "objetivo": "Pregunta del día. Protagonista, personajes secundarios y escenario con «Los tres cerditos». Calentamiento: Acentuación 4",
+     "fecha": "2026-11-20",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Expresión escrita: el plan",
+     "objetivo": "Pregunta del día. Calentamiento: Acentuación 5. Plan de la narración: protagonista, 2 secundarios, escenario y problema",
+     "fecha": "2026-11-23",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Expresión escrita: borrador y revisión",
+     "objetivo": "Pregunta del día. Borrador de «Una aventura en la enfermería de Hogwarts» y revisión por parejas con la lista de control (tildes, mayúsculas de los nombres propios)",
+     "fecha": "2026-11-24",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Prueba de expresión escrita",
+     "objetivo": "Pregunta del día. Versión final de la narración con protagonista, secundarios y escenario (rúbrica de la narración). Silla del autor si sobra tiempo",
+     "fecha": "2026-11-25",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Tarea final (1): el diagnóstico",
+     "objetivo": "Pregunta del día y calentamiento: Acentuación 5 (10'). Cada casa recibe su «paciente»: una carta sin tildes. Historial clínico de cada palabra herida: sílabas, tónica y tipo (40'). Tratamiento: poner las tildes y escribir la receta (por qué) (40')",
+     "fecha": "2026-11-26",
+     "duracion": "90'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Tarea final (2): el cartel y el reto",
+     "objetivo": "Pregunta del día. Cada casa hace el cartel de su regla y prepara 5 palabras heridas para otra casa",
+     "fecha": "2026-11-27",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Tarea final (3): la feria de la enfermería",
+     "objetivo": "Pregunta del día. Cada casa presenta su cartel (2'), intercambio de retos y curación de las palabras de otra casa. Galeones a la casa que más cure",
+     "fecha": "2026-11-30",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Repaso: acentuación y nombres",
+     "objetivo": "Pregunta del día. Calentamiento: Acentuación 6. Textos cortos con palabras para clasificar y tildes que poner; repaso de las clases de nombres",
+     "fecha": "2026-12-01",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Repaso general",
+     "objetivo": "Pregunta del día. Repaso del Tema 3 con La Copa de las Casas en la pizarra y retos entre compañeros",
+     "fecha": "2026-12-02",
+     "duracion": "60'",
+     "interactivas": ""
+    },
+    {
+     "titulo": "Control del Tema 3",
+     "objetivo": "Control (1 h 30). Último día antes de que Javi se vaya (4 de diciembre)",
+     "fecha": "2026-12-03",
+     "duracion": "90'",
+     "interactivas": ""
+    }
+   ],
+   "enlaces": {
+    "I-12": "tema2-lengua-4a/i12-lumos.html"
+   },
+   "recursos": []
   }
  ]
 }
