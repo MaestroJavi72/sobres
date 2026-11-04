@@ -1,0 +1,381 @@
+# Tema 3 | Lectura: ¡El más importante!
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿En qué ciudad ocurre la historia?
+* En Calcuta
+- En Madrid
+- En Londres
+- En Roma
+DIF: 1
+CRIT: 4.1
+EXP: La historia ocurre en Calcuta, una ciudad de la India.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Por qué discutían los sentidos y las partes del cuerpo?
+* Porque cada uno decía que era el más importante
+- Porque querían irse de viaje
+- Porque el cuerpo estaba enfermo
+- Porque no les gustaba la ciudad
+DIF: 1
+CRIT: 4.1
+EXP: Cada uno quería ser el más importante.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿A quién fueron a ver para resolver la discusión?
+* A un brahmán, un hombre sabio
+- A un médico
+- Al rey de la ciudad
+- A un mago
+DIF: 1
+CRIT: 4.1
+EXP: Acudieron al brahmán, un hombre sabio de la India.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Qué le pasó al cuerpo cuando se marcharon la lengua, los ojos, las orejas, la mente y las manos?
+* Siguió vivo, aunque con dificultades
+- Se quedó dormido para siempre
+- Se fue también de viaje
+- Se puso muy contento
+DIF: 2
+CRIT: 4.1
+EXP: El cuerpo lo pasó mal, pero siguió vivo.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Qué ocurrió cuando la respiración hizo amago de irse?
+* El cuerpo empezó a desfallecer
+- El cuerpo se puso a bailar
+- No pasó nada
+- Las manos se enfadaron
+DIF: 2
+CRIT: 4.1
+EXP: Sin respiración, el cuerpo se quedaba sin fuerzas.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Cuál es la moraleja (la enseñanza) del cuento?
+* La respiración es lo más importante para vivir
+- Los ojos son lo más importante
+- Hay que discutir para ganar
+- Es mejor viajar solo
+DIF: 2
+CRIT: 4.1
+EXP: Sin la respiración el cuerpo no puede vivir: es lo más importante.
+
+TIPO: opcion
+P: En el cuento, la respiración «hace amago de irse». ¿Qué significa «hacer amago de»?
+* Hacer como que vas a hacer algo, sin llegar a hacerlo
+- Hacer algo muy deprisa
+- Hacer magia
+- Hacer algo dos veces
+DIF: 2
+CRIT: 4.1
+EXP: Amagar es empezar un movimiento sin terminarlo.
+
+TIPO: opcion
+P: «Todos le pidieron, al unísono, que se quedara». ¿Qué significa «al unísono»?
+* Todos a la vez
+- Uno detrás de otro
+- En voz muy baja
+- Solo uno
+DIF: 2
+CRIT: 4.1
+EXP: Al unísono: todos al mismo tiempo, como una sola voz.
+
+TIPO: opcion
+P: ¿Qué es un «desfallecimiento»?
+* Quedarse sin fuerzas, casi desmayarse
+- Un fallo en un examen
+- Una fiesta muy grande
+- Un dolor de muelas
+DIF: 2
+CRIT: 4.1
+EXP: Desfallecer es perder las fuerzas.
+
+TIPO: opcion
+P: Los sentidos «emprendieron el camino» para ver al brahmán. ¿Qué significa «emprender»?
+* Empezar algo, como un viaje o una tarea
+- Terminar algo
+- Perder algo
+- Prestar algo
+DIF: 2
+CRIT: 4.1
+EXP: Emprender es comenzar algo.
+
+# Tema 3 | Clases de nombres
+
+TIPO: opcion
+P: «Amistad» es un nombre…
+* abstracto: no se puede ver ni tocar
+- concreto: se puede ver y tocar
+- colectivo
+- propio
+DIF: 1
+CRIT: 9.1
+EXP: La amistad no se ve ni se toca: es un nombre abstracto.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es concreto (se puede ver y tocar)?
+* bolígrafo
+- calma
+- sinceridad
+- elegancia
+DIF: 1
+CRIT: 9.1
+EXP: Un bolígrafo se ve y se toca. Calma, sinceridad y elegancia son abstractos.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es abstracto?
+* sinceridad
+- reloj
+- cepillo
+- árbol
+DIF: 1
+CRIT: 9.1
+EXP: La sinceridad no se puede ver ni tocar.
+
+TIPO: emparejar
+P: Une cada nombre individual con su nombre colectivo.
+R: músico = orquesta | ave = bandada | pino = pinar | isla = archipiélago
+DIF: 2
+CRIT: 9.1
+EXP: Muchos músicos forman una orquesta; muchas aves, una bandada; muchos pinos, un pinar; muchas islas, un archipiélago.
+
+TIPO: emparejar
+P: Une cada nombre individual con su nombre colectivo.
+R: libro = biblioteca | abeja = enjambre | oveja = rebaño | estrella = constelación
+DIF: 2
+CRIT: 9.1
+EXP: Biblioteca, enjambre, rebaño y constelación nombran un grupo.
+
+TIPO: opcion
+P: ¿Cómo se llama un grupo de cerdos?
+* piara
+- bandada
+- enjambre
+- orquesta
+DIF: 2
+CRIT: 9.1
+EXP: Un grupo de cerdos es una piara.
+
+TIPO: opcion
+P: ¿Cómo se llama un conjunto de hayas (un tipo de árbol)?
+* hayedo
+- pinar
+- rebaño
+- piara
+DIF: 2
+CRIT: 9.1
+EXP: Un bosque de hayas es un hayedo.
+
+TIPO: opcion
+P: ¿Cómo se llama el conjunto de plumas de un ave?
+* plumaje
+- plumero
+- bandada
+- enjambre
+DIF: 2
+CRIT: 9.1
+EXP: El plumaje es el conjunto de plumas.
+
+TIPO: opcion
+P: ¿Cuál de estos es un nombre propio?
+* Ganges
+- río
+- montaña
+- ciudad
+DIF: 1
+CRIT: 9.1
+EXP: Ganges es el nombre de un río concreto: es propio y va con mayúscula.
+
+TIPO: vf
+P: «Himalaya» se escribe con mayúscula porque es un nombre propio.
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: Los nombres propios empiezan siempre por mayúscula.
+
+TIPO: opcion
+P: ¿Cuál está bien escrito?
+* Nueva Delhi
+- nueva delhi
+- Nueva delhi
+- nueva Delhi
+DIF: 2
+CRIT: 9.1
+EXP: Es un nombre propio de ciudad: las dos palabras van con mayúscula.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es incontable (no se puede contar uno a uno)?
+* arena
+- libro
+- silla
+- lápiz
+DIF: 2
+CRIT: 9.1
+EXP: No decimos «tres arenas», sino «un poco de arena».
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es contable?
+* manzana
+- agua
+- harina
+- aire
+DIF: 2
+CRIT: 9.1
+EXP: Las manzanas se pueden contar: una, dos, tres manzanas.
+
+TIPO: opcion
+P: «Bandada» es un nombre…
+* colectivo: nombra un grupo
+- individual
+- propio
+- abstracto
+DIF: 1
+CRIT: 9.1
+EXP: Bandada nombra un grupo de aves.
+
+# Tema 3 | Hablamos con cortesía
+
+TIPO: opcion
+P: En la fila tropiezas y pisas a un compañero. ¿Qué es lo más cortés?
+* «¡Perdona! ¿Te he hecho daño?»
+- No decir nada y seguir
+- «¡Haberte apartado!»
+- Reírte
+DIF: 1
+CRIT: 3.2
+EXP: Pedimos perdón y nos interesamos por la otra persona.
+
+TIPO: opcion
+P: Quieres que una compañera te preste su libro. ¿Cómo se lo pides?
+* «¿Me prestas tu libro, por favor?»
+- «¡Dame el libro!»
+- Se lo coges sin preguntar
+- «Préstamelo ya»
+DIF: 1
+CRIT: 3.2
+EXP: Pedimos las cosas por favor.
+
+TIPO: opcion
+P: Jugando, das un pelotazo sin querer a un niño de otra clase. ¿Qué haces?
+* «Lo siento, ha sido sin querer. ¿Estás bien?»
+- Sigues jugando como si nada
+- Le echas la culpa a otro
+- «¡Es que estabas en medio!»
+DIF: 1
+CRIT: 3.2
+EXP: Aunque sea sin querer, pedimos disculpas.
+
+TIPO: opcion
+P: Se te cae el estuche y un compañero te ayuda a recogerlo. ¿Qué le dices?
+* «¡Muchas gracias por ayudarme!»
+- Nada
+- «Ya lo hago yo, déjalo»
+- «Has tardado mucho»
+DIF: 1
+CRIT: 3.2
+EXP: Damos las gracias cuando alguien nos ayuda.
+
+TIPO: opcion
+P: Tienes que entrar en el despacho de la directora. ¿Qué haces?
+* Llamas a la puerta y dices: «Buenos días, ¿puedo pasar?»
+- Entras sin llamar
+- Abres la puerta y gritas su nombre
+- Esperas fuera sin decir nada
+DIF: 1
+CRIT: 3.2
+EXP: Llamamos, saludamos y pedimos permiso.
+
+TIPO: opcion
+P: En un debate, un compañero está hablando y tú quieres decir algo. ¿Qué haces?
+* Levanto la mano y espero mi turno
+- Hablo a la vez que él, más alto
+- Le digo que se calle
+- Me pongo a hablar con el de al lado
+DIF: 1
+CRIT: 3.2
+EXP: Respetar el turno de palabra es una norma de cortesía.
+
+TIPO: vf
+P: Saludar, pedir las cosas «por favor» y dar las «gracias» son normas de cortesía.
+R: V
+DIF: 1
+CRIT: 3.2
+EXP: Son normas básicas para convivir bien.
+
+# Tema 3 | Personajes de la narración
+
+TIPO: opcion
+P: ¿Qué es el protagonista de una narración?
+* El personaje principal, al que le pasa lo más importante
+- El lugar donde ocurre la historia
+- El que escribe el cuento
+- Un personaje que sale una sola vez
+DIF: 1
+CRIT: 8.1
+EXP: El protagonista es el personaje principal de la historia.
+
+TIPO: opcion
+P: ¿Qué son los personajes secundarios?
+* Los que aparecen menos y acompañan o se enfrentan al protagonista
+- Los más importantes del cuento
+- Los lugares del cuento
+- Los que leen el cuento
+DIF: 1
+CRIT: 8.1
+EXP: Los secundarios tienen un papel menos importante que el protagonista.
+
+TIPO: opcion
+P: ¿Qué es el escenario de una narración?
+* El lugar donde ocurre la historia
+- El personaje principal
+- El final del cuento
+- El título
+DIF: 1
+CRIT: 8.1
+EXP: El escenario es el lugar (y el tiempo) donde pasa la historia.
+
+TIPO: opcion
+P: En el cuento de «Los tres cerditos», ¿quiénes son los protagonistas?
+* Los tres cerditos
+- El lobo
+- Los ladrillos
+- El bosque
+DIF: 1
+CRIT: 8.1
+EXP: La historia gira alrededor de los tres cerditos.
+
+TIPO: opcion
+P: En «Los tres cerditos», ¿qué personaje intenta derribar las casas soplando?
+* El lobo
+- El cerdito mayor
+- Un cazador
+- Un oso
+DIF: 1
+CRIT: 8.1
+EXP: El lobo sopla y sopla para derribar las casas.
+
+TIPO: opcion
+P: ¿Cuál de estos es un escenario del cuento de «Los tres cerditos»?
+* El bosque, con las casas de los cerditos
+- Una nave espacial
+- Un barco pirata
+- Un castillo de hielo
+DIF: 1
+CRIT: 8.1
+EXP: La historia pasa en el bosque, en las casas que construyen.
+
+TIPO: opcion
+P: En «Los tres cerditos», ¿qué casa resiste los soplidos del lobo?
+* La de ladrillos
+- La de paja
+- La de madera
+- Ninguna
+DIF: 1
+CRIT: 8.1
+EXP: La casa de ladrillos es la única que el lobo no puede derribar.

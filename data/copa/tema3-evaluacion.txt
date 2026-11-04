@@ -1,0 +1,1810 @@
+# Tema 3 | Acentuación 1 · Sílabas y sílaba tónica
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «escoba»?
+- esco-ba
+- esc-o-ba
+- es-cob-a
+* es-co-ba
+DIF: 1
+CRIT: 9.1
+EXP: es-co-ba: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «además»?
+- ade-más
+- a-dem-ás
+- a-demás
+* a-de-más
+DIF: 1
+CRIT: 9.1
+EXP: a-de-más: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «brújula»?
+* brú-ju-la
+- brú-jul-a
+- brúju-la
+- brúj-u-la
+DIF: 1
+CRIT: 9.1
+EXP: brú-ju-la: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «origen»?
+- o-rig-en
+- or-i-gen
+* o-ri-gen
+- ori-gen
+DIF: 1
+CRIT: 9.1
+EXP: o-ri-gen: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «plástico»?
+* plás-ti-co
+- plá-sti-co
+- plást-i-co
+- plásti-co
+DIF: 1
+CRIT: 9.1
+EXP: plás-ti-co: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «escolar»?
+- es-col-ar
+* es-co-lar
+- esco-lar
+- e-sco-lar
+DIF: 1
+CRIT: 9.1
+EXP: es-co-lar: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «física»?
+- fís-i-ca
+* fí-si-ca
+- físi-ca
+- fí-sic-a
+DIF: 1
+CRIT: 9.1
+EXP: fí-si-ca: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «músicos»?
+- mú-sic-os
+- mú-sicos
+* mú-si-cos
+- músi-cos
+DIF: 1
+CRIT: 9.1
+EXP: mú-si-cos: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «símbolo»?
+- sím-bolo
+- sí-mbo-lo
+* sím-bo-lo
+- símb-o-lo
+DIF: 1
+CRIT: 9.1
+EXP: sím-bo-lo: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cómo se separa en sílabas la palabra «cabeza»?
+- ca-bez-a
+- cab-e-za
+* ca-be-za
+- cabe-za
+DIF: 1
+CRIT: 9.1
+EXP: ca-be-za: 3 sílabas.
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «caracol»? (la que suena más fuerte)
+- ra
+* col
+- ca
+DIF: 1
+CRIT: 9.1
+EXP: ca-ra-col: la sílaba tónica es «col».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «camisa»? (la que suena más fuerte)
+* mi
+- sa
+- ca
+DIF: 1
+CRIT: 9.1
+EXP: ca-mi-sa: la sílaba tónica es «mi».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «hospital»? (la que suena más fuerte)
+- pi
+* tal
+- hos
+DIF: 1
+CRIT: 9.1
+EXP: hos-pi-tal: la sílaba tónica es «tal».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «amistad»? (la que suena más fuerte)
+* tad
+- mis
+- a
+DIF: 1
+CRIT: 9.1
+EXP: a-mis-tad: la sílaba tónica es «tad».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «varita»? (la que suena más fuerte)
+* ri
+- ta
+- va
+DIF: 1
+CRIT: 9.1
+EXP: va-ri-ta: la sílaba tónica es «ri».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «garganta»? (la que suena más fuerte)
+- gar
+* gan
+- ta
+DIF: 1
+CRIT: 9.1
+EXP: gar-gan-ta: la sílaba tónica es «gan».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «meditar»? (la que suena más fuerte)
+* tar
+- di
+- me
+DIF: 1
+CRIT: 9.1
+EXP: me-di-tar: la sílaba tónica es «tar».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «zapatos»? (la que suena más fuerte)
+* pa
+- tos
+- za
+DIF: 1
+CRIT: 9.1
+EXP: za-pa-tos: la sílaba tónica es «pa».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «espirar»? (la que suena más fuerte)
+- pi
+- es
+* rar
+DIF: 1
+CRIT: 9.1
+EXP: es-pi-rar: la sílaba tónica es «rar».
+
+TIPO: opcion
+P: ¿Cuál es la sílaba tónica de «caldero»? (la que suena más fuerte)
+* de
+- ro
+- cal
+DIF: 1
+CRIT: 9.1
+EXP: cal-de-ro: la sílaba tónica es «de».
+
+
+# Tema 3 | Acentuación 2 · Agudas, llanas y esdrújulas
+
+TIPO: opcion
+P: La palabra «explicación» es…
+- esdrújula
+* aguda
+- llana
+DIF: 1
+CRIT: 9.1
+EXP: ex-pli-ca-ción: la sílaba tónica es la última → aguda.
+
+TIPO: opcion
+P: La palabra «patín» es…
+* aguda
+- llana
+- esdrújula
+DIF: 1
+CRIT: 9.1
+EXP: pa-tín: la sílaba tónica es la última → aguda.
+
+TIPO: opcion
+P: La palabra «música» es…
+* esdrújula
+- aguda
+- llana
+DIF: 1
+CRIT: 9.1
+EXP: mú-si-ca: la sílaba tónica es la antepenúltima → esdrújula.
+
+TIPO: opcion
+P: La palabra «músicos» es…
+* esdrújula
+- aguda
+- llana
+DIF: 1
+CRIT: 9.1
+EXP: mú-si-cos: la sílaba tónica es la antepenúltima → esdrújula.
+
+TIPO: opcion
+P: La palabra «párpado» es…
+* esdrújula
+- llana
+- aguda
+DIF: 1
+CRIT: 9.1
+EXP: pár-pa-do: la sílaba tónica es la antepenúltima → esdrújula.
+
+TIPO: opcion
+P: La palabra «fantástica» es…
+- llana
+- aguda
+* esdrújula
+DIF: 1
+CRIT: 9.1
+EXP: fan-tás-ti-ca: la sílaba tónica es la antepenúltima → esdrújula.
+
+TIPO: opcion
+P: La palabra «acción» es…
+- llana
+- esdrújula
+* aguda
+DIF: 1
+CRIT: 9.1
+EXP: ac-ción: la sílaba tónica es la última → aguda.
+
+TIPO: opcion
+P: La palabra «café» es…
+- llana
+* aguda
+- esdrújula
+DIF: 1
+CRIT: 9.1
+EXP: ca-fé: la sílaba tónica es la última → aguda.
+
+TIPO: opcion
+P: La palabra «víbora» es…
+- llana
+* esdrújula
+- aguda
+DIF: 1
+CRIT: 9.1
+EXP: ví-bo-ra: la sílaba tónica es la antepenúltima → esdrújula.
+
+TIPO: opcion
+P: La palabra «corazón» es…
+- llana
+* aguda
+- esdrújula
+DIF: 1
+CRIT: 9.1
+EXP: co-ra-zón: la sílaba tónica es la última → aguda.
+
+TIPO: opcion
+P: La palabra «glándula» es…
+* esdrújula
+- aguda
+- llana
+DIF: 1
+CRIT: 9.1
+EXP: glán-du-la: la sílaba tónica es la antepenúltima → esdrújula.
+
+TIPO: opcion
+P: La palabra «tórax» es…
+* llana
+- esdrújula
+- aguda
+DIF: 1
+CRIT: 9.1
+EXP: tó-rax: la sílaba tónica es la penúltima → llana.
+
+TIPO: opcion
+P: La palabra «cuerpo» (no lleva tilde) es…
+- aguda
+- esdrújula
+* llana
+DIF: 2
+CRIT: 9.1
+EXP: cuer-po: la sílaba tónica es «cuer», la penúltima → llana.
+
+TIPO: opcion
+P: La palabra «olfato» (no lleva tilde) es…
+* llana
+- esdrújula
+- aguda
+DIF: 2
+CRIT: 9.1
+EXP: ol-fa-to: la sílaba tónica es «fa», la penúltima → llana.
+
+TIPO: opcion
+P: La palabra «sonido» (no lleva tilde) es…
+* llana
+- esdrújula
+- aguda
+DIF: 2
+CRIT: 9.1
+EXP: so-ni-do: la sílaba tónica es «ni», la penúltima → llana.
+
+TIPO: opcion
+P: La palabra «magia» (no lleva tilde) es…
+* llana
+- esdrújula
+- aguda
+DIF: 2
+CRIT: 9.1
+EXP: ma-gia: la sílaba tónica es «ma», la penúltima → llana.
+
+TIPO: opcion
+P: La palabra «boca» (no lleva tilde) es…
+- esdrújula
+* llana
+- aguda
+DIF: 2
+CRIT: 9.1
+EXP: bo-ca: la sílaba tónica es «bo», la penúltima → llana.
+
+TIPO: opcion
+P: La palabra «pintor» (no lleva tilde) es…
+- llana
+* aguda
+- esdrújula
+DIF: 2
+CRIT: 9.1
+EXP: pin-tor: la sílaba tónica es «tor», la última → aguda.
+
+TIPO: opcion
+P: La palabra «papel» (no lleva tilde) es…
+* aguda
+- llana
+- esdrújula
+DIF: 2
+CRIT: 9.1
+EXP: pa-pel: la sílaba tónica es «pel», la última → aguda.
+
+TIPO: opcion
+P: La palabra «inspirar» (no lleva tilde) es…
+- llana
+* aguda
+- esdrújula
+DIF: 2
+CRIT: 9.1
+EXP: ins-pi-rar: la sílaba tónica es «rar», la última → aguda.
+
+TIPO: opcion
+P: La palabra «animal» (no lleva tilde) es…
+- llana
+- esdrújula
+* aguda
+DIF: 2
+CRIT: 9.1
+EXP: a-ni-mal: la sílaba tónica es «mal», la última → aguda.
+
+TIPO: opcion
+P: La palabra «camino» (no lleva tilde) es…
+* llana
+- esdrújula
+- aguda
+DIF: 2
+CRIT: 9.1
+EXP: ca-mi-no: la sílaba tónica es «mi», la penúltima → llana.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es esdrújula?
+- cabeza
+- cama
+- camisa
+* cáscara
+DIF: 2
+CRIT: 9.1
+EXP: cás-ca-ra es esdrújula. camisa: llana · cama: llana · cabeza: llana.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es aguda?
+* metí
+- lágrima
+- dócil
+- líder
+DIF: 2
+CRIT: 9.1
+EXP: me-tí es aguda. líder: llana · dócil: llana · lágrima: esdrújula.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es llana?
+* ventana
+- atrás
+- caracol
+- huracán
+DIF: 2
+CRIT: 9.1
+EXP: ven-ta-na es llana. atrás: aguda · huracán: aguda · caracol: aguda.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es esdrújula?
+- canción
+* plástico
+- sartén
+- zapatos
+DIF: 2
+CRIT: 9.1
+EXP: plás-ti-co es esdrújula. canción: aguda · zapatos: llana · sartén: aguda.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es aguda?
+* nariz
+- plátano
+- débil
+- ventana
+DIF: 2
+CRIT: 9.1
+EXP: na-riz es aguda. ventana: llana · plátano: esdrújula · débil: llana.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es llana?
+- pájaro
+* cabeza
+- además
+- cántaro
+DIF: 2
+CRIT: 9.1
+EXP: ca-be-za es llana. cántaro: esdrújula · pájaro: esdrújula · además: aguda.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es aguda?
+* meditar
+- fútbol
+- hábil
+- fénix
+DIF: 2
+CRIT: 9.1
+EXP: me-di-tar es aguda. hábil: llana · fútbol: llana · fénix: llana.
+
+TIPO: opcion
+P: ¿Cuál de estas palabras es llana?
+- lágrima
+- plástico
+- salud
+* pulmones
+DIF: 2
+CRIT: 9.1
+EXP: pul-mo-nes es llana. salud: aguda · plástico: esdrújula · lágrima: esdrújula.
+
+
+# Tema 3 | Acentuación 3 · ¿Lleva tilde?
+
+TIPO: opcion
+P: Lee en voz alta: «a-mis-TAD» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* No: se escribe «amistad»
+- Sí: se escribe «amistád»
+DIF: 2
+CRIT: 9.1
+EXP: a-mis-tad: tónica «tad», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «me-TI» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «meti»
+* Sí: se escribe «metí»
+DIF: 2
+CRIT: 9.1
+EXP: me-tí: tónica «tí», la última sílaba → aguda. Es aguda y acaba en vocal → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «PIER-na» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «piérna»
+* No: se escribe «pierna»
+DIF: 2
+CRIT: 9.1
+EXP: pier-na: tónica «pier», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «fe-LIZ» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «felíz»
+* No: se escribe «feliz»
+DIF: 2
+CRIT: 9.1
+EXP: fe-liz: tónica «liz», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «ca-pi-TAN» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* Sí: se escribe «capitán»
+- No: se escribe «capitan»
+DIF: 2
+CRIT: 9.1
+EXP: ca-pi-tán: tónica «tán», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «a-RROZ» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «arróz»
+* No: se escribe «arroz»
+DIF: 2
+CRIT: 9.1
+EXP: a-rroz: tónica «rroz», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «res-pi-ra-CION» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «respiracion»
+* Sí: se escribe «respiración»
+DIF: 2
+CRIT: 9.1
+EXP: res-pi-ra-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «TO-rax» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «torax»
+* Sí: se escribe «tórax»
+DIF: 2
+CRIT: 9.1
+EXP: tó-rax: tónica «tó», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «es-TAN» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «estan»
+* Sí: se escribe «están»
+DIF: 2
+CRIT: 9.1
+EXP: es-tán: tónica «tán», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «FE-nix» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* Sí: se escribe «fénix»
+- No: se escribe «fenix»
+DIF: 2
+CRIT: 9.1
+EXP: fé-nix: tónica «fé», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «JO-ven» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «jóven»
+* No: se escribe «joven»
+DIF: 2
+CRIT: 9.1
+EXP: jo-ven: tónica «jo», la penúltima sílaba → llana. Es llana y acaba en -n → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «MU-si-ca» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «musica»
+* Sí: se escribe «música»
+DIF: 2
+CRIT: 9.1
+EXP: mú-si-ca: tónica «mú», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: Lee en voz alta: «CES-ped» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* Sí: se escribe «césped»
+- No: se escribe «cesped»
+DIF: 2
+CRIT: 9.1
+EXP: cés-ped: tónica «cés», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «PE-cho» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* No: se escribe «pecho»
+- Sí: se escribe «pécho»
+DIF: 2
+CRIT: 9.1
+EXP: pe-cho: tónica «pe», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «cal-DE-ro» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «caldéro»
+* No: se escribe «caldero»
+DIF: 2
+CRIT: 9.1
+EXP: cal-de-ro: tónica «de», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «po-CION» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «pocion»
+* Sí: se escribe «poción»
+DIF: 2
+CRIT: 9.1
+EXP: po-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «FA-cil» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «facil»
+* Sí: se escribe «fácil»
+DIF: 2
+CRIT: 9.1
+EXP: fá-cil: tónica «fá», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «o-RI-gen» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* No: se escribe «origen»
+- Sí: se escribe «orígen»
+DIF: 2
+CRIT: 9.1
+EXP: o-ri-gen: tónica «ri», la penúltima sílaba → llana. Es llana y acaba en -n → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «pin-TOR» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «pintór»
+* No: se escribe «pintor»
+DIF: 2
+CRIT: 9.1
+EXP: pin-tor: tónica «tor», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «a-TRAS» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «atras»
+* Sí: se escribe «atrás»
+DIF: 2
+CRIT: 9.1
+EXP: a-trás: tónica «trás», la última sílaba → aguda. Es aguda y acaba en -s → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «hos-pi-TAL» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* No: se escribe «hospital»
+- Sí: se escribe «hospitál»
+DIF: 2
+CRIT: 9.1
+EXP: hos-pi-tal: tónica «tal», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «es-TU-che» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «estúche»
+* No: se escribe «estuche»
+DIF: 2
+CRIT: 9.1
+EXP: es-tu-che: tónica «tu», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «re-LOJ» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «relój»
+* No: se escribe «reloj»
+DIF: 2
+CRIT: 9.1
+EXP: re-loj: tónica «loj», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «va-RI-ta» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «varíta»
+* No: se escribe «varita»
+DIF: 2
+CRIT: 9.1
+EXP: va-ri-ta: tónica «ri», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «bal-CON» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «balcon»
+* Sí: se escribe «balcón»
+DIF: 2
+CRIT: 9.1
+EXP: bal-cón: tónica «cón», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «SIM-bo-lo» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «simbolo»
+* Sí: se escribe «símbolo»
+DIF: 2
+CRIT: 9.1
+EXP: sím-bo-lo: tónica «sím», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: Lee en voz alta: «DO-lar» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* Sí: se escribe «dólar»
+- No: se escribe «dolar»
+DIF: 2
+CRIT: 9.1
+EXP: dó-lar: tónica «dó», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «OR-ga-nos» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- No: se escribe «organos»
+* Sí: se escribe «órganos»
+DIF: 2
+CRIT: 9.1
+EXP: ór-ga-nos: tónica «ór», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: Lee en voz alta: «MAR-tes» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+- Sí: se escribe «mártes»
+* No: se escribe «martes»
+DIF: 2
+CRIT: 9.1
+EXP: mar-tes: tónica «mar», la penúltima sílaba → llana. Es llana y acaba en -s → no lleva tilde.
+
+TIPO: opcion
+P: Lee en voz alta: «cas-TI-llo» (la sílaba tónica va en MAYÚSCULAS). ¿Lleva tilde?
+* No: se escribe «castillo»
+- Sí: se escribe «castíllo»
+DIF: 2
+CRIT: 9.1
+EXP: cas-ti-llo: tónica «ti», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+
+# Tema 3 | Acentuación 4 · Pon la tilde
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «jardin»
+R: jardín
+DIF: 2
+CRIT: 9.2
+EXP: jar-dín: tónica «dín», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «platano»
+R: plátano
+DIF: 2
+CRIT: 9.2
+EXP: plá-ta-no: tónica «plá», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «meti»
+R: metí
+DIF: 2
+CRIT: 9.2
+EXP: me-tí: tónica «tí», la última sílaba → aguda. Es aguda y acaba en vocal → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «dolar»
+R: dólar
+DIF: 2
+CRIT: 9.2
+EXP: dó-lar: tónica «dó», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «explicacion»
+R: explicación
+DIF: 2
+CRIT: 9.2
+EXP: ex-pli-ca-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «cesped»
+R: césped
+DIF: 2
+CRIT: 9.2
+EXP: cés-ped: tónica «cés», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «pajaro»
+R: pájaro
+DIF: 2
+CRIT: 9.2
+EXP: pá-ja-ro: tónica «pá», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «lapiz»
+R: lápiz
+DIF: 2
+CRIT: 9.2
+EXP: lá-piz: tónica «lá», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «huracan»
+R: huracán
+DIF: 2
+CRIT: 9.2
+EXP: hu-ra-cán: tónica «cán», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: completar
+P: Escribe bien esta palabra, con la tilde que le falta: «respiracion»
+R: respiración
+DIF: 2
+CRIT: 9.2
+EXP: res-pi-ra-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- fántastica
+- fantastica
+* fantástica
+- fantasticá
+DIF: 2
+CRIT: 9.2
+EXP: fan-tás-ti-ca: tónica «tás», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- pocimá
+* pócima
+- pocíma
+- pocima
+DIF: 2
+CRIT: 9.2
+EXP: pó-ci-ma: tónica «pó», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- cascara
+* cáscara
+- cascára
+- cascará
+DIF: 2
+CRIT: 9.2
+EXP: cás-ca-ra: tónica «cás», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- ovalo
+- oválo
+* óvalo
+- ovaló
+DIF: 2
+CRIT: 9.2
+EXP: ó-va-lo: tónica «ó», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- inspírar
+- ínspirar
+- inspirár
+* inspirar
+DIF: 2
+CRIT: 9.2
+EXP: ins-pi-rar: tónica «rar», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- escóba
+- éscoba
+- escobá
+* escoba
+DIF: 2
+CRIT: 9.2
+EXP: es-co-ba: tónica «co», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+- glandula
+- glandulá
+* glándula
+- glandúla
+DIF: 2
+CRIT: 9.2
+EXP: glán-du-la: tónica «glán», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Cuál está bien escrita?
+* música
+- musíca
+- musicá
+- musica
+DIF: 2
+CRIT: 9.2
+EXP: mú-si-ca: tónica «mú», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+- caldero
+- joven
+- azúcar
+* nasál
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «nasal». na-sal: tónica «sal», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+- salón
+- amistad
+* salúd
+- rubí
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «salud». sa-lud: tónica «lud», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+* hechízo
+- varita
+- dólar
+- lección
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «hechizo». he-chi-zo: tónica «chi», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+- pecho
+- mochila
+* cafe
+- plátano
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «café». ca-fé: tónica «fé», la última sílaba → aguda. Es aguda y acaba en vocal → lleva tilde.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+- metí
+- estómago
+* jabon
+- útil
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «jabón». ja-bón: tónica «bón», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+- ágil
+- gramática
+- verdad
+* hechízo
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «hechizo». he-chi-zo: tónica «chi», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Qué palabra está MAL escrita?
+* colór
+- lechuza
+- lección
+- miércoles
+DIF: 2
+CRIT: 9.2
+EXP: Se escribe «color». co-lor: tónica «lor», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+
+# Tema 3 | Acentuación 5 · ¿Por qué lleva tilde?
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «lápiz»?
+- Es esdrújula: las esdrújulas llevan tilde siempre
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+* Es llana y no acaba en vocal, -n ni -s
+DIF: 3
+CRIT: 9.1
+EXP: lá-piz: tónica «lá», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «jardín»?
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+* Es aguda y acaba en -n
+- Es esdrújula: las esdrújulas llevan tilde siempre
+DIF: 3
+CRIT: 9.1
+EXP: jar-dín: tónica «dín», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «limón»?
+- Es esdrújula: las esdrújulas llevan tilde siempre
+- Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en vocal
+* Es aguda y acaba en -n
+DIF: 3
+CRIT: 9.1
+EXP: li-món: tónica «món», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «fútbol»?
+- Es esdrújula: las esdrújulas llevan tilde siempre
+- Es aguda y acaba en -n
+- Es aguda y acaba en vocal
+* Es llana y no acaba en vocal, -n ni -s
+DIF: 3
+CRIT: 9.1
+EXP: fút-bol: tónica «fút», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «explicación»?
+* Es aguda y acaba en -n
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+- Es esdrújula: las esdrújulas llevan tilde siempre
+DIF: 3
+CRIT: 9.1
+EXP: ex-pli-ca-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «ámbar»?
+* Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+- Es esdrújula: las esdrújulas llevan tilde siempre
+DIF: 3
+CRIT: 9.1
+EXP: ám-bar: tónica «ám», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «rubí»?
+* Es aguda y acaba en vocal
+- Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en -n
+- Es aguda y acaba en -s
+DIF: 3
+CRIT: 9.1
+EXP: ru-bí: tónica «bí», la última sílaba → aguda. Es aguda y acaba en vocal → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «ágil»?
+- Es aguda y acaba en -s
+* Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en vocal
+- Es esdrújula: las esdrújulas llevan tilde siempre
+DIF: 3
+CRIT: 9.1
+EXP: á-gil: tónica «á», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «pulmón»?
+* Es aguda y acaba en -n
+- Es llana y no acaba en vocal, -n ni -s
+- Es esdrújula: las esdrújulas llevan tilde siempre
+- Es aguda y acaba en vocal
+DIF: 3
+CRIT: 9.1
+EXP: pul-món: tónica «món», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «metí»?
+- Es esdrújula: las esdrújulas llevan tilde siempre
+* Es aguda y acaba en vocal
+- Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en -s
+DIF: 3
+CRIT: 9.1
+EXP: me-tí: tónica «tí», la última sílaba → aguda. Es aguda y acaba en vocal → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «gramática»?
+- Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en vocal
+* Es esdrújula: las esdrújulas llevan tilde siempre
+- Es aguda y acaba en -s
+DIF: 3
+CRIT: 9.1
+EXP: gra-má-ti-ca: tónica «má», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «cinturón»?
+- Es llana y no acaba en vocal, -n ni -s
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+* Es aguda y acaba en -n
+DIF: 3
+CRIT: 9.1
+EXP: cin-tu-rón: tónica «rón», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué lleva tilde «célula»?
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+- Es llana y no acaba en vocal, -n ni -s
+* Es esdrújula: las esdrújulas llevan tilde siempre
+DIF: 3
+CRIT: 9.1
+EXP: cé-lu-la: tónica «cé», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «papel»?
+- Es llana y acaba en vocal
+* Es aguda, pero no acaba en vocal, -n ni -s
+- Es esdrújula y por eso no lleva tilde
+- Es llana y acaba en -n
+DIF: 3
+CRIT: 9.1
+EXP: pa-pel: tónica «pel», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «feliz»?
+- Es llana y acaba en -n
+- Es esdrújula y por eso no lleva tilde
+* Es aguda, pero no acaba en vocal, -n ni -s
+- Es llana y acaba en -s
+DIF: 3
+CRIT: 9.1
+EXP: fe-liz: tónica «liz», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «martes»?
+- Es aguda, pero no acaba en vocal, -n ni -s
+- Es esdrújula y por eso no lleva tilde
+* Es llana y acaba en -s
+- Es llana y acaba en -n
+DIF: 3
+CRIT: 9.1
+EXP: mar-tes: tónica «mar», la penúltima sílaba → llana. Es llana y acaba en -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «camisa»?
+- Es aguda, pero no acaba en vocal, -n ni -s
+* Es llana y acaba en vocal
+- Es llana y acaba en -s
+- Es esdrújula y por eso no lleva tilde
+DIF: 3
+CRIT: 9.1
+EXP: ca-mi-sa: tónica «mi», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «amistad»?
+- Es esdrújula y por eso no lleva tilde
+- Es llana y acaba en vocal
+* Es aguda, pero no acaba en vocal, -n ni -s
+- Es llana y acaba en -n
+DIF: 3
+CRIT: 9.1
+EXP: a-mis-tad: tónica «tad», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «regla»?
+* Es llana y acaba en vocal
+- Es esdrújula y por eso no lleva tilde
+- Es llana y acaba en -s
+- Es aguda, pero no acaba en vocal, -n ni -s
+DIF: 3
+CRIT: 9.1
+EXP: re-gla: tónica «re», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «vacaciones»?
+- Es llana y acaba en vocal
+- Es aguda, pero no acaba en vocal, -n ni -s
+* Es llana y acaba en -s
+- Es llana y acaba en -n
+DIF: 3
+CRIT: 9.1
+EXP: va-ca-cio-nes: tónica «cio», la penúltima sílaba → llana. Es llana y acaba en -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «libro»?
+- Es esdrújula y por eso no lleva tilde
+- Es llana y acaba en -s
+- Es aguda, pero no acaba en vocal, -n ni -s
+* Es llana y acaba en vocal
+DIF: 3
+CRIT: 9.1
+EXP: li-bro: tónica «li», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «lunes»?
+- Es aguda, pero no acaba en vocal, -n ni -s
+- Es llana y acaba en -n
+- Es llana y acaba en vocal
+* Es llana y acaba en -s
+DIF: 3
+CRIT: 9.1
+EXP: lu-nes: tónica «lu», la penúltima sílaba → llana. Es llana y acaba en -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «camino»?
+- Es llana y acaba en -n
+* Es llana y acaba en vocal
+- Es aguda, pero no acaba en vocal, -n ni -s
+- Es esdrújula y por eso no lleva tilde
+DIF: 3
+CRIT: 9.1
+EXP: ca-mi-no: tónica «mi», la penúltima sílaba → llana. Es llana y acaba en vocal → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «relajar»?
+- Es llana y acaba en vocal
+- Es llana y acaba en -s
+- Es esdrújula y por eso no lleva tilde
+* Es aguda, pero no acaba en vocal, -n ni -s
+DIF: 3
+CRIT: 9.1
+EXP: re-la-jar: tónica «jar», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+TIPO: opcion
+P: ¿Por qué NO lleva tilde «meditar»?
+- Es llana y acaba en vocal
+- Es llana y acaba en -n
+- Es llana y acaba en -s
+* Es aguda, pero no acaba en vocal, -n ni -s
+DIF: 3
+CRIT: 9.1
+EXP: me-di-tar: tónica «tar», la última sílaba → aguda. Es aguda, pero no acaba en vocal, -n ni -s → no lleva tilde.
+
+
+# Tema 3 | Acentuación 6 · Repaso con textos
+
+TIPO: opcion
+TEXTO: Los pulmones son unos órganos que están en el tórax. El pulmón de la parte izquierda del cuerpo es un poco más pequeño que el de la derecha, pues este espacio adicional en el lado izquierdo da cabida al corazón. Es fácil sentir nuestros pulmones en acción si inspiramos y espiramos profundamente, pues se hinchan y se deshinchan. Además, si corremos o hacemos una actividad física fuerte nuestra respiración puede acelerarse por unos instantes.
+P: ¿Cuántas palabras con tilde hay en el texto?
+- 9
+- 12
+* 11
+- 10
+DIF: 3
+CRIT: 9.1
+EXP: Llevan tilde: órganos, están, tórax, pulmón, más, corazón, fácil, acción, además, física, respiración (11).
+
+TIPO: opcion
+TEXTO: Los pulmones son unos órganos que están en el tórax. El pulmón de la parte izquierda del cuerpo es un poco más pequeño que el de la derecha, pues este espacio adicional en el lado izquierdo da cabida al corazón. Es fácil sentir nuestros pulmones en acción si inspiramos y espiramos profundamente, pues se hinchan y se deshinchan. Además, si corremos o hacemos una actividad física fuerte nuestra respiración puede acelerarse por unos instantes.
+P: En el texto aparece «fuerte». Esta palabra es…
+- aguda
+- esdrújula
+* llana
+DIF: 3
+CRIT: 9.1
+EXP: fuer-te: llana.
+
+TIPO: opcion
+TEXTO: Los pulmones son unos órganos que están en el tórax. El pulmón de la parte izquierda del cuerpo es un poco más pequeño que el de la derecha, pues este espacio adicional en el lado izquierdo da cabida al corazón. Es fácil sentir nuestros pulmones en acción si inspiramos y espiramos profundamente, pues se hinchan y se deshinchan. Además, si corremos o hacemos una actividad física fuerte nuestra respiración puede acelerarse por unos instantes.
+P: En el texto aparece «acción». Esta palabra es…
+* aguda
+- llana
+- esdrújula
+DIF: 3
+CRIT: 9.1
+EXP: ac-ción: aguda.
+
+TIPO: opcion
+TEXTO: Los pulmones son unos órganos que están en el tórax. El pulmón de la parte izquierda del cuerpo es un poco más pequeño que el de la derecha, pues este espacio adicional en el lado izquierdo da cabida al corazón. Es fácil sentir nuestros pulmones en acción si inspiramos y espiramos profundamente, pues se hinchan y se deshinchan. Además, si corremos o hacemos una actividad física fuerte nuestra respiración puede acelerarse por unos instantes.
+P: ¿Cuál de estas palabras del texto es esdrújula?
+* física
+- parte
+- sentir
+- están
+DIF: 3
+CRIT: 9.1
+EXP: fí-si-ca es esdrújula.
+
+TIPO: opcion
+TEXTO: Los pulmones son unos organos que estan en el torax. El pulmon de la parte izquierda del cuerpo es un poco más pequeño que el de la derecha, pues este espacio adicional en el lado izquierdo da cabida al corazon. Es facil sentir nuestros pulmones en accion si inspiramos y espiramos profundamente, pues se hinchan y se deshinchan. Ademas, si corremos o hacemos una actividad fisica fuerte nuestra respiracion puede acelerarse por unos instantes.
+P: En este texto se han borrado algunas tildes. ¿Cuál de estas palabras DEBE llevar tilde?
+- izquierda
+* respiracion
+- pequeño
+- adicional
+DIF: 3
+CRIT: 9.2
+EXP: Se escribe «respiración». res-pi-ra-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+TEXTO: Los pulmones son unos órganos que están en el tórax. El pulmón de la parte izquierda del cuerpo es un poco más pequeño que el de la derecha, pues este espacio adicional en el lado izquierdo da cabida al corazón. Es fácil sentir nuestros pulmones en acción si inspiramos y espiramos profundamente, pues se hinchan y se deshinchan. Además, si corremos o hacemos una actividad física fuerte nuestra respiración puede acelerarse por unos instantes.
+P: En el texto, ¿por qué lleva tilde «respiración»?
+* Es aguda y acaba en -n
+- Es esdrújula: las esdrújulas llevan tilde siempre
+- Es aguda y acaba en -s
+- Es aguda y acaba en vocal
+DIF: 3
+CRIT: 9.1
+EXP: res-pi-ra-ción: tónica «ción», la última sílaba → aguda. Es aguda y acaba en -n → lleva tilde.
+
+TIPO: opcion
+TEXTO: Un joven mago guardó su varita mágica y abrió el libro de pociones. En el caldero, la poción echaba un humo verde muy extraño. El profesor explicó un hechizo fácil, pero el mago estaba nervioso y lo hizo al revés. Al final, una lechuza voló sobre el castillo y todos aplaudieron: ¡la clase fue fantástica!
+P: ¿Cuántas palabras con tilde hay en el texto?
+- 8
+* 9
+- 10
+- 7
+DIF: 3
+CRIT: 9.1
+EXP: Llevan tilde: guardó, mágica, abrió, poción, explicó, fácil, revés, voló, fantástica (9).
+
+TIPO: opcion
+TEXTO: Un joven mago guardó su varita mágica y abrió el libro de pociones. En el caldero, la poción echaba un humo verde muy extraño. El profesor explicó un hechizo fácil, pero el mago estaba nervioso y lo hizo al revés. Al final, una lechuza voló sobre el castillo y todos aplaudieron: ¡la clase fue fantástica!
+P: En el texto aparece «hechizo». Esta palabra es…
+* llana
+- aguda
+- esdrújula
+DIF: 3
+CRIT: 9.1
+EXP: he-chi-zo: llana.
+
+TIPO: opcion
+TEXTO: Un joven mago guardó su varita mágica y abrió el libro de pociones. En el caldero, la poción echaba un humo verde muy extraño. El profesor explicó un hechizo fácil, pero el mago estaba nervioso y lo hizo al revés. Al final, una lechuza voló sobre el castillo y todos aplaudieron: ¡la clase fue fantástica!
+P: En el texto aparece «caldero». Esta palabra es…
+* llana
+- aguda
+- esdrújula
+DIF: 3
+CRIT: 9.1
+EXP: cal-de-ro: llana.
+
+TIPO: opcion
+TEXTO: Un joven mago guardó su varita mágica y abrió el libro de pociones. En el caldero, la poción echaba un humo verde muy extraño. El profesor explicó un hechizo fácil, pero el mago estaba nervioso y lo hizo al revés. Al final, una lechuza voló sobre el castillo y todos aplaudieron: ¡la clase fue fantástica!
+P: ¿Cuál de estas palabras del texto es esdrújula?
+* mágica
+- todos
+- varita
+- pociones
+DIF: 3
+CRIT: 9.1
+EXP: má-gi-ca es esdrújula.
+
+TIPO: opcion
+TEXTO: Un joven mago guardó su varita magica y abrio el libro de pociones. En el caldero, la pocion echaba un humo verde muy extraño. El profesor explicó un hechizo facil, pero el mago estaba nervioso y lo hizo al reves. Al final, una lechuza volo sobre el castillo y todos aplaudieron: ¡la clase fue fantastica!
+P: En este texto se han borrado algunas tildes. ¿Cuál de estas palabras DEBE llevar tilde?
+- lechuza
+- libro
+- todos
+* reves
+DIF: 3
+CRIT: 9.2
+EXP: Se escribe «revés». re-vés: tónica «vés», la última sílaba → aguda. Es aguda y acaba en -s → lleva tilde.
+
+TIPO: opcion
+TEXTO: Un joven mago guardó su varita mágica y abrió el libro de pociones. En el caldero, la poción echaba un humo verde muy extraño. El profesor explicó un hechizo fácil, pero el mago estaba nervioso y lo hizo al revés. Al final, una lechuza voló sobre el castillo y todos aplaudieron: ¡la clase fue fantástica!
+P: En el texto, ¿por qué lleva tilde «revés»?
+- Es esdrújula: las esdrújulas llevan tilde siempre
+- Es aguda y acaba en vocal
+- Es aguda y acaba en -n
+* Es aguda y acaba en -s
+DIF: 3
+CRIT: 9.1
+EXP: re-vés: tónica «vés», la última sílaba → aguda. Es aguda y acaba en -s → lleva tilde.
+
+TIPO: opcion
+TEXTO: Cuando jugamos al fútbol, el corazón late deprisa y respiramos con rapidez. El oxígeno entra por la nariz y llega hasta los pulmones. Después del partido, es útil beber agua, estirar cada músculo y relajar el cuerpo en un lugar fresco.
+P: ¿Cuántas palabras con tilde hay en el texto?
+- 4
+- 5
+- 7
+* 6
+DIF: 3
+CRIT: 9.1
+EXP: Llevan tilde: fútbol, corazón, oxígeno, después, útil, músculo (6).
+
+TIPO: opcion
+TEXTO: Cuando jugamos al fútbol, el corazón late deprisa y respiramos con rapidez. El oxígeno entra por la nariz y llega hasta los pulmones. Después del partido, es útil beber agua, estirar cada músculo y relajar el cuerpo en un lugar fresco.
+P: En el texto aparece «estirar». Esta palabra es…
+- esdrújula
+- llana
+* aguda
+DIF: 3
+CRIT: 9.1
+EXP: es-ti-rar: aguda.
+
+TIPO: opcion
+TEXTO: Cuando jugamos al fútbol, el corazón late deprisa y respiramos con rapidez. El oxígeno entra por la nariz y llega hasta los pulmones. Después del partido, es útil beber agua, estirar cada músculo y relajar el cuerpo en un lugar fresco.
+P: En el texto aparece «después». Esta palabra es…
+- esdrújula
+* aguda
+- llana
+DIF: 3
+CRIT: 9.1
+EXP: des-pués: aguda.
+
+TIPO: opcion
+TEXTO: Cuando jugamos al fútbol, el corazón late deprisa y respiramos con rapidez. El oxígeno entra por la nariz y llega hasta los pulmones. Después del partido, es útil beber agua, estirar cada músculo y relajar el cuerpo en un lugar fresco.
+P: ¿Cuál de estas palabras del texto es esdrújula?
+* oxígeno
+- beber
+- corazón
+- pulmones
+DIF: 3
+CRIT: 9.1
+EXP: o-xí-ge-no es esdrújula.
+
+TIPO: opcion
+TEXTO: Cuando jugamos al futbol, el corazon late deprisa y respiramos con rapidez. El oxigeno entra por la nariz y llega hasta los pulmones. Despues del partido, es util beber agua, estirar cada musculo y relajar el cuerpo en un lugar fresco.
+P: En este texto se han borrado algunas tildes. ¿Cuál de estas palabras DEBE llevar tilde?
+- beber
+* futbol
+- fresco
+- cuerpo
+DIF: 3
+CRIT: 9.2
+EXP: Se escribe «fútbol». fút-bol: tónica «fút», la penúltima sílaba → llana. Es llana y no acaba en vocal, -n ni -s → lleva tilde.
+
+TIPO: opcion
+TEXTO: El miércoles preparé la mochila: guardé el lápiz, el estuche y el cuaderno de gramática. También metí una lámpara pequeña para leer en el jardín. Tengo muchas ganas de que llegue el sábado.
+P: ¿Cuántas palabras con tilde hay en el texto?
+* 10
+- 8
+- 11
+- 9
+DIF: 3
+CRIT: 9.1
+EXP: Llevan tilde: miércoles, preparé, guardé, lápiz, gramática, también, metí, lámpara, jardín, sábado (10).
+
+TIPO: opcion
+TEXTO: El miércoles preparé la mochila: guardé el lápiz, el estuche y el cuaderno de gramática. También metí una lámpara pequeña para leer en el jardín. Tengo muchas ganas de que llegue el sábado.
+P: En el texto aparece «lámpara». Esta palabra es…
+- aguda
+* esdrújula
+- llana
+DIF: 3
+CRIT: 9.1
+EXP: lám-pa-ra: esdrújula.
+
+TIPO: opcion
+TEXTO: El miércoles preparé la mochila: guardé el lápiz, el estuche y el cuaderno de gramática. También metí una lámpara pequeña para leer en el jardín. Tengo muchas ganas de que llegue el sábado.
+P: En el texto aparece «guardé». Esta palabra es…
+- esdrújula
+* aguda
+- llana
+DIF: 3
+CRIT: 9.1
+EXP: guar-dé: aguda.
+
+TIPO: opcion
+TEXTO: El miércoles preparé la mochila: guardé el lápiz, el estuche y el cuaderno de gramática. También metí una lámpara pequeña para leer en el jardín. Tengo muchas ganas de que llegue el sábado.
+P: ¿Cuál de estas palabras del texto es esdrújula?
+- metí
+- también
+* lámpara
+- jardín
+DIF: 3
+CRIT: 9.1
+EXP: lám-pa-ra es esdrújula.
+
+TIPO: opcion
+TEXTO: El miercoles preparé la mochila: guardé el lapiz, el estuche y el cuaderno de gramatica. Tambien meti una lampara pequeña para leer en el jardin. Tengo muchas ganas de que llegue el sabado.
+P: En este texto se han borrado algunas tildes. ¿Cuál de estas palabras DEBE llevar tilde?
+- estuche
+- pequeña
+- cuaderno
+* miercoles
+DIF: 3
+CRIT: 9.2
+EXP: Se escribe «miércoles». miér-co-les: tónica «miér», la antepenúltima sílaba → esdrújula. Es esdrújula: las esdrújulas llevan tilde siempre.
+
+# Tema 3 | Lectura: ¡El más importante!
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿En qué ciudad ocurre la historia?
+* En Calcuta
+- En Madrid
+- En Londres
+- En Roma
+DIF: 1
+CRIT: 4.1
+EXP: La historia ocurre en Calcuta, una ciudad de la India.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Por qué discutían los sentidos y las partes del cuerpo?
+* Porque cada uno decía que era el más importante
+- Porque querían irse de viaje
+- Porque el cuerpo estaba enfermo
+- Porque no les gustaba la ciudad
+DIF: 1
+CRIT: 4.1
+EXP: Cada uno quería ser el más importante.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿A quién fueron a ver para resolver la discusión?
+* A un brahmán, un hombre sabio
+- A un médico
+- Al rey de la ciudad
+- A un mago
+DIF: 1
+CRIT: 4.1
+EXP: Acudieron al brahmán, un hombre sabio de la India.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Qué le pasó al cuerpo cuando se marcharon la lengua, los ojos, las orejas, la mente y las manos?
+* Siguió vivo, aunque con dificultades
+- Se quedó dormido para siempre
+- Se fue también de viaje
+- Se puso muy contento
+DIF: 2
+CRIT: 4.1
+EXP: El cuerpo lo pasó mal, pero siguió vivo.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Qué ocurrió cuando la respiración hizo amago de irse?
+* El cuerpo empezó a desfallecer
+- El cuerpo se puso a bailar
+- No pasó nada
+- Las manos se enfadaron
+DIF: 2
+CRIT: 4.1
+EXP: Sin respiración, el cuerpo se quedaba sin fuerzas.
+
+TIPO: opcion
+TEXTO: En la ciudad de Calcuta, los sentidos y otras partes del cuerpo discutían sin parar: cada uno decía que era el más importante. Para resolverlo, fueron a ver a un brahmán, un hombre sabio. Él les propuso una prueba: cada uno se marcharía del cuerpo durante un tiempo. Se fueron la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo, aunque con dificultades, siguió vivo. Pero cuando la respiración hizo amago de irse, el cuerpo empezó a desfallecer. Entonces todos, al unísono, le pidieron que se quedara.
+P: ¿Cuál es la moraleja (la enseñanza) del cuento?
+* La respiración es lo más importante para vivir
+- Los ojos son lo más importante
+- Hay que discutir para ganar
+- Es mejor viajar solo
+DIF: 2
+CRIT: 4.1
+EXP: Sin la respiración el cuerpo no puede vivir: es lo más importante.
+
+TIPO: opcion
+P: En el cuento, la respiración «hace amago de irse». ¿Qué significa «hacer amago de»?
+* Hacer como que vas a hacer algo, sin llegar a hacerlo
+- Hacer algo muy deprisa
+- Hacer magia
+- Hacer algo dos veces
+DIF: 2
+CRIT: 4.1
+EXP: Amagar es empezar un movimiento sin terminarlo.
+
+TIPO: opcion
+P: «Todos le pidieron, al unísono, que se quedara». ¿Qué significa «al unísono»?
+* Todos a la vez
+- Uno detrás de otro
+- En voz muy baja
+- Solo uno
+DIF: 2
+CRIT: 4.1
+EXP: Al unísono: todos al mismo tiempo, como una sola voz.
+
+TIPO: opcion
+P: ¿Qué es un «desfallecimiento»?
+* Quedarse sin fuerzas, casi desmayarse
+- Un fallo en un examen
+- Una fiesta muy grande
+- Un dolor de muelas
+DIF: 2
+CRIT: 4.1
+EXP: Desfallecer es perder las fuerzas.
+
+TIPO: opcion
+P: Los sentidos «emprendieron el camino» para ver al brahmán. ¿Qué significa «emprender»?
+* Empezar algo, como un viaje o una tarea
+- Terminar algo
+- Perder algo
+- Prestar algo
+DIF: 2
+CRIT: 4.1
+EXP: Emprender es comenzar algo.
+
+# Tema 3 | Clases de nombres
+
+TIPO: opcion
+P: «Amistad» es un nombre…
+* abstracto: no se puede ver ni tocar
+- concreto: se puede ver y tocar
+- colectivo
+- propio
+DIF: 1
+CRIT: 9.1
+EXP: La amistad no se ve ni se toca: es un nombre abstracto.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es concreto (se puede ver y tocar)?
+* bolígrafo
+- calma
+- sinceridad
+- elegancia
+DIF: 1
+CRIT: 9.1
+EXP: Un bolígrafo se ve y se toca. Calma, sinceridad y elegancia son abstractos.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es abstracto?
+* sinceridad
+- reloj
+- cepillo
+- árbol
+DIF: 1
+CRIT: 9.1
+EXP: La sinceridad no se puede ver ni tocar.
+
+TIPO: emparejar
+P: Une cada nombre individual con su nombre colectivo.
+R: músico = orquesta | ave = bandada | pino = pinar | isla = archipiélago
+DIF: 2
+CRIT: 9.1
+EXP: Muchos músicos forman una orquesta; muchas aves, una bandada; muchos pinos, un pinar; muchas islas, un archipiélago.
+
+TIPO: emparejar
+P: Une cada nombre individual con su nombre colectivo.
+R: libro = biblioteca | abeja = enjambre | oveja = rebaño | estrella = constelación
+DIF: 2
+CRIT: 9.1
+EXP: Biblioteca, enjambre, rebaño y constelación nombran un grupo.
+
+TIPO: opcion
+P: ¿Cómo se llama un grupo de cerdos?
+* piara
+- bandada
+- enjambre
+- orquesta
+DIF: 2
+CRIT: 9.1
+EXP: Un grupo de cerdos es una piara.
+
+TIPO: opcion
+P: ¿Cómo se llama un conjunto de hayas (un tipo de árbol)?
+* hayedo
+- pinar
+- rebaño
+- piara
+DIF: 2
+CRIT: 9.1
+EXP: Un bosque de hayas es un hayedo.
+
+TIPO: opcion
+P: ¿Cómo se llama el conjunto de plumas de un ave?
+* plumaje
+- plumero
+- bandada
+- enjambre
+DIF: 2
+CRIT: 9.1
+EXP: El plumaje es el conjunto de plumas.
+
+TIPO: opcion
+P: ¿Cuál de estos es un nombre propio?
+* Ganges
+- río
+- montaña
+- ciudad
+DIF: 1
+CRIT: 9.1
+EXP: Ganges es el nombre de un río concreto: es propio y va con mayúscula.
+
+TIPO: vf
+P: «Himalaya» se escribe con mayúscula porque es un nombre propio.
+R: V
+DIF: 1
+CRIT: 9.1
+EXP: Los nombres propios empiezan siempre por mayúscula.
+
+TIPO: opcion
+P: ¿Cuál está bien escrito?
+* Nueva Delhi
+- nueva delhi
+- Nueva delhi
+- nueva Delhi
+DIF: 2
+CRIT: 9.1
+EXP: Es un nombre propio de ciudad: las dos palabras van con mayúscula.
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es incontable (no se puede contar uno a uno)?
+* arena
+- libro
+- silla
+- lápiz
+DIF: 2
+CRIT: 9.1
+EXP: No decimos «tres arenas», sino «un poco de arena».
+
+TIPO: opcion
+P: ¿Cuál de estos nombres es contable?
+* manzana
+- agua
+- harina
+- aire
+DIF: 2
+CRIT: 9.1
+EXP: Las manzanas se pueden contar: una, dos, tres manzanas.
+
+TIPO: opcion
+P: «Bandada» es un nombre…
+* colectivo: nombra un grupo
+- individual
+- propio
+- abstracto
+DIF: 1
+CRIT: 9.1
+EXP: Bandada nombra un grupo de aves.
+
+# Tema 3 | Hablamos con cortesía
+
+TIPO: opcion
+P: En la fila tropiezas y pisas a un compañero. ¿Qué es lo más cortés?
+* «¡Perdona! ¿Te he hecho daño?»
+- No decir nada y seguir
+- «¡Haberte apartado!»
+- Reírte
+DIF: 1
+CRIT: 3.2
+EXP: Pedimos perdón y nos interesamos por la otra persona.
+
+TIPO: opcion
+P: Quieres que una compañera te preste su libro. ¿Cómo se lo pides?
+* «¿Me prestas tu libro, por favor?»
+- «¡Dame el libro!»
+- Se lo coges sin preguntar
+- «Préstamelo ya»
+DIF: 1
+CRIT: 3.2
+EXP: Pedimos las cosas por favor.
+
+TIPO: opcion
+P: Jugando, das un pelotazo sin querer a un niño de otra clase. ¿Qué haces?
+* «Lo siento, ha sido sin querer. ¿Estás bien?»
+- Sigues jugando como si nada
+- Le echas la culpa a otro
+- «¡Es que estabas en medio!»
+DIF: 1
+CRIT: 3.2
+EXP: Aunque sea sin querer, pedimos disculpas.
+
+TIPO: opcion
+P: Se te cae el estuche y un compañero te ayuda a recogerlo. ¿Qué le dices?
+* «¡Muchas gracias por ayudarme!»
+- Nada
+- «Ya lo hago yo, déjalo»
+- «Has tardado mucho»
+DIF: 1
+CRIT: 3.2
+EXP: Damos las gracias cuando alguien nos ayuda.
+
+TIPO: opcion
+P: Tienes que entrar en el despacho de la directora. ¿Qué haces?
+* Llamas a la puerta y dices: «Buenos días, ¿puedo pasar?»
+- Entras sin llamar
+- Abres la puerta y gritas su nombre
+- Esperas fuera sin decir nada
+DIF: 1
+CRIT: 3.2
+EXP: Llamamos, saludamos y pedimos permiso.
+
+TIPO: opcion
+P: En un debate, un compañero está hablando y tú quieres decir algo. ¿Qué haces?
+* Levanto la mano y espero mi turno
+- Hablo a la vez que él, más alto
+- Le digo que se calle
+- Me pongo a hablar con el de al lado
+DIF: 1
+CRIT: 3.2
+EXP: Respetar el turno de palabra es una norma de cortesía.
+
+TIPO: vf
+P: Saludar, pedir las cosas «por favor» y dar las «gracias» son normas de cortesía.
+R: V
+DIF: 1
+CRIT: 3.2
+EXP: Son normas básicas para convivir bien.
+
+# Tema 3 | Personajes de la narración
+
+TIPO: opcion
+P: ¿Qué es el protagonista de una narración?
+* El personaje principal, al que le pasa lo más importante
+- El lugar donde ocurre la historia
+- El que escribe el cuento
+- Un personaje que sale una sola vez
+DIF: 1
+CRIT: 8.1
+EXP: El protagonista es el personaje principal de la historia.
+
+TIPO: opcion
+P: ¿Qué son los personajes secundarios?
+* Los que aparecen menos y acompañan o se enfrentan al protagonista
+- Los más importantes del cuento
+- Los lugares del cuento
+- Los que leen el cuento
+DIF: 1
+CRIT: 8.1
+EXP: Los secundarios tienen un papel menos importante que el protagonista.
+
+TIPO: opcion
+P: ¿Qué es el escenario de una narración?
+* El lugar donde ocurre la historia
+- El personaje principal
+- El final del cuento
+- El título
+DIF: 1
+CRIT: 8.1
+EXP: El escenario es el lugar (y el tiempo) donde pasa la historia.
+
+TIPO: opcion
+P: En el cuento de «Los tres cerditos», ¿quiénes son los protagonistas?
+* Los tres cerditos
+- El lobo
+- Los ladrillos
+- El bosque
+DIF: 1
+CRIT: 8.1
+EXP: La historia gira alrededor de los tres cerditos.
+
+TIPO: opcion
+P: En «Los tres cerditos», ¿qué personaje intenta derribar las casas soplando?
+* El lobo
+- El cerdito mayor
+- Un cazador
+- Un oso
+DIF: 1
+CRIT: 8.1
+EXP: El lobo sopla y sopla para derribar las casas.
+
+TIPO: opcion
+P: ¿Cuál de estos es un escenario del cuento de «Los tres cerditos»?
+* El bosque, con las casas de los cerditos
+- Una nave espacial
+- Un barco pirata
+- Un castillo de hielo
+DIF: 1
+CRIT: 8.1
+EXP: La historia pasa en el bosque, en las casas que construyen.
+
+TIPO: opcion
+P: En «Los tres cerditos», ¿qué casa resiste los soplidos del lobo?
+* La de ladrillos
+- La de paja
+- La de madera
+- Ninguna
+DIF: 1
+CRIT: 8.1
+EXP: La casa de ladrillos es la única que el lobo no puede derribar.
