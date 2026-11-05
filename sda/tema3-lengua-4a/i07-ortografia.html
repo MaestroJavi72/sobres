@@ -30,6 +30,7 @@
 </div>
 <script src="../../comun/javi.js"></script>
 <script src="../comun/actividad.js"></script>
+<script src="orto-palabras.js"></script>
 <script>
 (function(){
 'use strict';
@@ -37,39 +38,11 @@
    Se oye la palabra y hay que tocar cómo se escribe bien. Cada palabra lleva su regla. Las formas mal escritas están puestas A MANO
    y no son otras palabras que existan (por eso no hay vaca/baca, tuvo/tubo, ola/hola, pero/perro, casar/cazar…).
    10 palabras por ronda; primero las que el aparato no ha visto (localStorage t3-orto-vistas). */
-var R = {
-  mp:'Antes de <b>p</b> y <b>b</b> se escribe <b>m</b>.', brbl:'Se escribe <b>b</b> en <b>br</b> y <b>bl</b>.', aba:'Los verbos que acaban en <b>-aba</b> se escriben con <b>b</b>.',
-  nv:'Después de <b>n</b> se escribe <b>v</b>.', h:'Esta palabra empieza (o lleva) <b>h</b>, aunque no suene.', hue:'Las palabras que empiezan por <b>hie-</b> y <b>hue-</b> llevan <b>h</b>.',
-  gj:'Esta palabra se escribe con <b>g</b> (ge, gi suenan fuerte).', jj:'Esta palabra se escribe con <b>j</b>.', gue:'Para que la g suene suave delante de e, i: <b>gue</b>, <b>gui</b>.',
-  dier:'Si la u suena en gue, gui, lleva diéresis: <b>güe</b>, <b>güi</b>.', qu:'El sonido k delante de e, i se escribe <b>qu</b>.', cz:'Delante de <b>e</b>, <b>i</b> se escribe <b>c</b>; delante de a, o, u, <b>z</b>.',
-  plz:'Las palabras que acaban en <b>-z</b> hacen el plural en <b>-ces</b>.', rr:'Entre vocales, el sonido fuerte se escribe <b>rr</b>.', r:'Al principio de palabra y después de n, l, s se escribe una sola <b>r</b>.',
-  ll:'Esta palabra se escribe con <b>ll</b>.', y:'Esta palabra se escribe con <b>y</b>.'
-};
-var L = [
-  ['campo','canpo','mp'],['tambor','tanbor','mp'],['siempre','sienpre','mp'],['hombro','honbro','mp'],['cambio','canbio','mp'],['sombrero','sonbrero','mp'],['bombilla','bonbilla','mp'],
-  ['empujar','enpujar','mp'],['lámpara','lánpara','mp'],['trompeta','tronpeta','mp'],['compañero','conpañero','mp'],['cumpleaños','cunpleaños','mp'],['embudo','enbudo','mp'],['timbre','tinbre','mp'],
-  ['hambre','hanbre','mp'],['tiempo','tienpo','mp'],['ejemplo','ejenplo','mp'],['columpio','colunpio','mp'],
-  ['brazo','vrazo','brbl'],['blanco','vlanco','brbl'],['libro','livro','brbl'],['hablar','havlar','brbl'],['cable','cavle','brbl'],['abrigo','avrigo','brbl'],['sombra','sonbra','mp'],
-  ['niebla','nievla','brbl'],['broma','vroma','brbl'],['bruja','vruja','brbl'],['blando','vlando','brbl'],['tabla','tavla','brbl'],['mueble','mueve','x'],
-  ['cantaba','cantava','aba'],['jugaba','jugava','aba'],['saltaba','saltava','aba'],['estaba','estava','aba'],['miraba','mirava','aba'],['dibujaba','dibujava','aba'],['nadaba','nadava','aba'],['soñaba','soñava','aba'],
-  ['invierno','imbierno','nv'],['enviar','embiar','nv'],['invitar','imbitar','nv'],['convencer','combencer','nv'],['invento','imbento','nv'],
-  ['hielo','ielo','hue'],['huevo','uevo','hue'],['hueso','ueso','hue'],['hierba','ierba','hue'],['huella','uella','hue'],['huerto','uerto','hue'],['hiena','iena','hue'],
-  ['hormiga','ormiga','h'],['helado','elado','h'],['hospital','ospital','h'],['hombre','ombre','h'],['humo','umo','h'],['hacer','acer','h'],['ahora','aora','h'],['búho','buo','h'],['zanahoria','zanaoria','h'],['almohada','almoada','h'],
-  ['girasol','jirasol','gj'],['gigante','jigante','gj'],['gente','jente','gj'],['mágico','májico','gj'],['página','pájina','gj'],['general','jeneral','gj'],['gimnasia','jimnasia','gj'],['coger','cojer','gj'],['recoger','recojer','gj'],
-  ['jirafa','girafa','jj'],['jefe','gefe','jj'],['mujer','muger','jj'],['garaje','garage','jj'],['viaje','viage','jj'],['tijeras','tigeras','jj'],['jinete','ginete','jj'],['ojera','ogera','jj'],
-  ['guerra','gerra','gue'],['guitarra','gitarra','gue'],['hoguera','hogera','gue'],['juguete','jugete','gue'],['guisante','gisante','gue'],['manguera','mangera','gue'],['águila','ágila','gue'],
-  ['pingüino','pinguino','dier'],['cigüeña','cigueña','dier'],['paragüero','paraguero','dier'],['vergüenza','verguenza','dier'],
-  ['queso','keso','qu'],['quince','kince','qu'],['paquete','pakete','qu'],['mosquito','moskito','qu'],['esquina','eskina','qu'],['raqueta','rraketa','qu'],
-  ['cereza','sereza','cz'],['cielo','sielo','cz'],['cocina','cosina','cz'],['tiza','tisa','cz'],['cenar','senar','cz'],['zapato','sapato','cz'],['zorro','sorro','cz'],['cerilla','zerilla','cz'],['pizarra','pisarra','cz'],
-  ['lápices','lápizes','plz'],['luces','luzes','plz'],['peces','pezes','plz'],['narices','narizes','plz'],['veces','vezes','plz'],['raíces','raízes','plz'],['disfraces','disfrazes','plz'],
-  ['guitarra','guitara','rr'],['tierra','tiera','rr'],['arriba','ariba','rr'],['torre','tore','rr'],['barro','baro','rr'],['perrito','perito','x'],['ferrocarril','ferocaril','rr'],['zorro','zoro','rr'],['carretera','caretera','rr'],
-  ['ratón','rratón','r'],['rosa','rrosa','r'],['alrededor','alrrededor','r'],['sonrisa','sonrrisa','r'],['honrado','honrrado','r'],['israelí','isrraelí','x'],['regla','rregla','r'],
-  ['lluvia','yuvia','ll'],['llave','yave','ll'],['caballo','cabayo','ll'],['gallina','gayina','ll'],['silla','siya','ll'],['calle','caye','ll'],['ardilla','ardiya','ll'],['estrella','estreya','ll'],['pollito','poyito','ll'],
-  ['yogur','llogur','y'],['playa','plalla','y'],['payaso','pallaso','y'],['ayer','aller','y'],['yema','llema','y'],['ayudar','alludar','y'],['desayuno','desalluno','y']
-].filter(function(x){ return x[2] !== 'x'; });   /* «x» = descartada al revisar (mueble/mueve, perrito/perito e israelí: la falsa existe o no encaja) */
-var $ = ACT.$, CAT = { todo:'Todo', mp:'m antes de p/b', brbl:'br y bl', aba:'-aba', nv:'nv', h:'h', gj:'g / j', gue:'gue, gui, güe', qu:'qu', cz:'c / z', rr:'r / rr', ll:'ll / y' };
+/* las palabras y las reglas son las de orto-palabras.js (las mismas que el Cazafaltas de los alumnos) */
+var R = window.ORTO_REGLAS, L = window.ORTO;
+var $ = ACT.$, CAT = { todo:'Todo' }; Object.keys(window.ORTO_GRUPOS).forEach(function(k){ CAT[window.ORTO_GRUPOS[k]] = window.ORTO_GRUPOS[k]; });
 var cat = 'todo', ronda = [], k = 0, puntos = 0, fallos = [], KV = 't3-orto-vistas';
-function grupo(c){ return c === 'hue' ? 'h' : c === 'jj' ? 'gj' : c === 'dier' ? 'gue' : c === 'plz' ? 'cz' : c === 'r' ? 'rr' : c === 'y' ? 'll' : c; }
+function grupo(c){ return window.ORTO_GRUPOS[c]; }
 function vistas(){ try{ return JSON.parse(localStorage.getItem(KV)) || {}; }catch(e){ return {}; } }
 function empezar(){ var v = vistas(), cand = L.filter(function(x){ return cat === 'todo' || grupo(x[2]) === cat; });
   ronda = ACT.mezclar(cand).sort(function(a, b){ return (v[a[0]] || 0) - (v[b[0]] || 0); }).slice(0, 10); k = 0; puntos = 0; fallos = [];

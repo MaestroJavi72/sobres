@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cazafaltas</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+<style>
+.ops{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.op{font-family:'Andika',sans-serif;font-weight:700;font-size:clamp(28px,5vw,52px);padding:14px 30px;border-radius:18px;border:3px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer;min-width:200px}
+.op.ok{background:#3cae5f;color:#fff;border-color:#1e6b3c} .op.ko{background:#d0473f;color:#fff;border-color:#8f2a24;text-decoration:line-through}
+.regla{font-size:clamp(18px,2.2vw,24px);color:#f3d27a;font-weight:700;min-height:1.4em}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:100%}
+.stat{background:#fffaf0;border:2px solid #b8934f;border-radius:14px;padding:6px 14px;text-align:center;min-width:110px}
+.stat b{display:block;font-family:'Cinzel',serif;font-size:clamp(22px,3vw,32px);color:#7a2030}
+.stat span{font-size:14px;color:#6b5732}
+.racha{display:flex;gap:4px;justify-content:center}
+.racha i{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid #f3d27a}
+.racha i.on{background:#f3d27a}
+.nombres{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:900px}
+.nombres button{font-size:20px;padding:10px 16px}
+.mj{position:relative;height:300px;width:100%;max-width:760px;border-radius:16px;overflow:hidden;background:radial-gradient(ellipse,#2c5f2d,#173a18);user-select:none;touch-action:manipulation}
+.mj .bicho{position:absolute;font-size:46px;background:none;border:0;cursor:pointer;padding:0;transition:left .25s,top .25s}
+.runas{display:grid;grid-template-columns:repeat(2,110px);gap:12px;justify-content:center}
+.runas button{height:110px;font-size:3rem;border-radius:18px;background:#2b2147;cursor:pointer}
+.profe{width:100%;max-width:1000px;text-align:left;font-size:16px}
+.profe table{width:100%;border-collapse:collapse;background:#fffaf0}
+.profe td,.profe th{border:1px solid #b8934f;padding:4px 6px;text-align:center}
+.profe td:first-child{text-align:left}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🔎 Cazafaltas<span class="sub">Ortografía · Tema 3 de Lengua · tu progreso se guarda</span></h1>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+  </header>
+  <section class="escena" id="escena"></section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script src="orto-palabras.js"></script>
+<script>
+(function(){
+'use strict';
+/* CAZAFALTAS para los alumnos (Javi, 5/11/2026): «entro un día y hago 40, al siguiente 30… las que voy fallando me pueden volver a salir;
+   cada 15 palabras un minijuego; cada 10 seguidas bien, galeón».
+   - Entra con su nombre y su número de lista (data/lista-4A.json), como en las misiones de La Copa. Se recuerda en el aparato (orto-yo).
+   - Cada respuesta es una entrada [clave, 1|0, hora, g] (clave = «bien|mal» de orto-palabras.js; g = 1 si con ella completa 10 seguidas).
+     Se guardan en el aparato (orto-log|#nº) y, cada 5 respuestas y al salir, en la Hoja SIN código: Alumno «ORTO · 4ºA», Acción «Orto»,
+     CartaId = fecha, Tipo = #nº, Carta = {e:[entradas nuevas]}. Al entrar se juntan las de la Hoja y las del aparato (otro ordenador sirve).
+   - Siguiente palabra: primero las FALLADAS que no han salido en las 5 últimas respuestas, luego NUEVAS, luego las falladas que queden.
+     Una palabra acertada (su último intento) ya no vuelve.
+   - Cada 15 respuestas de la sesión, un minijuego de habilidad (solo diversión). Cada 10 aciertos seguidos, +1 galeón PENDIENTE:
+     lo da el profe en «Para el profe» con su código (JAVI.darPuntos + fila «OrtoDado», Tipo = #nº, Carta = {n:total dados}). */
+var $ = ACT.$, L = window.ORTO, R = window.ORTO_REGLAS, TAG = 'ORTO · 4ºA', LISTA = null, YO = null, LOG = [], ENV = 0, SES = 0, ACTUAL = null, fallo = false;
+var clave = function(x){ return x[0] + '|' + x[1]; }, POR = {}; L.forEach(function(x){ POR[clave(x)] = x; });
+function hoy(){ return JAVI.util.clave(new Date()); }
+function leer(k, d){ try{ var v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; }catch(e){ return d; } }
+function guardar(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function jrow(f){ var i = f.carta.indexOf('{'); if(i < 0) return null; try{ return JSON.parse(f.carta.slice(i)); }catch(e){ return null; } }
+function filasOrto(acc){ return JAVI.filas().filter(function(f){ return f.alumno === TAG && f.accion === acc; }); }
+/* ---------- datos ---------- */
+function logDe(id){ var m = {}; filasOrto('Orto').forEach(function(f){ if(f.tipo !== id) return; var j = jrow(f); (j && j.e || []).forEach(function(e){ m[e[2] + '|' + e[0]] = e; }); });
+  if(YO && id === YO.id) leer('orto-log|' + id, []).forEach(function(e){ m[e[2] + '|' + e[0]] = e; });
+  return Object.keys(m).map(function(k){ return m[k]; }).sort(function(a, b){ return a[2] - b[2]; }); }
+function estado(log){ var ult = {}, ok = 0, rac = 0, g = 0, hoyN = 0, h = hoy();
+  log.forEach(function(e){ ult[e[0]] = e[1]; if(e[3]) g++; rac = e[1] ? rac + 1 : 0; if(JAVI.util.clave(new Date(e[2])) === h) hoyN++; });
+  Object.keys(ult).forEach(function(k){ if(ult[k]) ok++; });
+  return { ult:ult, dominadas:ok, falladas:Object.keys(ult).length - ok, racha:rac % 10, ganados:g, hoy:hoyN, total:L.length }; }
+function dadosDe(id){ var n = 0; filasOrto('OrtoDado').forEach(function(f){ if(f.tipo === id){ var j = jrow(f); if(j && j.n > n) n = j.n; } }); return Math.max(n, (leer('orto-dados', {})[id] || 0)); }
+function siguiente(){
+  var st = estado(LOG), recientes = LOG.slice(-5).map(function(e){ return e[0]; });
+  var fall = L.filter(function(x){ var k = clave(x); return st.ult[k] === 0 && recientes.indexOf(k) < 0; });
+  if(fall.length && Math.random() < 0.6) return ACT.azar(fall);   /* las falladas vuelven, mezcladas con nuevas */
+  var nuevas = L.filter(function(x){ return st.ult[clave(x)] === undefined; });
+  if(nuevas.length) return ACT.azar(nuevas);
+  if(fall.length) return ACT.azar(fall);
+  var quedan = L.filter(function(x){ return st.ult[clave(x)] === 0; });
+  return quedan.length ? ACT.azar(quedan) : null;
+}
+function enviar(forzar){
+  var nuevas = LOG.filter(function(e){ return !e[4]; }); if(!nuevas.length || (!forzar && nuevas.length < 5)) return;
+  JAVI.escribirLibre({ alumno:TAG, accion:'Orto', cartaId:hoy(), tipo:YO.id, carta:JSON.stringify({ e:nuevas.map(function(e){ return e.slice(0, 4); }) }) });
+  nuevas.forEach(function(e){ e[4] = 1; }); guardar('orto-log|' + YO.id, LOG);
+}
+window.addEventListener('pagehide', function(){ if(YO) enviar(true); });
+document.addEventListener('visibilitychange', function(){ if(document.hidden && YO) enviar(true); });
+/* ---------- entrar ---------- */
+function inicio(){
+  var guard = /[?&]profe/.test(location.search) ? null : leer('orto-yo', null);   /* ?profe: siempre la lista de nombres y el panel del profe */
+  if(guard){ YO = guard; return entrar(); }
+  JAVI.protegerClase('4ºA', { alAbrir:function(){
+    var g = JAVI.grupo('4ºA');
+    $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">🧙 ¿Quién eres? Toca tu nombre.</div><div class="nombres">' + g.nombres.map(function(n){ return '<button class="mini" data-n="' + ACT.esc(n) + '" type="button">' + ACT.esc(n) + '</button>'; }).join('') + '</div></div>' + profeHTML();
+    Array.prototype.forEach.call(document.querySelectorAll('[data-n]'), function(b){ b.onclick = function(){ pin(b.dataset.n); }; });
+    montarProfe();
+  } });
+}
+function pin(n){
+  $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">' + ACT.esc(n) + ', escribe tu número de lista:</div><input id="pin" type="number" inputmode="numeric" style="font-size:2rem;width:8rem;text-align:center">' +
+    '<div class="regla" id="err"></div><div class="botones"><button class="gran" id="bOk" type="button">Entrar</button><button class="mini" id="bNo" type="button">No soy yo</button></div></div>';
+  var i = $('pin'); i.focus(); i.onkeydown = function(e){ if(e.key === 'Enter') $('bOk').click(); };
+  $('bNo').onclick = inicio;
+  $('bOk').onclick = function(){ var v = parseInt(i.value); if(v && LISTA[n] === v){ YO = { id:'#' + v, n:n }; guardar('orto-yo', YO); ACT.SON.magia(); entrar(); } else { $('err').textContent = 'Ese no es tu número. Prueba otra vez.'; ACT.SON.fallo(); } };
+}
+function entrar(){ $('escena').innerHTML = '<p class="instr">Cargando tu progreso…</p>'; JAVI.leerHoja().then(arrancar, arrancar); }
+function arrancar(){ LOG = logDe(YO.id); guardar('orto-log|' + YO.id, LOG); SES = 0; panel(); }
+function statsHTML(st){ return '<div class="stats"><div class="stat"><b>' + st.hoy + '</b><span>hoy</span></div><div class="stat"><b>' + st.dominadas + ' / ' + st.total + '</b><span>palabras dominadas</span></div>' +
+  '<div class="stat"><b>' + st.falladas + '</b><span>por repasar</span></div><div class="stat"><b>🪙 ' + st.ganados + '</b><span>galeones ganados</span></div></div>' +
+  '<div class="racha" title="10 seguidas bien = galeón">' + Array.apply(null, Array(10)).map(function(_, i){ return '<i class="' + (i < st.racha ? 'on' : '') + '"></i>'; }).join('') + '</div>'; }
+function panel(){
+  var st = estado(LOG);
+  $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">¡Hola, ' + ACT.esc(YO.n) + '! 🔎</div>' + statsHTML(st) +
+    '<div class="ac-nota">Escucha la palabra y elige cómo se escribe bien. Las que falles volverán a salir. <b>Cada 10 seguidas bien: un galeón</b> (te lo da el profe). Cada 15 palabras, ¡un minijuego!</div>' +
+    '<div class="botones"><button class="gran" id="bJugar" type="button">▶ ¡A cazar faltas!</button></div></div>' +
+    '<div class="botones"><button class="mini" id="bSalir" type="button">👋 No soy ' + ACT.esc(YO.n) + ' (salir)</button></div>';
+  $('bJugar').onclick = pregunta; $('bSalir').onclick = function(){ enviar(true); YO = null; try{ localStorage.removeItem('orto-yo'); }catch(e){} inicio(); };
+}
+/* ---------- jugar ---------- */
+function pregunta(){
+  var x = siguiente(); if(!x){ $('escena').innerHTML = '<div class="final"><h2>🏆 ¡Has dominado todas las palabras!</h2><p class="detalle">Eres un maestro de la ortografía.</p></div>'; return; }
+  ACTUAL = x; fallo = false; var ops = ACT.mezclar([x[0], x[1]]), st = estado(LOG);
+  $('escena').innerHTML = '<div class="barraSup"><span>Hoy: ' + st.hoy + '</span><span class="esp"></span><span>🪙 ' + st.ganados + '</span></div>' +
+    '<div class="ac-pizarra"><div class="racha">' + Array.apply(null, Array(10)).map(function(_, i){ return '<i class="' + (i < st.racha ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
+    '<div class="ac-paso">Escucha. ¿Cómo se escribe bien?</div><div class="ops">' + ops.map(function(o){ return '<button class="op" type="button">' + ACT.esc(o) + '</button>'; }).join('') + '</div>' +
+    '<div class="regla" id="regla"></div><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div>' +
+    '<div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button><button class="mini" id="bParar" type="button">⏸ Parar por hoy</button></div>';
+  ACT.voz(x[0]); $('bOir').onclick = function(){ ACT.voz(x[0]); };
+  $('bParar').onclick = function(){ enviar(true); panel(); };
+  Array.prototype.forEach.call(document.querySelectorAll('.op'), function(b){ b.onclick = function(){ if(!$('bSig').hidden) return;
+    var bien = b.textContent === x[0];
+    if(!bien){ b.classList.add('ko'); ACT.SON.fallo(); $('regla').innerHTML = '¡Esa tiene una falta! ' + R[x[2]];
+      if(!fallo){ fallo = true; anotar(0); } return; }
+    b.classList.add('ok'); $('regla').innerHTML = '✅ <b>' + ACT.esc(x[0]) + '</b>: ' + R[x[2]];
+    if(!fallo){ ACT.SON.acierto(); var g = anotar(1); if(g) premio(); } else ACT.SON.tono(660, 0, 0.15, 'triangle', 0.06);
+    $('bSig').hidden = false; }; });
+  $('bSig').onclick = function(){ if(SES > 0 && SES % 15 === 0 && !pregunta.mjHecho){ pregunta.mjHecho = SES; return minijuego(); } pregunta.mjHecho = 0; pregunta(); };
+}
+function anotar(ok){
+  var st = estado(LOG), g = ok && st.racha === 9 ? 1 : 0;
+  LOG.push([clave(ACTUAL), ok, Date.now(), g]); SES++; guardar('orto-log|' + YO.id, LOG); enviar(false); return g;
+}
+function premio(){ ACT.SON.fanfarria(); var d = document.createElement('div');
+  d.innerHTML = '<div style="position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(0,0,0,.55)"><div class="final" style="background:#fffaf0;border-radius:20px;padding:24px;border:4px solid #c9972e"><h2>🪙 ¡10 seguidas bien!</h2><p class="mensaje bien">¡Has ganado un galeón! Te lo dará el profe.</p><button class="gran" type="button">¡Genial! ▶</button></div></div>';
+  document.body.appendChild(d); d.querySelector('button').onclick = function(){ d.remove(); }; }
+/* ---------- minijuegos (cada 15 palabras; solo diversión) ---------- */
+var MJT = [];
+function parar(){ MJT.forEach(function(t){ clearInterval(t); clearTimeout(t); }); MJT = []; }
+function minijuego(){ ACT.azar([snitch, ranas, memoria])(); }
+function finMJ(txt){ parar(); ACT.SON.fanfarria(); $('escena').innerHTML = '<div class="final"><h2>🎉 ¡Descanso mágico superado!</h2><p class="mensaje bien">' + txt + '</p><button class="gran" id="bV" type="button">🔎 ¡Seguir cazando faltas!</button></div>'; $('bV').onclick = pregunta; }
+function snitch(){
+  $('escena').innerHTML = '<div class="ac-paso">⚡ ¡Minijuego! Atrapa la snitch todas las veces que puedas en 12 segundos.</div><div class="mj" id="mj"><button class="bicho" id="sn" type="button">✨🟡✨</button></div><p class="regla" id="t">⏳ 12 · 0 toques</p>';
+  var t = 12, p = 0, vel = 900, sn = $('sn'), mueve = function(){ sn.style.left = Math.random() * 78 + '%'; sn.style.top = Math.random() * 72 + '%'; };
+  var salto = function(){ mueve(); vel = Math.max(450, vel - 40); MJT.push(setTimeout(salto, vel)); }; MJT.push(setTimeout(salto, vel));
+  sn.onclick = function(){ p++; ACT.SON.acierto(); mueve(); $('t').textContent = '⏳ ' + t + ' · ' + p + ' toques'; };
+  MJT.push(setInterval(function(){ t--; $('t').textContent = '⏳ ' + t + ' · ' + p + ' toques'; if(t <= 0) finMJ('Has atrapado la snitch ' + p + (p === 1 ? ' vez.' : ' veces.')); }, 1000));
+}
+function ranas(){
+  $('escena').innerHTML = '<div class="ac-paso">🐸 ¡Minijuego! Toca las ranas de chocolate antes de que se escondan (12 segundos).</div><div class="mj" id="mj"></div><p class="regla" id="t">⏳ 12 · 0 ranas</p>';
+  var t = 12, p = 0, vel = 1000, mj = $('mj');
+  var sale = function(){ mj.innerHTML = ''; var b = document.createElement('button'); b.className = 'bicho'; b.type = 'button'; b.textContent = '🐸'; b.style.left = Math.random() * 80 + '%'; b.style.top = Math.random() * 70 + '%';
+    b.onclick = function(){ p++; ACT.SON.acierto(); b.textContent = '💥'; b.onclick = null; $('t').textContent = '⏳ ' + t + ' · ' + p + ' ranas'; }; mj.appendChild(b); vel = Math.max(520, vel - 35); MJT.push(setTimeout(sale, vel)); };
+  MJT.push(setTimeout(sale, 300));
+  MJT.push(setInterval(function(){ t--; $('t').textContent = '⏳ ' + t + ' · ' + p + ' ranas'; if(t <= 0) finMJ('Has cazado ' + p + (p === 1 ? ' rana.' : ' ranas.')); }, 1000));
+}
+function memoria(){
+  var RU = [['🔥','#e0484f'],['💧','#3b82f6'],['🌿','#3fbf5f'],['⚡','#e0a83a']], ronda = 0, bien = 0, sec = [], paso = 0, mirando = true;
+  $('escena').innerHTML = '<div class="ac-paso">🔮 ¡Minijuego! Mira qué runas se iluminan y tócalas en el mismo orden.</div><p class="regla" id="m">Mira…</p><div class="runas">' +
+    RU.map(function(r, i){ return '<button id="r' + i + '" type="button" style="border:4px solid ' + r[1] + '">' + r[0] + '</button>'; }).join('') + '</div><p class="detalle" id="ro"></p>';
+  var luz = function(i, on){ var b = $('r' + i); if(b) b.style.background = on ? RU[i][1] : '#2b2147'; };
+  var mostrar = function(){ mirando = true; paso = 0; sec = Array.apply(null, Array(3 + ronda)).map(function(){ return Math.floor(Math.random() * 4); }); $('m').textContent = 'Mira…'; $('ro').textContent = 'Ronda ' + (ronda + 1) + ' de 3';
+    sec.forEach(function(x, j){ MJT.push(setTimeout(function(){ luz(x, true); ACT.SON.tic(); }, 700 + j * 750)); MJT.push(setTimeout(function(){ luz(x, false); }, 700 + j * 750 + 450)); });
+    MJT.push(setTimeout(function(){ mirando = false; $('m').textContent = '¡Ahora tú!'; }, 700 + sec.length * 750)); };
+  var finR = function(a){ if(a){ bien++; ACT.SON.acierto(); } else ACT.SON.fallo(); ronda++; mirando = true; if(ronda >= 3) return MJT.push(setTimeout(function(){ finMJ('Has acertado ' + bien + ' de 3 secuencias.'); }, 600)); MJT.push(setTimeout(mostrar, 1000)); };
+  RU.forEach(function(_, i){ $('r' + i).onclick = function(){ if(mirando) return; luz(i, true); MJT.push(setTimeout(function(){ luz(i, false); }, 200)); if(sec[paso] !== i) return finR(false); paso++; if(paso >= sec.length) finR(true); }; });
+  mostrar();
+}
+/* ---------- para el profe ---------- */
+function profeHTML(){ return '<details class="profe" style="margin-top:18px"><summary style="cursor:pointer;font-weight:700">👩‍🏫 Para el profe: progreso y galeones</summary><div id="pf">Cargando…</div></details>'; }
+function montarProfe(){
+  JAVI.leerHoja().then(function(){
+    var inv = {}; Object.keys(LISTA).forEach(function(n){ inv['#' + LISTA[n]] = n; });
+    var filas = Object.keys(inv).sort(function(a, b){ return +a.slice(1) - +b.slice(1); }).map(function(id){ var st = estado(logDe(id)), dados = dadosDe(id); return { id:id, n:inv[id], st:st, dados:dados, pend:Math.max(0, st.ganados - dados) }; })
+      .filter(function(f){ return f.st.dominadas + f.st.falladas > 0; });
+    var pend = filas.filter(function(f){ return f.pend > 0; });
+    $('pf').innerHTML = filas.length ? '<table><tr><th>Alumno</th><th>Dominadas</th><th>Por repasar</th><th>Hoy</th><th>Galeones ganados</th><th>Dados</th><th>Pendientes</th></tr>' +
+      filas.map(function(f){ return '<tr><td>' + ACT.esc(f.n) + '</td><td>' + f.st.dominadas + '</td><td>' + f.st.falladas + '</td><td>' + f.st.hoy + '</td><td>' + f.st.ganados + '</td><td>' + f.dados + '</td><td><b>' + (f.pend || '') + '</b></td></tr>'; }).join('') + '</table>' +
+      (pend.length ? '<div class="botones"><button class="gran verde" id="bDar" type="button">🪙 Dar los galeones pendientes (' + pend.reduce(function(a, f){ return a + f.pend; }, 0) + ')</button></div>' : '<p>No hay galeones pendientes.</p>') +
+      '<p class="detalle">La Hoja tarda 1-2 minutos en traer lo último que han hecho.</p>' : '<p>Todavía nadie ha jugado.</p>';
+    if($('bDar')) $('bDar').onclick = function(){ var b = this; JAVI.listo(function(){
+      if(!JAVI.llaveAbierta()) return JAVI.pedirCodigo({ titulo:'🔐 Código para dar galeones', texto:'Escribe el código y vuelve a pulsar el botón.' });
+      if(!confirm('¿Dar los galeones?\n' + pend.map(function(f){ return f.n + ' +' + f.pend; }).join('\n'))) return;
+      var dados = leer('orto-dados', {});
+      pend.forEach(function(f){ JAVI.darPuntos('4ºA', f.n, f.pend, 'Acierto', 'Cazafaltas: 10 seguidas bien' + (f.pend > 1 ? ' (×' + f.pend + ')' : ''));
+        JAVI.escribir({ alumno:TAG, accion:'OrtoDado', cartaId:hoy(), tipo:f.id, carta:JSON.stringify({ n:f.st.ganados }) }); dados[f.id] = f.st.ganados; });
+      guardar('orto-dados', dados); b.disabled = true; b.textContent = '✓ Galeones dados' + (JAVI.PRUEBA ? ' (modo prueba)' : ''); ACT.SON.fanfarria(); }); };
+  }, function(){ $('pf').textContent = 'No he podido leer la Hoja.'; });
+}
+fetch('../../data/lista-4A.json', { cache:'no-store' }).then(function(r){ return r.json(); }).then(function(d){ LISTA = d.numeros; JAVI.listo(inicio); });
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+</body>
+</html>
