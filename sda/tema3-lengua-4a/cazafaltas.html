@@ -198,7 +198,7 @@ function memoria(){
   mostrar();
 }
 /* ---------- para el profe ---------- */
-function profeHTML(){ return '<details class="profe" style="margin-top:18px"><summary style="cursor:pointer;font-weight:700">👩‍🏫 Para el profe: progreso y galeones</summary><div id="pf">Cargando…</div></details>'; }
+function profeHTML(){ return '<details class="profe" style="margin-top:18px"' + (/[?&]profe/.test(location.search) ? ' open' : '') + '><summary style="cursor:pointer;font-weight:700">👩‍🏫 Para el profe: progreso y galeones</summary><div id="pf">Cargando…</div></details>'; }
 function montarProfe(){
   JAVI.leerHoja().then(function(){
     var inv = {}; Object.keys(LISTA).forEach(function(n){ inv['#' + LISTA[n]] = n; });
