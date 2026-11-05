@@ -73,11 +73,21 @@ function filasOrto(acc){ return JAVI.filas().filter(function(f){ return f.alumno
 function logDe(id){ var m = {}; filasOrto('Orto').forEach(function(f){ if(f.tipo !== id) return; var j = jrow(f); (j && j.e || []).forEach(function(e){ m[e[2] + '|' + e[0]] = e; }); });
   if(YO && id === YO.id) leer('orto-log|' + id, []).forEach(function(e){ m[e[2] + '|' + e[0]] = e; });
   return Object.keys(m).map(function(k){ return m[k]; }).sort(function(a, b){ return a[2] - b[2]; }); }
-function estado(log){ var ult = {}, ok = 0, rac = 0, g = 0, hoyN = 0, h = hoy();
-  log.forEach(function(e){ ult[e[0]] = e[1]; if(e[3]) g++; rac = e[1] ? rac + 1 : 0; if(JAVI.util.clave(new Date(e[2])) === h) hoyN++; });
+/* 5/11/2026 (Javi): como mucho MAX_DIA galeones al día por alumno (también cuenta para los ya ganados: los de más no valen) */
+var MAX_DIA = 4;
+function estado(log){ var ult = {}, ok = 0, rac = 0, g = 0, hoyN = 0, h = hoy(), porDia = {}, gT = [];
+  log.forEach(function(e){ var d = JAVI.util.clave(new Date(e[2])); ult[e[0]] = e[1]; if(e[3] && (porDia[d] || 0) < MAX_DIA){ porDia[d] = (porDia[d] || 0) + 1; g++; gT.push(e[2]); } rac = e[1] ? rac + 1 : 0; if(d === h) hoyN++; });
   Object.keys(ult).forEach(function(k){ if(ult[k]) ok++; });
-  return { ult:ult, dominadas:ok, falladas:Object.keys(ult).length - ok, racha:rac % 10, ganados:g, hoy:hoyN, total:L.length }; }
-function dadosDe(id){ var n = 0; filasOrto('OrtoDado').forEach(function(f){ if(f.tipo === id){ var j = jrow(f); if(j && j.n > n) n = j.n; } }); return Math.max(n, (leer('orto-dados', {})[id] || 0)); }
+  return { ult:ult, dominadas:ok, falladas:Object.keys(ult).length - ok, racha:rac % 10, ganados:g, gT:gT, hoyG:porDia[h] || 0, hoy:hoyN, total:L.length }; }
+/* REPARTOS del profe: lo ya dado queda SALDADO (5/11/2026: al poner el máximo de 4, lo que Javi ya había dado de más NO se descuenta después).
+   Pendientes = galeones (con el máximo por día) ganados DESPUÉS del último reparto. Fila OrtoDado: Carta {n: dados en ese reparto, t: hora}
+   (las primeras filas, del 5/11, llevaban n = total y sin t: se usa la marca temporal de la Hoja). */
+function marcaHora(m){ var x = String(m || '').match(/(\d+)\/(\d+)\/(\d+)\s+(\d+):(\d+):?(\d*)/); return x ? new Date(+x[3], +x[2] - 1, +x[1], +x[4], +x[5], +(x[6] || 0)).getTime() : 0; }
+function repartos(id){ var viejo = 0, nuevo = 0, hasta = 0;
+  filasOrto('OrtoDado').forEach(function(f){ if(f.tipo !== id) return; var j = jrow(f) || {}, t = j.t || marcaHora(f.marca);
+    if(j.t) nuevo += j.n || 0; else viejo = Math.max(viejo, j.n || 0); if(t > hasta) hasta = t; });
+  var loc = leer('orto-dados', {})[id]; if(loc && loc.t > hasta){ hasta = loc.t; nuevo += loc.n || 0; }
+  return { dados:viejo + nuevo, hasta:hasta }; }
 function siguiente(){
   var st = estado(LOG), recientes = LOG.slice(-5).map(function(e){ return e[0]; });
   var fall = L.filter(function(x){ var k = clave(x); return st.ult[k] === 0 && recientes.indexOf(k) < 0; });
@@ -101,9 +111,9 @@ function inicio(){
   if(guard){ YO = guard; return entrar(); }
   JAVI.protegerClase('4ºA', { alAbrir:function(){
     var g = JAVI.grupo('4ºA');
-    $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">🧙 ¿Quién eres? Toca tu nombre.</div><div class="nombres">' + g.nombres.map(function(n){ return '<button class="mini" data-n="' + ACT.esc(n) + '" type="button">' + ACT.esc(n) + '</button>'; }).join('') + '</div></div>' + profeHTML();
+    $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">🧙 ¿Quién eres? Toca tu nombre.</div><div class="nombres">' + g.nombres.map(function(n){ return '<button class="mini" data-n="' + ACT.esc(n) + '" type="button">' + ACT.esc(n) + '</button>'; }).join('') + '</div></div>' + (/[?&]profe/.test(location.search) ? profeHTML() : '');
     Array.prototype.forEach.call(document.querySelectorAll('[data-n]'), function(b){ b.onclick = function(){ pin(b.dataset.n); }; });
-    montarProfe();
+    if(/[?&]profe/.test(location.search)) montarProfe();
   } });
 }
 function pin(n){
@@ -133,7 +143,7 @@ function statsHTML(st){ return '<div class="stats"><div class="stat"><b>' + st.h
 function panel(){
   var st = estado(LOG);
   $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">¡Hola, ' + ACT.esc(YO.n) + '! 🔎</div>' + statsHTML(st) +
-    '<div class="ac-nota">Escucha la palabra y elige cómo se escribe bien. Las que falles volverán a salir. <b>Cada 10 seguidas bien: un galeón</b> (te lo da el profe). Cada 15 palabras, ¡un minijuego!</div>' +
+    '<div class="ac-nota">Escucha la palabra y elige cómo se escribe bien. Las que falles volverán a salir. <b>Cada 10 seguidas bien: un galeón</b> (te lo da el profe; como mucho ' + MAX_DIA + ' al día). Cada 15 palabras, ¡un minijuego!</div>' +
     '<div class="botones"><button class="gran" id="bJugar" type="button">▶ ¡A cazar faltas!</button></div></div>' +
     '<div class="botones"><button class="mini" id="bSalir" type="button">👋 No soy ' + ACT.esc(YO.n) + ' (salir)</button></div>';
   $('bJugar').onclick = pregunta; $('bSalir').onclick = function(){ enviar(true); YO = null; try{ localStorage.removeItem('orto-yo'); }catch(e){} miPersonaje(); inicio(); };
@@ -159,7 +169,8 @@ function pregunta(){
   $('bSig').onclick = function(){ if(SES > 0 && SES % 15 === 0 && !pregunta.mjHecho){ pregunta.mjHecho = SES; return minijuego(); } pregunta.mjHecho = 0; pregunta(); };
 }
 function anotar(ok){
-  var st = estado(LOG), g = ok && st.racha === 9 ? 1 : 0;
+  var st = estado(LOG), g = ok && st.racha === 9 && st.hoyG < MAX_DIA ? 1 : 0;
+  if(ok && st.racha === 9 && !g) setTimeout(function(){ var r = $('regla'); if(r) r.innerHTML += '<br>🔥 ¡10 seguidas! Hoy ya tienes tus ' + MAX_DIA + ' galeones: mañana puedes ganar más.'; }, 50);
   LOG.push([clave(ACTUAL), ok, Date.now(), g]); SES++; guardar('orto-log|' + YO.id, LOG); enviar(false); return g;
 }
 function premio(){ ACT.SON.fanfarria(); var d = document.createElement('div');
@@ -200,13 +211,16 @@ function memoria(){
 /* ---------- para el profe ---------- */
 function profeHTML(){ return '<details class="profe" style="margin-top:18px"' + (/[?&]profe/.test(location.search) ? ' open' : '') + '><summary style="cursor:pointer;font-weight:700">👩‍🏫 Para el profe: progreso y galeones</summary><div id="pf">Cargando…</div></details>'; }
 function montarProfe(){
+  /* 5/11/2026 (Javi): que los alumnos no vean ni den los galeones: el panel pide el código del profe */
+  if(!JAVI.llaveAbierta()){ $('pf').innerHTML = '<p>🔐 Solo para el profe.</p><button class="gran" id="bCod" type="button">🔓 Escribir el código</button>';
+    $('bCod').onclick = function(){ JAVI.pedirCodigo({ titulo:'🔐 Código del profe', texto:'Para ver el progreso y dar los galeones.', alAcertar:montarProfe }); }; return; }
   JAVI.leerHoja().then(function(){
     var inv = {}; Object.keys(LISTA).forEach(function(n){ inv['#' + LISTA[n]] = n; });
-    var filas = Object.keys(inv).sort(function(a, b){ return +a.slice(1) - +b.slice(1); }).map(function(id){ var st = estado(logDe(id)), dados = dadosDe(id); return { id:id, n:inv[id], st:st, dados:dados, pend:Math.max(0, st.ganados - dados) }; })
+    var filas = Object.keys(inv).sort(function(a, b){ return +a.slice(1) - +b.slice(1); }).map(function(id){ var st = estado(logDe(id)), rp = repartos(id); return { id:id, n:inv[id], st:st, dados:rp.dados, pend:st.gT.filter(function(t){ return t > rp.hasta; }).length }; })
       .filter(function(f){ return f.st.dominadas + f.st.falladas > 0; });
     var pend = filas.filter(function(f){ return f.pend > 0; });
-    $('pf').innerHTML = filas.length ? '<table><tr><th>Alumno</th><th>Dominadas</th><th>Por repasar</th><th>Hoy</th><th>Galeones ganados</th><th>Dados</th><th>Pendientes</th></tr>' +
-      filas.map(function(f){ return '<tr><td>' + ACT.esc(f.n) + '</td><td>' + f.st.dominadas + '</td><td>' + f.st.falladas + '</td><td>' + f.st.hoy + '</td><td>' + f.st.ganados + '</td><td>' + f.dados + '</td><td><b>' + (f.pend || '') + '</b></td></tr>'; }).join('') + '</table>' +
+    $('pf').innerHTML = filas.length ? '<table><tr><th>Alumno</th><th>Dominadas</th><th>Por repasar</th><th>Hoy</th><th>Galeones de hoy (máx. 4)</th><th>Dados en total</th><th>Pendientes</th></tr>' +
+      filas.map(function(f){ return '<tr><td>' + ACT.esc(f.n) + '</td><td>' + f.st.dominadas + '</td><td>' + f.st.falladas + '</td><td>' + f.st.hoy + '</td><td>' + f.st.hoyG + '</td><td>' + f.dados + '</td><td><b>' + (f.pend || '') + '</b></td></tr>'; }).join('') + '</table>' +
       (pend.length ? '<div class="botones"><button class="gran verde" id="bDar" type="button">💰 Dar los galeones pendientes (' + pend.reduce(function(a, f){ return a + f.pend; }, 0) + ')</button></div>' : '<p>No hay galeones pendientes.</p>') +
       '<p class="detalle">La Hoja tarda 1-2 minutos en traer lo último que han hecho.</p>' : '<p>Todavía nadie ha jugado.</p>';
     if($('bDar')) $('bDar').onclick = function(){ var b = this; JAVI.listo(function(){
@@ -214,7 +228,7 @@ function montarProfe(){
       if(!confirm('¿Dar los galeones?\n' + pend.map(function(f){ return f.n + ' +' + f.pend; }).join('\n'))) return;
       var dados = leer('orto-dados', {});
       pend.forEach(function(f){ JAVI.darPuntos('4ºA', f.n, f.pend, 'Acierto', 'Cazafaltas: 10 seguidas bien' + (f.pend > 1 ? ' (×' + f.pend + ')' : ''));
-        JAVI.escribir({ alumno:TAG, accion:'OrtoDado', cartaId:hoy(), tipo:f.id, carta:JSON.stringify({ n:f.st.ganados }) }); dados[f.id] = f.st.ganados; });
+        var ahora = Date.now(); JAVI.escribir({ alumno:TAG, accion:'OrtoDado', cartaId:hoy(), tipo:f.id, carta:JSON.stringify({ n:f.pend, t:ahora }) }); dados[f.id] = { n:f.pend, t:ahora }; });
       guardar('orto-dados', dados); b.disabled = true; b.textContent = '✓ Galeones dados' + (JAVI.PRUEBA ? ' (modo prueba)' : ''); ACT.SON.fanfarria(); }); };
   }, function(){ $('pf').textContent = 'No he podido leer la Hoja.'; });
 }
