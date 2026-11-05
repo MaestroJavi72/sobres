@@ -54,7 +54,7 @@ if(!/[?&](solo|profe)/.test(location.search)) location.replace(location.pathname
 'use strict';
 /* CAZAFALTAS para los alumnos (Javi, 5/11/2026): «entro un día y hago 40, al siguiente 30… las que voy fallando me pueden volver a salir;
    cada 15 palabras un minijuego; cada 10 seguidas bien, galeón».
-   - Entra con su nombre y su número de lista (data/lista-4A.json), como en las misiones de La Copa. Se recuerda en el aparato (orto-yo).
+   - Entra con su nombre y su número de lista (data/lista-4A.json), como en las misiones de La Copa. NO se recuerda (5/11/2026): cada vez que se abre, nombre y número.
    - Cada respuesta es una entrada [clave, 1|0, hora, g] (clave = «bien|mal» de orto-palabras.js; g = 1 si con ella completa 10 seguidas).
      Se guardan en el aparato (orto-log|#nº) y, cada 5 respuestas y al salir, en la Hoja SIN código: Alumno «ORTO · 4ºA», Acción «Orto»,
      CartaId = fecha, Tipo = #nº, Carta = {e:[entradas nuevas]}. Al entrar se juntan las de la Hoja y las del aparato (otro ordenador sirve).
@@ -107,8 +107,8 @@ window.addEventListener('pagehide', function(){ if(YO) enviar(true); });
 document.addEventListener('visibilitychange', function(){ if(document.hidden && YO) enviar(true); });
 /* ---------- entrar ---------- */
 function inicio(){
-  var guard = /[?&]profe/.test(location.search) ? null : leer('orto-yo', null);   /* ?profe: siempre la lista de nombres y el panel del profe */
-  if(guard){ YO = guard; return entrar(); }
+  /* 5/11/2026 (Javi): el juego NO recuerda a nadie (Dylan jugó en un ordenador que recordaba a otro): siempre nombre + número de lista */
+  try{ localStorage.removeItem('orto-yo'); }catch(e){}
   JAVI.protegerClase('4ºA', { alAbrir:function(){
     var g = JAVI.grupo('4ºA');
     $('escena').innerHTML = '<div class="ac-pizarra"><div class="ac-paso">🧙 ¿Quién eres? Toca tu nombre.</div><div class="nombres">' + g.nombres.map(function(n){ return '<button class="mini" data-n="' + ACT.esc(n) + '" type="button">' + ACT.esc(n) + '</button>'; }).join('') + '</div></div>' + (/[?&]profe/.test(location.search) ? profeHTML() : '');
@@ -121,7 +121,7 @@ function pin(n){
     '<div class="regla" id="err"></div><div class="botones"><button class="gran" id="bOk" type="button">Entrar</button><button class="mini" id="bNo" type="button">No soy yo</button></div></div>';
   var i = $('pin'); i.focus(); i.onkeydown = function(e){ if(e.key === 'Enter') $('bOk').click(); };
   $('bNo').onclick = inicio;
-  $('bOk').onclick = function(){ var v = parseInt(i.value); if(v && LISTA[n] === v){ YO = { id:'#' + v, n:n }; guardar('orto-yo', YO); ACT.SON.magia(); entrar(); } else { $('err').textContent = 'Ese no es tu número. Prueba otra vez.'; ACT.SON.fallo(); } };
+  $('bOk').onclick = function(){ var v = parseInt(i.value); if(v && LISTA[n] === v){ YO = { id:'#' + v, n:n }; ACT.SON.magia(); entrar(); } else { $('err').textContent = 'Ese no es tu número. Prueba otra vez.'; ACT.SON.fallo(); } };
 }
 function entrar(){ $('escena').innerHTML = '<p class="instr">Cargando tu progreso…</p>'; JAVI.leerHoja().then(arrancar, arrancar); }
 function arrancar(){ LOG = logDe(YO.id); guardar('orto-log|' + YO.id, LOG); SES = 0; miPersonaje(); panel(); }
