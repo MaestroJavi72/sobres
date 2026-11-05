@@ -39,6 +39,8 @@
   </header>
   <section class="escena" id="escena"></section>
 </div>
+<script>/* los alumnos no necesitan el código (su progreso se guarda sin él): sin ?profe, la página va siempre en modo ?solo, que no enseña el candado «Demostración: no se guarda nada» ni los botones del profe */
+if(!/[?&](solo|profe)/.test(location.search)) location.replace(location.pathname + (location.search ? location.search + "&solo" : "?solo") + location.hash);</script>
 <script src="../../comun/javi.js"></script>
 <script src="../comun/actividad.js"></script>
 <script src="orto-palabras.js"></script>
