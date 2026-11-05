@@ -426,28 +426,28 @@
      "objetivo": "Pregunta del día: ¿qué sílaba suena más fuerte? (aliento, pulmón, nariz). Presentación del reto. Lectura en voz alta de «¡El más importante!». Glosario con diccionario: brahmán, hacer amago de, emprender, desfallecimiento, unísono",
      "fecha": "2026-11-06",
      "duracion": "60'",
-     "interactivas": "I-2 La pregunta del día (no puntúa)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-7 Cazafaltas (ortografía, puntúa)"
     },
     {
      "titulo": "Comprensión lectora + la sílaba tónica",
      "objetivo": "Pregunta del día. Preguntas de comprensión de la lectura y moraleja. Recordamos la sílaba tónica del Tema 2 (Lumos). Calentamiento: Acentuación 1",
      "fecha": "2026-11-09",
      "duracion": "60'",
-     "interactivas": "I-2 La pregunta del día (no puntúa), I-12 Lumos: ilumina la tónica (repaso), I-1 La varita que cuenta (explicación)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-12 Lumos: ilumina la tónica (repaso), I-1 La varita que cuenta (explicación), I-7 Cazafaltas (ortografía, puntúa)"
     },
     {
      "titulo": "Agudas, llanas y esdrújulas",
      "objetivo": "Pregunta del día. Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar. Calentamiento: Acentuación 2",
      "fecha": "2026-11-10",
      "duracion": "60'",
-     "interactivas": "I-2 La pregunta del día (no puntúa), I-1 La varita que cuenta (puntúa), I-3 Los tres calderos (puntúa)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-1 La varita que cuenta (puntúa), I-3 Los tres calderos (puntúa), I-7 Cazafaltas (ortografía, puntúa)"
     },
     {
      "titulo": "La tilde en las agudas",
      "objetivo": "Pregunta del día (con tilde y por qué). Regla de las agudas: sofá, camión, atrás. Actividades A y B para copiar. Calentamiento: Acentuación 2",
      "fecha": "2026-11-11",
      "duracion": "60'",
-     "interactivas": "I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (explicación), I-4 Cura la palabra (puntúa)"
+     "interactivas": "I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (explicación), I-4 Cura la palabra (puntúa), I-7 Cazafaltas (ortografía, puntúa)"
     },
     {
      "titulo": "La tilde en las llanas + comunes y propios, concretos y abstractos",
@@ -569,7 +569,8 @@
     "I-4": "tema3-lengua-4a/i04-cura.html",
     "I-5": "tema3-lengua-4a/i05-receta.html",
     "I-12": "tema2-lengua-4a/i12-lumos.html",
-    "I-6": "tema3-lengua-4a/i06-duelo.html"
+    "I-6": "tema3-lengua-4a/i06-duelo.html",
+    "I-7": "tema3-lengua-4a/i07-ortografia.html"
    },
    "recursos": [
     {
@@ -621,7 +622,8 @@
     "I-3": "⚗️",
     "I-4": "🩹",
     "I-5": "📜",
-    "I-6": "⚔️"
+    "I-6": "⚔️",
+    "I-7": "🔎"
    }
   }
  ]

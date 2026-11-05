@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cazafaltas</title>
+<link rel="stylesheet" href="../../comun/javi.css">
+<link rel="stylesheet" href="../comun/actividad.css">
+<link rel="stylesheet" href="acentos.css">
+<style>
+.ops{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.op{font-family:'Andika',sans-serif;font-weight:700;font-size:clamp(28px,5vw,52px);padding:14px 30px;border-radius:18px;border:3px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer;min-width:200px}
+.op.ok{background:#3cae5f;color:#fff;border-color:#1e6b3c} .op.ko{background:#d0473f;color:#fff;border-color:#8f2a24;text-decoration:line-through}
+.regla{font-size:clamp(18px,2.2vw,24px);color:#f3d27a;font-weight:700}
+.cats{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🔎 Cazafaltas<span class="sub">I-7 · Ortografía: ¿cómo se escribe? · Tema 3 de Lengua</span></h1>
+    <a class="volver" href="../?id=tema3-lengua-4a" data-volver="../?id=tema3-lengua-4a">← Volver</a>
+    <button class="j-icono" id="bSonido" type="button" aria-label="Sonido">🔊</button>
+    <button class="j-icono" id="bPantalla" type="button" aria-label="Pantalla completa">⛶</button>
+  </header>
+  <section class="escena">
+    <div class="cats" id="cats"></div>
+    <div id="zona" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px"></div>
+  </section>
+</div>
+<script src="../../comun/javi.js"></script>
+<script src="../comun/actividad.js"></script>
+<script>
+(function(){
+'use strict';
+/* I-7 (Tema 3) · CAZAFALTAS (Javi, 5/11/2026: «tenemos muchas faltas de ortografía, fuera de las tildes»).
+   Se oye la palabra y hay que tocar cómo se escribe bien. Cada palabra lleva su regla. Las formas mal escritas están puestas A MANO
+   y no son otras palabras que existan (por eso no hay vaca/baca, tuvo/tubo, ola/hola, pero/perro, casar/cazar…).
+   10 palabras por ronda; primero las que el aparato no ha visto (localStorage t3-orto-vistas). */
+var R = {
+  mp:'Antes de <b>p</b> y <b>b</b> se escribe <b>m</b>.', brbl:'Se escribe <b>b</b> en <b>br</b> y <b>bl</b>.', aba:'Los verbos que acaban en <b>-aba</b> se escriben con <b>b</b>.',
+  nv:'Después de <b>n</b> se escribe <b>v</b>.', h:'Esta palabra empieza (o lleva) <b>h</b>, aunque no suene.', hue:'Las palabras que empiezan por <b>hie-</b> y <b>hue-</b> llevan <b>h</b>.',
+  gj:'Esta palabra se escribe con <b>g</b> (ge, gi suenan fuerte).', jj:'Esta palabra se escribe con <b>j</b>.', gue:'Para que la g suene suave delante de e, i: <b>gue</b>, <b>gui</b>.',
+  dier:'Si la u suena en gue, gui, lleva diéresis: <b>güe</b>, <b>güi</b>.', qu:'El sonido k delante de e, i se escribe <b>qu</b>.', cz:'Delante de <b>e</b>, <b>i</b> se escribe <b>c</b>; delante de a, o, u, <b>z</b>.',
+  plz:'Las palabras que acaban en <b>-z</b> hacen el plural en <b>-ces</b>.', rr:'Entre vocales, el sonido fuerte se escribe <b>rr</b>.', r:'Al principio de palabra y después de n, l, s se escribe una sola <b>r</b>.',
+  ll:'Esta palabra se escribe con <b>ll</b>.', y:'Esta palabra se escribe con <b>y</b>.'
+};
+var L = [
+  ['campo','canpo','mp'],['tambor','tanbor','mp'],['siempre','sienpre','mp'],['hombro','honbro','mp'],['cambio','canbio','mp'],['sombrero','sonbrero','mp'],['bombilla','bonbilla','mp'],
+  ['empujar','enpujar','mp'],['lámpara','lánpara','mp'],['trompeta','tronpeta','mp'],['compañero','conpañero','mp'],['cumpleaños','cunpleaños','mp'],['embudo','enbudo','mp'],['timbre','tinbre','mp'],
+  ['hambre','hanbre','mp'],['tiempo','tienpo','mp'],['ejemplo','ejenplo','mp'],['columpio','colunpio','mp'],
+  ['brazo','vrazo','brbl'],['blanco','vlanco','brbl'],['libro','livro','brbl'],['hablar','havlar','brbl'],['cable','cavle','brbl'],['abrigo','avrigo','brbl'],['sombra','sonbra','mp'],
+  ['niebla','nievla','brbl'],['broma','vroma','brbl'],['bruja','vruja','brbl'],['blando','vlando','brbl'],['tabla','tavla','brbl'],['mueble','mueve','x'],
+  ['cantaba','cantava','aba'],['jugaba','jugava','aba'],['saltaba','saltava','aba'],['estaba','estava','aba'],['miraba','mirava','aba'],['dibujaba','dibujava','aba'],['nadaba','nadava','aba'],['soñaba','soñava','aba'],
+  ['invierno','imbierno','nv'],['enviar','embiar','nv'],['invitar','imbitar','nv'],['convencer','combencer','nv'],['invento','imbento','nv'],
+  ['hielo','ielo','hue'],['huevo','uevo','hue'],['hueso','ueso','hue'],['hierba','ierba','hue'],['huella','uella','hue'],['huerto','uerto','hue'],['hiena','iena','hue'],
+  ['hormiga','ormiga','h'],['helado','elado','h'],['hospital','ospital','h'],['hombre','ombre','h'],['humo','umo','h'],['hacer','acer','h'],['ahora','aora','h'],['búho','buo','h'],['zanahoria','zanaoria','h'],['almohada','almoada','h'],
+  ['girasol','jirasol','gj'],['gigante','jigante','gj'],['gente','jente','gj'],['mágico','májico','gj'],['página','pájina','gj'],['general','jeneral','gj'],['gimnasia','jimnasia','gj'],['coger','cojer','gj'],['recoger','recojer','gj'],
+  ['jirafa','girafa','jj'],['jefe','gefe','jj'],['mujer','muger','jj'],['garaje','garage','jj'],['viaje','viage','jj'],['tijeras','tigeras','jj'],['jinete','ginete','jj'],['ojera','ogera','jj'],
+  ['guerra','gerra','gue'],['guitarra','gitarra','gue'],['hoguera','hogera','gue'],['juguete','jugete','gue'],['guisante','gisante','gue'],['manguera','mangera','gue'],['águila','ágila','gue'],
+  ['pingüino','pinguino','dier'],['cigüeña','cigueña','dier'],['paragüero','paraguero','dier'],['vergüenza','verguenza','dier'],
+  ['queso','keso','qu'],['quince','kince','qu'],['paquete','pakete','qu'],['mosquito','moskito','qu'],['esquina','eskina','qu'],['raqueta','rraketa','qu'],
+  ['cereza','sereza','cz'],['cielo','sielo','cz'],['cocina','cosina','cz'],['tiza','tisa','cz'],['cenar','senar','cz'],['zapato','sapato','cz'],['zorro','sorro','cz'],['cerilla','zerilla','cz'],['pizarra','pisarra','cz'],
+  ['lápices','lápizes','plz'],['luces','luzes','plz'],['peces','pezes','plz'],['narices','narizes','plz'],['veces','vezes','plz'],['raíces','raízes','plz'],['disfraces','disfrazes','plz'],
+  ['guitarra','guitara','rr'],['tierra','tiera','rr'],['arriba','ariba','rr'],['torre','tore','rr'],['barro','baro','rr'],['perrito','perito','x'],['ferrocarril','ferocaril','rr'],['zorro','zoro','rr'],['carretera','caretera','rr'],
+  ['ratón','rratón','r'],['rosa','rrosa','r'],['alrededor','alrrededor','r'],['sonrisa','sonrrisa','r'],['honrado','honrrado','r'],['israelí','isrraelí','x'],['regla','rregla','r'],
+  ['lluvia','yuvia','ll'],['llave','yave','ll'],['caballo','cabayo','ll'],['gallina','gayina','ll'],['silla','siya','ll'],['calle','caye','ll'],['ardilla','ardiya','ll'],['estrella','estreya','ll'],['pollito','poyito','ll'],
+  ['yogur','llogur','y'],['playa','plalla','y'],['payaso','pallaso','y'],['ayer','aller','y'],['yema','llema','y'],['ayudar','alludar','y'],['desayuno','desalluno','y']
+].filter(function(x){ return x[2] !== 'x'; });   /* «x» = descartada al revisar (mueble/mueve, perrito/perito e israelí: la falsa existe o no encaja) */
+var $ = ACT.$, CAT = { todo:'Todo', mp:'m antes de p/b', brbl:'br y bl', aba:'-aba', nv:'nv', h:'h', gj:'g / j', gue:'gue, gui, güe', qu:'qu', cz:'c / z', rr:'r / rr', ll:'ll / y' };
+var cat = 'todo', ronda = [], k = 0, puntos = 0, fallos = [], KV = 't3-orto-vistas';
+function grupo(c){ return c === 'hue' ? 'h' : c === 'jj' ? 'gj' : c === 'dier' ? 'gue' : c === 'plz' ? 'cz' : c === 'r' ? 'rr' : c === 'y' ? 'll' : c; }
+function vistas(){ try{ return JSON.parse(localStorage.getItem(KV)) || {}; }catch(e){ return {}; } }
+function empezar(){ var v = vistas(), cand = L.filter(function(x){ return cat === 'todo' || grupo(x[2]) === cat; });
+  ronda = ACT.mezclar(cand).sort(function(a, b){ return (v[a[0]] || 0) - (v[b[0]] || 0); }).slice(0, 10); k = 0; puntos = 0; fallos = [];
+  var t = Date.now(); ronda.forEach(function(x){ v[x[0]] = t; }); try{ localStorage.setItem(KV, JSON.stringify(v)); }catch(e){}
+  pregunta(); }
+function pregunta(){
+  var x = ronda[k], ops = ACT.mezclar([x[0], x[1]]), intento = false;
+  $('zona').innerHTML = '<div class="barraSup"><span>Palabra ' + (k + 1) + ' de ' + ronda.length + '</span><div class="progreso"><i style="width:' + (k / ronda.length * 100) + '%"></i></div><span>⭐ ' + puntos + '</span></div>' +
+    '<div class="ac-pizarra"><div class="ac-paso">Escucha la palabra. ¿Cómo se escribe bien?</div><div class="ops">' + ops.map(function(o){ return '<button class="op" type="button">' + ACT.esc(o) + '</button>'; }).join('') + '</div>' +
+    '<div class="regla" id="regla"></div><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div><div class="botones"><button class="gran" id="bSig" type="button" hidden>➡ Siguiente</button></div>';
+  ACT.voz(x[0]); $('bOir').onclick = function(){ ACT.voz(x[0]); };
+  Array.prototype.forEach.call(document.querySelectorAll('.op'), function(b){ b.onclick = function(){ if(!$('bSig').hidden) return;
+    if(b.textContent !== x[0]){ b.classList.add('ko'); if(!intento) fallos.push(x); intento = true; ACT.SON.fallo(); $('regla').innerHTML = '¡Esa tiene una falta! Pista: ' + R[x[2]]; return; }
+    b.classList.add('ok'); if(!intento) puntos++; ACT.SON.acierto(); $('regla').innerHTML = '✅ ' + ACT.esc(x[0]) + ': ' + R[x[2]];
+    $('bSig').hidden = false; if(k + 1 === ronda.length) $('bSig').textContent = '🏁 Ver resultado'; }; });
+  $('bSig').onclick = function(){ k++; if(k < ronda.length) return pregunta();
+    ACT.final($('zona'), { titulo:'🔎 ¡Faltas cazadas!', puntos:puntos, total:ronda.length, detalle:'acertadas a la primera',
+      mensajes:['¡A repasar las reglas y otra ronda!', '¡Bien! Vas cazando faltas.', '¡Muy bien, detective!', '¡Perfecto! No se te escapa ni una.'],
+      extra: fallos.length ? '<p class="detalle">Para repasar:</p><div class="lista">' + fallos.map(function(y){ return '<span>' + ACT.esc(y[0]) + '</span>'; }).join('') + '</div>' : '', textoRepetir:'Otra ronda', repetir:empezar }); };
+}
+$('cats').innerHTML = Object.keys(CAT).map(function(c){ return '<button class="mini" data-c="' + c + '" aria-pressed="' + (c === cat) + '" type="button">' + CAT[c] + '</button>'; }).join('');
+Array.prototype.forEach.call(document.querySelectorAll('[data-c]'), function(b){ b.onclick = function(){ cat = b.dataset.c;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-c]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); }); empezar(); }; });
+empezar();
+ACT.iniciar('tema3-lengua-4a');
+})();
+</script>
+<script src="../comun/barra.js"></script>
+</body>
+</html>

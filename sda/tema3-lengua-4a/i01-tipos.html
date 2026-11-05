@@ -73,7 +73,7 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(b){
   Array.prototype.forEach.call(document.querySelectorAll('[data-m]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); });
   if(modo === 'explica') explica(); else practica(); }); });
 document.addEventListener('keydown', function(e){ if(modo === 'explica' && e.key === ' ' && $('bVa') && !$('bVa').disabled){ e.preventDefault(); $('bVa').click(); } });
-nuevaLista(); explica();
+nuevaLista(); if(location.hash === "#practica"){ var bp = document.querySelector("[data-m=practica]"); if(bp) bp.click(); else explica(); } else explica();   /* #practica: entra directo en la práctica (página «Empieza el Tema 3») */
 ACT.iniciar('tema3-lengua-4a');
 })();
 </script>
