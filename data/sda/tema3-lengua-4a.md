@@ -60,9 +60,9 @@ Veinte sesiones según el horario de 4ºA: 60 min de lunes a viernes, salvo los 
 
 | S | Fecha | Duración | Contenido | Actividades | Interactivas |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Vie 6 nov | 60' | Corrección del control del Tema 2 + empezamos el Tema 3 | Corrección del control del Tema 2 en la pizarra (30'). Pregunta del día. Presentación del reto y lectura en voz alta de «¡El más importante!» (30'). El glosario pasa al lunes (decisión de Javi, 5/11/2026) | I-2 La pregunta del día (no puntúa) |
-| 2 | Lun 9 nov | 60' | Glosario, comprensión lectora y sílaba tónica | Pregunta del día. Glosario con diccionario: brahmán, hacer amago de, emprender, desfallecimiento, unísono. Preguntas de comprensión de la lectura y moraleja. Recordamos la sílaba tónica del Tema 2 (Lumos). Calentamiento: Acentuación 1 | I-2 La pregunta del día (no puntúa), I-12 Lumos: ilumina la tónica (repaso), I-1 La varita que cuenta (explicación) |
-| 3 | Mar 10 nov | 60' | Agudas, llanas y esdrújulas | Pregunta del día. Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar. Calentamiento: Acentuación 2 | I-2 La pregunta del día (no puntúa), I-1 La varita que cuenta (puntúa), I-3 Los tres calderos (puntúa) |
+| 1 | Vie 6 nov | 60' | Corrección del control del Tema 2 | Corrección del control del Tema 2 (toda la sesión). El Tema 3 empieza el lunes (decisión de Javi, 5/11/2026) | — |
+| 2 | Lun 9 nov | 60' | Empezamos el Tema 3: lectura y vocabulario | Pregunta del día. Presentación del reto. Lectura en voz alta de «¡El más importante!». Glosario con diccionario (brahmán, hacer amago de, emprender, desfallecimiento, unísono) y preguntas de comprensión; lo que no dé tiempo, para casa | I-2 La pregunta del día (no puntúa), I-7 Cazafaltas (ortografía, puntúa) |
+| 3 | Mar 10 nov | 60' | La sílaba tónica y agudas, llanas y esdrújulas | Pregunta del día. Recordamos la sílaba tónica del Tema 2 con Lumos (5'). Explicación: según dónde está la tónica (última, penúltima, antepenúltima). Ej. 17: clasificar nasal, oxígeno, respiración, nariz, esófago, boca, glándula, pulmones, olfato, meditar. Calentamiento: Acentuación 1 | I-2 La pregunta del día (no puntúa), I-12 Lumos: ilumina la tónica (repaso), I-1 La varita que cuenta (explicación), I-3 Los tres calderos (puntúa) |
 | 4 | Mié 11 nov | 60' | La tilde en las agudas | Pregunta del día (con tilde y por qué). Regla de las agudas: sofá, camión, atrás. Actividades A y B para copiar. Calentamiento: Acentuación 2 | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (explicación), I-4 Cura la palabra (puntúa) |
 | 5 | Jue 12 nov | 90' | La tilde en las llanas + comunes y propios, concretos y abstractos | Pregunta del día y calentamiento: Acentuación 3 (10'). Regla de las llanas: árbol, césped, lápiz. Actividad C (35'). Nombres comunes y propios (Ganges, Himalaya, Nueva Delhi, Taj Mahal) y concretos y abstractos (amistad, calma / bolígrafo, reloj) (45') | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (explicación), I-3 Los tres calderos (puntúa) |
 | 6 | Vie 13 nov | 60' | La tilde en las esdrújulas | Pregunta del día. Regla de las esdrújulas: tráquea, atmósfera, húmedo. Actividad D y cuadro resumen de las tres reglas en el cuaderno. Calentamiento: Acentuación 3 | I-2 La pregunta del día (no puntúa), I-5 La receta de la tilde (puntúa), I-4 Cura la palabra (puntúa) |
@@ -83,7 +83,7 @@ Veinte sesiones según el horario de 4ºA: 60 min de lunes a viernes, salvo los 
 
 ## Actividades por bloque
 
-### 1. La lectura y el glosario (S1-S2; el 6/11 se corrige primero el control del Tema 2 y el glosario pasa al 9/11)
+### 1. La lectura y el glosario (S2, lunes 9/11; el viernes 6/11 se corrige el control del Tema 2)
 
 **Lectura «¡El más importante!»** (adaptación de un cuento sobre la respiración). En Calcuta, los sentidos discuten cuál es el más valioso y acuden al brahmán. Se van marchando la lengua, los ojos, las orejas, la mente y las manos, y el cuerpo sobrevive; cuando la respiración hace amago de irse, el cuerpo desfallece y todos le piden que se quede. Moraleja: la respiración es lo más importante.
 
