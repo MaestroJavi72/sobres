@@ -29,6 +29,11 @@
 .profe table{width:100%;border-collapse:collapse;background:#fffaf0}
 .profe td,.profe th{border:1px solid #b8934f;padding:4px 6px;text-align:center}
 .profe td:first-child{text-align:left}
+/* mi personaje, Mercader y Mis cartas: como en las misiones de La Copa */
+#mipj{position:fixed;right:10px;top:64px;width:160px;height:270px;z-index:40;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)}#mipj iframe{width:100%;height:100%;border:0;background:transparent}
+#mipj button{position:absolute;bottom:4px;padding:2px 6px;font-size:13px;opacity:.9}#mipj .tam{right:4px}#mipj .tienda{left:4px;bottom:34px}#mipj .cartas{left:4px}#mipj.mini{width:84px;height:112px}#mipj.mini .tienda,#mipj.mini .cartas{display:none}
+#mitienda{position:fixed;inset:0;z-index:60;background:#120d1e}#mitienda iframe{width:100%;height:100%;border:0}#mitienda button{position:fixed;top:10px;right:12px;z-index:61}
+@media (min-width:701px){body.con-pj .j-envoltorio{padding-right:180px}}@media (max-width:700px){#mipj{width:110px;height:150px;top:auto;bottom:10px}}
 </style>
 </head>
 <body>
@@ -109,9 +114,21 @@ function pin(n){
   $('bOk').onclick = function(){ var v = parseInt(i.value); if(v && LISTA[n] === v){ YO = { id:'#' + v, n:n }; guardar('orto-yo', YO); ACT.SON.magia(); entrar(); } else { $('err').textContent = 'Ese no es tu número. Prueba otra vez.'; ACT.SON.fallo(); } };
 }
 function entrar(){ $('escena').innerHTML = '<p class="instr">Cargando tu progreso…</p>'; JAVI.leerHoja().then(arrancar, arrancar); }
-function arrancar(){ LOG = logDe(YO.id); guardar('orto-log|' + YO.id, LOG); SES = 0; panel(); }
+function arrancar(){ LOG = logDe(YO.id); guardar('orto-log|' + YO.id, LOG); SES = 0; miPersonaje(); panel(); }
+/* 🧙 su tarjeta de Hogwarts (galeones y nivel, se relee sola cada 20 s), 🛒 Mercader (pide y el profe aprueba) y 🃏 Mis cartas, como en La Copa */
+function miPersonaje(){ var c = document.getElementById('mipj'); document.body.classList.toggle('con-pj', !!YO);
+  if(!YO){ if(c) c.remove(); return; } if(c && c.dataset.n === YO.n) return; if(c) c.remove();
+  c = document.createElement('div'); c.id = 'mipj'; c.dataset.n = YO.n;
+  c.innerHTML = '<iframe title="Mi personaje" allowtransparency="true" src="' + JAVI.BASE + 'hogwarts/?solo&panel&uno=' + encodeURIComponent(YO.n) + '#hogwarts"></iframe>' +
+    '<button type="button" class="mini tam" title="Más pequeño o más grande">↕</button><button type="button" class="mini tienda">🛒 Mercader</button><button type="button" class="mini cartas">🃏 Mis cartas</button>';
+  c.querySelector('.tam').onclick = function(){ c.classList.toggle('mini'); };
+  c.querySelector('.tienda').onclick = function(){ tienda('pedir'); }; c.querySelector('.cartas').onclick = function(){ tienda('mis'); };
+  document.body.appendChild(c); }
+function tienda(modo){ var t = document.getElementById('mitienda'); if(t) t.remove(); t = document.createElement('div'); t.id = 'mitienda';
+  t.innerHTML = '<iframe title="Mercader" src="' + JAVI.BASE + 'hogwarts/?solo&' + modo + '=' + encodeURIComponent(YO.n) + '"></iframe><button type="button" class="gran">✕ Volver al Cazafaltas</button>';
+  t.querySelector('button').onclick = function(){ t.remove(); var f = document.querySelector('#mipj iframe'); if(f) f.src = f.src; }; document.body.appendChild(t); }
 function statsHTML(st){ return '<div class="stats"><div class="stat"><b>' + st.hoy + '</b><span>hoy</span></div><div class="stat"><b>' + st.dominadas + ' / ' + st.total + '</b><span>palabras dominadas</span></div>' +
-  '<div class="stat"><b>' + st.falladas + '</b><span>por repasar</span></div><div class="stat"><b>🪙 ' + st.ganados + '</b><span>galeones ganados</span></div></div>' +
+  '<div class="stat"><b>' + st.falladas + '</b><span>por repasar</span></div><div class="stat"><b>💰 ' + st.ganados + '</b><span>galeones ganados</span></div></div>' +
   '<div class="racha" title="10 seguidas bien = galeón">' + Array.apply(null, Array(10)).map(function(_, i){ return '<i class="' + (i < st.racha ? 'on' : '') + '"></i>'; }).join('') + '</div>'; }
 function panel(){
   var st = estado(LOG);
@@ -119,13 +136,13 @@ function panel(){
     '<div class="ac-nota">Escucha la palabra y elige cómo se escribe bien. Las que falles volverán a salir. <b>Cada 10 seguidas bien: un galeón</b> (te lo da el profe). Cada 15 palabras, ¡un minijuego!</div>' +
     '<div class="botones"><button class="gran" id="bJugar" type="button">▶ ¡A cazar faltas!</button></div></div>' +
     '<div class="botones"><button class="mini" id="bSalir" type="button">👋 No soy ' + ACT.esc(YO.n) + ' (salir)</button></div>';
-  $('bJugar').onclick = pregunta; $('bSalir').onclick = function(){ enviar(true); YO = null; try{ localStorage.removeItem('orto-yo'); }catch(e){} inicio(); };
+  $('bJugar').onclick = pregunta; $('bSalir').onclick = function(){ enviar(true); YO = null; try{ localStorage.removeItem('orto-yo'); }catch(e){} miPersonaje(); inicio(); };
 }
 /* ---------- jugar ---------- */
 function pregunta(){
   var x = siguiente(); if(!x){ $('escena').innerHTML = '<div class="final"><h2>🏆 ¡Has dominado todas las palabras!</h2><p class="detalle">Eres un maestro de la ortografía.</p></div>'; return; }
   ACTUAL = x; fallo = false; var ops = ACT.mezclar([x[0], x[1]]), st = estado(LOG);
-  $('escena').innerHTML = '<div class="barraSup"><span>Hoy: ' + st.hoy + '</span><span class="esp"></span><span>🪙 ' + st.ganados + '</span></div>' +
+  $('escena').innerHTML = '<div class="barraSup"><span>Hoy: ' + st.hoy + '</span><span class="esp"></span><span>💰 ' + st.ganados + '</span></div>' +
     '<div class="ac-pizarra"><div class="racha">' + Array.apply(null, Array(10)).map(function(_, i){ return '<i class="' + (i < st.racha ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
     '<div class="ac-paso">Escucha. ¿Cómo se escribe bien?</div><div class="ops">' + ops.map(function(o){ return '<button class="op" type="button">' + ACT.esc(o) + '</button>'; }).join('') + '</div>' +
     '<div class="regla" id="regla"></div><button class="mini" id="bOir" type="button">🔊 Escuchar</button></div>' +
@@ -146,7 +163,7 @@ function anotar(ok){
   LOG.push([clave(ACTUAL), ok, Date.now(), g]); SES++; guardar('orto-log|' + YO.id, LOG); enviar(false); return g;
 }
 function premio(){ ACT.SON.fanfarria(); var d = document.createElement('div');
-  d.innerHTML = '<div style="position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(0,0,0,.55)"><div class="final" style="background:#fffaf0;border-radius:20px;padding:24px;border:4px solid #c9972e"><h2>🪙 ¡10 seguidas bien!</h2><p class="mensaje bien">¡Has ganado un galeón! Te lo dará el profe.</p><button class="gran" type="button">¡Genial! ▶</button></div></div>';
+  d.innerHTML = '<div style="position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(0,0,0,.55)"><div class="final" style="background:#fffaf0;border-radius:20px;padding:24px;border:4px solid #c9972e"><h2>💰 ¡10 seguidas bien!</h2><p class="mensaje bien">¡Has ganado un galeón! Te lo dará el profe.</p><button class="gran" type="button">¡Genial! ▶</button></div></div>';
   document.body.appendChild(d); d.querySelector('button').onclick = function(){ d.remove(); }; }
 /* ---------- minijuegos (cada 15 palabras; solo diversión) ---------- */
 var MJT = [];
@@ -190,7 +207,7 @@ function montarProfe(){
     var pend = filas.filter(function(f){ return f.pend > 0; });
     $('pf').innerHTML = filas.length ? '<table><tr><th>Alumno</th><th>Dominadas</th><th>Por repasar</th><th>Hoy</th><th>Galeones ganados</th><th>Dados</th><th>Pendientes</th></tr>' +
       filas.map(function(f){ return '<tr><td>' + ACT.esc(f.n) + '</td><td>' + f.st.dominadas + '</td><td>' + f.st.falladas + '</td><td>' + f.st.hoy + '</td><td>' + f.st.ganados + '</td><td>' + f.dados + '</td><td><b>' + (f.pend || '') + '</b></td></tr>'; }).join('') + '</table>' +
-      (pend.length ? '<div class="botones"><button class="gran verde" id="bDar" type="button">🪙 Dar los galeones pendientes (' + pend.reduce(function(a, f){ return a + f.pend; }, 0) + ')</button></div>' : '<p>No hay galeones pendientes.</p>') +
+      (pend.length ? '<div class="botones"><button class="gran verde" id="bDar" type="button">💰 Dar los galeones pendientes (' + pend.reduce(function(a, f){ return a + f.pend; }, 0) + ')</button></div>' : '<p>No hay galeones pendientes.</p>') +
       '<p class="detalle">La Hoja tarda 1-2 minutos en traer lo último que han hecho.</p>' : '<p>Todavía nadie ha jugado.</p>';
     if($('bDar')) $('bDar').onclick = function(){ var b = this; JAVI.listo(function(){
       if(!JAVI.llaveAbierta()) return JAVI.pedirCodigo({ titulo:'🔐 Código para dar galeones', texto:'Escribe el código y vuelve a pulsar el botón.' });
