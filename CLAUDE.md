@@ -46,6 +46,7 @@ Cada módulo es una carpeta con su `index.html` autocontenido (CSS y JS dentro),
 | `data/criterios.json` | Criterios del 2º ciclo (LCL, EF, MAT; textos de 3º y 4º y saberes), generados desde los `.md` de la Orden de 30/05/2023. | — |
 | `data/alumnos.json` | Lista base de alumnos por grupo (`sistema`: hogwarts o ef; chica y aspecto del personaje; `antes`: nombres anteriores, p. ej. 3ºB «Valería» antes «Valeria»). | — |
 | `data/historial.json` | Histórico inicial de responsables y capitanes (sin fechas). | — |
+| `tutoriales/` | **🎬 Videotutoriales** (7/11/2026, Javi): vídeos cortos para los alumnos (portada → Tutoría, visible para alumnos). Lista en `VIDEOS` del propio `index.html` ({id, t, d, v, img, pasos}); los mp4 en `tutoriales/videos/` (que no pasen de ~20 MB) con su imagen de portada (`ffmpeg -ss 15 -frames:v 1`). Primero: «Cómo entrar en Classroom» (`acceso-classroom.mp4`, 19 s, vídeo animado de Javi; el correo que sale es el genérico usuario@g.educaand.es). **La web es pública: antes de subir un vídeo, revisar que no salgan correos, contraseñas ni nombres de alumnos.** «⛶ Ver en grande». | 4ºA |
 | `ef.html` | Redirige a `ef/` (dirección antigua). | — |
 
 Recursos: `img/cartas-hp/` (cartas de Harry Potter, diseñadas por Javi en Canva), `img/cartas-ef/` (cartas de EF), `recursos/` (banner y fondo «Javificación», hoja de cartas de EF) y `herramientas/cartas_ef.html` (generador SVG de las cartas de EF).

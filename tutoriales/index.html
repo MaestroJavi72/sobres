@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Videotutoriales</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+body{margin:0;min-height:100vh;background:var(--fondo, #0b1026);color:#f6ead0;font-family:'EB Garamond',Georgia,serif}
+.envoltorio{max-width:1100px;margin:0 auto;padding:16px}
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.cab h1{flex:1 1 280px;margin:0;font-family:'Cinzel',serif;font-size:clamp(28px,4.6vw,48px);color:#f3d27a}
+.cab .sub{display:block;font-size:clamp(14px,1.6vw,18px);color:#e8d9b0;font-family:'Cinzel',serif}
+.volver{font-family:'Cinzel',serif;font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8}
+.lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.tut{background:linear-gradient(180deg,#fdf6e3,#f1e2bd);color:#3a2a16;border:3px solid #b8934f;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.tut h2{margin:0;font-family:'Cinzel',serif;font-size:clamp(20px,2.4vw,26px);color:#7a2030}
+.tut p{margin:0;font-size:18px;line-height:1.35}
+.tut video{width:100%;border-radius:14px;background:#000;aspect-ratio:16/9}
+.tut .pasos{font-size:17px;margin:0;padding-left:22px}
+.tut .botones{display:flex;gap:8px;flex-wrap:wrap}
+.tut button{font-family:'Cinzel',serif;font-weight:700;font-size:15px;padding:8px 14px;border-radius:12px;border:2px solid #b8934f;background:#fffaf0;color:#3a2a16;cursor:pointer}
+.grande{position:fixed;inset:0;z-index:50;background:#000;display:flex;align-items:center;justify-content:center}
+.grande video{width:100%;height:100%;object-fit:contain}
+.grande button{position:fixed;top:12px;right:12px;font-size:18px;padding:10px 16px;border-radius:12px;border:2px solid #fff;background:#7a2030;color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="envoltorio">
+  <header class="cab">
+    <h1>🎬 Videotutoriales<span class="sub">Vídeos cortos para aprender a hacerlo solos</span></h1>
+    <a class="volver" href="../#tutoria" data-volver="../#tutoria">← Volver</a>
+  </header>
+  <div class="lista" id="lista"></div>
+</div>
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* VIDEOTUTORIALES (Javi, 7/11/2026). Para añadir otro: copiar el vídeo (mp4, que no pase de ~20 MB) en tutoriales/videos/
+   y añadir una línea aquí. Ojo: la web es pública; revisar que en el vídeo no salgan correos, contraseñas ni nombres de alumnos. */
+var VIDEOS = [
+  { id:'classroom', t:'Cómo entrar en Classroom', d:'Desde el ordenador del cole: abrir Chrome, entrar con tu correo del cole y llegar a la clase de 4ºA.', v:'videos/acceso-classroom.mp4', img:'videos/acceso-classroom.jpg',
+    pasos:['Abre Google Chrome.', 'Entra con tu correo del cole (…@g.educaand.es) y tu contraseña.', 'Toca los nueve puntitos de arriba a la derecha y elige Classroom.', 'Entra en la clase de 4º A.'] }
+];
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+document.getElementById('lista').innerHTML = VIDEOS.map(function(x){
+  return '<article class="tut" id="' + x.id + '"><h2>' + esc(x.t) + '</h2><p>' + esc(x.d) + '</p>' +
+    '<video src="' + x.v + '"' + (x.img ? ' poster="' + x.img + '"' : '') + ' controls playsinline preload="metadata"></video>' +
+    (x.pasos ? '<ol class="pasos">' + x.pasos.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ol>' : '') +
+    '<div class="botones"><button type="button" data-g="' + x.v + '">⛶ Ver en grande</button></div></article>';
+}).join('');
+Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function(b){ b.onclick = function(){
+  var g = document.createElement('div'); g.className = 'grande'; g.innerHTML = '<video src="' + b.dataset.g + '" controls autoplay playsinline></video><button type="button">✕ Cerrar</button>';
+  g.querySelector('button').onclick = function(){ g.remove(); }; document.body.appendChild(g);
+  document.querySelectorAll('.tut video').forEach(function(v){ v.pause(); }); }; });
+})();
+</script>
+</body>
+</html>
