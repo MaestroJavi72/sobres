@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El experimento del azúcar</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 240px;min-width:0;font-size:clamp(24px,4.2vw,44px);line-height:1.05}
+.pest{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pest button{font:800 clamp(15px,1.8vw,19px) var(--f-sub);padding:9px 14px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.pest button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.caja{background:var(--panel);border:3px solid var(--panel-borde);border-radius:24px;padding:clamp(14px,3vw,28px);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.nota{color:var(--tinta-suave);font-size:clamp(15px,1.8vw,18px);max-width:900px;line-height:1.4}
+.nota b{color:var(--tinta)}
+.btn{font:900 clamp(18px,2.6vw,28px) var(--f-sub);padding:.45em 1.2em;border-radius:18px;border:3px solid var(--acento);background:var(--acento);color:var(--acento-tinta);cursor:pointer}
+.btn.sec{background:transparent;color:var(--tinta)}
+.fila{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pasos{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.pasos span{font:700 15px var(--f-sub);padding:4px 12px;border-radius:999px;border:2px solid var(--panel-borde);color:var(--tinta-suave)}
+.pasos span.on{border-color:var(--acento);color:var(--acento)}
+.bebidas{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2vw,24px);width:100%}
+.beb{background:rgba(0,0,0,.25);border:2px solid var(--panel-borde);border-radius:20px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.beb .e{font-size:clamp(50px,7vw,90px);line-height:1}
+.beb b{font:900 clamp(18px,2.4vw,26px) var(--f-sub);color:#fff}
+.beb label{font-size:15px;color:var(--tinta-suave);display:flex;flex-direction:column;gap:3px;align-items:center}
+.beb input{font:700 20px var(--f-sub);width:7em;text-align:center;border-radius:10px;border:2px solid var(--panel-borde);padding:4px}
+.voto{display:flex;align-items:center;gap:8px}
+.voto button{font:900 26px var(--f-sub);width:46px;height:46px;border-radius:50%;border:2px solid var(--acento);background:transparent;color:var(--tinta);cursor:pointer}
+.voto span{font:900 clamp(36px,5vw,56px) var(--f-titulo);color:#fff;min-width:1.6em}
+.vaso{position:relative;width:clamp(90px,12vw,140px);height:clamp(130px,17vw,200px);border:4px solid rgba(255,255,255,.75);border-top:none;border-radius:0 0 22px 22px;background:var(--liq,rgba(120,180,255,.25));display:flex;flex-wrap:wrap-reverse;align-content:flex-start;justify-content:center;gap:3px;padding:6px;overflow:hidden}
+.cubo{width:clamp(16px,2.2vw,24px);height:clamp(16px,2.2vw,24px);background:#fff;border-radius:4px;box-shadow:inset 0 -3px 0 #ddd;animation:cae .5s ease-in}
+@keyframes cae{from{transform:translateY(-160px);opacity:0}to{transform:none;opacity:1}}
+.num{font:900 clamp(30px,4.5vw,50px) var(--f-titulo);color:#fff}
+.gramos{font-size:16px;color:var(--tinta-suave)}
+.limite{width:100%;max-width:820px;text-align:left}
+.barra{height:34px;border-radius:999px;background:rgba(0,0,0,.35);border:2px solid var(--panel-borde);position:relative;overflow:hidden;margin:6px 0}
+.barra i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+.barra .lim{position:absolute;top:-2px;bottom:-2px;width:3px;background:#fff}
+.conclus{background:#fffaf0;color:#2b1c05;border-radius:18px;padding:14px 20px;text-align:left;max-width:900px;font-size:clamp(16px,2vw,21px);line-height:1.45}
+.conclus b{color:#7a2030}
+/* hoja para imprimir */
+.hoja{background:#fff;color:#222;width:min(210mm,100%);padding:12mm;border-radius:6px;text-align:left;font-family:Georgia,serif}
+.hoja h2{margin:0 0 4mm;font-family:'Cinzel',serif;color:#7a2030}
+.hoja table{width:100%;border-collapse:collapse;margin:4mm 0;font-size:13pt}
+.hoja td,.hoja th{border:1.5px solid #999;padding:3mm;text-align:center}
+.hoja .lin{border-bottom:1.5px dotted #999;height:9mm}
+@media print{ body *{visibility:hidden} .hoja,.hoja *{visibility:visible} .hoja{position:absolute;left:0;top:0;width:210mm;border-radius:0} @page{size:A4;margin:0} }
+@media (max-width:700px){ .bebidas{grid-template-columns:1fr} }
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🧪 El experimento del azúcar</h1>
+    <button class="j-icono" id="bPant" type="button" title="Pantalla completa">⛶</button>
+    <a class="j-icono" href="./" data-volver="./" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
+  </header>
+  <nav class="pest"><button type="button" data-p="exp" aria-pressed="true">🧪 El experimento</button><button type="button" data-p="hoja" aria-pressed="false">📄 Hoja para los alumnos</button></nav>
+  <section class="caja" id="caja"></section>
+</div>
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* EL EXPERIMENTO DEL AZÚCAR (Javi, 9/11/2026: «un experimento de una coca cola y un zumo en relación al azúcar y el agua»). Teoría de EF,
+   tema «Comer bien para jugar mejor» (1.2). Pasos: hipótesis (la clase vota cuántas cucharillas) → la etiqueta (gramos de azúcares por
+   100 ml y tamaño del envase; vienen valores típicos, pero hay que poner los de la lata y el brik que se lleven) → resultado (caen las
+   cucharillas en cada vaso, al lado del agua con 0) → conclusión (máximo recomendado al día y por qué el agua para hacer deporte).
+   1 cucharilla de café = 4 g de azúcar (la medida que usa la OMS). Máximo orientativo: 25 g de azúcar libre al día (unas 6 cucharillas);
+   el azúcar del zumo, aunque sea natural, cuenta como azúcar libre. No guarda nada. */
+var $ = function(id){ return document.getElementById(id); }, caja = $('caja');
+var CUCH = 4, MAX = 25;
+var B = [
+  { id:'cola', e:'🥤', n:'Refresco de cola', g:10.6, ml:330, liq:'rgba(70,35,15,.75)', voto:0 },
+  { id:'zumo', e:'🧃', n:'Zumo de naranja', g:9, ml:200, liq:'rgba(255,165,30,.6)', voto:0 },
+  { id:'agua', e:'💧', n:'Agua', g:0, ml:330, liq:'rgba(120,180,255,.3)', voto:0 }
+];
+try{ var g = JSON.parse(localStorage.getItem('ef-azucar') || 'null'); if(g) B.forEach(function(b){ if(g[b.id]){ b.g = g[b.id].g; b.ml = g[b.id].ml; } }); }catch(e){}
+function guardar(){ var o = {}; B.forEach(function(b){ o[b.id] = { g:b.g, ml:b.ml }; }); try{ localStorage.setItem('ef-azucar', JSON.stringify(o)); }catch(e){} }
+var gramos = function(b){ return Math.round(b.g * b.ml / 100 * 10) / 10; }, cucharillas = function(b){ return Math.round(gramos(b) / CUCH * 2) / 2; };
+var fmt = function(n){ return String(n).replace('.', ','); };
+function pasos(k){ return '<div class="pasos">' + ['1 · ¿Cuánto azúcar creéis?', '2 · La etiqueta', '3 · ¡El resultado!', '4 · Conclusión'].map(function(t, i){ return '<span class="' + (i === k ? 'on' : '') + '">' + t + '</span>'; }).join('') + '</div>'; }
+/* 1 · hipótesis */
+function hipotesis(){
+  caja.innerHTML = pasos(0) + '<p class="nota">Tenemos tres bebidas. <b>¿Cuántas cucharillas de azúcar creéis que lleva cada una?</b> Votad con la mano y apuntad la idea de la clase. (1 cucharilla de café = 4 gramos de azúcar.)</p>' +
+    '<div class="bebidas">' + B.map(function(b, i){ return '<div class="beb"><span class="e">' + b.e + '</span><b>' + b.n + '</b><span class="gramos">' + b.ml + ' ml</span>' +
+      '<div class="voto"><button type="button" data-i="' + i + '" data-d="-1">−</button><span id="v' + i + '">' + b.voto + '</span><button type="button" data-i="' + i + '" data-d="1">+</button></div><span class="gramos">cucharillas (nuestra idea)</span></div>'; }).join('') + '</div>' +
+    '<button class="btn" id="bSig" type="button">▶ Miramos la etiqueta</button>';
+  Array.prototype.forEach.call(caja.querySelectorAll('[data-d]'), function(x){ x.onclick = function(){ var b = B[+x.dataset.i]; b.voto = Math.max(0, b.voto + +x.dataset.d); $('v' + x.dataset.i).textContent = b.voto; }; });
+  $('bSig').onclick = etiqueta;
+}
+/* 2 · la etiqueta */
+function etiqueta(){
+  caja.innerHTML = pasos(1) + '<p class="nota">Buscad en la etiqueta la tabla de <b>información nutricional</b>: «Hidratos de carbono… <b>de los cuales azúcares</b>», en gramos por cada 100 ml. Escribid aquí lo que ponga en vuestra lata y vuestro brik (vienen puestos valores típicos) y cuánto trae el envase.</p>' +
+    '<div class="bebidas">' + B.map(function(b, i){ return '<div class="beb"><span class="e">' + b.e + '</span><b>' + b.n + '</b>' +
+      '<label>Azúcares (g por 100 ml)<input type="number" step="0.1" min="0" data-i="' + i + '" data-k="g" value="' + b.g + '"' + (b.id === 'agua' ? ' disabled' : '') + '></label>' +
+      '<label>Tamaño del envase (ml)<input type="number" step="10" min="0" data-i="' + i + '" data-k="ml" value="' + b.ml + '"></label>' +
+      '<span class="gramos" id="c' + i + '"></span></div>'; }).join('') + '</div>' +
+    '<p class="nota">La cuenta: gramos por 100 ml × ml del envase ÷ 100 = gramos de azúcar. Y gramos ÷ 4 = cucharillas.</p><button class="btn" id="bSig" type="button">▶ ¡Echamos el azúcar!</button>';
+  function cuentas(){ B.forEach(function(b, i){ $('c' + i).innerHTML = fmt(b.g) + ' × ' + b.ml + ' ÷ 100 = <b>' + fmt(gramos(b)) + ' g</b>'; }); }
+  Array.prototype.forEach.call(caja.querySelectorAll('input'), function(x){ x.oninput = function(){ var b = B[+x.dataset.i], v = parseFloat(String(x.value).replace(',', '.')); if(!isNaN(v) && v >= 0){ b[x.dataset.k] = v; guardar(); cuentas(); } }; });
+  cuentas(); $('bSig').onclick = resultado;
+}
+/* 3 · resultado */
+function resultado(){
+  caja.innerHTML = pasos(2) + '<div class="bebidas">' + B.map(function(b, i){ return '<div class="beb"><span class="e">' + b.e + '</span><b>' + b.n + '</b>' +
+    '<div class="vaso" id="vs' + i + '" style="--liq:' + b.liq + '"></div><span class="num" id="n' + i + '">0</span><span class="gramos">cucharillas · ' + fmt(gramos(b)) + ' g de azúcar' +
+    (b.voto || i < 2 ? '<br>Nuestra idea: ' + b.voto : '') + '</span></div>'; }).join('') + '</div>' +
+    '<div class="fila"><button class="btn" id="bSig" type="button" hidden>▶ ¿Y qué significa?</button></div>';
+  var orden = [2, 1, 0], k = 0;
+  (function una(){ if(k >= orden.length){ $('bSig').hidden = false; return; } var i = orden[k++], b = B[i], n = Math.ceil(cucharillas(b)), j = 0, v = $('vs' + i);
+    if(!n){ $('n' + i).textContent = '0 ✨'; return setTimeout(una, 900); }
+    (function cae(){ if(j >= n){ $('n' + i).textContent = fmt(cucharillas(b)); return setTimeout(una, 700); } var c = document.createElement('span'); c.className = 'cubo'; v.appendChild(c); j++; $('n' + i).textContent = j;
+      setTimeout(cae, 380); })();
+  })();
+  $('bSig').onclick = conclusion;
+}
+/* 4 · conclusión */
+function conclusion(){
+  var col = ['#8a4b22', '#e89a1c', '#4aa3ff'], tope = Math.max(MAX * 1.6, ...B.map(gramos));
+  caja.innerHTML = pasos(3) + '<div class="limite"><p class="nota">Para un niño o una niña, lo recomendable es tomar <b>como mucho unos ' + MAX + ' g de azúcar libre al día (unas 6 cucharillas)</b>: el azúcar añadido (bollos, chuches, refrescos…) y también el de los zumos. La raya blanca marca ese máximo.</p>' +
+    B.map(function(b, i){ var gr = gramos(b); return '<div><b>' + b.e + ' ' + b.n + ':</b> ' + fmt(gr) + ' g' + (MAX ? ' (' + Math.round(gr / MAX * 100) + ' % del máximo de un día)' : '') +
+      '<div class="barra"><i style="width:' + (gr / tope * 100) + '%;background:' + col[i] + '"></i><span class="lim" style="left:' + (MAX / tope * 100) + '%"></span></div></div>'; }).join('') + '</div>' +
+    '<div class="conclus"><b>¿Qué hemos aprendido?</b><br>' +
+    '🥤 Una sola lata de refresco tiene tanto azúcar como deberíamos tomar <b>en todo un día</b>… ¡o más!<br>' +
+    '🧃 El zumo también tiene mucho azúcar, aunque sea de la fruta: es mejor <b>comerse la naranja entera</b>, que además tiene fibra y llena más.<br>' +
+    '💧 El agua no tiene nada de azúcar y es lo que mejor <b>hidrata</b>: el cuerpo pierde agua al sudar y la necesita para que funcionen los músculos.<br>' +
+    '⚽ <b>Para hacer deporte: agua</b> antes, durante y después. Los refrescos y los zumos, de vez en cuando y no para quitar la sed.</div>' +
+    '<button class="btn sec" id="bOtra" type="button">🔁 Volver a empezar</button>';
+  $('bOtra').onclick = function(){ B.forEach(function(b){ b.voto = 0; }); hipotesis(); };
+}
+/* hoja del alumno */
+function hoja(){
+  caja.innerHTML = '<div class="fila"><button class="btn" id="bImp" type="button">🖨️ Imprimir</button></div>' +
+    '<div class="hoja"><h2>🧪 El experimento del azúcar</h2><p>Nombre: ______________________________ Clase: ______ Fecha: __________</p>' +
+    '<p><b>1. Mi hipótesis:</b> ¿cuántas cucharillas de azúcar crees que lleva cada bebida? (1 cucharilla = 4 g)</p>' +
+    '<table><tr><th>Bebida</th><th>Tamaño (ml)</th><th>Mi idea (cucharillas)</th><th>Azúcares por 100 ml (etiqueta)</th><th>Gramos en el envase</th><th>Cucharillas de verdad</th></tr>' +
+    B.map(function(b){ return '<tr><td>' + b.e + ' ' + b.n + '</td><td></td><td></td><td></td><td></td><td></td></tr>'; }).join('') + '</table>' +
+    '<p><b>2. La cuenta:</b> gramos por 100 ml × ml del envase ÷ 100 = gramos. Gramos ÷ 4 = cucharillas.</p>' +
+    '<p><b>3. ¿Acertaste? ¿Qué bebida tenía más azúcar de lo que pensabas?</b></p><div class="lin"></div><div class="lin"></div>' +
+    '<p><b>4. ¿Qué es mejor beber cuando hacemos deporte? ¿Por qué?</b></p><div class="lin"></div><div class="lin"></div>' +
+    '<p><b>5. Dibuja los tres vasos con sus cucharillas de azúcar.</b></p><div style="height:45mm;border:1.5px dashed #999;border-radius:4mm"></div>' +
+    '<p style="font-size:10pt;color:#666;margin-top:4mm">Comer bien para jugar mejor · Educación Física · Javificación</p></div>';
+  $('bImp').onclick = function(){ window.print(); };
+}
+Array.prototype.forEach.call(document.querySelectorAll('.pest button'), function(b){ b.onclick = function(){
+  Array.prototype.forEach.call(document.querySelectorAll('.pest button'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); }); b.dataset.p === 'hoja' ? hoja() : hipotesis(); }; });
+$('bPant').onclick = function(){ if(window.JAVI) JAVI.pantallaCompleta(); };
+hipotesis();
+})();
+</script>
+</body>
+</html>
