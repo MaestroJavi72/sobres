@@ -200,12 +200,15 @@ function sim(){
   $('zona').innerHTML = '<p class="nota">Solo se hace lo que va con <b>«Simón dice»</b>. Si la orden no lo lleva, ¡no te muevas! Quien falla, se sienta. La orden se lee en voz alta y sale en la pantalla.</p>' +
     '<div id="esc" style="min-height:260px;display:flex;align-items:center;justify-content:center"><div class="simon">¿Preparados?</div></div>' +
     '<div class="fila"><button class="btn" id="bSig" type="button">▶ Siguiente orden</button><button class="btn sec" id="bAut" type="button">⏩ Automático</button></div>' +
-    '<div class="fila"><label class="nota">En automático, una orden cada <select id="sV"><option value="6">6 s</option><option value="4" selected>4 s</option><option value="3">3 s (¡difícil!)</option></select></label></div>';
+    '<div class="fila"><label class="nota">En automático, empieza con una orden cada <select id="sV"><option value="6">6 s</option><option value="5" selected>5 s</option><option value="4">4 s</option></select> y <b>va cada vez más rápido</b></label><span class="nota" id="vel"></span></div>';
   var ult = '', auto = false;
   function orden(){ var o; do o = azar(ORDENES); while(o === ult); ult = o; var conS = Math.random() < 0.7, txt = (conS ? 'Simón dice: ' : '') + o.charAt(0).toUpperCase() + o.slice(1);
     $('esc').innerHTML = '<div class="simon' + (conS ? '' : ' sin') + '">' + (conS ? '🙋 ' : '') + esc(txt) + '</div>'; voz(txt); SON.tic(); }
-  $('bSig').onclick = function(){ auto = false; parar(); orden(); };
-  $('bAut').onclick = function(){ parar(); auto = !auto; this.textContent = auto ? '⏸ Parar' : '⏩ Automático'; if(!auto) return; orden(); var it = setInterval(function(){ if(auto) orden(); }, +$('sV').value * 1000); T.push(it); };
+  $('bSig').onclick = function(){ auto = false; parar(); $('bAut').textContent = '⏩ Automático'; $('vel').textContent = ''; orden(); };
+  /* 9/11/2026 (Javi): en automático acelera poco a poco: cada orden, un 7 % más rápido, hasta una cada 1,8 s */
+  $('bAut').onclick = function(){ parar(); auto = !auto; this.textContent = auto ? '⏸ Parar' : '⏩ Automático'; if(!auto){ $('vel').textContent = ''; return; }
+    var ms = +$('sV').value * 1000;
+    (function otra(){ if(!auto) return; orden(); $('vel').textContent = '⚡ Ahora: una orden cada ' + (Math.round(ms / 100) / 10).toString().replace('.', ',') + ' s'; var t = setTimeout(function(){ ms = Math.max(1800, ms * 0.93); otra(); }, ms); T.push(t); })(); };
 }
 /* ---------- 🎭 MÍMICA DEPORTIVA ---------- */
 var MIM = {
