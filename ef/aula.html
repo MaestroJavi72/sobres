@@ -301,7 +301,11 @@ var ROSCOS = [[
 ]];
 var RETOS = ['10 sentadillas todo el equipo', '15 segundos de rodillas arriba', '10 saltos de estrella', '20 segundos a la pata coja', '10 flexiones en la mesa', '15 segundos de boxeo de sombra'];
 var vozRosco = true; try{ vozRosco = localStorage.getItem('ef-aula-voz-rosco') !== 'no'; }catch(e){}
+/* 9/11/2026 (Javi: «el tiempo se ha vuelto loco»): al empezar de cero u otra partida seguía corriendo el reloj de la anterior.
+   Ahora se para todo al empezar y cada partida lleva su número: un reloj de otra partida se apaga solo. */
+var ROSCO_N = 0;
 function rosco(){
+  parar(); var mia = ++ROSCO_N;
   caja.innerHTML = '<p class="nota">Dos equipos, un rosco cada uno. El maestro lee la definición y el equipo responde en voz alta. ✅ acierto · ❌ fallo (¡reto físico!) · ⏭ pasapalabra (pasa el turno). Cada equipo tiene <b>4 minutos</b>.</p>' +
     '<div class="fila"><button class="peq" id="bR" type="button">🔁 Empezar de cero</button><button class="peq" id="bVoz" type="button"></button></div><div class="equipos" id="eqs"></div><div id="esc" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%"></div>';
   var R = [0, 1].map(function(k){ return { q:ROSCOS[k], est:ROSCOS[k].map(function(){ return 0; }), i:0, t:240, ok:0, ko:0 }; }), eq = 0, it = null;
@@ -322,7 +326,7 @@ function rosco(){
       $('esc').innerHTML = '<div class="grande">❌ Era «' + esc(q[3][0].toUpperCase()) + '»</div><div class="reto">💪 Reto: ' + esc(reto) + '</div><button class="btn" id="bVale" type="button">▶ Hecho, seguimos</button>'; voz('Reto: ' + reto);
       $('bVale').onclick = function(){ avanzar(true); }; };
     $('bPas').onclick = function(){ SON.tic(); avanzar(true); };
-    clearInterval(it); it = setInterval(function(){ r.t--; pintarEq(); if(r.t <= 10 && r.t > 0) SON.tic(); if(r.t <= 0){ clearInterval(it); avanzar(true); } }, 1000); T.push(it);
+    clearInterval(it); it = setInterval(function(){ if(mia !== ROSCO_N || !document.body.contains($('eqs'))){ clearInterval(it); return; } r.t--; pintarEq(); if(r.t <= 10 && r.t > 0) SON.tic(); if(r.t <= 0){ clearInterval(it); avanzar(true); } }, 1000); T.push(it);
   }
   function avanzar(cambia){ clearInterval(it); var r = R[eq];
     if(R.every(acabado)) return final();
