@@ -99,10 +99,36 @@ var SON = { tic:function(){ tono(900, 0, 0.06, 'square', 0.05); }, ok:function()
   ko:function(){ tono(330, 0, 0.2, 'sawtooth', 0.06); tono(262, 0.15, 0.3, 'sawtooth', 0.06); }, fin:function(){ [523, 659, 784, 1046].forEach(function(f, i){ tono(f, i * 0.12, 0.3); }); },
   gong:function(){ tono(196, 0, 1.4, 'sine', 0.25); tono(392, 0, 1, 'sine', 0.08); } };
 function voz(t){ if(!sonido || !window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'es-ES'; u.rate = 0.95; speechSynthesis.speak(u); }
-/* música de baile para las estatuas: bajo y caja sencillos (Web Audio, sin archivos) */
+/* MÚSICA DE BAILE para las estatuas (9/11/2026, Javi: «un poco más divertida»): Web Audio, sin archivos. Batería (bombo, caja con
+   palmada y platillos), bajo saltarín en corcheas, acordes a contratiempo y una melodía pegadiza que se repite. Cada vez que empieza
+   elige una canción al azar (progresión de acordes, tempo y melodía) para que no suene siempre igual. */
 var MUS = null;
-function musica(on){ if(MUS){ clearInterval(MUS); MUS = null; } if(!on) return; var paso = 0, notas = [196, 196, 262, 220, 175, 175, 233, 220];
-  MUS = setInterval(function(){ var n = notas[(paso >> 1) % notas.length]; tono(n, 0, 0.18, 'square', 0.07); if(paso % 2 === 0) tono(n * 2, 0, 0.1, 'triangle', 0.05); if(paso % 4 === 2) tono(1800, 0, 0.04, 'square', 0.03); paso++; }, 180); }
+function ruido(d, v, corte){ var c = ctx(); if(!c) return; var n = Math.floor(c.sampleRate * d), b = c.createBuffer(1, n, c.sampleRate), x = b.getChannelData(0);
+  for(var i = 0; i < n; i++) x[i] = Math.random() * 2 - 1; var s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(), t = c.currentTime;
+  s.buffer = b; f.type = 'highpass'; f.frequency.value = corte; g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t + d); s.connect(f); f.connect(g); g.connect(c.destination); s.start(t); }
+function bombo(){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime;
+  o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.16); g.gain.setValueAtTime(0.55, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.25); }
+var CANCIONES = [   /* acordes (raíz en Hz y si es menor) por compás */
+  [[262, 0], [196, 0], [220, 1], [175, 0]],   /* Do · Sol · Lam · Fa */
+  [[220, 1], [175, 0], [262, 0], [196, 0]],   /* Lam · Fa · Do · Sol */
+  [[196, 0], [262, 0], [294, 0], [262, 0]],   /* Sol · Do · Re · Do */
+  [[175, 0], [196, 0], [220, 1], [220, 1]]    /* Fa · Sol · Lam · Lam */
+];
+function musica(on){ if(MUS){ clearInterval(MUS); MUS = null; } if(!on) return;
+  var prog = azar(CANCIONES), bpm = 118 + Math.floor(Math.random() * 22), dt = 60000 / bpm / 4, paso = 0;
+  /* melodía de 16 semicorcheas: notas del acorde (0-3) o silencio; la misma en todos los compases, así se pega */
+  var mel = []; for(var i = 0; i < 16; i++) mel.push(i % 2 === 0 || Math.random() < 0.3 ? Math.floor(Math.random() * 4) : -1);
+  mel[0] = 0; mel[8] = 2;
+  MUS = setInterval(function(){ var p = paso % 16, ac = prog[Math.floor(paso / 16) % prog.length], r = ac[0], terc = ac[1] ? 1.189 : 1.26, notasAc = [r, r * terc, r * 1.498, r * 2];
+    if(p % 4 === 0) bombo();                                                     /* bombo en cada tiempo */
+    if(p === 4 || p === 12){ ruido(0.16, 0.22, 1200); tono(220, 0, 0.08, 'triangle', 0.05); }   /* caja con palmada */
+    if(p % 2 === 1) ruido(0.04, 0.06, 7000);                                     /* platillo a contratiempo */
+    if(p % 2 === 0) tono(r / 2, 0, dt / 1000 * 1.6, 'sawtooth', 0.07);          /* bajo en corcheas */
+    if(p === 2 || p === 6 || p === 10 || p === 14) notasAc.slice(0, 3).forEach(function(f){ tono(f, 0, 0.12, 'square', 0.025); });   /* acordes a contratiempo */
+    if(mel[p] >= 0) tono(notasAc[mel[p]] * 2, 0, dt / 1000 * 1.8, 'triangle', 0.09);   /* melodía */
+    if(paso % 64 === 60) [0, 1, 2, 3].forEach(function(k){ T.push(setTimeout(function(){ if(MUS) ruido(0.1, 0.18, 900); }, k * dt)); });   /* redoble cada 4 compases */
+    paso++; }, dt); }
 /* ---------- 🎲 DADOS DEL MOVIMIENTO ---------- */
 var EJ = [
   ['🦵', 'Sentadillas', 'Como si te sentaras en una silla invisible', 'rep'], ['⭐', 'Saltos de estrella', 'Abre brazos y piernas al saltar', 'rep'],
