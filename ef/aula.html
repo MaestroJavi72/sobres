@@ -98,7 +98,10 @@ function tono(f, t0, d, tipo, v){ var c = ctx(); if(!c) return; var o = c.create
 var SON = { tic:function(){ tono(900, 0, 0.06, 'square', 0.05); }, ok:function(){ [784, 988, 1318].forEach(function(f, i){ tono(f, i * 0.08, 0.2); }); },
   ko:function(){ tono(330, 0, 0.2, 'sawtooth', 0.06); tono(262, 0.15, 0.3, 'sawtooth', 0.06); }, fin:function(){ [523, 659, 784, 1046].forEach(function(f, i){ tono(f, i * 0.12, 0.3); }); },
   gong:function(){ tono(196, 0, 1.4, 'sine', 0.25); tono(392, 0, 1, 'sine', 0.08); } };
-function voz(t){ if(!sonido || !window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'es-ES'; u.rate = 0.95; speechSynthesis.speak(u); }
+/* fin (opcional): se llama cuando acaba de leer; si no hay voz, enseguida; por si el navegador no avisa, a los ~0,1 s por letra */
+function voz(t, fin){ var hecho = false, acaba = function(){ if(hecho) return; hecho = true; if(fin) fin(); };
+  if(!sonido || !window.speechSynthesis){ acaba(); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'es-ES'; u.rate = 0.95;
+  if(fin){ u.onend = u.onerror = acaba; T.push(setTimeout(acaba, 1500 + t.length * 110)); } speechSynthesis.speak(u); }
 /* MÚSICA DE BAILE para las estatuas (9/11/2026, Javi: «un poco más divertida»): Web Audio, sin archivos. Batería (bombo, caja con
    palmada y platillos), bajo saltarín en corcheas, acordes a contratiempo y una melodía pegadiza que se repite. Cada vez que empieza
    elige una canción al azar (progresión de acordes, tempo y melodía) para que no suene siempre igual. */
@@ -174,9 +177,10 @@ function sacarEj(){ var v = []; try{ v = JSON.parse(localStorage.getItem('ef-aul
 function dados(){
   caja.innerHTML = '<div class="fila"><span class="nota">Lanza los dados: uno dice el ejercicio y el otro cuántas veces o cuántos segundos. ¡Toda la clase a la vez, de pie junto a su sitio!</span></div>' +
     '<div class="dados"><div class="dado" id="d1"><span class="e">🎲</span><b>Ejercicio</b></div><div class="dado" id="d2"><span class="e">🎲</span><b>¿Cuánto?</b></div></div>' +
-    '<div class="reloj" id="rel" hidden></div><div class="fila"><button class="btn" id="bLanza" type="button">🎲 ¡Lanzar los dados!</button><button class="btn sec" id="bAuto" type="button">⏩ Ronda de 5</button></div>' +
+    '<div class="reloj" id="rel" hidden></div><div class="fila"><button class="btn" id="bLanza" type="button">🎲 ¡Lanzar los dados!</button><button class="btn sec" id="bAuto" type="button">⏩ Ronda</button><label class="nota">de <select id="sRonda"><option>5</option><option>10</option><option>15</option><option>20</option></select> ejercicios</label></div>' +
     '<div class="nota" id="cuenta">Ejercicios hechos: 0</div>';
-  var hechos = 0, auto = 0;
+  var hechos = 0, auto = 0, total = 5;   /* 9/11/2026 (Javi): rondas de 5, 10, 15 o 20; se puede parar */
+  function botonRonda(){ $('bAuto').textContent = auto ? '⏹ Parar la ronda' : '⏩ Ronda'; $('sRonda').disabled = !!auto; }
   function lanzar(){ parar(); $('rel').hidden = true; var d1 = $('d1'), d2 = $('d2'), n = 0; d1.classList.add('gira'); d2.classList.add('gira'); $('bLanza').disabled = true;
     var ej, cu;
     var elegido = sacarEj();
@@ -188,9 +192,11 @@ function dados(){
         var it2 = setInterval(function(){ t--; if(t > cu){ $('rel').textContent = (t - cu) + '…'; SON.tic(); return; } $('rel').textContent = t; if(t <= 3 && t > 0) SON.tic();
           if(t <= 0){ clearInterval(it2); $('rel').textContent = '¡Bien!'; SON.fin(); termina(); } }, 1000); T.push(it2); }
       else T.push(setTimeout(termina, 400 + cu * 1600)); }
-    function termina(){ hechos++; $('cuenta').textContent = 'Ejercicios hechos: ' + hechos + (auto > 1 ? ' · Ronda: ' + (6 - auto) + ' de 5' : auto === 1 ? ' · ¡Ronda de 5 terminada! 🎉' : ''); $('bLanza').disabled = false; if(auto > 1){ auto--; T.push(setTimeout(lanzar, 3500)); } else auto = 0; }
+    function termina(){ hechos++; $('cuenta').textContent = 'Ejercicios hechos: ' + hechos + (auto > 1 ? ' · Ronda: ' + (total + 1 - auto) + ' de ' + total : auto === 1 ? ' · ¡Ronda de ' + total + ' terminada! 🎉' : ''); $('bLanza').disabled = false; if(auto > 1){ auto--; T.push(setTimeout(lanzar, 3500)); } else { if(auto === 1) SON.fin(); auto = 0; } botonRonda(); }
   }
-  $('bLanza').onclick = lanzar; $('bAuto').onclick = function(){ auto = 5; lanzar(); };
+  $('bLanza').onclick = function(){ auto = 0; botonRonda(); lanzar(); };
+  $('bAuto').onclick = function(){ if(auto){ auto = 0; parar(); $('rel').hidden = true; $('d1').classList.remove('gira'); $('d2').classList.remove('gira'); $('bLanza').disabled = false; $('cuenta').textContent = 'Ejercicios hechos: ' + hechos + ' · Ronda parada'; botonRonda(); return; }
+    total = +$('sRonda').value; auto = total; botonRonda(); lanzar(); };
 }
 /* ---------- 🗿 ESTATUAS Y SIMÓN DICE ---------- */
 var POSES = [
@@ -231,14 +237,17 @@ function sim(){
     '<div id="esc" style="min-height:260px;display:flex;align-items:center;justify-content:center"><div class="simon">¿Preparados?</div></div>' +
     '<div class="fila"><button class="btn" id="bSig" type="button">▶ Siguiente orden</button><button class="btn sec" id="bAut" type="button">⏩ Automático</button></div>' +
     '<div class="fila"><label class="nota">En automático, empieza con una orden cada <select id="sV"><option value="6">6 s</option><option value="5" selected>5 s</option><option value="4">4 s</option></select> y <b>va cada vez más rápido</b></label><span class="nota" id="vel"></span></div>';
-  var ult = '', auto = false;
-  function orden(){ var o; do o = azar(ORDENES); while(o === ult); ult = o; var conS = Math.random() < 0.7, txt = (conS ? 'Simón dice: ' : '') + o.charAt(0).toUpperCase() + o.slice(1);
-    $('esc').innerHTML = '<div class="simon' + (conS ? '' : ' sin') + '">' + (conS ? '🙋 ' : '') + esc(txt) + '</div>'; voz(txt); SON.tic(); }
-  $('bSig').onclick = function(){ auto = false; parar(); $('bAut').textContent = '⏩ Automático'; $('vel').textContent = ''; orden(); };
-  /* 9/11/2026 (Javi): en automático acelera poco a poco: cada orden, un 7 % más rápido, hasta una cada 1,8 s */
-  $('bAut').onclick = function(){ parar(); auto = !auto; this.textContent = auto ? '⏸ Parar' : '⏩ Automático'; if(!auto){ $('vel').textContent = ''; return; }
+  var ult = '', auto = false, cadena = 0;
+  function orden(fin){ var o; do o = azar(ORDENES); while(o === ult); ult = o; var conS = Math.random() < 0.7, txt = (conS ? 'Simón dice: ' : '') + o.charAt(0).toUpperCase() + o.slice(1);
+    $('esc').innerHTML = '<div class="simon' + (conS ? '' : ' sin') + '">' + (conS ? '🙋 ' : '') + esc(txt) + '</div>'; voz(txt, fin); SON.tic(); }
+  $('bSig').onclick = function(){ auto = false; cadena++; parar(); $('bAut').textContent = '⏩ Automático'; $('vel').textContent = ''; orden(); };
+  /* 9/11/2026 (Javi): en automático acelera poco a poco: cada orden, un 7 % más rápido, hasta una cada 1,8 s.
+     Y no pasa a la siguiente hasta que termina de leer la orden: después deja siempre al menos 1,5 s para hacerla */
+  $('bAut').onclick = function(){ parar(); auto = !auto; var mia = ++cadena; this.textContent = auto ? '⏸ Parar' : '⏩ Automático'; if(!auto){ $('vel').textContent = ''; return; }
     var ms = +$('sV').value * 1000;
-    (function otra(){ if(!auto) return; orden(); $('vel').textContent = '⚡ Ahora: una orden cada ' + (Math.round(ms / 100) / 10).toString().replace('.', ',') + ' s'; var t = setTimeout(function(){ ms = Math.max(1800, ms * 0.93); otra(); }, ms); T.push(t); })(); };
+    (function otra(){ if(!auto || mia !== cadena) return; var ini = Date.now();
+      $('vel').textContent = '⚡ Ahora: una orden cada ' + (Math.round(ms / 100) / 10).toString().replace('.', ',') + ' s';
+      orden(function(){ if(!auto || mia !== cadena) return; var t = setTimeout(function(){ ms = Math.max(1800, ms * 0.93); otra(); }, Math.max(1500, ms - (Date.now() - ini))); T.push(t); }); })(); };
 }
 /* ---------- 🎭 MÍMICA DEPORTIVA ---------- */
 var MIM = {
