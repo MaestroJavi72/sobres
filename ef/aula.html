@@ -271,10 +271,11 @@ var ROSCOS = [[
   ['Z','e','Paso largo que damos al correr',['zancada']]
 ]];
 var RETOS = ['10 sentadillas todo el equipo', '15 segundos de rodillas arriba', '10 saltos de estrella', '20 segundos a la pata coja', '10 flexiones en la mesa', '15 segundos de boxeo de sombra'];
+var vozRosco = true; try{ vozRosco = localStorage.getItem('ef-aula-voz-rosco') !== 'no'; }catch(e){}
 function rosco(){
-  caja.innerHTML = '<p class="nota">Dos equipos, un rosco cada uno. El maestro lee la definición (también suena) y el equipo responde en voz alta. ✅ acierto · ❌ fallo (¡reto físico!) · ⏭ pasapalabra (pasa el turno). Cada equipo tiene <b>3 minutos</b>.</p>' +
-    '<div class="fila"><button class="peq" id="bR" type="button">🔁 Empezar de cero</button></div><div class="equipos" id="eqs"></div><div id="esc" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%"></div>';
-  var R = [0, 1].map(function(k){ return { q:ROSCOS[k], est:ROSCOS[k].map(function(){ return 0; }), i:0, t:180, ok:0, ko:0 }; }), eq = 0, it = null;
+  caja.innerHTML = '<p class="nota">Dos equipos, un rosco cada uno. El maestro lee la definición y el equipo responde en voz alta. ✅ acierto · ❌ fallo (¡reto físico!) · ⏭ pasapalabra (pasa el turno). Cada equipo tiene <b>4 minutos</b>.</p>' +
+    '<div class="fila"><button class="peq" id="bR" type="button">🔁 Empezar de cero</button><button class="peq" id="bVoz" type="button"></button></div><div class="equipos" id="eqs"></div><div id="esc" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%"></div>';
+  var R = [0, 1].map(function(k){ return { q:ROSCOS[k], est:ROSCOS[k].map(function(){ return 0; }), i:0, t:240, ok:0, ko:0 }; }), eq = 0, it = null;
   var COL = ['#c23b4a', '#2f5fb3'];
   function pintarEq(){ $('eqs').innerHTML = R.map(function(r, k){ return '<div class="eq' + (k === eq ? ' turno' : '') + '" style="background:' + COL[k] + '">Equipo ' + (k + 1) + '<span>✅ ' + r.ok + ' · ⏱️ ' + Math.floor(r.t / 60) + ':' + ('0' + r.t % 60).slice(-2) + '</span></div>'; }).join(''); }
   function siguiente(r){ for(var s = 1; s <= r.q.length; s++){ var j = (r.i + s) % r.q.length; if(r.est[j] === 0){ r.i = j; return true; } } return false; }
@@ -285,7 +286,7 @@ function rosco(){
       '<div class="centro"><div class="let">' + (q[1] === 'e' ? 'Empieza por ' : 'Contiene la ') + q[0] + '</div><div class="def">' + esc(q[2]) + '</div><div class="sol" id="sol"></div></div></div>' +
       '<div class="fila"><button class="btn verde" id="bOk" type="button">✅ Acierto</button><button class="btn rojo" id="bKo" type="button">❌ Fallo</button><button class="btn gris" id="bPas" type="button">⏭ Pasapalabra</button></div>' +
       '<div class="fila"><button class="peq" id="bSol" type="button">👁 Ver la respuesta</button></div>';
-    $('esc').innerHTML = html; voz((q[1] === 'e' ? 'Empieza por ' : 'Contiene la ') + q[0] + '. ' + q[2]);
+    $('esc').innerHTML = html; if(vozRosco) voz((q[1] === 'e' ? 'Empieza por ' : 'Contiene la ') + q[0] + '. ' + q[2]);
     $('bSol').onclick = function(){ $('sol').textContent = q[3][0].toUpperCase(); };
     $('bOk').onclick = function(){ r.est[r.i] = 1; r.ok++; SON.ok(); avanzar(false); };
     $('bKo').onclick = function(){ r.est[r.i] = -1; r.ko++; SON.ko(); clearInterval(it); var reto = azar(RETOS);
@@ -303,6 +304,9 @@ function rosco(){
   function final(){ clearInterval(it); pintarEq(); var a = R[0].ok, b = R[1].ok; SON.fin();
     $('esc').innerHTML = '<div class="grande">' + (a === b ? '🤝 ¡Empate!' : '🏆 ¡Gana el equipo ' + (a > b ? 1 : 2) + '!') + '</div><div class="nota">Equipo 1: ' + a + ' aciertos · Equipo 2: ' + b + ' aciertos</div><button class="btn" id="bOtra" type="button">🔁 Otra partida</button>';
     $('bOtra').onclick = rosco; }
+  /* 9/11/2026 (Javi): 4 minutos por equipo y la voz se puede quitar («yo leo, para ir más rápido»); se recuerda en el aparato */
+  function pintaVoz(){ $('bVoz').textContent = vozRosco ? '🔊 La definición se lee sola' : '🔇 Sin voz: la leo yo'; $('bVoz').setAttribute('aria-pressed', vozRosco ? 'false' : 'true'); }
+  $('bVoz').onclick = function(){ vozRosco = !vozRosco; try{ localStorage.setItem('ef-aula-voz-rosco', vozRosco ? 'si' : 'no'); }catch(e){} if(!vozRosco && window.speechSynthesis) speechSynthesis.cancel(); pintaVoz(); }; pintaVoz();
   $('bR').onclick = rosco; pintarEq(); aviso();
 }
 /* ---------- pestañas ---------- */
