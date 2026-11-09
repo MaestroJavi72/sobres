@@ -12,6 +12,7 @@ body{margin:0;min-height:100vh;background:var(--fondo, #0b1026);color:#f6ead0;fo
 .cab h1{flex:1 1 280px;margin:0;font-family:'Cinzel',serif;font-size:clamp(28px,4.6vw,48px);color:#f3d27a}
 .cab .sub{display:block;font-size:clamp(14px,1.6vw,18px);color:#e8d9b0;font-family:'Cinzel',serif}
 .volver{font-family:'Cinzel',serif;font-weight:700;font-size:16px;text-decoration:none;padding:9px 16px;border-radius:999px;background:linear-gradient(180deg,#f3d27a,#c9972e);color:#2b1c05;border:2px solid #fff1b8}
+.seccion{font-family:'Cinzel',serif;color:#f3d27a;font-size:clamp(22px,3vw,30px);margin:22px 0 10px;border-bottom:2px solid #c9972e;padding-bottom:4px}
 .lista{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
 .tut{background:linear-gradient(180deg,#fdf6e3,#f1e2bd);color:#3a2a16;border:3px solid #b8934f;border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px}
 .tut h2{margin:0;font-family:'Cinzel',serif;font-size:clamp(20px,2.4vw,26px);color:#7a2030}
@@ -38,18 +39,25 @@ body{margin:0;min-height:100vh;background:var(--fondo, #0b1026);color:#f6ead0;fo
 (function(){
 'use strict';
 /* VIDEOTUTORIALES (Javi, 7/11/2026). Para añadir otro: copiar el vídeo (mp4, que no pase de ~20 MB) en tutoriales/videos/
-   y añadir una línea aquí. Ojo: la web es pública; revisar que en el vídeo no salgan correos, contraseñas ni nombres de alumnos. */
+   y añadir una línea aquí. Ojo: la web es pública; revisar que en el vídeo no salgan correos, contraseñas ni nombres de alumnos.
+   sec = apartado (sale en el orden de SECCIONES). 9/11/2026: apartado «Lengua» con el vídeo de las reglas de acentuación. */
+var SECCIONES = [['general', '💻 Para empezar'], ['lengua', '📖 Lengua']];
 var VIDEOS = [
-  { id:'classroom', t:'Cómo entrar en Classroom', d:'Desde el ordenador del cole: abrir Chrome, entrar con tu correo del cole y llegar a la clase de 4ºA.', v:'videos/acceso-classroom.mp4', img:'videos/acceso-classroom.jpg',
+  { id:'tildes', sec:'lengua', t:'Agudas, llanas y esdrújulas. Reglas de acentuación', d:'El hechizo de las tildes: dónde está la sílaba tónica y cuándo se pone la tilde.', v:'videos/acentuacion.mp4', img:'videos/acentuacion.jpg',
+    pasos:['Agudas: la tónica es la última. Llevan tilde si acaban en vocal, -n o -s (canción, sofá; reloj no).', 'Llanas: la tónica es la penúltima. Llevan tilde si NO acaban en vocal, -n o -s (árbol, lápiz; mesa no).', 'Esdrújulas: la tónica es la antepenúltima. Llevan tilde siempre (pájaro, música, brújula).'] },
+  { id:'classroom', sec:'general', t:'Cómo entrar en Classroom', d:'Desde el ordenador del cole: abrir Chrome, entrar con tu correo del cole y llegar a la clase de 4ºA.', v:'videos/acceso-classroom.mp4', img:'videos/acceso-classroom.jpg',
     pasos:['Abre Google Chrome.', 'Entra con tu correo del cole (…@g.educaand.es) y tu contraseña.', 'Toca los nueve puntitos de arriba a la derecha y elige Classroom.', 'Entra en la clase de 4º A.'] }
 ];
 function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-document.getElementById('lista').innerHTML = VIDEOS.map(function(x){
+function tarjeta(x){
   return '<article class="tut" id="' + x.id + '"><h2>' + esc(x.t) + '</h2><p>' + esc(x.d) + '</p>' +
     '<video src="' + x.v + '"' + (x.img ? ' poster="' + x.img + '"' : '') + ' controls playsinline preload="metadata"></video>' +
     (x.pasos ? '<ol class="pasos">' + x.pasos.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ol>' : '') +
     '<div class="botones"><button type="button" data-g="' + x.v + '">⛶ Ver en grande</button></div></article>';
-}).join('');
+}
+document.getElementById('lista').outerHTML = SECCIONES.map(function(s){ var vs = VIDEOS.filter(function(x){ return x.sec === s[0]; });
+  return vs.length ? '<h2 class="seccion" id="' + s[0] + '">' + s[1] + '</h2><div class="lista">' + vs.map(tarjeta).join('') + '</div>' : ''; }).join('');
+if(location.hash){ var ir = document.querySelector(location.hash); if(ir) ir.scrollIntoView(); }
 Array.prototype.forEach.call(document.querySelectorAll('[data-g]'), function(b){ b.onclick = function(){
   var g = document.createElement('div'); g.className = 'grande'; g.innerHTML = '<video src="' + b.dataset.g + '" controls autoplay playsinline></video><button type="button">✕ Cerrar</button>';
   g.querySelector('button').onclick = function(){ g.remove(); }; document.body.appendChild(g);
