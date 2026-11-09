@@ -12,7 +12,7 @@
 .clases button{font:800 18px var(--f-sub);padding:9px 16px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
 .clases button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
 .medidor{--c:#2f9a5a;background:var(--panel);border:3px solid var(--c);border-radius:26px;padding:clamp(14px,3vw,30px);display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,20px);text-align:center;transition:border-color .5s;box-shadow:0 0 40px color-mix(in srgb,var(--c) 35%,transparent)}
-.medidor.n1{--c:#d9a21b}.medidor.n2{--c:#e0602f}.medidor.n3{--c:#c23b4a}.medidor.ok{--c:#2f9a5a}.medidor.gris{--c:#6b6b6b}
+.medidor.n1{--c:#d9a21b}.medidor.n2{--c:#e0602f}.medidor.n3{--c:#c23b4a}.medidor.ok{--c:#2f9a5a}.medidor.lluvia{--c:#3a8fd6}.medidor.gris{--c:#6b6b6b}
 .msg{font:900 clamp(22px,4vw,44px)/1.1 var(--f-sub);color:var(--c)}
 .reloj{font:900 clamp(70px,16vw,200px)/1 var(--f-titulo);color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 6px 30px rgba(0,0,0,.5)}
 .reloj small{display:block;font:700 clamp(16px,2.2vw,26px) var(--f-sub);color:var(--tinta-suave);margin-top:.3em}
@@ -48,18 +48,20 @@ body.temblor .medidor{animation:tiembla .5s 3}
     <div class="limites"><span id="limIni"></span><span id="limTxt"></span></div>
     <button class="grande" id="bBajamos" type="button">✅ ¡Bajamos!</button>
     <div class="fin" id="fin" hidden>
-      <span class="ic">📚</span>
+      <span class="ic" id="finIc">📚</span>
       <div class="msg" id="finTxt"></div>
       <div class="peq"><a id="aTeoria" href="teoria/">📚 Ir a la Teoría</a><a href="aula.html">🏃 Juegos en el aula</a><button type="button" id="bDiario">📓 Apuntarlo en el diario</button></div>
     </div>
     <div class="peq">
       <button type="button" id="bDeshacer" hidden>↺ Deshacer «Bajamos»</button>
+      <button type="button" id="bLluvia">🌧️ Hoy llueve: nos quedamos en el aula</button>
+      <button type="button" id="bSinLluvia" hidden>↺ Quitar el día de lluvia</button>
       <button type="button" id="bAhora">▶ La clase empieza ahora</button>
       <button type="button" id="bHorario" hidden>🕘 Volver a la hora del horario</button>
       <button type="button" id="bApuntar">💾 Apuntar en la Hoja</button>
     </div>
   </section>
-  <p class="nota"><b>Regla de Javi:</b> el reloj empieza solo a la hora de la clase en el horario y no se para. En 3º (clases de 1 hora), si a los <b>20 minutos</b> no habéis podido bajar, ese día no se baja: toca teoría. En 4º (clases de 1 hora y media), a los <b>30 minutos</b>. Cuando bajéis, pulsa «✅ ¡Bajamos!». Si la clase empieza a otra hora (un cambio, una excursión…), «▶ La clase empieza ahora».</p>
+  <p class="nota"><b>Regla de Javi:</b> el reloj empieza solo a la hora de la clase en el horario y no se para. En 3º (clases de 1 hora), si a los <b>20 minutos</b> no habéis podido bajar, ese día no se baja: toca teoría. En 4º (clases de 1 hora y media), a los <b>30 minutos</b>. Cuando bajéis, pulsa «✅ ¡Bajamos!». Si la clase empieza a otra hora (un cambio, una excursión…), «▶ La clase empieza ahora». Si llueve, «🌧️ Hoy llueve»: el reloj se para y no cuenta como tiempo perdido.</p>
 </div>
 
 <script src="../comun/javi.js"></script>
@@ -97,7 +99,7 @@ function elegir(g){
 }
 function pintar(){
   var t = JAVI.tiempoClase(grupo), n = t.estado==='corre' ? (t.fraccion>=.75 ? 2 : t.fraccion>=.5 ? 1 : 0) : t.estado==='teoria' ? 3 : 0;
-  $('med').className = 'medidor'+(t.estado==='bajada' ? ' ok' : t.estado==='sinclase' || t.estado==='antes' ? ' gris' : n ? ' n'+n : '');
+  $('med').className = 'medidor'+(t.estado==='lluvia' ? ' lluvia' : t.estado==='bajada' ? ' ok' : t.estado==='sinclase' || t.estado==='antes' ? ' gris' : n ? ' n'+n : '');
   $('limIni').textContent = t.inicio ? 'Empieza: '+hhmm(t.inicio)+(t.aMano ? ' (a mano)' : '') : '';
   $('limTxt').textContent = t.fin ? 'Límite: '+hhmm(t.fin)+' ('+t.limite+' min)' : 'Límite: '+t.limite+' min';
   $('relleno').style.width = (t.fraccion*100)+'%'; $('relleno').style.setProperty('--tam', (t.fraccion ? Math.max(100, 100/t.fraccion) : 100)+'%');
@@ -106,12 +108,19 @@ function pintar(){
   else if(t.estado==='antes'){ $('msg').textContent = 'La clase empieza a las '+hhmm(t.inicio); R.firstChild.nodeValue = mmss(t.limite*60); sm.textContent = 'para bajar desde que empiece'; }
   else if(t.estado==='corre'){ $('msg').textContent = ['¡A bajar! 👟', '¡Cuidado! Ya ha pasado la mitad', '¡Se acaba el tiempo para bajar!'][n]; R.firstChild.nodeValue = mmss(t.quedan); sm.textContent = 'quedan para bajar (hasta las '+hhmm(t.fin)+')'; }
   else if(t.estado==='bajada'){ $('msg').textContent = '✅ ¡Habéis bajado a tiempo!'; R.firstChild.nodeValue = hhmm(t.bajada); sm.textContent = 'bajasteis a las '+hhmm(t.bajada)+' · '+t.perdidos+' min desde que empezó la clase'; }
+  else if(t.estado==='lluvia'){ $('msg').textContent = '🌧️ Día de lluvia'; R.firstChild.nodeValue = '🌧️'; sm.textContent = 'el reloj está parado: hoy EF en el aula'; }
   else { $('msg').textContent = '¡Se acabó el tiempo!'; R.firstChild.nodeValue = '00:00'; sm.textContent = 'no se ha podido bajar a tiempo'; }
   $('bBajamos').hidden = t.estado!=='corre';
   $('bDeshacer').hidden = !t.bajada;
   $('bHorario').hidden = !t.aMano;
-  $('fin').hidden = t.estado!=='teoria';
-  $('finTxt').textContent = 'Hoy no se baja: toca teoría.';
+  var ll = t.estado==='lluvia';
+  $('fin').hidden = t.estado!=='teoria' && !ll;
+  $('finIc').textContent = ll ? '🏃' : '📚';
+  $('finTxt').textContent = ll ? 'Hoy no se baja por la lluvia: juegos en el aula o teoría.' : 'Hoy no se baja: toca teoría.';
+  $('bLluvia').hidden = ll || t.estado==='bajada';
+  $('bSinLluvia').hidden = !ll;
+  $('bAhora').hidden = ll;
+  if(ll) $('bHorario').hidden = true;
   /* avisos al cruzar la mitad, tres cuartos y el límite (solo los que se ven pasar en esta pantalla) */
   var k = grupo+'|'+hoy, nv = t.estado==='teoria' ? 3 : n;
   if(visto[k]==null || t.estado!=='corre' && t.estado!=='teoria') visto[k] = nv;
@@ -124,16 +133,18 @@ function pintar(){
 $('bBajamos').addEventListener('click', function(){ JAVI.bajamos(grupo); efecto('fanfarria'); pintar(); });
 $('bDeshacer').addEventListener('click', function(){ JAVI.deshacerBajada(grupo); pintar(); });
 $('bAhora').addEventListener('click', function(){ if(!confirm('¿La clase de '+grupo+' empieza ahora? El reloj contará '+JAVI.limiteBajar(grupo)+' minutos desde este momento.')) return; JAVI.empezarAhora(grupo); visto = {}; pintar(); });
+$('bLluvia').addEventListener('click', function(){ JAVI.diaDeLluvia(grupo); visto = {}; pintar(); });
+$('bSinLluvia').addEventListener('click', function(){ JAVI.quitarLluvia(grupo); visto = {}; pintar(); });
 $('bHorario').addEventListener('click', function(){ JAVI.inicioDelHorario(grupo); visto = {}; pintar(); });
 $('bApuntar').addEventListener('click', function(){
   var t = JAVI.tiempoClase(grupo);
   if(t.estado==='sinclase' || t.estado==='antes'){ alert('Todavía no hay nada que apuntar de '+grupo+' hoy.'); return; }
   if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ texto:'Escribe el código y, cuando la página vuelva, pulsa otra vez «Apuntar en la Hoja».' }); return; }
   JAVI.escribir({ alumno:'TIEMPO · '+grupo, accion:'TiempoPerdido', cartaId:hoy, tipo:String(t.perdidos), carta:JSON.stringify({ estado:t.estado, bajada:t.bajada ? hhmm(t.bajada) : '', inicio:hhmm(t.inicio) }) });
-  alert('Apuntado: '+grupo+(t.estado==='bajada' ? ' bajó a las '+hhmm(t.bajada)+' ('+t.perdidos+' min).' : ' no pudo bajar: teoría.'));
+  alert('Apuntado: '+grupo+(t.estado==='bajada' ? ' bajó a las '+hhmm(t.bajada)+' ('+t.perdidos+' min).' : (t.estado==='lluvia' ? ': día de lluvia, en el aula.' : ' no pudo bajar: teoría.')));
 });
 $('bDiario').addEventListener('click', function(){
-  try{ localStorage.setItem('javi-diario-borrador|'+grupo+'|'+hoy+'|EF', JSON.stringify({ dado:false, hecho:'Teoría: no se pudo bajar a la pista en los '+JAVI.limiteBajar(grupo)+' minutos.', pendiente:'', deberes:'' })); }catch(e){}
+  try{ localStorage.setItem('javi-diario-borrador|'+grupo+'|'+hoy+'|EF', JSON.stringify({ dado:false, hecho:JAVI.tiempoClase(grupo).estado==='lluvia' ? 'Día de lluvia: EF en el aula.' : 'Teoría: no se pudo bajar a la pista en los '+JAVI.limiteBajar(grupo)+' minutos.', pendiente:'', deberes:'' })); }catch(e){}
   JAVI.abrirDiario({ grupo:grupo, fecha:hoy, asig:'EF' });
 });
 $('bPant').addEventListener('click', JAVI.pantallaCompleta);

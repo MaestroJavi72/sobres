@@ -588,8 +588,9 @@ function tiempoClase(g, fecha){
     h = sesionesDelDia(fecha).filter(function(s){ return s.grupo===g && s.asig==='EF'; }).sort(function(a, b){ return a.ini.localeCompare(b.ini); })[0];
     if(h && festivos().indexOf(fecha)<0){ var p = fecha.split('-'), a = h.ini.split(':'); ini = new Date(+p[0], +p[1]-1, +p[2], +a[0], +a[1]).getTime(); }
   }
-  var r = { grupo:g, fecha:fecha, clave:k, limite:L, inicio:ini, fin:ini ? ini + L*60000 : null, bajada:e.bajada || null, aMano:!!e.inicio };
+  var r = { grupo:g, fecha:fecha, clave:k, limite:L, inicio:ini, fin:ini ? ini + L*60000 : null, bajada:e.bajada || null, aMano:!!e.inicio, lluvia:e.lluvia || null };
   var ahora = Date.now();
+  if(r.lluvia){ r.estado = 'lluvia'; r.perdidos = 0; r.quedan = 0; r.fraccion = 0; return r; }   /* 🌧️ día de lluvia (Javi, 9/11/2026): el reloj se para y no cuenta como tiempo perdido */
   if(!ini) r.estado = 'sinclase';
   else if(r.bajada) r.estado = r.bajada <= r.fin ? 'bajada' : 'teoria';
   else if(ahora < ini) r.estado = 'antes';
@@ -611,6 +612,8 @@ function bajamos(g){ guardarTiempo(g, { bajada:Date.now() }); }
 function deshacerBajada(g){ guardarTiempo(g, { bajada:null }); }
 function empezarAhora(g){ guardarTiempo(g, { inicio:Date.now(), bajada:null }); }
 function inicioDelHorario(g){ guardarTiempo(g, { inicio:null, bajada:null }); }
+function diaDeLluvia(g){ guardarTiempo(g, { lluvia:Date.now(), bajada:null }); }
+function quitarLluvia(g){ guardarTiempo(g, { lluvia:null }); }
 /* resumen de una línea de un diario (para las tarjetas) */
 function textoDiario(d){
   if(!d) return '';
@@ -1116,7 +1119,7 @@ window.JAVI = {
   horario:horario, sesionesDelDia:sesionesDelDia, diaSemana:diaSemana, festivos:festivos, sumarDias:sumarDias, lunesDe:lunesDe,
   planDe:planDe, guardarPlan:guardarPlan, fechasConPlan:fechasConPlan, sdas:sdas, guardarSda:guardarSda, repartirSda:repartirSda, sdaDeSesion:sdaDeSesion,
   movimientosDe:movimientosDe, logrosDe:logrosDe, fotoLogros:fotoLogros, logrosNuevos:logrosNuevos, anunciarLogros:anunciarLogros, logrosHTML:logrosHTML, LOGROS:LOGROS,
-  tiempoClase:tiempoClase, limiteBajar:limiteBajar, bajamos:bajamos, deshacerBajada:deshacerBajada, empezarAhora:empezarAhora, inicioDelHorario:inicioDelHorario,
+  tiempoClase:tiempoClase, limiteBajar:limiteBajar, bajamos:bajamos, deshacerBajada:deshacerBajada, empezarAhora:empezarAhora, inicioDelHorario:inicioDelHorario, diaDeLluvia:diaDeLluvia, quitarLluvia:quitarLluvia,
   diarios:diarios, diarioDe:diarioDe, diarioAnterior:diarioAnterior, guardarDiario:guardarDiario, abrirDiario:abrirDiario, textoDiario:textoDiario,
   darPuntos:darPuntos, quitarPuntos:quitarPuntos, sonarPuntos:sonarPuntos, botonSonidoPuntos:botonSonidoPuntos, sistemaDe:sistemaDe, claveAlumno:claveAlumno,
   ajuste:ajuste, guardarAjuste:guardarAjuste, nombreEF:nombreEF, disfrazSVG:disfrazSVG, disfrazDe:disfrazDe, temaActual:temaActual, temaAuto:temaAuto, temaDe:temaDe, aplicarTema:aplicarTema,

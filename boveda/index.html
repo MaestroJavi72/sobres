@@ -456,7 +456,7 @@ var aula = {};
 function enAula(g){
   if(g in aula) return aula[g];
   var hoy = clave(new Date());
-  try{ if(localStorage.getItem('tiempo-perdido|'+g+'|'+hoy) && JAVI.tiempoClase(g, hoy).estado==='teoria') return true; }catch(e){}   /* se usó el medidor y no se pudo bajar a tiempo */
+  try{ if(localStorage.getItem('tiempo-perdido|'+g+'|'+hoy) && /^(teoria|lluvia)$/.test(JAVI.tiempoClase(g, hoy).estado)) return true; }catch(e){}   /* se usó el medidor y no se pudo bajar a tiempo */
   try{ var d = window.JAVI && JAVI.diarioDe && JAVI.diarioDe(g, hoy, 'EF'); if(d && d.dado===false) return true; }catch(e){}
   return false;
 }

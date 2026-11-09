@@ -93,17 +93,18 @@ function pintarClase(g, dias){
     JAVI.filas().forEach(function(r){
       if(U.normal(r.alumno)!==U.normal('TIEMPO · '+g) || U.normal(r.accion)!=='tiempoperdido' || r.cartaId!==f) return;
       var j = {}; try{ j = JSON.parse(r.carta.slice(r.carta.indexOf('{'))); }catch(e){}
-      x = { m:+r.tipo, teoria: j.estado ? j.estado==='teoria' : +r.tipo >= JAVI.limiteBajar(g), bajada:j.bajada || '' };
+      x = { m:+r.tipo, lluvia:j.estado==='lluvia', teoria: j.estado ? j.estado==='teoria' : +r.tipo >= JAVI.limiteBajar(g), bajada:j.bajada || '' };
     });
     if(!x){
       var hay = null; try{ hay = localStorage.getItem('tiempo-perdido|'+g+'|'+f); }catch(e){}
       var t = hay ? JAVI.tiempoClase(g, f) : null;
-      if(t && t.bajada) x = { m:t.perdidos, teoria:t.estado==='teoria', bajada:new Date(t.bajada).getHours()+':'+U.pad(new Date(t.bajada).getMinutes()) };
+      if(t && t.lluvia) x = { m:0, lluvia:true };
+      else if(t && t.bajada) x = { m:t.perdidos, teoria:t.estado==='teoria', bajada:new Date(t.bajada).getHours()+':'+U.pad(new Date(t.bajada).getMinutes()) };
     }
     if(x) tp.push({ f:f, x:x });
   });
   if(tp.length) h += '<div><h4>⏳ Tiempo para bajar en EF</h4><ul>'+tp.map(function(y){
-    return '<li>'+DIAS[JAVI.diaSemana(y.f)]+' '+fc(y.f)+' · '+(y.x.teoria ? '<b class="neg">📚 no se bajó: teoría</b>' : '<b class="pos">bajó'+(y.x.bajada ? ' a las '+y.x.bajada : '')+'</b> ('+y.x.m+' min)')+'</li>';
+    return '<li>'+DIAS[JAVI.diaSemana(y.f)]+' '+fc(y.f)+' · '+(y.x.lluvia ? '<b>🌧️ día de lluvia: en el aula</b>' : y.x.teoria ? '<b class="neg">📚 no se bajó: teoría</b>' : '<b class="pos">bajó'+(y.x.bajada ? ' a las '+y.x.bajada : '')+'</b> ('+y.x.m+' min)')+'</li>';
   }).join('')+'</ul></div>';
   /* el resto lleva nombres: solo con la clase abierta */
   if(!JAVI.claseAbierta(g)){

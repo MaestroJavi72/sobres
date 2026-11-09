@@ -58,6 +58,7 @@ css.textContent =
   '.jv-med a small{font-weight:600;opacity:.85;font-size:12px}'+
   '.jv-med button{font:800 14px system-ui,sans-serif;border:none;border-radius:999px;padding:7px 11px;cursor:pointer;background:rgba(255,255,255,.18);color:#fff}'+
   '.jv-med button{background:#fff;color:#1c4d31}.jv-med button[hidden]{display:none}.jv-med.fijo{animation:none}'+
+  '.jv-med.ll{background:#1d4f7a;border-color:#7cc0f5}'+
   '.jv-med[hidden]{display:none}'+
   '@media print{.jv-med{display:none!important}}';
 document.head.appendChild(css);
@@ -72,12 +73,13 @@ function pintar(){
 
   var n = t.estado==='corre' ? (t.fraccion>=.75 ? 2 : t.fraccion>=.5 ? 1 : 0) : t.estado==='teoria' ? 3 : 0;
   el.hidden = false;
-  el.className = 'jv-med'+(t.estado==='corre' && n ? ' n'+n : t.estado==='teoria' ? ' n3 fijo' : '');
+  el.className = 'jv-med'+(t.estado==='corre' && n ? ' n'+n : t.estado==='teoria' ? ' n3 fijo' : t.estado==='lluvia' ? ' ll' : '');
   var b = el.querySelector('b'), sm = el.querySelector('small'), bt = el.querySelector('button');
   if(t.estado==='sinclase'){ b.textContent = 'Tiempo para bajar'; sm.textContent = 'hoy no hay EF con '+g; }
   else if(t.estado==='antes'){ b.textContent = g+' · empieza a las '+hhmm(t.inicio); sm.textContent = t.limite+' min para bajar'; }
   else if(t.estado==='corre'){ b.textContent = g+' · '+mmss(t.quedan); sm.textContent = 'para bajar'; }
   else if(t.estado==='bajada'){ b.textContent = g+' · bajó a las '+hhmm(t.bajada); sm.textContent = '✅ a tiempo'; }
+  else if(t.estado==='lluvia'){ b.textContent = g+' · 🌧️ día de lluvia'; sm.textContent = 'EF en el aula'; }
   else { b.textContent = g+' · 📚 hoy teoría'; sm.textContent = 'no se bajó a tiempo'; }
   bt.hidden = t.estado!=='corre';
   el.querySelector('a').href = base+'ef/tiempo.html?grupo='+encodeURIComponent(g).replace('%C2%BA', 'o');
