@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="hp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EF en el aula</title>
+<link rel="stylesheet" href="../comun/javi.css">
+<style>
+.cab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cab h1{flex:1 1 240px;min-width:0;font-size:clamp(26px,4.5vw,46px);line-height:1.05}
+.pest{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pest button{font:800 clamp(15px,1.8vw,19px) var(--f-sub);padding:9px 14px;border-radius:12px;border:2px solid var(--panel-borde);background:var(--panel);color:var(--tinta);cursor:pointer}
+.pest button[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta);border-color:var(--acento)}
+.caja{background:var(--panel);border:3px solid var(--panel-borde);border-radius:24px;padding:clamp(14px,3vw,28px);display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2vh,18px);text-align:center;min-height:60vh}
+.btn{font:900 clamp(20px,3vw,32px) var(--f-sub);padding:.5em 1.3em;border-radius:20px;border:3px solid var(--acento);background:var(--acento);color:var(--acento-tinta);cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.btn.sec{background:transparent;color:var(--tinta)}
+.btn.verde{background:#2f9a5a;border-color:#2f9a5a;color:#fff} .btn.rojo{background:#c23b4a;border-color:#c23b4a;color:#fff} .btn.gris{background:#5b6170;border-color:#5b6170;color:#fff}
+.fila{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.peq{font:700 16px var(--f-sub);padding:7px 12px;border-radius:10px;border:2px solid var(--panel-borde);background:rgba(0,0,0,.25);color:var(--tinta);cursor:pointer}
+.peq[aria-pressed="true"]{background:var(--acento);color:var(--acento-tinta)}
+.nota{color:var(--tinta-suave);font-size:16px;max-width:860px}
+.reloj{font:900 clamp(60px,13vw,160px)/1 var(--f-titulo);color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 6px 30px rgba(0,0,0,.5)}
+.grande{font:900 clamp(30px,6vw,72px)/1.1 var(--f-titulo);color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.5)}
+.emoji{font-size:clamp(70px,14vw,170px);line-height:1}
+/* dados */
+.dados{display:flex;gap:clamp(14px,4vw,50px);flex-wrap:wrap;justify-content:center}
+.dado{width:clamp(220px,32vw,360px);min-height:clamp(200px,28vw,300px);border-radius:28px;background:#fffaf0;color:#2b1c05;border:6px solid var(--acento);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.dado .e{font-size:clamp(60px,9vw,110px);line-height:1}
+.dado b{font:900 clamp(22px,3vw,34px)/1.1 var(--f-sub)}
+.dado small{font-size:clamp(15px,1.6vw,19px);color:#6b5732}
+.dado.gira{animation:gira .12s linear infinite}
+@keyframes gira{0%{transform:rotate(-6deg) scale(.96)}50%{transform:rotate(6deg) scale(1.03)}100%{transform:rotate(-6deg) scale(.96)}}
+/* estatuas */
+.pose{background:#fffaf0;color:#2b1c05;border-radius:28px;border:6px solid var(--acento);padding:18px 26px;max-width:760px}
+.pose b{display:block;font:900 clamp(28px,4.5vw,52px)/1.1 var(--f-sub)}
+.pose p{font-size:clamp(18px,2.2vw,24px);margin:.4em 0 0}
+.baila{font:900 clamp(40px,8vw,100px)/1 var(--f-titulo);color:var(--acento);animation:bote .5s ease-in-out infinite alternate}
+@keyframes bote{to{transform:translateY(-14px) rotate(3deg)}}
+.simon{font:900 clamp(30px,6vw,76px)/1.15 var(--f-sub);color:#fff;max-width:1000px}
+.simon.sin{color:#ffb3b3}
+/* mímica y equipos */
+.equipos{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.eq{min-width:120px;border-radius:16px;padding:8px 14px;border:3px solid rgba(255,255,255,.3);color:#fff;font:800 18px var(--f-sub);opacity:.55}
+.eq.turno{opacity:1;box-shadow:0 0 0 4px #fff}
+.eq span{display:block;font:900 34px var(--f-titulo)}
+.tarjeta{background:#fffaf0;color:#2b1c05;border-radius:24px;border:6px dashed var(--acento);padding:20px 30px;font:900 clamp(30px,5vw,60px)/1.1 var(--f-sub)}
+.tarjeta.oculta{color:transparent;text-shadow:0 0 22px rgba(0,0,0,.6)}
+/* rosco */
+.rosco{position:relative;width:min(560px,86vw,60vh);aspect-ratio:1}
+.rosco .l{position:absolute;width:11%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:900 clamp(13px,2.2vw,22px) var(--f-sub);background:#2f5fb3;color:#fff;border:3px solid #fff;transform:translate(-50%,-50%)}
+.rosco .l.ok{background:#2f9a5a} .rosco .l.ko{background:#c23b4a} .rosco .l.act{background:#e8c872;color:#2b1c05;transform:translate(-50%,-50%) scale(1.25)}
+.rosco .centro{position:absolute;inset:18%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.rosco .centro .def{font-size:clamp(15px,2vw,22px);color:#fff;line-height:1.3}
+.rosco .centro .let{font:900 clamp(18px,2.6vw,28px) var(--f-sub);color:var(--acento)}
+.sol{font:900 clamp(22px,3vw,32px) var(--f-sub);color:#8fe0a9;min-height:1.3em}
+.reto{background:#c23b4a;color:#fff;border-radius:16px;padding:10px 18px;font:800 clamp(18px,2.4vw,26px) var(--f-sub)}
+[hidden]{display:none!important}
+@media (max-width:700px){ .rosco .l{width:12%} }
+</style>
+</head>
+<body>
+<div class="j-envoltorio">
+  <header class="cab">
+    <h1 class="j-titulo">🏃 EF en el aula</h1>
+    <button class="j-icono" id="bPant" type="button" title="Pantalla completa">⛶</button>
+    <button class="j-icono" id="bSon" type="button" title="Sonido">🔊</button>
+    <a class="j-icono" href="./" data-volver="./" style="font-family:inherit;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;padding:0 14px;width:auto">← Volver</a>
+  </header>
+  <nav class="pest" id="pest">
+    <button type="button" data-p="dados">🎲 Dados del movimiento</button>
+    <button type="button" data-p="estatuas">🗿 Estatuas y Simón dice</button>
+    <button type="button" data-p="mimica">🎭 Mímica deportiva</button>
+    <button type="button" data-p="rosco">🔤 Pasapalabra de EF</button>
+  </nav>
+  <section class="caja" id="caja"></section>
+</div>
+<script src="../comun/javi.js"></script>
+<script>
+(function(){
+'use strict';
+/* EF EN EL AULA (Javi, 9/11/2026: «los días de lluvia y quedarnos en clase, algo más dinámico además de la teoría»).
+   Cuatro juegos para la pizarra, pensados para un aula con mesas (de pie junto al sitio, sin tirarse al suelo). No guarda nada.
+   🎲 Dados del movimiento (pausa activa) · 🗿 Estatuas (música y postura) y Simón dice · 🎭 Mímica deportiva por equipos ·
+   🔤 Pasapalabra de EF: dos roscos (uno por equipo) con definiciones propias de salud, deporte y juego limpio; cada fallo, un reto físico.
+   Pestaña directa con #dados #estatuas #mimica #rosco. */
+var $ = function(id){ return document.getElementById(id); }, caja = $('caja'), T = [], sonido = true;
+try{ sonido = localStorage.getItem('ef-aula-sonido') !== 'no'; }catch(e){}
+function parar(){ T.forEach(function(t){ clearInterval(t); clearTimeout(t); }); T = []; musica(false); if(window.speechSynthesis) speechSynthesis.cancel(); }
+function azar(a){ return a[Math.floor(Math.random() * a.length)]; }
+function mezclar(a){ a = a.slice(); for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+function esc(t){ var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function plano(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim(); }
+/* ---------- sonido ---------- */
+var AC = null;
+function ctx(){ if(!sonido) return null; try{ AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if(AC.state === 'suspended') AC.resume(); }catch(e){ return null; } return AC; }
+function tono(f, t0, d, tipo, v){ var c = ctx(); if(!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime + (t0 || 0);
+  o.type = tipo || 'triangle'; o.frequency.value = f; g.gain.setValueAtTime(v || 0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + 0.05); }
+var SON = { tic:function(){ tono(900, 0, 0.06, 'square', 0.05); }, ok:function(){ [784, 988, 1318].forEach(function(f, i){ tono(f, i * 0.08, 0.2); }); },
+  ko:function(){ tono(330, 0, 0.2, 'sawtooth', 0.06); tono(262, 0.15, 0.3, 'sawtooth', 0.06); }, fin:function(){ [523, 659, 784, 1046].forEach(function(f, i){ tono(f, i * 0.12, 0.3); }); },
+  gong:function(){ tono(196, 0, 1.4, 'sine', 0.25); tono(392, 0, 1, 'sine', 0.08); } };
+function voz(t){ if(!sonido || !window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t); u.lang = 'es-ES'; u.rate = 0.95; speechSynthesis.speak(u); }
+/* música de baile para las estatuas: bajo y caja sencillos (Web Audio, sin archivos) */
+var MUS = null;
+function musica(on){ if(MUS){ clearInterval(MUS); MUS = null; } if(!on) return; var paso = 0, notas = [196, 196, 262, 220, 175, 175, 233, 220];
+  MUS = setInterval(function(){ var n = notas[(paso >> 1) % notas.length]; tono(n, 0, 0.18, 'square', 0.07); if(paso % 2 === 0) tono(n * 2, 0, 0.1, 'triangle', 0.05); if(paso % 4 === 2) tono(1800, 0, 0.04, 'square', 0.03); paso++; }, 180); }
+/* ---------- 🎲 DADOS DEL MOVIMIENTO ---------- */
+var EJ = [
+  ['🦵', 'Sentadillas', 'Como si te sentaras en una silla invisible', 'rep'], ['⭐', 'Saltos de estrella', 'Abre brazos y piernas al saltar', 'rep'],
+  ['🏃', 'Rodillas arriba', 'Corre sin moverte del sitio, rodillas altas', 'seg'], ['🦩', 'Flamenco', 'A la pata coja, sin apoyarte', 'seg'],
+  ['🥊', 'Boxeo de sombra', 'Puñetazos al aire, rápido y sin tocar a nadie', 'seg'], ['🧱', 'Flexiones en la mesa', 'Manos en el borde de la mesa, cuerpo recto', 'rep'],
+  ['🔄', 'Molinos de brazos', 'Círculos grandes con los brazos', 'seg'], ['🦶', 'Talones al culo', 'Corre en el sitio tocándote los glúteos con los talones', 'seg'],
+  ['🩰', 'De puntillas', 'Sube y baja de puntillas', 'rep'], ['🙆', 'Toca el cielo y el suelo', 'Estírate arriba y baja a tocarte los pies', 'rep'],
+  ['🌀', 'Giros de tronco', 'Manos en la cintura, gira a un lado y al otro', 'rep'], ['🦘', 'Saltos de canguro', 'Saltos pequeños con los pies juntos', 'rep'],
+  ['🧘', 'Estatua de árbol', 'Un pie apoyado en la otra pierna, manos arriba', 'seg'], ['🚶', 'Marcha de soldado', 'Marcha en el sitio levantando mucho las rodillas', 'seg'],
+  ['↔️', 'Saltos laterales', 'Salta a un lado y al otro de una línea imaginaria', 'rep'], ['🪑', 'Silla en la pared', 'Espalda en la pared, como sentado, ¡aguanta!', 'seg'],
+  ['🙈', 'Equilibrio a ciegas', 'A la pata coja con los ojos cerrados', 'seg'], ['🐸', 'Ranas', 'Agáchate y salta hacia arriba como una rana', 'rep']
+];
+var REP = [5, 8, 10, 12, 15], SEG = [10, 15, 20, 30];
+function dados(){
+  caja.innerHTML = '<div class="fila"><span class="nota">Lanza los dados: uno dice el ejercicio y el otro cuántas veces o cuántos segundos. ¡Toda la clase a la vez, de pie junto a su sitio!</span></div>' +
+    '<div class="dados"><div class="dado" id="d1"><span class="e">🎲</span><b>Ejercicio</b></div><div class="dado" id="d2"><span class="e">🎲</span><b>¿Cuánto?</b></div></div>' +
+    '<div class="reloj" id="rel" hidden></div><div class="fila"><button class="btn" id="bLanza" type="button">🎲 ¡Lanzar los dados!</button><button class="btn sec" id="bAuto" type="button">⏩ Ronda de 5</button></div>' +
+    '<div class="nota" id="cuenta">Ejercicios hechos: 0</div>';
+  var hechos = 0, auto = 0;
+  function lanzar(){ parar(); $('rel').hidden = true; var d1 = $('d1'), d2 = $('d2'), n = 0; d1.classList.add('gira'); d2.classList.add('gira'); $('bLanza').disabled = true;
+    var ej, cu;
+    var it = setInterval(function(){ ej = azar(EJ); cu = ej[3] === 'rep' ? azar(REP) : azar(SEG); d1.innerHTML = '<span class="e">' + ej[0] + '</span><b>' + esc(ej[1]) + '</b>';
+      d2.innerHTML = '<span class="e">' + (ej[3] === 'rep' ? '🔢' : '⏱️') + '</span><b>' + cu + (ej[3] === 'rep' ? ' veces' : ' segundos') + '</b>'; SON.tic(); if(++n > 14){ clearInterval(it); fin(); } }, 90); T.push(it);
+    function fin(){ d1.classList.remove('gira'); d2.classList.remove('gira'); d1.innerHTML += '<small>' + esc(ej[2]) + '</small>'; SON.ok();
+      voz(ej[1] + ', ' + cu + (ej[3] === 'rep' ? ' veces' : ' segundos'));
+      if(ej[3] === 'seg'){ var t = cu + 3; $('rel').hidden = false; $('rel').textContent = 'Preparados…';
+        var it2 = setInterval(function(){ t--; if(t > cu){ $('rel').textContent = (t - cu) + '…'; SON.tic(); return; } $('rel').textContent = t; if(t <= 3 && t > 0) SON.tic();
+          if(t <= 0){ clearInterval(it2); $('rel').textContent = '¡Bien!'; SON.fin(); termina(); } }, 1000); T.push(it2); }
+      else T.push(setTimeout(termina, 400 + cu * 1600)); }
+    function termina(){ hechos++; $('cuenta').textContent = 'Ejercicios hechos: ' + hechos; $('bLanza').disabled = false; if(auto > 1){ auto--; T.push(setTimeout(lanzar, 3500)); } else auto = 0; }
+  }
+  $('bLanza').onclick = lanzar; $('bAuto').onclick = function(){ auto = 5; lanzar(); };
+}
+/* ---------- 🗿 ESTATUAS Y SIMÓN DICE ---------- */
+var POSES = [
+  ['🌳', 'El árbol', 'De pie, un pie apoyado en la otra pierna y los brazos arriba como ramas'], ['🦩', 'El flamenco', 'A la pata coja con los brazos abiertos'],
+  ['🦸', 'Superhéroe volando', 'Un brazo estirado hacia delante y una pierna hacia atrás'], ['🧙', 'Mago lanzando un hechizo', 'Brazo estirado con la varita y la otra mano en la cadera'],
+  ['🚀', 'El cohete', 'Manos juntas por encima de la cabeza, de puntillas'], ['⭐', 'La estrella', 'Brazos y piernas bien abiertos'],
+  ['🐸', 'La rana', 'Agachado, manos entre los pies'], ['✈️', 'El avión', 'Brazos en cruz, inclinado hacia delante, una pierna atrás'],
+  ['🗽', 'La estatua de la antorcha', 'Un brazo muy arriba, como sujetando una antorcha'], ['🏹', 'El arquero', 'Como si tensaras un arco: un brazo delante y otro atrás'],
+  ['🦁', 'El león', 'Manos como garras y cara de rugir, sin sonido'], ['⚽', 'El portero', 'Piernas abiertas, rodillas dobladas y manos preparadas'],
+  ['🏄', 'El surfista', 'Piernas abiertas de lado y brazos para mantener el equilibrio'], ['🐢', 'La tortuga', 'Encogido, abrazándote las rodillas de pie'],
+  ['🧊', 'Congelado', 'Brazos pegados al cuerpo, sin pestañear'], ['🥋', 'El karateca', 'Rodillas dobladas y un brazo hacia delante']
+];
+var ORDENES = ['tócate la nariz', 'salta dos veces', 'levanta el brazo derecho', 'levanta el brazo izquierdo', 'ponte a la pata coja', 'da una vuelta en el sitio',
+  'tócate las rodillas', 'aplaude tres veces', 'pon las manos en la cabeza', 'cierra los ojos', 'sonríe sin enseñar los dientes', 'tócate los hombros',
+  'haz como si nadaras', 'agáchate', 'ponte de puntillas', 'abre los brazos como un avión', 'tócate las orejas', 'mira al techo', 'haz una sentadilla',
+  'marcha en el sitio', 'cruza los brazos', 'estira los brazos hacia delante', 'tócate los pies', 'haz como si remaras', 'quédate quieto como una estatua'];
+function estatuas(){
+  caja.innerHTML = '<div class="fila"><button class="peq" data-m="est" aria-pressed="true" type="button">🗿 Estatuas</button><button class="peq" data-m="sim" aria-pressed="false" type="button">🙋 Simón dice</button></div><div id="zona" style="display:contents"></div>';
+  Array.prototype.forEach.call(caja.querySelectorAll('[data-m]'), function(b){ b.onclick = function(){ parar(); Array.prototype.forEach.call(caja.querySelectorAll('[data-m]'), function(y){ y.setAttribute('aria-pressed', y === b ? 'true' : 'false'); }); b.dataset.m === 'est' ? est() : sim(); }; });
+  est();
+}
+function est(){
+  $('zona').innerHTML = '<p class="nota">Suena la música: ¡a bailar sin moverse del sitio! Cuando se para, sale una postura en la pantalla: hay que copiarla y quedarse <b>quieto como una estatua</b>. Quien se mueva, se sienta (y ayuda a vigilar).</p>' +
+    '<div id="esc" style="min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px"><div class="emoji">🎵</div></div>' +
+    '<div class="fila"><button class="btn" id="bEmp" type="button">▶ ¡Música!</button><button class="btn sec" id="bPar" type="button">⏹ Parar</button></div>' +
+    '<div class="fila"><label class="nota">Postura durante <select id="sQ"><option>5</option><option selected>7</option><option>10</option></select> segundos</label></div>';
+  var activo = false;
+  function ronda(){ if(!activo) return; musica(true); $('esc').innerHTML = '<div class="baila">¡A bailar! 💃🕺</div>';
+    T.push(setTimeout(function(){ if(!activo) return; musica(false); var p = azar(POSES), q = +$('sQ').value; SON.gong(); voz('¡Estatua! ' + p[1]);
+      $('esc').innerHTML = '<div class="emoji">' + p[0] + '</div><div class="pose"><b>' + esc(p[1]) + '</b><p>' + esc(p[2]) + '</p></div><div class="reloj" id="rq">' + q + '</div>';
+      var t = q, it = setInterval(function(){ t--; if($('rq')) $('rq').textContent = t; if(t <= 3 && t > 0) SON.tic(); if(t <= 0){ clearInterval(it); T.push(setTimeout(ronda, 600)); } }, 1000); T.push(it);
+    }, 5000 + Math.random() * 8000)); }
+  $('bEmp').onclick = function(){ parar(); activo = true; ronda(); };
+  $('bPar').onclick = function(){ activo = false; parar(); $('esc').innerHTML = '<div class="emoji">🎵</div>'; };
+}
+function sim(){
+  $('zona').innerHTML = '<p class="nota">Solo se hace lo que va con <b>«Simón dice»</b>. Si la orden no lo lleva, ¡no te muevas! Quien falla, se sienta. La orden se lee en voz alta y sale en la pantalla.</p>' +
+    '<div id="esc" style="min-height:260px;display:flex;align-items:center;justify-content:center"><div class="simon">¿Preparados?</div></div>' +
+    '<div class="fila"><button class="btn" id="bSig" type="button">▶ Siguiente orden</button><button class="btn sec" id="bAut" type="button">⏩ Automático</button></div>' +
+    '<div class="fila"><label class="nota">En automático, una orden cada <select id="sV"><option value="6">6 s</option><option value="4" selected>4 s</option><option value="3">3 s (¡difícil!)</option></select></label></div>';
+  var ult = '', auto = false;
+  function orden(){ var o; do o = azar(ORDENES); while(o === ult); ult = o; var conS = Math.random() < 0.7, txt = (conS ? 'Simón dice: ' : '') + o.charAt(0).toUpperCase() + o.slice(1);
+    $('esc').innerHTML = '<div class="simon' + (conS ? '' : ' sin') + '">' + (conS ? '🙋 ' : '') + esc(txt) + '</div>'; voz(txt); SON.tic(); }
+  $('bSig').onclick = function(){ auto = false; parar(); orden(); };
+  $('bAut').onclick = function(){ parar(); auto = !auto; this.textContent = auto ? '⏸ Parar' : '⏩ Automático'; if(!auto) return; orden(); var it = setInterval(function(){ if(auto) orden(); }, +$('sV').value * 1000); T.push(it); };
+}
+/* ---------- 🎭 MÍMICA DEPORTIVA ---------- */
+var MIM = {
+  'Deportes':['fútbol', 'baloncesto', 'natación', 'tenis', 'esquí', 'ciclismo', 'golf', 'voleibol', 'balonmano', 'judo', 'gimnasia rítmica', 'patinaje', 'surf', 'escalada', 'remo',
+    'salto de longitud', 'lanzamiento de jabalina', 'tiro con arco', 'equitación', 'tenis de mesa', 'bádminton', 'kárate', 'carrera de relevos', 'salto de altura', 'piragüismo',
+    'buceo', 'esgrima', 'levantamiento de pesas', 'bolos', 'patinaje sobre hielo', 'waterpolo', 'boxeo', 'salto con pértiga', 'carrera de vallas', 'petanca'],
+  'En la clase de EF':['atarse las zapatillas', 'calentar los tobillos', 'beber agua después de correr', 'sacar de banda', 'celebrar un gol', 'chutar un penalti', 'parar un penalti',
+    'saltar a la comba', 'jugar al escondite', 'jugar al pilla-pilla', 'saltar a la rayuela', 'carrera de sacos', 'tirar de la cuerda', 'estirar los gemelos', 'hacer una voltereta',
+    'dar la mano al rival al acabar', 'pitar una falta', 'recoger los conos', 'pasar el balón a un compañero', 'hacer la fila para volver a clase'],
+  'Mundo mágico':['volar en escoba', 'atrapar la snitch dorada', 'lanzar un hechizo con la varita', 'remover una poción en el caldero', 'subir una escalera que se mueve',
+    'esquivar una bludger', 'montar en un hipogrifo', 'tocar un troll dormido sin despertarlo', 'pasear una lechuza', 'abrir un sobre de cartas']
+};
+function mimica(){
+  caja.innerHTML = '<p class="nota">Un alumno de cada equipo sale a la pizarra. Toca «👀 Ver la tarjeta» (los demás no miran: la tarjeta se ve 4 segundos). Tiene <b>60 segundos</b> para que su equipo lo adivine <b>sin hablar ni hacer ruido</b>.</p>' +
+    '<div class="fila"><label class="nota">Equipos <select id="nE"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>' +
+    '<label class="nota">Tarjetas de <select id="cat"><option value="">Todo mezclado</option>' + Object.keys(MIM).map(function(k){ return '<option>' + k + '</option>'; }).join('') + '</select></label>' +
+    '<button class="peq" id="bNueva" type="button">🔁 Empezar de cero</button></div><div class="equipos" id="eqs"></div>' +
+    '<div id="esc" style="min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"></div>';
+  var COL = ['#c23b4a', '#2f5fb3', '#2f9a5a', '#b8860b', '#6b3fa0'], PT, turno = 0, usadas = {};
+  function nuevo(){ var n = +$('nE').value; PT = Array.apply(null, Array(n)).map(function(){ return 0; }); turno = 0; usadas = {}; pintar(); preparar(); }
+  function pintar(){ $('eqs').innerHTML = PT.map(function(p, i){ return '<div class="eq' + (i === turno ? ' turno' : '') + '" style="background:' + COL[i] + '">Equipo ' + (i + 1) + '<span>' + p + '</span></div>'; }).join(''); }
+  function tarjeta(){ var c = $('cat').value, l = c ? MIM[c] : [].concat.apply([], Object.keys(MIM).map(function(k){ return MIM[k]; })), libres = l.filter(function(x){ return !usadas[x]; });
+    if(!libres.length){ usadas = {}; libres = l; } var x = azar(libres); usadas[x] = 1; return x; }
+  function preparar(){ parar(); $('esc').innerHTML = '<div class="grande">Turno del equipo ' + (turno + 1) + '</div><button class="btn" id="bVer" type="button">👀 Ver la tarjeta</button>';
+    $('bVer').onclick = function(){ var x = tarjeta(); $('esc').innerHTML = '<div class="tarjeta" id="tj">' + esc(x) + '</div><div class="reloj" id="rm">60</div>' +
+      '<div class="fila"><button class="btn verde" id="bSi" type="button">✅ ¡Adivinado!</button><button class="btn gris" id="bNo" type="button">⏭ Pasar</button></div>';
+      T.push(setTimeout(function(){ if($('tj')) $('tj').classList.add('oculta'); }, 4000));
+      var t = 60, it = setInterval(function(){ t--; if($('rm')) $('rm').textContent = t; if(t <= 5 && t > 0) SON.tic(); if(t <= 0){ clearInterval(it); acabar(false, x); } }, 1000); T.push(it);
+      $('bSi').onclick = function(){ acabar(true, x); }; $('bNo').onclick = function(){ acabar(false, x); }; };
+  }
+  function acabar(ok, x){ parar(); if(ok){ PT[turno]++; SON.ok(); } else SON.ko();
+    $('esc').innerHTML = '<div class="grande">' + (ok ? '🎉 ¡Punto para el equipo ' + (turno + 1) + '!' : '⏱️ ¡Se acabó!') + '</div><div class="tarjeta">' + esc(x) + '</div><button class="btn" id="bSigE" type="button">▶ Siguiente equipo</button>';
+    turno = (turno + 1) % PT.length; pintar(); $('bSigE').onclick = preparar; }
+  $('nE').onchange = nuevo; $('bNueva').onclick = nuevo; nuevo();
+}
+/* ---------- 🔤 PASAPALABRA DE EF ---------- */
+/* [letra, «empieza» o «contiene», definición, respuestas válidas (la primera es la que se enseña)] · definiciones escritas para 3º-4º */
+var ROSCOS = [[
+  ['A','e','Líquido que hay que beber antes, durante y después de hacer ejercicio',['agua']],
+  ['B','e','Deporte en el que hay que meter el balón en una canasta',['baloncesto']],
+  ['C','e','Ejercicios suaves que hacemos al empezar la clase para preparar el cuerpo',['calentamiento']],
+  ['D','e','Lo que necesita el cuerpo después de mucho ejercicio para recuperarse',['descanso','dormir']],
+  ['E','e','Grupo de jugadores que juegan juntos',['equipo']],
+  ['F','e','Lo que pita el árbitro cuando un jugador no respeta las normas',['falta']],
+  ['G','e','Deporte con aros, cintas y pelotas en el que se necesita mucha flexibilidad',['gimnasia','gimnasia ritmica']],
+  ['H','e','Lo que cuidamos al ducharnos, lavarnos las manos y cambiarnos de camiseta',['higiene']],
+  ['I','c','Lugar cubierto del cole, con espalderas, donde hacemos EF cuando llueve',['gimnasio']],
+  ['J','e','Persona que participa en un juego o en un deporte',['jugador','jugadora']],
+  ['L','e','Fruta amarilla y ácida con mucha vitamina C',['limon']],
+  ['M','e','Partes del cuerpo que se contraen para que podamos movernos',['musculos','musculo']],
+  ['N','e','Deporte que se practica en una piscina',['natacion']],
+  ['Ñ','c','Articulación que une la mano con el brazo',['muneca']],
+  ['O','e','Parte del cuerpo con la que vemos la pelota',['ojos','ojo']],
+  ['P','e','Órganos del pecho que se llenan de aire al respirar',['pulmones']],
+  ['Q','e','Cómo hay que estar en el juego de las estatuas cuando se para la música',['quieto','quieta','quietos']],
+  ['R','e','Lo que hacemos por la nariz y la boca para que entre el aire',['respirar','respiracion']],
+  ['S','e','Agua salada que sale de la piel cuando hacemos mucho ejercicio',['sudor']],
+  ['T','e','Deporte de raqueta con una pelota amarilla que pasa por encima de una red',['tenis']],
+  ['U','c','Lo que nos tomamos en la muñeca o en el cuello para contar los latidos',['pulso']],
+  ['V','e','Deporte en el que se pasa el balón con las manos por encima de una red alta',['voleibol','voley','balonvolea']],
+  ['X','c','Gas del aire que necesitan nuestros músculos',['oxigeno']],
+  ['Y','c','Lo que hacemos cuando un compañero se cae o necesita algo',['ayudar','ayudarle','ayuda']],
+  ['Z','e','Calzado que nos ponemos para hacer deporte',['zapatillas','zapatillas de deporte']]
+],[
+  ['A','e','Persona que dirige el partido y pita las faltas',['arbitro','arbitra']],
+  ['B','e','Objeto redondo con el que jugamos al fútbol',['balon']],
+  ['C','e','Órgano del pecho que late más rápido cuando corremos',['corazon']],
+  ['D','e','Actividad física con reglas, como el fútbol o el baloncesto',['deporte']],
+  ['E','e','Lo que hacemos al final de la clase para alargar los músculos',['estiramientos','estirar']],
+  ['F','e','Deporte de equipo que se juega con los pies y dos porterías',['futbol']],
+  ['G','e','Lo que marca un equipo cuando mete el balón en la portería',['gol']],
+  ['H','e','Alimento con proteínas que ponen las gallinas',['huevo','huevos']],
+  ['I','c','Lo que debemos ser con los compañeros y los rivales: buenos…',['amigos','amigas']],
+  ['J','e','Actividad divertida con normas, como el pilla-pilla',['juego']],
+  ['L','e','Bebida blanca con mucho calcio, buena para los huesos',['leche']],
+  ['M','e','Premio de oro, plata o bronce para los tres primeros',['medalla','medallas']],
+  ['N','e','Reglas de un juego que todos tenemos que respetar',['normas']],
+  ['Ñ','c','Persona que juega en nuestro mismo equipo',['companero','companera']],
+  ['O','e','Juegos con deportistas de todo el mundo que se celebran cada cuatro años: los Juegos…',['olimpicos']],
+  ['P','e','Lugar al aire libre del cole, con líneas pintadas, donde jugamos',['pista']],
+  ['Q','e','Lo que hacemos con la sudadera cuando tenemos calor: nos la…',['quitamos','quitar']],
+  ['R','e','Equipo o persona contra la que jugamos',['rival','rivales']],
+  ['S','e','Instrumento con el que el árbitro pita',['silbato']],
+  ['T','e','Lo que NO se debe hacer en un juego: engañar para ganar',['trampas','trampa','hacer trampas']],
+  ['U','c','Juego tradicional en el que dos equipos corren a coger un trapo que sujeta el profe',['panuelo','el panuelo']],
+  ['V','e','Lo que consigue un equipo cuando gana',['victoria']],
+  ['X','c','Lo que sale el día que hemos estudiado mucho: un buen…',['examen','exito']],
+  ['Y','c','Lugar con arena donde se juega al vóley y al fútbol en verano',['playa']],
+  ['Z','e','Paso largo que damos al correr',['zancada']]
+]];
+var RETOS = ['10 sentadillas todo el equipo', '15 segundos de rodillas arriba', '10 saltos de estrella', '20 segundos a la pata coja', '10 flexiones en la mesa', '15 segundos de boxeo de sombra'];
+function rosco(){
+  caja.innerHTML = '<p class="nota">Dos equipos, un rosco cada uno. El maestro lee la definición (también suena) y el equipo responde en voz alta. ✅ acierto · ❌ fallo (¡reto físico!) · ⏭ pasapalabra (pasa el turno). Cada equipo tiene <b>3 minutos</b>.</p>' +
+    '<div class="fila"><button class="peq" id="bR" type="button">🔁 Empezar de cero</button></div><div class="equipos" id="eqs"></div><div id="esc" style="display:flex;flex-direction:column;align-items:center;gap:12px;width:100%"></div>';
+  var R = [0, 1].map(function(k){ return { q:ROSCOS[k], est:ROSCOS[k].map(function(){ return 0; }), i:0, t:180, ok:0, ko:0 }; }), eq = 0, it = null;
+  var COL = ['#c23b4a', '#2f5fb3'];
+  function pintarEq(){ $('eqs').innerHTML = R.map(function(r, k){ return '<div class="eq' + (k === eq ? ' turno' : '') + '" style="background:' + COL[k] + '">Equipo ' + (k + 1) + '<span>✅ ' + r.ok + ' · ⏱️ ' + Math.floor(r.t / 60) + ':' + ('0' + r.t % 60).slice(-2) + '</span></div>'; }).join(''); }
+  function siguiente(r){ for(var s = 1; s <= r.q.length; s++){ var j = (r.i + s) % r.q.length; if(r.est[j] === 0){ r.i = j; return true; } } return false; }
+  function acabado(r){ return r.t <= 0 || r.est.every(function(e){ return e !== 0; }); }
+  function pintar(){ var r = R[eq], q = r.q[r.i]; pintarEq();
+    var html = '<div class="rosco">' + r.q.map(function(x, j){ var a = 2 * Math.PI * j / r.q.length - Math.PI / 2;
+      return '<div class="l' + (r.est[j] === 1 ? ' ok' : r.est[j] === -1 ? ' ko' : '') + (j === r.i ? ' act' : '') + '" style="left:' + (50 + 44 * Math.cos(a)) + '%;top:' + (50 + 44 * Math.sin(a)) + '%">' + x[0] + '</div>'; }).join('') +
+      '<div class="centro"><div class="let">' + (q[1] === 'e' ? 'Empieza por ' : 'Contiene la ') + q[0] + '</div><div class="def">' + esc(q[2]) + '</div><div class="sol" id="sol"></div></div></div>' +
+      '<div class="fila"><button class="btn verde" id="bOk" type="button">✅ Acierto</button><button class="btn rojo" id="bKo" type="button">❌ Fallo</button><button class="btn gris" id="bPas" type="button">⏭ Pasapalabra</button></div>' +
+      '<div class="fila"><button class="peq" id="bSol" type="button">👁 Ver la respuesta</button></div>';
+    $('esc').innerHTML = html; voz((q[1] === 'e' ? 'Empieza por ' : 'Contiene la ') + q[0] + '. ' + q[2]);
+    $('bSol').onclick = function(){ $('sol').textContent = q[3][0].toUpperCase(); };
+    $('bOk').onclick = function(){ r.est[r.i] = 1; r.ok++; SON.ok(); avanzar(false); };
+    $('bKo').onclick = function(){ r.est[r.i] = -1; r.ko++; SON.ko(); clearInterval(it); var reto = azar(RETOS);
+      $('esc').innerHTML = '<div class="grande">❌ Era «' + esc(q[3][0].toUpperCase()) + '»</div><div class="reto">💪 Reto: ' + esc(reto) + '</div><button class="btn" id="bVale" type="button">▶ Hecho, seguimos</button>'; voz('Reto: ' + reto);
+      $('bVale').onclick = function(){ avanzar(true); }; };
+    $('bPas').onclick = function(){ SON.tic(); avanzar(true); };
+    clearInterval(it); it = setInterval(function(){ r.t--; pintarEq(); if(r.t <= 10 && r.t > 0) SON.tic(); if(r.t <= 0){ clearInterval(it); avanzar(true); } }, 1000); T.push(it);
+  }
+  function avanzar(cambia){ clearInterval(it); var r = R[eq];
+    if(R.every(acabado)) return final();
+    if(cambia || acabado(r)){ var otro = 1 - eq; if(!acabado(R[otro])){ siguiente(r); eq = otro; return aviso(); } }
+    if(!siguiente(r)){ var o = 1 - eq; if(acabado(R[o])) return final(); eq = o; return aviso(); }
+    pintar(); }
+  function aviso(){ var r = R[eq]; if(r.est[r.i] !== 0) siguiente(r); pintarEq(); $('esc').innerHTML = '<div class="grande">Turno del equipo ' + (eq + 1) + '</div><button class="btn" id="bVa" type="button">▶ ¡Vamos!</button>'; $('bVa').onclick = pintar; }
+  function final(){ clearInterval(it); pintarEq(); var a = R[0].ok, b = R[1].ok; SON.fin();
+    $('esc').innerHTML = '<div class="grande">' + (a === b ? '🤝 ¡Empate!' : '🏆 ¡Gana el equipo ' + (a > b ? 1 : 2) + '!') + '</div><div class="nota">Equipo 1: ' + a + ' aciertos · Equipo 2: ' + b + ' aciertos</div><button class="btn" id="bOtra" type="button">🔁 Otra partida</button>';
+    $('bOtra').onclick = rosco; }
+  $('bR').onclick = rosco; pintarEq(); aviso();
+}
+/* ---------- pestañas ---------- */
+var VISTAS = { dados:dados, estatuas:estatuas, mimica:mimica, rosco:rosco };
+function ir(p){ parar(); if(!VISTAS[p]) p = 'dados'; Array.prototype.forEach.call(document.querySelectorAll('#pest button'), function(b){ b.setAttribute('aria-pressed', b.dataset.p === p ? 'true' : 'false'); });
+  history.replaceState(null, '', '#' + p); VISTAS[p](); }
+Array.prototype.forEach.call(document.querySelectorAll('#pest button'), function(b){ b.onclick = function(){ ir(b.dataset.p); }; });
+$('bPant').onclick = function(){ if(window.JAVI) JAVI.pantallaCompleta(); };
+function pintaSon(){ $('bSon').textContent = sonido ? '🔊' : '🔇'; }
+$('bSon').onclick = function(){ sonido = !sonido; try{ localStorage.setItem('ef-aula-sonido', sonido ? 'si' : 'no'); }catch(e){} if(!sonido) parar(); pintaSon(); }; pintaSon();
+ir((location.hash || '#dados').slice(1));
+})();
+</script>
+</body>
+</html>
