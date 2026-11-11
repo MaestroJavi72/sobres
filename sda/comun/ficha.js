@@ -5,6 +5,8 @@ function imprimir(clase){ document.body.className = clase; setTimeout(function()
 if($('pFicha')) $('pFicha').addEventListener('click', function(){ imprimir('solo-ficha'); });
 if($('pSol')) $('pSol').addEventListener('click', function(){ imprimir('solo-sol'); });
 if($('pAmbas')) $('pAmbas').addEventListener('click', function(){ imprimir(''); });
+/* ?imprimir=ficha|sol: deja solo esas hojas (para sacar el PDF) */
+var mI = location.search.match(/[?&]imprimir=(ficha|sol)\b/); if(mI) document.body.className = 'solo-' + mI[1];
 var v = $('bVolver');
 if(v){
   v.addEventListener('click', function(e){ try{ if(document.referrer && new URL(document.referrer).origin===location.origin && history.length>1){ e.preventDefault(); history.back(); } }catch(err){} });
