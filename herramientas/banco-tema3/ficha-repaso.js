@@ -55,7 +55,7 @@ const ficha = [
   ej(3, 'El camino de la tilde: estas palabras están escritas SIN tilde. Sigue los pasos y escríbelas bien.', `<table class="tabla camino"><tr><th>Palabra</th><th>¿Aguda, llana o esdrújula?</th><th>¿Acaba en vocal, -n o -s?</th><th>¿Lleva tilde?</th><th>Escríbela bien</th></tr>${e3.map(x => `<tr><td class="pal">${SIN_TILDE(x.w)}</td><td></td><td></td><td>sí · no</td><td></td></tr>`).join('')}</table>`),
   ej(4, 'Detective de tildes: en este texto hay 10 errores. Faltan 7 tildes y sobran 3. Rodéalos y escribe las palabras bien.', `<p class="oracion">${errado}</p>${lin(4)}`) +
   ej(5, 'Plurales con sorpresa: escribe el plural. ¿Lleva tilde? Explica por qué.', `<div class="r2">${PL.map(x => `<div class="hueco"><span class="pal">un${x.s.w === 'canción' || x.s.w === 'imagen' ? 'a' : ''} ${x.s.w} → dos</span><span class="lin"></span><span class="lin"></span></div>`).join('')}</div>`) +
-  `<div class="ej reto"><h2><span class="num">6</span>Reto en casa: busca por tu casa dos cosas de cada tipo y escríbelas con su tilde si la llevan.</h2><table class="tabla"><tr><th>Agudas</th><th>Llanas</th><th>Esdrújulas</th></tr><tr><td class="alta"></td><td class="alta"></td><td class="alta"></td></tr></table></div>`
+  `<div class="ej reto"><h2><span class="num">6</span>Reto en casa: busca por tu casa entre cinco y seis cosas de cada tipo y escríbelas con su tilde si la llevan. ¡No vale repetir las de esta ficha!</h2><table class="tabla"><tr><th>Agudas</th><th>Llanas</th><th>Esdrújulas</th></tr><tr><td class="alta"></td><td class="alta"></td><td class="alta"></td></tr></table></div>`
 ];
 const sol = ej(2, 'Sílabas (tónica subrayada) y tipo', `<div class="r5">${e2.map(x => `<div class="hueco"><span class="pal">${x.w}</span><span>${silT(x)} · <b class="resp">${sigla(x)}</b></span></div>`).join('')}</div>`) +
   ej(3, 'El camino de la tilde', `<table class="tabla camino"><tr><th>Palabra</th><th>Tipo</th><th>¿Vocal, -n o -s?</th><th>¿Tilde?</th><th>Bien escrita</th></tr>${e3.map(x => `<tr><td>${sep(x)}</td><td>${x.tipo}</td><td>${acaba(x)}</td><td>${x.tilde ? 'sí' : 'no'}</td><td class="resp">${x.w}</td></tr>`).join('')}</table>`) +
@@ -80,6 +80,7 @@ const html = `<!DOCTYPE html>
 .ficha .r2 .hueco{min-height:22mm}
 .ton{text-decoration:underline;text-decoration-thickness:2px;font-weight:700}
 .tabla td.alta{height:24mm}
+.reto .tabla td.alta{height:62mm;vertical-align:top;background:repeating-linear-gradient(transparent 0 9.5mm,#d9c79a 9.5mm 10mm)}
 .camino td{height:9.5mm;font-size:11.5pt}
 .camino td.pal{font-family:'Andika',sans-serif;font-size:13pt;font-weight:700}
 .camino th{font-size:10pt}
