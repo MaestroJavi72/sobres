@@ -2080,6 +2080,14 @@ function efLeerHoja(){
 function efFilasDe(filas, nombre){ return filas.filter(function(f){ return normal(f[1])===normal(nombre); }); }
 /* lo que ganó la Bóveda de 4ºA el día «dia»: base (sin cartas) + lo que ya dieron las cartas de ese día */
 var EF_BOV = '4ºA · BÓVEDA';
+function efCartasDadas(filas, nombreCarta, n){
+  var k = normal(EF_BOV), ms = [], vistos = {};
+  filas.forEach(function(f){ if(normal(f[1])!==k || normal(f[2]).indexOf('boveda')!==0) return; var m = String(f[5]||'').match(/#g[a-z0-9]+/); if(m) vistos[m[0]] = 1; ms.push({ id:m ? m[0] : '', motivo:String(f[4]||''), extra:String(f[5]||''), n:numero(f[3]) }); });
+  var lp = []; try{ lp = JSON.parse(localStorage.getItem('ef-pendientes')||'[]') || []; }catch(e){}
+  lp.forEach(function(p){ if(p && !vistos[p.id] && normal(p.alumno)===k) ms.push({ id:p.id, motivo:String(p.motivo||''), extra:p.id+' · '+(p.extra||''), n:+p.n||0 }); });
+  var an = {}; ms.forEach(function(m){ var x = m.extra.match(/anula (#g[a-z0-9]+)/); if(x) an[x[1]] = 1; });
+  return ms.filter(function(m){ return !an[m.id] && m.n>0 && /^carta: /i.test(m.motivo.trim()) && m.motivo.indexOf(nombreCarta)>=0 && m.motivo.indexOf('· '+n)>=0; }).length;
+}
 function efBovedaDia(filas, dia){
   var k = normal(EF_BOV), ms = [], vistos = {};
   filas.forEach(function(f){
@@ -2135,14 +2143,19 @@ function pintarMult(cu, n, k, c, v, filas, hoy){
     var d = cu.querySelector('#efDia').value || hoy, g = efBovedaDia(filas, d), out = cu.querySelector('#efCalc');
     var otras = g.cl.length, dar = E.x*g.base - (otras ? 0 : g.base);
     var ya = g.cl.filter(function(m){ return m.motivo.indexOf(E.n)>=0 && m.motivo.indexOf('· '+n)>=0; })[0];
+    /* 20/11/2026 (Javi: «la carta, una vez que se usa, se pierde»): cada carta usada vale para UN efecto.
+       Cartas gastadas = sus «Uso» de esa carta (+1 si la está usando ahora); efectos dados = filas «Carta: … · nombre» de la Bóveda */
+    var usos = efFilasDe(filas, n).filter(function(f){ return normal(f[2]).indexOf('uso')===0 && Number(f[3])===k; }).length + (c && c.estado!=='Usada' ? 1 : 0);
+    var dados = efCartasDadas(filas, E.n, n), sinCarta = !ya && dados >= usos;
     var tabla = g.lista.length || g.cl.length ? '<table>'+g.lista.concat(g.cl).map(function(x){ return '<tr><td>'+efEsc(x.motivo)+'</td><td style="text-align:right"><b>'+(x.n>0?'+':'')+x.n+'</b></td></tr>'; }).join('')+'</table>' : '<p>Ese día la Bóveda no ganó galeones.</p>';
     out.innerHTML = '<p>La Bóveda de 4ºA el '+efFecha(d)+':</p>'+tabla +
       '<div class="grande">'+g.base+' × '+E.x+' = '+(E.x*g.base)+'</div>' +
       '<p style="text-align:center">'+(otras ? 'Ya hay otras cartas ese día: se suman sus '+(E.x*g.base)+' → <b>+'+dar+'</b>.' : 'La Bóveda ya tenía esos '+g.base+': <b>+'+dar+'</b> para llegar a '+(E.x*g.base)+'.')+' Ese día quedará en <b>'+(g.total+dar)+'</b>.</p>' +
       (d===hoy && !g.base ? '<p>💡 Todavía no hay autoevaluación de hoy. Haz primero la autoevaluación y luego usa la carta.</p>' : '') +
+      (sinCarta ? '<p><b>⚠️ '+efEsc(n)+' no tiene ninguna '+efEsc(E.n)+' usada sin aplicar'+(usos ? ' (ha usado '+usos+' y ya se '+(dados===1 ? 'aplicó 1' : 'aplicaron '+dados)+')' : '')+'. Una carta usada se pierde: solo vale una vez. Si la tiene sin usar, pulsa «🪄 Usar con su efecto» en su carta.</b></p>' : '') +
       (ya ? '<p><b>⚠️ La '+efEsc(E.n)+' de '+efEsc(n)+' ya se aplicó ese día ('+(ya.n>0?'+':'')+ya.n+').</b></p>' : '') +
       (c && c.estado!=='Usada' ? '<p>Además, la carta de '+efEsc(n)+' se marcará como usada.</p>' : '') +
-      '<div class="efBot"><button type="button" class="si" id="efDar"'+(dar<=0 || ya ? ' disabled' : '')+'>✨ Dar +'+dar+' a la Bóveda</button></div>';
+      '<div class="efBot"><button type="button" class="si" id="efDar"'+(dar<=0 || ya || sinCarta ? ' disabled' : '')+'>✨ Dar +'+dar+' a la Bóveda</button></div>';
     var b = out.querySelector('#efDar');
     b.onclick = function(){
       if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ titulo:'🔐 Código para usar la carta', texto:'Escribe el código y vuelve a pulsar «Dar».' }); return; }
