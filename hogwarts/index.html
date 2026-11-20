@@ -2038,11 +2038,12 @@ function marcarUsada(c, li){
    🪄 CARTAS CON EFECTO (Javi, 20/11/2026: «algunas cartas deberían tener acceso directo»)
    Solo para el profe (no sale con ?mis= ni ?solo: .misForm y .usarBtn están ocultos ahí) y con el código.
    · 50 Feliz cumpleaños ×2 y 51 Navidad ×3 (Javi, 20/11/2026: «los galeones que se multiplican son los de
-     la Bóveda, los grupales»): multiplican lo que ganó la BÓVEDA de 4ºA ese día (autoevaluación, ajustes
-     positivos; sin canjes ni anulados). Si hay varias cartas el mismo día, SE MULTIPLICAN (Javi: 7 con
-     ×3 y ×2 → 42): cada una da (×−1) × (lo del día + lo que ya dieron otras cartas de ese día).
-     Fila Boveda «4ºA · BÓVEDA», motivo «Carta: Navidad (×3) · Valeria», detalle «… día AAAA-MM-DD …».
-     Cada alumno, una vez por carta y día. Se puede aplicar a un día pasado.
+     la Bóveda, los grupales»; «va a los galeones de toda la clase, pero lo decide esa persona»): cada carta
+     multiplica por separado lo que ganó la BÓVEDA de 4ºA ese día (autoevaluación y ajustes positivos; sin
+     canjes, anulados ni cartas) y los resultados SE SUMAN: con 7, ×3 + ×3 + ×2 → 21 + 21 + 14 = 56 (Javi).
+     La primera carta del día añade (×−1) × 7 (los 7 ya estaban); las demás, × × 7.
+     Fila Boveda «4ºA · BÓVEDA», motivo «Carta: Navidad (×3) · Valeria», detalle «… día AAAA-MM-DD (7)»;
+     una por alumno, carta y día. Se puede aplicar a un día pasado.
    · 23 Draco Malfoy: «cambiar la carta por la de un compañero o por otra carta del maestro» →
      roba a ciegas una carta POR USAR de un compañero (Uso del compañero «robada por …» + Registro del
      ladrón con la misma carta) o una del mazo (como un sobre: respeta las bloqueadas y los pesos).
@@ -2129,29 +2130,30 @@ function efDiaUso(filas, n, k, hoy){
 }
 function pintarMult(cu, n, k, c, v, filas, hoy){
   var E = EFECTO_CARTA[k], dia = c && c.estado!=='Usada' ? hoy : efDiaUso(filas, n, k, hoy);
-  cu.innerHTML = '<p>🏦 Multiplica los galeones de la <b>Bóveda de 4ºA</b> (los de toda la clase) de ese día.</p><label>¿De qué día? <input type="date" id="efDia" value="'+dia+'" max="'+hoy+'"></label><div id="efCalc"></div>';
+  cu.innerHTML = '<p>🏦 La carta de '+efEsc(n)+' multiplica los galeones de la <b>Bóveda de 4ºA</b> (de toda la clase) de ese día.</p><label>¿De qué día? <input type="date" id="efDia" value="'+dia+'" max="'+hoy+'"></label><div id="efCalc"></div>';
   function calc(){
-    var d = cu.querySelector('#efDia').value || hoy, g = efBovedaDia(filas, d), extra = (E.x-1)*g.total, out = cu.querySelector('#efCalc');
+    var d = cu.querySelector('#efDia').value || hoy, g = efBovedaDia(filas, d), out = cu.querySelector('#efCalc');
+    var otras = g.cl.length, dar = E.x*g.base - (otras ? 0 : g.base);
     var ya = g.cl.filter(function(m){ return m.motivo.indexOf(E.n)>=0 && m.motivo.indexOf('· '+n)>=0; })[0];
     var tabla = g.lista.length || g.cl.length ? '<table>'+g.lista.concat(g.cl).map(function(x){ return '<tr><td>'+efEsc(x.motivo)+'</td><td style="text-align:right"><b>'+(x.n>0?'+':'')+x.n+'</b></td></tr>'; }).join('')+'</table>' : '<p>Ese día la Bóveda no ganó galeones.</p>';
-    out.innerHTML = '<p>Lo que ganó la Bóveda de 4ºA el '+efFecha(d)+':</p>'+tabla +
-      '<div class="grande">'+g.total+' × '+E.x+' = '+(g.total*E.x)+' → +'+extra+' para la Bóveda</div>' +
-      (g.cl.length ? '<p>Ya hay otra carta ese día: se multiplican una encima de otra.</p>' : '') +
+    out.innerHTML = '<p>La Bóveda de 4ºA el '+efFecha(d)+':</p>'+tabla +
+      '<div class="grande">'+g.base+' × '+E.x+' = '+(E.x*g.base)+'</div>' +
+      '<p style="text-align:center">'+(otras ? 'Ya hay otras cartas ese día: se suman sus '+(E.x*g.base)+' → <b>+'+dar+'</b>.' : 'La Bóveda ya tenía esos '+g.base+': <b>+'+dar+'</b> para llegar a '+(E.x*g.base)+'.')+' Ese día quedará en <b>'+(g.total+dar)+'</b>.</p>' +
       (d===hoy && !g.base ? '<p>💡 Todavía no hay autoevaluación de hoy. Haz primero la autoevaluación y luego usa la carta.</p>' : '') +
       (ya ? '<p><b>⚠️ La '+efEsc(E.n)+' de '+efEsc(n)+' ya se aplicó ese día ('+(ya.n>0?'+':'')+ya.n+').</b></p>' : '') +
       (c && c.estado!=='Usada' ? '<p>Además, la carta de '+efEsc(n)+' se marcará como usada.</p>' : '') +
-      '<div class="efBot"><button type="button" class="si" id="efDar"'+(extra<=0 || ya ? ' disabled' : '')+'>✨ Dar +'+extra+' a la Bóveda</button></div>';
+      '<div class="efBot"><button type="button" class="si" id="efDar"'+(dar<=0 || ya ? ' disabled' : '')+'>✨ Dar +'+dar+' a la Bóveda</button></div>';
     var b = out.querySelector('#efDar');
     b.onclick = function(){
       if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ titulo:'🔐 Código para usar la carta', texto:'Escribe el código y vuelve a pulsar «Dar».' }); return; }
       b.disabled = true;
-      var p = { id:idMov(), alumno:EF_BOV, accion:'Boveda', n:extra, motivo:'Carta: '+E.n+' (×'+E.x+') · '+n, extra:'×'+E.x+' de lo de la Bóveda del día '+d+' ('+g.total+')', cartaId:'', t:Date.now() };
+      var p = { id:idMov(), alumno:EF_BOV, accion:'Boveda', n:dar, motivo:'Carta: '+E.n+' (×'+E.x+') · '+n, extra:'×'+E.x+' de lo de la Bóveda del día '+d+' ('+g.base+')', cartaId:'', t:Date.now() };
       if(JAVI.enviarDeVerdad && JAVI.enviarDeVerdad()){ var lp = []; try{ lp = JSON.parse(localStorage.getItem('ef-pendientes')||'[]') || []; }catch(e){} lp.push(p); try{ localStorage.setItem('ef-pendientes', JSON.stringify(lp)); }catch(e){} }
       enviarForm({ alumno:p.alumno, accion:p.accion, cartaId:String(p.n), tipo:p.motivo, carta:p.id+' · '+p.extra });
       if(c && c.estado!=='Usada') marcarUsada(c, null);
       v.dataset.hecho = '1';
-      try{ JAVI.sonarPuntos(extra); }catch(e){}
-      out.innerHTML = '<div class="grande">✅ +'+extra+' galeones para la Bóveda de 4ºA</div>';
+      try{ JAVI.sonarPuntos(dar); }catch(e){}
+      out.innerHTML = '<div class="grande">✅ +'+dar+' galeones para la Bóveda de 4ºA</div>';
     };
   }
   cu.querySelector('#efDia').onchange = calc; calc();
