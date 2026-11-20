@@ -2171,10 +2171,30 @@ function pintarMult(cu, n, k, c, v, filas, hoy){
   }
   cu.querySelector('#efDia').onchange = calc; calc();
 }
+var efDracoLocal = {};
+/* robos ya hechos por «n» con su Draco: lo que se llevó (Registro «… Draco Malfoy»), robos parados por un escudo
+   («para el robo de n») y robos fallidos (fila Efecto 23); más los de esta página */
+function efDracoDados(filas, n){
+  var r = 0;
+  filas.forEach(function(f){
+    var quien = normal(f[1]), acc = normal(f[2]), txt = String(f[5]||'');
+    if(quien===normal(n) && acc.indexOf('reg')===0 && txt.indexOf('Draco Malfoy')>=0) r++;
+    else if(acc.indexOf('uso')===0 && txt.indexOf('para el robo de '+n+' (Draco Malfoy)')>=0) r++;
+    else if(quien===normal(n) && acc==='efecto' && String(f[3]).trim()==='23') r++;
+  });
+  return r + (efDracoLocal[n]||0);
+}
 function pintarDraco(cu, n, c, v, filas){
+  /* 20/11/2026 (Javi): «las cartas con efecto se tienen si te tocan, y luego se pierden»: un robo por cada Draco que tenga o haya usado */
+  var usos = efFilasDe(filas, n).filter(function(f){ return normal(f[2]).indexOf('uso')===0 && Number(f[3])===23; }).length + (c && c.estado!=='Usada' ? 1 : 0);
+  if(efDracoDados(filas, n) >= usos){
+    cu.innerHTML = '<p><b>⚠️ '+efEsc(n)+' no tiene ningún Draco Malfoy para robar.</b> Las cartas con efecto solo se tienen si te tocan, y al usarlas se pierden'+(usos ? ' (ha usado '+usos+' y ya ha robado con '+(usos===1 ? 'él' : 'todos')+')' : '')+'. Si tiene uno sin usar, pulsa «🪄 Usar con su efecto» en su carta.</p>';
+    return;
+  }
+  var gastar = function(){ efDracoLocal[n] = (efDracoLocal[n]||0) + 1; };
   var otros = CONFIG.alumnos.filter(function(x){ return x!==n; }).map(function(x){
     var p = construirRegistro(efFilasDe(filas, x)).filter(function(r){ return r.estado!=='Usada'; }); return { n:x, p:p }; });
-  cu.innerHTML = (c ? '' : '<p>⚠️ Úsalo solo si '+efEsc(n)+' ya ha gastado su Draco y todavía no ha robado.</p>') + '<p>🐍 '+efEsc(n)+' le roba una carta <b>a ciegas</b>: a un compañero (una de las que tiene sin usar) o al mazo del maestro.</p>' +
+  cu.innerHTML = '<p>🐍 '+efEsc(n)+' le roba una carta a un compañero (dice cuál quiere; si no se acuerda, a ciegas) o al mazo del maestro (a ciegas).</p>' +
     '<label>¿A quién? <select id="efVict"><option value="">— Elige —</option><option value="__mazo">🎴 Al mazo del maestro</option>'+
     otros.map(function(o){ return '<option value="'+efEsc(o.n)+'"'+(o.p.length ? '' : ' disabled')+'>'+efEsc(o.n)+' ('+o.p.length+(o.p.length===1 ? ' carta' : ' cartas')+')</option>'; }).join('')+'</select></label><div id="efRobo"></div>';
   cu.querySelector('#efVict').onchange = function(){
@@ -2189,7 +2209,7 @@ function pintarDraco(cu, n, c, v, filas){
         '<div class="efBot"><button type="button" class="si" id="efPara">🛡️ La usa: se para el robo</button><button type="button" id="efSigue">No la usa: seguir con el robo</button></div>';
       var sel = this; sel.disabled = true;
       out.querySelector('#efPara').onclick = function(){
-        v.dataset.hecho = '1';
+        v.dataset.hecho = '1'; gastar();
         usadasLocal[escudo.cartaId+'|'+escudo.fecha] = true;
         enviarForm({ alumno:vic, accion:'Uso', cartaId:escudo.cartaId, tipo:escudo.tipo, carta:(escudo.carta||escudo.tipo)+' · para el robo de '+n+' (Draco Malfoy)' });
         if(c && c.estado!=='Usada') marcarUsada(c, null);
@@ -2201,7 +2221,7 @@ function pintarDraco(cu, n, c, v, filas){
     var sel2 = this;
     function srcDe(id){ var r = CARTAS.filter(function(x){ return x[0]===Number(id); })[0]; return r ? r[2] : ''; }
     function terminar(src, id){
-      v.dataset.hecho = '1';
+      v.dataset.hecho = '1'; gastar();
       if(c && c.estado!=='Usada') marcarUsada(c, null);
       try{ JAVI.sonarPuntos(1); }catch(e){}
       out.innerHTML = '<p class="grande">🐍 ¡'+efEsc(n)+' se lleva…</p>'+(src ? '<img class="efRobada" src="'+src+'" alt="Carta robada">' : '<p>nº '+efEsc(id)+'</p>')+(mazo ? '' : '<p style="text-align:center">'+efEsc(vic)+' ya no la tiene.</p>');
@@ -2225,7 +2245,7 @@ function pintarDraco(cu, n, c, v, filas){
         if(rec){ robar(rec); return; }
         out.innerHTML = '<p class="grande">❌ ¡'+efEsc(vic)+' no tiene esa carta!</p><img class="efRobada" src="'+img.src+'" alt="" style="width:120px;opacity:.6">' +
           '<div class="efBot"><button type="button" class="si" id="efFallo">Robo fallido: se gasta el Draco</button><button type="button" id="efCiegas2">Que robe una a ciegas</button></div>';
-        out.querySelector('#efFallo').onclick = function(){ v.dataset.hecho = '1'; if(c && c.estado!=='Usada') marcarUsada(c, null); out.innerHTML = '<p class="grande">💨 Robo fallido</p><p style="text-align:center">'+efEsc(n)+' se queda sin su Draco.</p>'; };
+        out.querySelector('#efFallo').onclick = function(){ v.dataset.hecho = '1'; gastar(); enviarForm({ alumno:n, accion:'Efecto', cartaId:'23', tipo:'Robo fallido', carta:'Draco Malfoy · no tenía la carta '+img.dataset.id+' ('+vic+')' }); if(c && c.estado!=='Usada') marcarUsada(c, null); out.innerHTML = '<p class="grande">💨 Robo fallido</p><p style="text-align:center">'+efEsc(n)+' se queda sin su Draco.</p>'; };
         out.querySelector('#efCiegas2').onclick = function(){ out.dataset.ciegas = '1'; sel2.disabled = false; sel2.onchange(); };
       }; });
       return;
