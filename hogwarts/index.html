@@ -2017,19 +2017,205 @@ function pintarMisCartas(lista){
     var thumb = ref ? '<img class="thumb" src="'+ref.src+'" alt="Ver carta" loading="lazy">' : '';
     li.innerHTML = '<span class="cartaInfo">'+thumb+'<span>'+(c.carta||c.tipo)+'</span></span>'+
       '<span class="estado '+(usada?'usada':'pend')+'">'+(usada?'Usada':(MIS?'Para usar':'Pendiente'))+'</span>'+
-      (usada?'':'<button type="button" class="usarBtn">Marcar como usada</button>');
+      (usada?'':'<button type="button" class="usarBtn">Marcar como usada</button>')+(!usada && EFECTO_CARTA[Number(c.cartaId)] ? '<button type="button" class="usarBtn efBtn">🪄 Usar con su efecto</button>' : '');
     if(ref){ li.querySelector('.thumb').addEventListener('click', function(){ verCarta(ref); }); }
     if(!usada){ li.querySelector('.usarBtn').addEventListener('click', function(){ marcarUsada(c, li); }); }
+    var efb = li.querySelector('.efBtn'); if(efb) efb.addEventListener('click', function(){ abrirEfecto(c, $('miNombre').value); });
     ul.appendChild(li);
   });
 }
 function marcarUsada(c, li){
+  if(c.estado==='Usada') return;
+  c.estado = 'Usada';
   usadasLocal[c.cartaId+'|'+c.fecha] = true;
   enviarForm({ alumno:$('miNombre').value, accion:'Uso', cartaId:c.cartaId, tipo:c.tipo, carta:c.carta });
   if(li){
     li.querySelector('.estado').className='estado usada'; li.querySelector('.estado').textContent='Usada';
-    var b=li.querySelector('.usarBtn'); if(b) b.remove();
+    Array.prototype.forEach.call(li.querySelectorAll('.usarBtn'), function(b){ b.remove(); });
   }
+}
+/* ============================================================
+   🪄 CARTAS CON EFECTO (Javi, 20/11/2026: «algunas cartas deberían tener acceso directo»)
+   Solo para el profe (no sale con ?mis= ni ?solo: .misForm y .usarBtn están ocultos ahí) y con el código.
+   · 50 Feliz cumpleaños ×2 y 51 Navidad ×3: «multiplica los galeones recibidos en ese día» →
+     un movimiento extra = (×−1) × lo positivo ganado ESE día (sin cartas, sin premios del mes y restando
+     las correcciones), como Duplex/Triplex de EF. Se puede aplicar a un día pasado. Una carta ×2/×3 por
+     alumno y día (si ya hay una, avisa). Va como motivo «Carta: …» y no cuenta para los Campeones del mes.
+   · 23 Draco Malfoy: «cambiar la carta por la de un compañero o por otra carta del maestro» →
+     roba a ciegas una carta POR USAR de un compañero (Uso del compañero «robada por …» + Registro del
+     ladrón con la misma carta) o una del mazo (como un sobre: respeta las bloqueadas y los pesos).
+   ============================================================ */
+var EFECTO_CARTA = { 50:{ x:2, n:'Feliz cumpleaños' }, 51:{ x:3, n:'Navidad' }, 23:{ draco:true, n:'Draco Malfoy' } };
+(function(){
+  var st = document.createElement('style');
+  st.textContent = '.efVelo{position:fixed;inset:0;z-index:9000;background:rgba(10,8,20,.78);display:flex;align-items:center;justify-content:center;padding:14px}' +
+    '.efCaja{background:#fdf6e3;color:#2b1c05;border:3px solid #c9972e;border-radius:18px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:18px 20px;font-family:inherit;box-shadow:0 20px 60px rgba(0,0,0,.6)}' +
+    '.efCaja h3{margin:0 0 8px;font-size:24px}.efCaja p{margin:6px 0;font-size:17px;line-height:1.35}' +
+    '.efCaja label{display:block;margin:8px 0;font-weight:700}.efCaja select,.efCaja input{font:inherit;font-size:17px;padding:6px 8px;border-radius:8px;border:2px solid #b8934f;margin-left:6px}' +
+    '.efCaja .efBot{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.efCaja button{font:inherit;font-weight:700;font-size:17px;padding:9px 14px;border-radius:10px;border:2px solid #b8934f;background:#fffaf0;cursor:pointer}' +
+    '.efCaja button.si{background:#2f9a5a;color:#fff;border-color:#2f9a5a}.efCaja button:disabled{opacity:.5;cursor:default}' +
+    '.efCaja table{width:100%;border-collapse:collapse;font-size:15px;margin:6px 0}.efCaja td{border-bottom:1px dotted #b8934f;padding:3px 4px}' +
+    '.efCaja .grande{font-size:30px;font-weight:900;text-align:center;margin:10px 0}' +
+    '.efDorsos{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:10px 0}.efDorsos img{width:96px;height:134px;border-radius:8px;cursor:pointer;transition:transform .2s}.efDorsos img:hover{transform:translateY(-6px) rotate(-3deg)}' +
+    '.efRobada{display:block;margin:8px auto;width:200px;border-radius:12px;animation:efGira .7s}@keyframes efGira{from{transform:rotateY(90deg)}to{transform:none}}' +
+    '.misForm .efAbrir{background:#5b2a86;color:#fff;border-color:#5b2a86}';
+  document.head.appendChild(st);
+  var f = document.querySelector('.misForm');
+  if(f){ var b = document.createElement('button'); b.type = 'button'; b.className = 'ghost efAbrir'; b.textContent = '🪄 Cartas con efecto';
+    b.addEventListener('click', function(){ abrirEfecto(null, $('miNombre').value); }); f.appendChild(b); }
+})();
+function efEsc(t){ var d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
+function efFecha(d){ var p = d.split('-'); return +p[2]+'/'+(+p[1]); }
+function efVelo(){
+  var v = document.createElement('div'); v.className = 'efVelo'; v.innerHTML = '<div class="efCaja" role="dialog" aria-modal="true"></div>';
+  v.addEventListener('click', function(e){ if(e.target===v) v.remove(); });
+  document.body.appendChild(v); return v;
+}
+function efLeerHoja(){
+  return fetch(CONFIG.registro.csvUrl, { cache:'no-store' }).then(function(r){ return r.text(); }).then(function(t){ return leerCSV(t).slice(1); });
+}
+function efFilasDe(filas, nombre){ return filas.filter(function(f){ return normal(f[1])===normal(nombre); }); }
+/* lo positivo que ganó «nombre» el día «dia» (como ganadoHoy de EF) y si ya tiene una carta ×2/×3 ese día */
+function efGanadoDia(nombre, dia){
+  var s = 0, lista = [], ya = null, yaN = 0;
+  movimientosMes(dia.slice(0, 7)).concat(movimientosMes(mesSiguiente(dia.slice(0, 7)))).forEach(function(x){
+    if(normal(nombreReal(x.alumno))!==normal(nombre)) return;
+    var mot = String(x.motivo||'').trim();
+    if(/^(corrección: )?carta: /i.test(mot) && String(x.extra).indexOf('día '+dia)>=0){ yaN += x.n; if(x.n>0) ya = x; }
+    if(x.dia!==dia) return;
+    if(normal(x.extra).indexOf(normal(TAG_PREMIO))>=0 || /^(corrección: )?carta: /i.test(mot)) return;
+    if(/^(corrección|anulado)/i.test(mot)){ if(x.n<0){ s += x.n; lista.push(x); } return; }   /* deshacer o anular un punto lo resta; devolver lo quitado no cuenta como ganado */
+    if(x.n<=0) return;
+    s += x.n; lista.push(x);
+  });
+  return { s:Math.max(0, s), lista:lista, ya:yaN>0 ? ya : null };
+}
+/* abrir el efecto: c = carta de la lista (o null para elegir), quien = alumno */
+function abrirEfecto(c, quien){
+  var v = efVelo(), caja = v.querySelector('.efCaja'), hoy = clave(new Date());
+  var opts = CONFIG.alumnos.map(function(n){ return '<option'+(n===quien ? ' selected' : '')+'>'+efEsc(n)+'</option>'; }).join('');
+  var id = c ? Number(c.cartaId) : 51;
+  caja.innerHTML = '<h3>🪄 Cartas con efecto</h3>' +
+    '<label>Carta <select id="efCarta"><option value="51">🎄 Navidad (×3 los galeones del día)</option><option value="50">🎂 Feliz cumpleaños (×2 los galeones del día)</option><option value="23">🐍 Draco Malfoy (robar una carta)</option></select></label>' +
+    '<label>Alumno/a <select id="efQuien"><option value="">— Elige —</option>'+opts+'</select></label>' +
+    '<div id="efCuerpo"><p>Cargando…</p></div><div class="efBot"><button type="button" id="efCerrar">Cerrar</button></div>';
+  caja.querySelector('#efCarta').value = String(id);
+  if(c){ caja.querySelector('#efCarta').disabled = true; caja.querySelector('#efQuien').disabled = true; }
+  caja.querySelector('#efCerrar').onclick = function(){ v.remove(); if(v.dataset.hecho) consultarMisCartas(); };
+  var filas = null;
+  function pintar(){
+    var k = Number(caja.querySelector('#efCarta').value), n = caja.querySelector('#efQuien').value, cu = caja.querySelector('#efCuerpo');
+    if(!n){ cu.innerHTML = '<p>Elige quién usa la carta.</p>'; return; }
+    if(!filas){ cu.innerHTML = '<p>Cargando la Hoja…</p>'; return; }
+    if(EFECTO_CARTA[k].draco) pintarDraco(cu, n, c, v, filas); else pintarMult(cu, n, k, c, v, filas, hoy);
+  }
+  caja.querySelector('#efCarta').onchange = pintar; caja.querySelector('#efQuien').onchange = pintar;
+  Promise.all([efLeerHoja(), cargarBanco()]).then(function(r){ filas = r[0]; pintar(); }).catch(function(){ caja.querySelector('#efCuerpo').innerHTML = '<p>No se ha podido leer la Hoja. Inténtalo de nuevo en un momento.</p>'; });
+  pintar();
+}
+/* día por defecto: el del último «Uso» de esa carta por ese alumno; si no, hoy */
+function efDiaUso(filas, n, k, hoy){
+  var d = hoy;
+  efFilasDe(filas, n).forEach(function(f){ if(normal(f[2]).indexOf('uso')===0 && Number(f[3])===k) d = fechaFila(f[0]); });
+  return d;
+}
+function pintarMult(cu, n, k, c, v, filas, hoy){
+  var E = EFECTO_CARTA[k], dia = c && c.estado!=='Usada' ? hoy : efDiaUso(filas, n, k, hoy);
+  cu.innerHTML = '<label>¿De qué día? <input type="date" id="efDia" value="'+dia+'" max="'+hoy+'"></label><div id="efCalc"></div>';
+  function calc(){
+    var d = cu.querySelector('#efDia').value || hoy, g = efGanadoDia(n, d), extra = (E.x-1)*g.s, out = cu.querySelector('#efCalc');
+    var tabla = g.lista.length ? '<table>'+g.lista.map(function(x){ return '<tr><td>'+efEsc(x.motivo)+'</td><td style="text-align:right"><b>'+(x.n>0?'+':'')+x.n+'</b></td></tr>'; }).join('')+'</table>' : '<p>Ese día no ganó galeones.</p>';
+    out.innerHTML = '<p>Galeones que ganó '+efEsc(n)+' el '+efFecha(d)+':</p>'+tabla +
+      '<div class="grande">'+g.s+' × '+E.x+' = '+(g.s*E.x)+' → +'+extra+' galeones</div>' +
+      (d===hoy ? '<p>💡 Si todavía va a ganar más hoy, mejor aplícala al final del día (lo que gane después no se multiplica).</p>' : '') +
+      (g.ya ? '<p><b>⚠️ '+efEsc(n)+' ya tiene una carta ×2/×3 aplicada ese día ('+efEsc(g.ya.motivo)+', '+(g.ya.n>0?'+':'')+g.ya.n+'). Solo una por día.</b></p>' : '') +
+      (c && c.estado!=='Usada' ? '<p>Además, la carta se marcará como usada.</p>' : '') +
+      '<div class="efBot"><button type="button" class="si" id="efDar"'+(extra<=0 || g.ya ? ' disabled' : '')+'>✨ Dar +'+extra+' galeones</button></div>';
+    var b = out.querySelector('#efDar');
+    b.onclick = function(){
+      if(!JAVI.llaveAbierta()){ JAVI.pedirCodigo({ titulo:'🔐 Código para usar la carta', texto:'Escribe el código y vuelve a pulsar «Dar».' }); return; }
+      b.disabled = true;
+      enviarMovimiento(n, 'Galeones', extra, 'Carta: '+E.n+' (×'+E.x+')', '×'+E.x+' de lo ganado el día '+d+' ('+g.s+')');
+      if(c && c.estado!=='Usada') marcarUsada(c, null);
+      try{ JAVI.sonarPuntos(extra); }catch(e){}
+      out.innerHTML = '<div class="grande">✅ +'+extra+' galeones para '+efEsc(n)+'</div>';
+      setTimeout(function(){ v.remove(); consultarMisCartas(); }, 1800);
+    };
+  }
+  cu.querySelector('#efDia').onchange = calc; calc();
+}
+function pintarDraco(cu, n, c, v, filas){
+  var otros = CONFIG.alumnos.filter(function(x){ return x!==n; }).map(function(x){
+    var p = construirRegistro(efFilasDe(filas, x)).filter(function(r){ return r.estado!=='Usada'; }); return { n:x, p:p }; });
+  cu.innerHTML = (c ? '' : '<p>⚠️ Úsalo solo si '+efEsc(n)+' ya ha gastado su Draco y todavía no ha robado.</p>') + '<p>🐍 '+efEsc(n)+' le roba una carta <b>a ciegas</b>: a un compañero (una de las que tiene sin usar) o al mazo del maestro.</p>' +
+    '<label>¿A quién? <select id="efVict"><option value="">— Elige —</option><option value="__mazo">🎴 Al mazo del maestro</option>'+
+    otros.map(function(o){ return '<option value="'+efEsc(o.n)+'"'+(o.p.length ? '' : ' disabled')+'>'+efEsc(o.n)+' ('+o.p.length+(o.p.length===1 ? ' carta' : ' cartas')+')</option>'; }).join('')+'</select></label><div id="efRobo"></div>';
+  cu.querySelector('#efVict').onchange = function(){
+    var vic = this.value, out = cu.querySelector('#efRobo'); if(!vic){ out.innerHTML = ''; return; }
+    if(!JAVI.llaveAbierta()){ this.value = ''; JAVI.pedirCodigo({ titulo:'🔐 Código para usar la carta', texto:'Escribe el código y vuelve a elegir a quién se le roba.' }); return; }
+    var mazo = vic==='__mazo', o = mazo ? null : otros.filter(function(x){ return x.n===vic; })[0];
+    /* 20/11/2026 (Javi): si el compañero tiene la Diadema (1) o la Copa de Hufflepuff (3) sin usar, el robo se para */
+    var escudo = mazo ? null : o.p.filter(function(r){ return r.cartaId==='1' || r.cartaId==='3'; })[0];
+    if(escudo && !out.dataset.sinEscudo){
+      var nom = escudo.cartaId==='1' ? 'la Diadema de Rowena Ravenclaw' : 'la Copa de Helga Hufflepuff';
+      out.innerHTML = '<p class="grande">🛡️ ¡'+efEsc(vic)+' tiene '+nom+'!</p><p>'+efEsc(vic)+' puede usarla para parar el robo (la carta de protección se gasta y '+efEsc(n)+' pierde su Draco).</p>' +
+        '<div class="efBot"><button type="button" class="si" id="efPara">🛡️ La usa: se para el robo</button><button type="button" id="efSigue">No la usa: seguir con el robo</button></div>';
+      var sel = this; sel.disabled = true;
+      out.querySelector('#efPara').onclick = function(){
+        v.dataset.hecho = '1';
+        usadasLocal[escudo.cartaId+'|'+escudo.fecha] = true;
+        enviarForm({ alumno:vic, accion:'Uso', cartaId:escudo.cartaId, tipo:escudo.tipo, carta:(escudo.carta||escudo.tipo)+' · para el robo de '+n+' (Draco Malfoy)' });
+        if(c && c.estado!=='Usada') marcarUsada(c, null);
+        out.innerHTML = '<p class="grande">🛡️ ¡Robo parado!</p><p style="text-align:center">'+efEsc(vic)+' gasta '+nom+' y '+efEsc(n)+' se queda sin su Draco.</p>';
+      };
+      out.querySelector('#efSigue').onclick = function(){ out.dataset.sinEscudo = '1'; sel.disabled = false; sel.onchange(); };
+      return;
+    }
+    var sel2 = this;
+    function srcDe(id){ var r = CARTAS.filter(function(x){ return x[0]===Number(id); })[0]; return r ? r[2] : ''; }
+    function terminar(src, id){
+      v.dataset.hecho = '1';
+      if(c && c.estado!=='Usada') marcarUsada(c, null);
+      try{ JAVI.sonarPuntos(1); }catch(e){}
+      out.innerHTML = '<p class="grande">🐍 ¡'+efEsc(n)+' se lleva…</p>'+(src ? '<img class="efRobada" src="'+src+'" alt="Carta robada">' : '<p>nº '+efEsc(id)+'</p>')+(mazo ? '' : '<p style="text-align:center">'+efEsc(vic)+' ya no la tiene.</p>');
+    }
+    function robar(rec){
+      usadasLocal[rec.cartaId+'|'+rec.fecha] = true;
+      enviarForm({ alumno:vic, accion:'Uso', cartaId:rec.cartaId, tipo:rec.tipo, carta:(rec.carta||rec.tipo)+' · robada por '+n+' (Draco Malfoy)' });
+      enviarForm({ alumno:n, accion:'Registro', cartaId:rec.cartaId, tipo:rec.tipo, carta:(rec.carta||rec.tipo)+' · robada a '+vic+' (Draco Malfoy)' });
+      terminar(srcDe(rec.cartaId), rec.cartaId);
+    }
+    /* 20/11/2026 (Javi): «si se acuerda o sabe las cartas que tiene otro compañero, pues la roba»:
+       dice la carta; si el compañero la tiene sin usar, es suya. Si no se acuerda, a ciegas. */
+    if(!mazo && !out.dataset.ciegas){
+      out.innerHTML = '<p><b>'+efEsc(n)+', ¿qué carta le quieres robar a '+efEsc(vic)+'?</b> Dila y tócala. Si '+efEsc(vic)+' la tiene, es tuya.</p>' +
+        '<div class="efDorsos efTodas">'+CARTAS.map(function(x){ return '<img src="'+x[2]+'" alt="Carta nº '+x[0]+'" title="nº '+x[0]+'" data-id="'+x[0]+'" style="width:64px;height:90px">'; }).join('')+'</div>' +
+        '<div class="efBot"><button type="button" id="efCiegas">🎲 No se acuerda: que robe una a ciegas</button></div>';
+      sel2.disabled = true;
+      out.querySelector('#efCiegas').onclick = function(){ out.dataset.ciegas = '1'; sel2.disabled = false; sel2.onchange(); };
+      Array.prototype.forEach.call(out.querySelectorAll('[data-id]'), function(img){ img.onclick = function(){
+        var rec = o.p.filter(function(r){ return r.cartaId===img.dataset.id; })[0];
+        if(rec){ robar(rec); return; }
+        out.innerHTML = '<p class="grande">❌ ¡'+efEsc(vic)+' no tiene esa carta!</p><img class="efRobada" src="'+img.src+'" alt="" style="width:120px;opacity:.6">' +
+          '<div class="efBot"><button type="button" class="si" id="efFallo">Robo fallido: se gasta el Draco</button><button type="button" id="efCiegas2">Que robe una a ciegas</button></div>';
+        out.querySelector('#efFallo').onclick = function(){ v.dataset.hecho = '1'; if(c && c.estado!=='Usada') marcarUsada(c, null); out.innerHTML = '<p class="grande">💨 Robo fallido</p><p style="text-align:center">'+efEsc(n)+' se queda sin su Draco.</p>'; };
+        out.querySelector('#efCiegas2').onclick = function(){ out.dataset.ciegas = '1'; sel2.disabled = false; sel2.onchange(); };
+      }; });
+      return;
+    }
+    var k = mazo ? 5 : o.p.length, orden = [];
+    for(var i=0;i<k;i++) orden.push(i);
+    orden.sort(function(){ return Math.random()-.5; });
+    out.innerHTML = '<p><b>'+efEsc(n)+', elige una carta</b> (están boca abajo):</p><div class="efDorsos">'+orden.map(function(i){ return '<img src="../img/cartas-hp/reverso.webp" alt="Carta boca abajo" data-i="'+i+'">'; }).join('')+'</div>';
+    cu.querySelector('#efVict').disabled = true;
+    Array.prototype.forEach.call(out.querySelectorAll('[data-i]'), function(img){ img.onclick = function(){
+      var carta, rec = null;
+      if(mazo){ var t = elegirTipo(), arr = porTipo[t]; carta = arr[Math.floor(rnd()*arr.length)];
+        enviarForm({ alumno:n, accion:'Registro', cartaId:carta.id, tipo:TIPOS[carta.tipo].n, carta:TIPOS[carta.tipo].n+' nº '+carta.id+' · Draco Malfoy (del mazo)' }); }
+      else { robar(o.p[+img.dataset.i]); return; }
+      terminar(carta.src, carta.id);
+    }; });
+  };
 }
 function consultarMisCartas(){
   var nombre=$('miNombre').value, aviso=$('misAviso'), ul=$('misLista');
@@ -3069,6 +3255,7 @@ function rankingMes(mes){
   movimientosMes(mes).forEach(function(x){
     var r = nombreReal(x.alumno); if(!r) return;
     if(normal(x.extra).indexOf(normal(TAG_PREMIO))>=0) return;
+    if(/^(corrección: )?carta: /i.test(String(x.motivo||'').trim())) return;   /* 20/11/2026: lo de las cartas ×2/×3 no cuenta para los Campeones */
     t[r].neto += x.n; if(x.n<0 && !/^(anulado|corrección)/i.test(String(x.motivo||'').trim())) t[r].neg += -x.n;   /* anular o corregir un punto no cuenta como negativo */
   });
   var arr = Object.keys(t).map(function(k){ return t[k]; });
